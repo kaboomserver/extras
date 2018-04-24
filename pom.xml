@@ -1,0 +1,66 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>pw.kaboom</groupId>
+	<artifactId>Extras</artifactId>
+	<version>1.0.0</version>
+
+	<properties>
+		<maven.compiler.source>7</maven.compiler.source>
+		<maven.compiler.target>7</maven.compiler.target>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.destroystokyo.paper</groupId>
+			<artifactId>paper-api</artifactId>
+			<version>1.12.2-R0.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot</artifactId>
+			<version>1.12.2-R0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.boydti</groupId>
+			<artifactId>fawe-api</artifactId>
+			<version>latest</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sk89q.worldedit</groupId>
+			<artifactId>worldedit-bukkit</artifactId>
+			<version>6.1.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>destroystokyo-repo</id>
+			<url>https://repo.destroystokyo.com/repository/maven-public/</url>
+		</repository>
+		<repository>
+			<id>empcraft</id>
+			<url>http://ci.athion.net/job/FastAsyncWorldEdit/ws/mvn/</url>
+		</repository>
+		<repository>
+			<id>sk89q-snapshots</id>
+			<url>http://maven.sk89q.com/artifactory/repo</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+	</build>
+</project>
+
