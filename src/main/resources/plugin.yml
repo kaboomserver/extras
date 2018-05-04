@@ -1,56 +1,44 @@
 name: Extras
 main: pw.kaboom.extras.Main
-description: Extras
+description: Plugin that adds extra functionality to the Kaboom.pw server.
 version: ${project.version}
 
 commands:
+   clearchat:
+      aliases: cc
+      description: Clears messages from the chat
+      permission: extras.clearchat
+   console:
+      description: Broadcasts a message as the console
+      permission: extras.console
+   discord:
+      description: Join the Kaboom.pw Discord server
+      permission: extras.discord
    end:
       description: Moves your player to the End
-      usage: /end
       permission: extras.end
    flatlands:
       description: Moves your player to the Flatlands
-      usage: /flatlands
       permission: extras.flatlands
    hub:
       description: Moves your player to the Hub
-      usage: /hub
       permission: extras.hub
    nether:
       description: Moves your player to the Nether
-      usage: /nether
       permission: extras.nether
    overworld:
       description: Moves your player to the Overworld
-      usage: /overworld
       permission: extras.overworld
+   prefix:
+      aliases: [rank, tag]
+      description: Changes your tag
+      permission: extras.prefix
    spawn:
       description: Teleports you to spawn
-      usage: /spawn
       permission: extras.spawn
-   console:
-      description: Broadcasts a message as the console
-      usage: /console
-      permission: extras.console
-   vote:
-      description: Shows vote links for the server
-      usage: /vote
-      permission: extras.vote
-   discord:
-      description: Join the Kaboom.pw Discord server
-      usage: /discord
-      permission: extras.discord
-   clearchat:
-      aliases: [cc]
-      description: Clears messages from the chat
-      usage: /clearchat
-      permission: extras.clearchat
    tellraw:
       description: Broadcasts raw text to the server
-      usage: /tellraw
       permission: extras.tellraw
-   prefix:
-      aliases: [rank,tag]
-      description: Changes your tag
-      usage: /prefix
-      permission: extras.prefix
+   vote:
+      description: Shows vote links for the server
+      permission: extras.vote
