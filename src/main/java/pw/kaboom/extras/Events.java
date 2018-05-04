@@ -533,35 +533,6 @@ class Events implements Listener {
 				event.setCancelled(true);
 			}
 		}
-		/*double tps = Bukkit.getServer().getTPS()[0];
-		if (event.getSender() instanceof BlockCommandSender) {
-			/*if (tps < 14) {
-				event.setCancelled(true);
-			}
-		} else {
-			Player player = (Player) event.getSender();
-			if (player.getLocation().getWorld().getName().equals("world")) {
-				if ((event.getCommand().toLowerCase().startsWith("/minecraft:blockdata")) ||
-				(event.getCommand().toLowerCase().startsWith("/minecraft:clone")) ||
-				(event.getCommand().toLowerCase().startsWith("/minecraft:fill")) ||
-				(event.getCommand().toLowerCase().startsWith("/minecraft:setblock")) ||
-				(event.getCommand().toLowerCase().startsWith("/bigtree")) ||
-				(event.getCommand().toLowerCase().startsWith("/blockdata")) ||
-				(event.getCommand().toLowerCase().startsWith("/clone")) ||
-				(event.getCommand().toLowerCase().startsWith("/ebigtree")) ||
-				(event.getCommand().toLowerCase().startsWith("/essentials:bigtree")) ||
-				(event.getCommand().toLowerCase().startsWith("/essentials:ebigtree")) ||
-				(event.getCommand().toLowerCase().startsWith("/essentials:etree")) ||
-				(event.getCommand().toLowerCase().startsWith("/essentials:tree")) ||
-				(event.getCommand().toLowerCase().startsWith("/etree")) ||
-				(event.getCommand().toLowerCase().startsWith("/fill")) ||
-				(event.getCommand().toLowerCase().startsWith("/setblock")) ||
-				(event.getCommand().toLowerCase().startsWith("/tree"))) {
-					event.setCancelled(true);
-					event.getSender().sendMessage("Please move to another world to build");
-				}
-			}
-		}*/
 	}
 
 	@EventHandler
