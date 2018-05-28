@@ -1,6 +1,7 @@
 name: Extras
 main: pw.kaboom.extras.Main
 description: Plugin that adds extra functionality to the Kaboom.pw server.
+depend: [ProtocolLib, WorldEdit]
 version: ${project.version}
 
 commands:
@@ -11,23 +12,33 @@ commands:
    console:
       description: Broadcasts a message as the console
       permission: extras.console
+   destroyentities:
+      description: Destroys all entities in every world
+      permission: extras.destroyentities
    discord:
       description: Join the Kaboom.pw Discord server
       permission: extras.discord
+   enchantall:
+      description: Adds every enchantment to a held item
+      permission: extras.enchantall
    end:
-      description: Moves your player to the End
+      description: Moves you to the End
       permission: extras.end
    flatlands:
-      description: Moves your player to the Flatlands
+      description: Moves you to the Flatlands
       permission: extras.flatlands
    hub:
-      description: Moves your player to the Hub
+      description: Moves you to the Hub
       permission: extras.hub
+   jumpscare:
+      aliases: scare
+      description: Scares a player
+      permission: extras.jumpscare
    nether:
-      description: Moves your player to the Nether
+      description: Moves you to the Nether
       permission: extras.nether
    overworld:
-      description: Moves your player to the Overworld
+      description: Moves you to the Overworld
       permission: extras.overworld
    prefix:
       aliases: [rank, tag]
@@ -39,6 +50,12 @@ commands:
    tellraw:
       description: Broadcasts raw text to the server
       permission: extras.tellraw
+   unloadchunks:
+      description: Unloads all unused chunks
+      permission: extras.unloadchunks
+   username:
+      description: Changes your username on the server
+      permission: extras.username
    vote:
       description: Shows vote links for the server
       permission: extras.vote

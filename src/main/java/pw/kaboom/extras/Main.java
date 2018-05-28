@@ -5,6 +5,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.ListenerPriority;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketEvent;
+
 import org.bukkit.WorldCreator;
 
 import org.bukkit.entity.Player;
@@ -104,6 +111,7 @@ public class Main extends JavaPlugin {
 		"essentials:etp",
 		"essentials:etp2p",
 		"essentials:etpaall",
+		"essentials:etpall",
 		"essentials:etppos",
 		"essentials:etptoggle",
 		"essentials:eunban",
@@ -154,6 +162,7 @@ public class Main extends JavaPlugin {
 		"essentials:tp",
 		"essentials:tp2p",
 		"essentials:tpaall",
+		"essentials:tpall",
 		"essentials:tppos",
 		"essentials:tptoggle",
 		"essentials:unban",
@@ -174,6 +183,7 @@ public class Main extends JavaPlugin {
 		"minecraft:kill",
 		"minecraft:me",
 		"minecraft:say",
+		"minecraft:spreadplayers",
 		"minecraft:tell",
 		"minecraft:tellraw",
 		"minecraft:title",
@@ -268,6 +278,7 @@ public class Main extends JavaPlugin {
 		"etp",
 		"etp2p",
 		"etpaall",
+		"etpall",
 		"etppos",
 		"etptoggle",
 		"eunban",
@@ -311,6 +322,7 @@ public class Main extends JavaPlugin {
 		"spectator",
 		"spigot:spigot",
 		"spigot",
+		"spreadplayers",
 		"sudo",
 		"survival",
 		"survivalmode",
@@ -319,11 +331,13 @@ public class Main extends JavaPlugin {
 		"teleport",
 		"tell",
 		"tempban",
+		"title",
 		"tjail",
 		"togglejail",
 		"tp",
 		"tp2p",
 		"tpaall",
+		"tpall",
 		"tppos",
 		"tptoggle",
 		"unban",
@@ -338,26 +352,43 @@ public class Main extends JavaPlugin {
 	HashMap<UUID, Boolean> enteredPortal = new HashMap<UUID, Boolean>();
 	HashMap<UUID, Boolean> enteredTitle = new HashMap<UUID, Boolean>();
 	HashMap<UUID, PermissionAttachment> permissionList = new HashMap<UUID, PermissionAttachment>();
+	int physicscount = 0;
 
 	public void onEnable() {
 		getServer().createWorld(new WorldCreator("world_flatlands"));
 		getServer().createWorld(new WorldCreator("world_overworld"));
 
+		this.getCommand("clearchat").setExecutor(new CommandClearChat());
+		this.getCommand("console").setExecutor(new CommandConsole());
+		this.getCommand("destroyentities").setExecutor(new CommandDestroyEntities());
+		this.getCommand("discord").setExecutor(new CommandDiscord());
+		this.getCommand("enchantall").setExecutor(new CommandEnchantAll());
 		this.getCommand("end").setExecutor(new CommandEnd());
 		this.getCommand("flatlands").setExecutor(new CommandFlatlands());
 		this.getCommand("hub").setExecutor(new CommandHub());
+		this.getCommand("jumpscare").setExecutor(new CommandJumpscare());
 		this.getCommand("nether").setExecutor(new CommandNether());
 		this.getCommand("overworld").setExecutor(new CommandOverworld());
-		this.getCommand("spawn").setExecutor(new CommandSpawn());
-		this.getCommand("console").setExecutor(new CommandConsole());
-		this.getCommand("vote").setExecutor(new CommandVote());
-		this.getCommand("discord").setExecutor(new CommandDiscord());
-		this.getCommand("clearchat").setExecutor(new CommandClearChat());
-		this.getCommand("tellraw").setExecutor(new CommandTellraw());
 		this.getCommand("prefix").setExecutor(new CommandPrefix(this));
+		this.getCommand("spawn").setExecutor(new CommandSpawn());
+		this.getCommand("tellraw").setExecutor(new CommandTellraw());
+		this.getCommand("unloadchunks").setExecutor(new CommandUnloadChunks());
+		this.getCommand("username").setExecutor(new CommandUsername());
+		this.getCommand("vote").setExecutor(new CommandVote());
 
-		new EntityKiller().runTaskTimer(this, 0, 30);
+		new Tick().runTaskTimer(this, 0, 1);
 		this.getServer().getPluginManager().registerEvents(new Events(this), this);
 		WorldEdit.getInstance().getEventBus().register(new WorldEditEvent());
+
+		/*ProtocolManager manager = ProtocolLibrary.getProtocolManager();
+		manager.addPacketListener(new PacketAdapter(this, ListenerPriority.HIGHEST, PacketType.Play.Server.BLOCK_CHANGE) {
+			@Override
+			public void onPacketSending(PacketEvent event) {
+				Player player = event.getPlayer();
+				if (player.getWorld().getName().equals("world")) {
+					event.setCancelled(true);
+				}
+			}
+		});*/
 	}
 }
