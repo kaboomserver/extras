@@ -87,6 +87,15 @@ class Tick extends BukkitRunnable {
 	}
 }
 
+class Update extends BukkitRunnable {
+	public void run() {
+		File file = new File(plugin.getDataFolder(), ".update");
+		file.createNewFile();
+
+		EditSession editSession = ClipboardFormat.SCHEMATIC.load(spawn.schematic).paste(Bukkit.getServer().getWorld("world"), new Location(0, 85, 0), false, !noAir, (Transform) null);
+	}
+}
+
 class Events implements Listener {
 	Main main;
 	Events(Main main) {
@@ -115,8 +124,14 @@ class Events implements Listener {
 	@EventHandler
 	void onBlockBreakEvent(BlockBreakEvent event) {
 		Block block = event.getBlock();
-		if (block.getWorld().getName().equals("world")) {
-			event.setCancelled(true);
+		double x = block.getLocation().getX();
+		double y = block.getLocation().getY();
+		double z = block.getLocation().getZ();
+
+		if (block.getWorld().getName() == "world") {
+			if (x > -20 && x < 20) && (z > -20 && z < 20)) {
+				event.setCancelled(true);
+			}
 		}
 	}
 
@@ -124,93 +139,139 @@ class Events implements Listener {
 	@EventHandler
 	void onBlockBurnEvent(BlockBurnEvent event) {
 		Block block = event.getBlock();
-		if (block.getWorld().getName().equals("world")) {
-			event.setCancelled(true);
+		double x = block.getLocation().getX();
+		double y = block.getLocation().getY();
+		double z = block.getLocation().getZ();
+
+		if (block.getWorld().getName() == "world") {
+			if (x > -20 && x < 20) && (z > -20 && z < 20)) {
+				event.setCancelled(true);
+			}
 		}
 	}
 
 	@EventHandler
 	void onBlockDamage(BlockDamageEvent event) {
 		Block block = event.getBlock();
-		if (block.getWorld().getName().equals("world")) {
-			event.setCancelled(true);
+		double x = block.getLocation().getX();
+		double y = block.getLocation().getY();
+		double z = block.getLocation().getZ();
+
+		if (block.getWorld().getName() == "world") {
+			if (x > -20 && x < 20) && (z > -20 && z < 20)) {
+				event.setCancelled(true);
+			}
 		}
 	}
 
 	@EventHandler
 	void onBlockExplode(BlockExplodeEvent event) {
 		Block block = event.getBlock();
+		double x = block.getLocation().getX();
+		double y = block.getLocation().getY();
+		double z = block.getLocation().getZ();
 		double tps = Bukkit.getServer().getTPS()[0];
 
-		event.setYield(0);
-
-		if (block.getWorld().getName().equals("world")) {
-			event.blockList().clear();
+		if (block.getWorld().getName() == "world") {
+			if (x > -20 && x < 20) && (z > -20 && z < 20)) {
+				event.blockList().clear();
+			}
 		}
 
 		if (tps < 14) {
 			event.setCancelled(true);
 		}
+
+		event.setYield(0);
 	}
 
 	@EventHandler
 	void onBlockFade(BlockFadeEvent event) {
 		Block block = event.getBlock();
-		if (block.getWorld().getName().equals("world")) {
-			event.setCancelled(true);
+		double x = block.getLocation().getX();
+		double y = block.getLocation().getY();
+		double z = block.getLocation().getZ();
+
+		if (block.getWorld().getName() == "world") {
+			if (x > -20 && x < 20) && (z > -20 && z < 20)) {
+				event.setCancelled(true);
+			}
 		}
 	}
 
 	@EventHandler
 	void onBlockFromTo(BlockFromToEvent event) {
 		Block block = event.getBlock();
-		if (block.getWorld().getName().equals("world")) {
-			event.setCancelled(true);
+		double x = block.getLocation().getX();
+		double y = block.getLocation().getY();
+		double z = block.getLocation().getZ();
+
+		if (block.getWorld().getName() == "world") {
+			if (x > -20 && x < 20) && (z > -20 && z < 20)) {
+				event.setCancelled(true);
+			}
 		}
 	}
 
 	@EventHandler
 	void onBlockGrow(BlockGrowEvent event) {
 		Block block = event.getBlock();
-		if (block.getWorld().getName().equals("world")) {
-			event.setCancelled(true);
+		double x = block.getLocation().getX();
+		double y = block.getLocation().getY();
+		double z = block.getLocation().getZ();
+
+		if (block.getWorld().getName() == "world") {
+			if (x > -20 && x < 20) && (z > -20 && z < 20)) {
+				event.setCancelled(true);
+			}
 		}
 	}
 
 	@EventHandler
 	void onBlockPhysics(BlockPhysicsEvent event) {
 		Block block = event.getBlock();
-		if (block.getWorld().getName().equals("world") ||
-		block.getType() == Material.SOIL) {
-			event.setCancelled(true);
+		double x = block.getLocation().getX();
+		double y = block.getLocation().getY();
+		double z = block.getLocation().getZ();
+
+		if (block.getWorld().getName() == "world")) {
+			if (x > -20 && x < 20) && (z > -20 && z < 20)) {
+				event.setCancelled(true);
+			}
 		}
 		if (block.getType() == Material.LAVA ||
+		block.getType() == Material.SOIL ||
 		block.getType() == Material.STATIONARY_LAVA ||
 		block.getType() == Material.STATIONARY_WATER ||
 		block.getType() == Material.WATER) {
 			event.setCancelled(true);
-			/*if (main.physicscount == 5) {
-				main.physicscount = 0;
-			} else {
-				event.setCancelled(true);
-				main.physicscount = main.physicscount + 1;
-			}*/
 		}
         }
 
 	@EventHandler
 	void onBlockPlaceEvent(BlockPlaceEvent event) {
 		Block block = event.getBlock();
-		if (block.getWorld().getName().equals("world")) {
-			event.setCancelled(true);
+		double x = block.getLocation().getX();
+		double y = block.getLocation().getY();
+		double z = block.getLocation().getZ();
+
+		if (block.getWorld().getName() == "world") {
+			if (x > -20 && x < 20) && (z > -20 && z < 20)) {
+				event.setCancelled(true);
+			}
 		}
 	}
 
 	@EventHandler
 	void onBlockRedstone(BlockRedstoneEvent event) {
 		Block block = event.getBlock();
+		double x = block.getLocation().getX();
+		double y = block.getLocation().getY();
+		double z = block.getLocation().getZ();
 		double tps = Bukkit.getServer().getTPS()[0];
-		if (block.getWorld().getName().equals("world") || tps < 14) {
+
+		if (block.getWorld().getName() == "world") && (x > -20 && x < 20) && (z > -20 && z < 20) ||
+		tps < 14) {
 			event.setNewCurrent(0);
 		}
         }
@@ -222,19 +283,19 @@ class Events implements Listener {
 
 		int onChunk = 0;
 		for (Entity chunkEntity : entityLocation.getWorld().getEntities()) {
-			if (entityLocation.getChunk().equals(chunkEntity.getLocation().getChunk())) {
+			if (entityLocation.getChunk() == chunkEntity.getLocation().getChunk()) {
 				onChunk++;
 			}
 		}
 
 		if (onChunk >= 50) {
 			entity.remove();
-		} else if (entity.getType().equals(EntityType.MAGMA_CUBE)) {
+		} else if (entity.getType() == EntityType.MAGMA_CUBE) {
 			MagmaCube magmacube = (MagmaCube) event.getEntity();
 			if (magmacube.getSize() > 100) {
 				magmacube.setSize(100);
 			}
-		} else if (entity.getType().equals(EntityType.SLIME)) {
+		} else if (entity.getType() == EntityType.SLIME) {
 			Slime slime = (Slime) event.getEntity();
 			if (slime.getSize() > 100) {
 				slime.setSize(100);
@@ -245,18 +306,24 @@ class Events implements Listener {
 	@EventHandler
 	void onEntityChangeBlockEvent(EntityChangeBlockEvent event) {
 		Block block = event.getBlock();
-		if (block.getWorld().getName().equals("world")) {
-			event.setCancelled(true);
+		double x = block.getLocation().getX();
+		double y = block.getLocation().getY();
+		double z = block.getLocation().getZ();
+
+		if (block.getWorld().getName() == "world") {
+			if (x > -20 && x < 20) && (z > -20 && z < 20)) {
+				event.setCancelled(true);
+			}
 		}
 	}
 
 	@EventHandler
 	void onEntityDamage(EntityDamageEvent event) {
 		Entity entity = event.getEntity();
-		if (entity.getType().equals(EntityType.PLAYER)) {
-			if (event.getCause().equals(DamageCause.VOID) && entity.getLocation().getY() > -64 ||
-			event.getCause().equals(DamageCause.CUSTOM) ||
-			event.getCause().equals(DamageCause.SUICIDE)) {
+		if (entity.getType() == EntityType.PLAYER) {
+			if (event.getCause() == DamageCause.VOID && entity.getLocation().getY() > -64 ||
+			event.getCause() == DamageCause.CUSTOM ||
+			event.getCause() == DamageCause.SUICIDE) {
 				event.setCancelled(true);
 			}
 		}
@@ -269,8 +336,10 @@ class Events implements Listener {
 
 		event.setYield(0);
 
-		if (entity.getWorld().getName().equals("world")) {
-			event.blockList().clear();
+		if (entity.getWorld().getName() == "world") {
+			if (x > -20 && x < 20) && (z > -20 && z < 20)) {
+				event.blockList().clear();
+			}
 		}
 
 		if (tps < 14) {
@@ -285,7 +354,7 @@ class Events implements Listener {
 
 		int onChunk = 0;
 		for (Entity chunkEntity : entityLocation.getWorld().getEntities()) {
-			if (entityLocation.getChunk().equals(chunkEntity.getLocation().getChunk())) {
+			if (entityLocation.getChunk() == chunkEntity.getLocation().getChunk()) {
 				onChunk++;
 			}
 		}
@@ -310,32 +379,56 @@ class Events implements Listener {
 	@EventHandler
 	void onLingeringPotionSplash(LingeringPotionSplashEvent event) {
 		Entity entity = event.getEntity();
-		if (entity.getWorld().getName().equals("world")) {
-			event.setCancelled(true);
+		double x = entity.getLocation().getX();
+		double y = entity.getLocation().getY();
+		double z = entity.getLocation().getZ();
+
+		if (entity.getWorld().getName() == "world") {
+			if (x > -20 && x < 20) && (z > -20 && z < 20)) {
+				event.setCancelled(true);
+			}
 		}
 	}
 
 	@EventHandler
 	void onPotionSplash(PotionSplashEvent event) {
 		Entity entity = event.getEntity();
-		if (entity.getWorld().getName().equals("world")) {
-			event.setCancelled(true);
+		double x = entity.getLocation().getX();
+		double y = entity.getLocation().getY();
+		double z = entity.getLocation().getZ();
+
+		if (entity.getWorld().getName() == "world") {
+			if (x > -20 && x < 20) && (z > -20 && z < 20)) {
+				event.setCancelled(true);
+			}
 		}
 	}
 
 	@EventHandler
 	void onHangingPlace(HangingPlaceEvent event) {
 		Entity entity = event.getEntity();
-		if (entity.getWorld().getName().equals("world")) {
-			event.setCancelled(true);
+		double x = entity.getLocation().getX();
+		double y = entity.getLocation().getY();
+		double z = entity.getLocation().getZ();
+
+		if (entity.getWorld().getName() == "world") {
+			if (x > -20 && x < 20) && (z > -20 && z < 20)) {
+				event.setCancelled(true);
+			}
 		}
 	}
 
 	@EventHandler
 	void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
 		Player player = event.getPlayer();
-		if (player.getWorld().getName().equals("world")) {
-			event.setCancelled(true);
+		double x = entity.getLocation().getX();
+		double y = entity.getLocation().getY();
+		double z = entity.getLocation().getZ();
+
+		if (player.getWorld().getName() == "world") {
+			if (x > -20 && x < 20) && (z > -20 && z < 20)) {
+				event.setCancelled(true);
+			}
 		}
 	}
 
@@ -345,17 +438,17 @@ class Events implements Listener {
 		String world = player.getLocation().getWorld().getName();
 		/*PermissionAttachment p = main.permissionList.get(player.getUniqueId());*/
 
-		if (world.equals("world_the_end")) {
+		if (world == "world_the_end") {
 			player.sendTitle(ChatColor.GRAY + "The End", "Return to the hub by typing /hub in chat", 10, 160, 5);
-		} else if (world.equals("world_flatlands")) {
+		} else if (world == "world_flatlands") {
 			player.sendTitle(ChatColor.GREEN + "Flatlands", "Return to the hub by typing /hub in chat", 10, 160, 5);
-		} else if (world.equals("world_nether")) {
+		} else if (world == "world_nether") {
 			player.sendTitle(ChatColor.RED + "Nether", "Return to the hub by typing /hub in chat", 10, 160, 5);
-		} else if (world.equals("world_overworld")) {
+		} else if (world == "world_overworld") {
 			player.sendTitle(ChatColor.DARK_GREEN + "Overworld", "Return to the hub by typing /hub in chat", 10, 160, 5);
 		}
 
-/*		if (world.equals("world")) {
+/*		if (world == "world") {
 			p.unsetPermission("DoBlockImage.doblockimage");
 			p.unsetPermission("essentials.bigtree");
 			p.unsetPermission("essentials.tree");
@@ -429,7 +522,7 @@ class Events implements Listener {
 
 		/*PermissionAttachment attachment = player.addAttachment(main);
 		main.permissionList.put(player.getUniqueId(), attachment);
-		if (!player.getWorld().getName().equals("world")) {
+		if (!player.getWorld().getName() == "world")) {
 			PermissionAttachment p = main.permissionList.get(player.getUniqueId());
 			p.setPermission("DoBlockImage.doblockimage", true);
 			p.setPermission("essentials.bigtree", true);
@@ -453,14 +546,14 @@ class Events implements Listener {
 		event.allow();
 	}
 
-	@EventHandler
+	/*@EventHandler
 	void onPlayerMove(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
 		double x = player.getLocation().getX();
 		double y = player.getLocation().getY();
 		double z = player.getLocation().getZ();
 
-		if (player.getWorld().getName().equals("world")) {
+		if (player.getWorld().getName() == "world")) {
 			if ((x > -19 && x < -13) && (y > 62 && y < 72) && (z > -1 && z < 2)) {
 				if (!main.enteredPortal.containsKey(player.getUniqueId())) {
 					player.teleport(Bukkit.getWorld("world_the_end").getSpawnLocation());
@@ -509,9 +602,9 @@ class Events implements Listener {
 				main.enteredTitle.remove(player.getUniqueId());
 			}
 		}
-	}
+	}*/
 
-	@EventHandler
+	/*@EventHandler
 	void onPlayerPortal(PlayerPortalEvent event) {
 		Player player = event.getPlayer();
 		if (player.getWorld().getName().equals("world_overworld")) {
@@ -530,10 +623,10 @@ class Events implements Listener {
 		double y = event.getTo().getY();
 		double z = event.getTo().getZ();
 
-		if (event.getTo().getWorld().getName().equals("world")) {
+		if (event.getTo().getWorld().getName() == "world")) {
 			event.setTo(new Location(Bukkit.getWorld("world_overworld"), x, y, z));
 		}
-        }
+        }*/
 
 	@EventHandler
 	void onPlayerQuit(PlayerQuitEvent event) {
@@ -547,11 +640,11 @@ class Events implements Listener {
 	void onPlayerRespawn(PlayerRespawnEvent event) {
 		Player player = event.getPlayer();
 		World world = event.getRespawnLocation().getWorld();
-		if (world.getName().equals("world")) {
+		if (world.getName() == "world") {
 			if (player.getBedSpawnLocation() != null) {
 				event.setRespawnLocation(player.getBedSpawnLocation());
 			} else {
-				event.setRespawnLocation(new Location(world, 0, 63, -22));
+				event.setRespawnLocation(new Location(world, 0, 85, 0));
 			}
 		}
 	}
@@ -559,8 +652,9 @@ class Events implements Listener {
 	@EventHandler
 	void onPlayerSpawnLocation(PlayerSpawnLocationEvent event) {
 		Player player = event.getPlayer();
+		World world = event.getSpawnLocation().getWorld();
 		if (!player.hasPlayedBefore()) {
-			event.setSpawnLocation(new Location(event.getSpawnLocation().getWorld(), 0, 63, -22));
+			event.setSpawnLocation(new Location(world, 0, 85, 0));
 		}
 	}
 
@@ -596,10 +690,10 @@ class Events implements Listener {
 }
 
 class WorldEditEvent {
-	@Subscribe(priority = Priority.VERY_EARLY)
+	/*@Subscribe(priority = Priority.VERY_EARLY)
 	public void onEditSessionEvent(EditSessionEvent event) {
-		if (event.getWorld().getName().equals("world")) {
+		if (event.getWorld().getName() == "world") && (x > -20 && x < 20) && (z > -20 && z < 20)) {
 			event.setCancelled(true);
 		}
-	}
+	}*/
 }

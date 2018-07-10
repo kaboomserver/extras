@@ -355,9 +355,6 @@ public class Main extends JavaPlugin {
 	int physicscount = 0;
 
 	public void onEnable() {
-		getServer().createWorld(new WorldCreator("world_flatlands"));
-		getServer().createWorld(new WorldCreator("world_overworld"));
-
 		this.getCommand("clearchat").setExecutor(new CommandClearChat());
 		this.getCommand("console").setExecutor(new CommandConsole());
 		this.getCommand("destroyentities").setExecutor(new CommandDestroyEntities());
@@ -377,6 +374,7 @@ public class Main extends JavaPlugin {
 		this.getCommand("vote").setExecutor(new CommandVote());
 
 		new Tick().runTaskTimer(this, 0, 1);
+		new Update().runTaskTimer(this, 0, 200);
 		this.getServer().getPluginManager().registerEvents(new Events(this), this);
 		WorldEdit.getInstance().getEventBus().register(new WorldEditEvent());
 
