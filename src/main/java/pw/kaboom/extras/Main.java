@@ -342,10 +342,6 @@ public class Main extends JavaPlugin {
 		"warps",
 		"whisper",
 	}));
-	HashMap<UUID, Boolean> enteredPortal = new HashMap<UUID, Boolean>();
-	HashMap<UUID, Boolean> enteredTitle = new HashMap<UUID, Boolean>();
-	HashMap<UUID, PermissionAttachment> permissionList = new HashMap<UUID, PermissionAttachment>();
-	int physicscount = 0;
 
 	public void onEnable() {
 		this.getCommand("clearchat").setExecutor(new CommandClearChat());
@@ -354,7 +350,6 @@ public class Main extends JavaPlugin {
 		this.getCommand("discord").setExecutor(new CommandDiscord());
 		this.getCommand("enchantall").setExecutor(new CommandEnchantAll());
 		this.getCommand("end").setExecutor(new CommandEnd());
-		this.getCommand("hub").setExecutor(new CommandHub());
 		this.getCommand("jumpscare").setExecutor(new CommandJumpscare());
 		this.getCommand("nether").setExecutor(new CommandNether());
 		this.getCommand("overworld").setExecutor(new CommandOverworld());
@@ -369,16 +364,5 @@ public class Main extends JavaPlugin {
 		new Update().runTaskTimer(this, 0, 200);
 		this.getServer().getPluginManager().registerEvents(new Events(this), this);
 		WorldEdit.getInstance().getEventBus().register(new WorldEditEvent());
-
-		/*ProtocolManager manager = ProtocolLibrary.getProtocolManager();
-		manager.addPacketListener(new PacketAdapter(this, ListenerPriority.HIGHEST, PacketType.Play.Server.BLOCK_CHANGE) {
-			@Override
-			public void onPacketSending(PacketEvent event) {
-				Player player = event.getPlayer();
-				if (player.getWorld().getName().equals("world")) {
-					event.setCancelled(true);
-				}
-			}
-		});*/
 	}
 }

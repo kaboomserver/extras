@@ -137,15 +137,6 @@ class CommandEnd implements CommandExecutor {
 	}
 }
 
-class CommandHub implements CommandExecutor {
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		Player player = (Player)sender;
-		player.teleport(new Location(Bukkit.getWorld("world"), 0, 85, 0));
-		player.sendMessage("Successfully moved to the Hub");
-		return true;
-	}
-}
-
 class CommandJumpscare implements CommandExecutor {
 	private void createJumpscare(Player player) {
 		player.spawnParticle(Particle.MOB_APPEARANCE, player.getLocation(), 4);
@@ -190,7 +181,7 @@ class CommandNether implements CommandExecutor {
 class CommandOverworld implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		Player player = (Player)sender;
-		player.teleport(Bukkit.getWorld("world").getSpawnLocation());
+		player.teleport(new Location(Bukkit.getWorld("world"), 0.5, 100, 0.5));
 		player.sendMessage("Successfully moved to the Overworld");
 		return true;
 	}
@@ -222,12 +213,8 @@ class CommandPrefix implements CommandExecutor {
 class CommandSpawn implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		Player player = (Player)sender;
-		World world = player.getLocation().getWorld();
-		if (world.getName().equals("world")) {
-			player.teleport(new Location(world, 0, 85, 0));
-		} else {
-			player.teleport(player.getWorld().getSpawnLocation());
-		}
+		World world = Bukkit.getWorld("world");
+		player.teleport(new Location(world, 0.5, 100, 0.5));
 		player.sendMessage("Successfully moved to the spawn");
 		return true;
 	}

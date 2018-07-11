@@ -1,7 +1,7 @@
 name: Extras
 main: pw.kaboom.extras.Main
 description: Plugin that adds extra functionality to the Kaboom.pw server.
-depend: [ProtocolLib, WorldEdit]
+depend: [WorldEdit]
 version: ${project.version}
 
 commands:
@@ -24,12 +24,6 @@ commands:
    end:
       description: Moves you to the End
       permission: extras.end
-   flatlands:
-      description: Moves you to the Flatlands
-      permission: extras.flatlands
-   hub:
-      description: Moves you to the Hub
-      permission: extras.hub
    jumpscare:
       aliases: scare
       description: Scares a player
