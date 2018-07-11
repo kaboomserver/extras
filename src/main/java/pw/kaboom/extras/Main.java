@@ -5,13 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.ListenerPriority;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketEvent;
-
 import org.bukkit.WorldCreator;
 
 import org.bukkit.entity.Player;
@@ -361,7 +354,6 @@ public class Main extends JavaPlugin {
 		this.getCommand("discord").setExecutor(new CommandDiscord());
 		this.getCommand("enchantall").setExecutor(new CommandEnchantAll());
 		this.getCommand("end").setExecutor(new CommandEnd());
-		this.getCommand("flatlands").setExecutor(new CommandFlatlands());
 		this.getCommand("hub").setExecutor(new CommandHub());
 		this.getCommand("jumpscare").setExecutor(new CommandJumpscare());
 		this.getCommand("nether").setExecutor(new CommandNether());

@@ -137,19 +137,10 @@ class CommandEnd implements CommandExecutor {
 	}
 }
 
-class CommandFlatlands implements CommandExecutor {
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		Player player = (Player)sender;
-		player.teleport(Bukkit.getWorld("world_flatlands").getSpawnLocation());
-		player.sendMessage("Successfully moved to the Flatlands");
-		return true;
-	}
-}
-
 class CommandHub implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		Player player = (Player)sender;
-		player.teleport(new Location(Bukkit.getWorld("world"), 0, 63, -22));
+		player.teleport(new Location(Bukkit.getWorld("world"), 0, 85, 0));
 		player.sendMessage("Successfully moved to the Hub");
 		return true;
 	}
@@ -199,7 +190,7 @@ class CommandNether implements CommandExecutor {
 class CommandOverworld implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		Player player = (Player)sender;
-		player.teleport(Bukkit.getWorld("world_overworld").getSpawnLocation());
+		player.teleport(Bukkit.getWorld("world").getSpawnLocation());
 		player.sendMessage("Successfully moved to the Overworld");
 		return true;
 	}
@@ -233,7 +224,7 @@ class CommandSpawn implements CommandExecutor {
 		Player player = (Player)sender;
 		World world = player.getLocation().getWorld();
 		if (world.getName().equals("world")) {
-			player.teleport(new Location(world, 0, 63, -22));
+			player.teleport(new Location(world, 0, 85, 0));
 		} else {
 			player.teleport(player.getWorld().getSpawnLocation());
 		}
