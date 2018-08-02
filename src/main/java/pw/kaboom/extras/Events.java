@@ -245,10 +245,8 @@ class Events implements Listener {
 			}
 		}
 
-		if (block.getType() == Material.LAVA ||
-		block.getType() == Material.SOIL ||
-		block.getType() == Material.STATIONARY_LAVA ||
-		block.getType() == Material.STATIONARY_WATER ||
+		if (block.getType() == Material.FARMLAND ||
+		block.getType() == Material.LAVA ||
 		block.getType() == Material.WATER) {
 			event.setCancelled(true);
 		}

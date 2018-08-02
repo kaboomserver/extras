@@ -5,15 +5,6 @@ import java.lang.reflect.Modifier;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 
-import com.mojang.authlib.GameProfile;
-
-import net.minecraft.server.v1_12_R1.PacketPlayInClientCommand;
-import net.minecraft.server.v1_12_R1.PacketPlayInClientCommand.EnumClientCommand;
-import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_12_R1.PacketPlayOutNamedEntitySpawn;
-import net.minecraft.server.v1_12_R1.PacketPlayOutPlayerInfo;
-import net.minecraft.server.v1_12_R1.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -26,8 +17,6 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 
 import org.bukkit.enchantments.Enchantment;
 
@@ -65,7 +54,7 @@ class CommandDestroyEntities implements CommandExecutor {
 		for (World world : Bukkit.getServer().getWorlds()) {
 			for (Chunk chunk : world.getLoadedChunks()) {
 				for (Entity entity : chunk.getEntities()) {
-					if (!entity.getType().equals(EntityType.PLAYER)) {
+					if (entity.getType() != EntityType.PLAYER) {
 						entity.remove();
 					}
 				}
@@ -141,7 +130,7 @@ class CommandJumpscare implements CommandExecutor {
 	private void createJumpscare(Player player) {
 		player.spawnParticle(Particle.MOB_APPEARANCE, player.getLocation(), 4);
 		for (int i = 0; i < 10; ++i) {
-			player.playSound(player.getLocation(), Sound.ENTITY_ENDERMEN_SCREAM, 1, 0);
+			player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_SCREAM, 1, 0);
 		}
 	}
 
@@ -150,7 +139,7 @@ class CommandJumpscare implements CommandExecutor {
 		if (args.length == 0) {
 			player.sendMessage(ChatColor.RED + "Usage: /" + label + " <player>");
 		} else {
-			if (args[0].equalsIgnoreCase("*") || args[0].equalsIgnoreCase("**")) {
+			if (args[0].equals("*") || args[0].equals("**")) {
 				for (Player p: Bukkit.getOnlinePlayers()) {
 					createJumpscare(p);
 				}
@@ -246,27 +235,6 @@ class CommandUnloadChunks implements CommandExecutor {
 }
 
 class CommandUsername implements CommandExecutor {
-	private void changeName(Player player, String name){
-		for (Player otherPlayer: Bukkit.getOnlinePlayers()){
-			((CraftPlayer)otherPlayer).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, ((CraftPlayer)player).getHandle()));
-
-			try {
-				Field nameField = GameProfile.class.getDeclaredField("name");
-				nameField.setAccessible(true);
-				nameField.set(((CraftPlayer)player).getProfile(), name);
-			} catch (IllegalAccessException | NoSuchFieldException exception) {
-				exception.printStackTrace();
-			}
-
-			((CraftPlayer)otherPlayer).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, ((CraftPlayer)player).getHandle()));
-
-			if (otherPlayer.getUniqueId() != player.getUniqueId()) {
-				((CraftPlayer)otherPlayer).getHandle().playerConnection.sendPacket(new PacketPlayOutEntityDestroy(player.getEntityId()));
-				((CraftPlayer)otherPlayer).getHandle().playerConnection.sendPacket(new PacketPlayOutNamedEntitySpawn(((CraftPlayer)player).getHandle()));
-			}
-		}
-	}
-
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		Player player = (Player)sender;
 		if (args.length == 0) {
@@ -280,12 +248,6 @@ class CommandUsername implements CommandExecutor {
 			profile.complete();
 			profile.clearProperties();
 			player.setPlayerProfile(profile);
-			/*Location location = player.getLocation();
-			/*changeName(player, name);
-			/*player.setHealth(0);
-			player.spigot().respawn();
-			player.teleport(location);
-			/*((CraftPlayer)player).getHandle().playerConnection.sendPacket(new PacketPlayInClientCommand(EnumClientCommand.PERFORM_RESPAWN));*/
 			player.sendMessage("Successfully set your username to \"" + name + "\"");
 		}
 		return true;
