@@ -309,6 +309,7 @@ public class Main extends JavaPlugin {
 		"pm",
 		"shoutworld",
 		"say",
+		"setblock",
 		"silence",
 		"sp",
 		"spec",

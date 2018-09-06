@@ -93,6 +93,11 @@ class Tick extends BukkitRunnable {
 			} else if (worldborder.getCenter().getX() != 0 || worldborder.getCenter().getZ() != 0) {
 				worldborder.setCenter(0, 0);
 			}
+
+			/*String tickSpeed = world.getGameRuleValue​("randomTickSpeed");
+			if (Integer.parseInt(tickSpeed) > 10) {
+				world.setGameRuleValue​("randomTickSpeed", "10");
+			}*/
 		}
 	}
 }
@@ -397,7 +402,7 @@ class Events implements Listener {
 		double x = entity.getLocation().getX();
 		double z = entity.getLocation().getZ();
 
-		if (entity.getWorld().getName() == "world") {
+		if (entity.getWorld().getName().equals("world")) {
 			if ((x > -20 && x < 20) && (z > -20 && z < 20)) {
 				event.setCancelled(true);
 			}
@@ -410,7 +415,7 @@ class Events implements Listener {
 		double x = entity.getLocation().getX();
 		double z = entity.getLocation().getZ();
 
-		if (entity.getWorld().getName() == "world") {
+		if (entity.getWorld().getName().equals("world")) {
 			if ((x > -20 && x < 20) && (z > -20 && z < 20)) {
 				event.setCancelled(true);
 			}
@@ -423,7 +428,7 @@ class Events implements Listener {
 		double x = entity.getLocation().getX();
 		double z = entity.getLocation().getZ();
 
-		if (entity.getWorld().getName() == "world") {
+		if (entity.getWorld().getName().equals("world")) {
 			if ((x > -20 && x < 20) && (z > -20 && z < 20)) {
 				event.setCancelled(true);
 			}
@@ -436,7 +441,7 @@ class Events implements Listener {
 		double x = player.getLocation().getX();
 		double z = player.getLocation().getZ();
 
-		if (player.getWorld().getName() == "world") {
+		if (player.getWorld().getName().equals("world")) {
 			if ((x > -20 && x < 20) && (z > -20 && z < 20)) {
 				event.setCancelled(true);
 			}
@@ -446,9 +451,8 @@ class Events implements Listener {
 	@EventHandler
 	void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
 		String arr[] = event.getMessage().split(" ");
-		String ar[] = event.getMessage().split(" ", 10);
 
-		/*if (arr[0].toLowerCase().equals("//schem") ||
+		if (arr[0].toLowerCase().equals("//schem") ||
 		arr[0].toLowerCase().equals("//schematic") ||
 		arr[0].toLowerCase().equals("/schem") ||
 		arr[0].toLowerCase().equals("/schematic") ||
@@ -459,13 +463,17 @@ class Events implements Listener {
 			if (arr[1].toLowerCase().equals("delete")) {
 				event.setCancelled(true);
 			}
-		} else */if (arr[0].toLowerCase().equals("/minecraft:particle") ||
+		} else if (arr[0].toLowerCase().equals("/minecraft:gamerule") ||
+		arr[0].toLowerCase().equals("/gamerule")) {
+			if (arr[2] != null && Integer.parseInt(arr[2]) > 6) {
+				event.setMessage(String.join(" ", arr[0], arr[1]) + " 6");
+			}
+		} else if (arr[0].toLowerCase().equals("/minecraft:particle") ||
 		arr[0].toLowerCase().equals("/particle")) {
 			if (arr[9] != null && Integer.parseInt(arr[9]) > 10) {
 				event.setMessage(String.join(" ", arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6], arr[7], arr[8]) + " 10");
 			}
 		}
-		event.setMessage(event.getMessage().substring(0, Math.min(256, event.getMessage().length())));
 	}
 
 	@EventHandler
@@ -519,6 +527,11 @@ class Events implements Listener {
 		arr[0].toLowerCase().equals("worldedit:schematic")) {
 			if (arr[1].toLowerCase().equals("delete")) {
 				event.setCancelled(true);
+			}
+		} else if (arr[0].toLowerCase().equals("/minecraft:gamerule") ||
+		arr[0].toLowerCase().equals("/gamerule")) {
+			if (arr[2] != null && Integer.parseInt(arr[2]) > 6) {
+				event.setCommand(String.join(" ", arr[0], arr[1]) + " 6");
 			}
 		} else if (arr[0].toLowerCase().equals("minecraft:particle") ||
 		arr[0].toLowerCase().equals("particle")) {
