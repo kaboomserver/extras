@@ -5,8 +5,6 @@ import java.util.Iterator;
 
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 
-import com.boydti.fawe.FaweAPI;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -60,6 +58,30 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.schematic.SchematicFormat;
+
+class PasteSpawn extends BukkitRunnable {
+	public void run() {
+		File file = new File("worlds/world/spawn.schematic");
+		boolean noAir = false;
+		boolean entities = false;
+		BukkitWorld world = new BukkitWorld(Bukkit.getServer().getWorld("world"));
+		EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(world, -1);
+		Vector position = new Vector(0, 100, 0);
+
+		try {
+			SchematicFormat.getFormat(file).load(file).paste(editSession, position, noAir, entities);
+			editSession.flushQueue();
+		} catch(Exception exception) {
+			exception.printStackTrace();
+		}
+	}
+}
+
 class Tick extends BukkitRunnable {
 	public void run() {
 		for (World world : Bukkit.getServer().getWorlds()) {
@@ -69,25 +91,6 @@ class Tick extends BukkitRunnable {
 			} else if (worldborder.getCenter().getX() != 0 || worldborder.getCenter().getZ() != 0) {
 				worldborder.setCenter(0, 0);
 			}
-
-			/*String tickSpeed = world.getGameRuleValue​("randomTickSpeed");
-			if (Integer.parseInt(tickSpeed) > 10) {
-				world.setGameRuleValue​("randomTickSpeed", "10");
-			}*/
-		}
-	}
-}
-
-class Update extends BukkitRunnable {
-	public void run() {
-		File file = new File("worlds/world/spawn.schematic");
-		boolean allowUndo = false;
-		boolean noAir = false;
-		Vector position = new Vector(0, 100, 0);
-		try {
-			EditSession editSession = ClipboardFormat.SCHEMATIC.load(file).paste(FaweAPI.getWorld("world"), position, allowUndo, !noAir, (Transform) null);
-		} catch(Exception exception) {
-			exception.printStackTrace();
 		}
 	}
 }
@@ -280,34 +283,6 @@ class Events implements Listener {
 		if (followAttribute.getBaseValue() > 32) {
 			followAttribute.setBaseValue(32);
 		}
-
-		/*System.out.println(String.valueOf("begin"));
-		if (mob.getAttribute(Attribute.GENERIC_ARMOR) != null) {
-			System.out.println("ARMOR " + String.valueOf(mob.getAttribute(Attribute.GENERIC_ARMOR).getBaseValue()));
-		} else if (mob.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS) != null) {
-			System.out.println("ARMOR_TOUGHNESS " + String.valueOf(mob.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getBaseValue()));
-		} else if (mob.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE) != null) {
-			System.out.println("ATTACK_DAMAGE " + String.valueOf(mob.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getBaseValue()));
-		} else if (mob.getAttribute(Attribute.GENERIC_ATTACK_SPEED) != null) {
-			System.out.println("ATTACK_SPEED " + String.valueOf(mob.getAttribute(Attribute.GENERIC_ATTACK_SPEED).getBaseValue()));
-		} else if (mob.getAttribute(Attribute.GENERIC_FLYING_SPEED) != null) {
-			System.out.println("FLYING_SPEED " + String.valueOf(mob.getAttribute(Attribute.GENERIC_FLYING_SPEED).getBaseValue()));
-		} else if (mob.getAttribute(Attribute.GENERIC_FOLLOW_RANGE) != null) {
-			System.out.println("FOLLOW_RANGE " + String.valueOf(mob.getAttribute(Attribute.GENERIC_FOLLOW_RANGE).getBaseValue()));
-		} else if (mob.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE) != null) {
-			System.out.println("KNOCKBACK_RESISTANCE " + String.valueOf(mob.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getBaseValue()));
-		} else if (mob.getAttribute(Attribute.GENERIC_LUCK) != null) {
-			System.out.println("LUCK " + String.valueOf(mob.getAttribute(Attribute.GENERIC_LUCK).getBaseValue()));
-		} else if (mob.getAttribute(Attribute.GENERIC_MAX_HEALTH) != null) {
-			System.out.println("MAX_HEALTH " + String.valueOf(mob.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()));
-		} else if (mob.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED) != null) {
-			System.out.println("MOVEMENT_SPEED " + String.valueOf(mob.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue()));
-		} else if (mob.getAttribute(Attribute.HORSE_JUMP_STRENGTH) != null) {
-			System.out.println("HORSE_JUMP_STRENGTH " + String.valueOf(mob.getAttribute(Attribute.HORSE_JUMP_STRENGTH).getBaseValue()));
-		} else if (mob.getAttribute(Attribute.ZOMBIE_SPAWN_REINFORCEMENTS) != null) {
-			System.out.println("ZOMBIE_SPAWN_REINFORCEMENTS " + String.valueOf(mob.getAttribute(Attribute.ZOMBIE_SPAWN_REINFORCEMENTS).getBaseValue()));
-		}
-		System.out.println(String.valueOf("end"));*/
 	}
 
 	@EventHandler

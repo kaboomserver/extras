@@ -21,19 +21,10 @@ commands:
    enchantall:
       description: Adds every enchantment to a held item
       permission: extras.enchantall
-   end:
-      description: Moves you to the End
-      permission: extras.end
    jumpscare:
       aliases: scare
       description: Scares a player
       permission: extras.jumpscare
-   nether:
-      description: Moves you to the Nether
-      permission: extras.nether
-   overworld:
-      description: Moves you to the Overworld
-      permission: extras.overworld
    prefix:
       aliases: [rank, tag]
       description: Changes your tag
@@ -50,6 +41,3 @@ commands:
    username:
       description: Changes your username on the server
       permission: extras.username
-   vote:
-      description: Shows vote links for the server
-      permission: extras.vote

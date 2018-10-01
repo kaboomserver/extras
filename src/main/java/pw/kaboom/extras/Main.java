@@ -339,19 +339,15 @@ public class Main extends JavaPlugin {
 		this.getCommand("destroyentities").setExecutor(new CommandDestroyEntities());
 		this.getCommand("discord").setExecutor(new CommandDiscord());
 		this.getCommand("enchantall").setExecutor(new CommandEnchantAll());
-		this.getCommand("end").setExecutor(new CommandEnd());
 		this.getCommand("jumpscare").setExecutor(new CommandJumpscare());
-		this.getCommand("nether").setExecutor(new CommandNether());
-		this.getCommand("overworld").setExecutor(new CommandOverworld());
 		this.getCommand("prefix").setExecutor(new CommandPrefix(this));
 		this.getCommand("spawn").setExecutor(new CommandSpawn());
 		this.getCommand("tellraw").setExecutor(new CommandTellraw());
 		this.getCommand("unloadchunks").setExecutor(new CommandUnloadChunks());
 		this.getCommand("username").setExecutor(new CommandUsername());
-		this.getCommand("vote").setExecutor(new CommandVote());
 
+		new PasteSpawn().runTaskTimer(this, 0, 100);
 		new Tick().runTaskTimer(this, 0, 1);
-		new Update().runTaskTimer(this, 0, 200);
 		this.getServer().getPluginManager().registerEvents(new Events(this), this);
 	}
 }

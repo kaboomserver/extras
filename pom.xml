@@ -11,12 +11,21 @@
 			<version>1.12.2-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.sk89q.worldedit</groupId>
+			<artifactId>worldedit-bukkit</artifactId>
+			<version>6.1.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<repositories>
 		<repository>
 			<id>destroystokyo-repo</id>
 			<url>https://repo.destroystokyo.com/repository/maven-public/</url>
+		</repository>
+		<repository>
+			<id>sk89q-snapshots</id>
+			<url>http://maven.sk89q.com/artifactory/repo</url>
 		</repository>
 	</repositories>
 

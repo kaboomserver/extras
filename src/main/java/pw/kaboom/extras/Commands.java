@@ -114,15 +114,6 @@ class CommandEnchantAll implements CommandExecutor {
 	}
 }
 
-class CommandEnd implements CommandExecutor {
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		Player player = (Player)sender;
-		player.teleport(Bukkit.getWorld("world_the_end").getSpawnLocation());
-		player.sendMessage("Successfully moved to the End");
-		return true;
-	}
-}
-
 class CommandJumpscare implements CommandExecutor {
 	private void createJumpscare(Player player) {
 		player.spawnParticle(Particle.MOB_APPEARANCE, player.getLocation(), 4);
@@ -151,24 +142,6 @@ class CommandJumpscare implements CommandExecutor {
 				}
 			}	
 		}
-		return true;
-	}
-}
-
-class CommandNether implements CommandExecutor {
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		Player player = (Player)sender;
-		player.teleport(Bukkit.getWorld("world_nether").getSpawnLocation());
-		player.sendMessage("Successfully moved to the Nether");
-		return true;
-	}
-}
-
-class CommandOverworld implements CommandExecutor {
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		Player player = (Player)sender;
-		player.teleport(new Location(Bukkit.getWorld("world"), 0.5, 100, 0.5));
-		player.sendMessage("Successfully moved to the Overworld");
 		return true;
 	}
 }
@@ -247,18 +220,6 @@ class CommandUsername implements CommandExecutor {
 			player.setPlayerProfile(profile);
 			player.sendMessage("Successfully set your username to \"" + name + "\"");
 		}
-		return true;
-	}
-}
-
-class CommandVote implements CommandExecutor {
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		Player player = (Player)sender;
-		player.sendMessage("Feel free to vote for the server to help it grow");
-		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "minecraft:tellraw " + player.getName() + " [\"\",{\"text\":\"[1] \",\"color\":\"dark_green\"},{\"text\":\"TopG.org\",\"color\":\"green\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://topg.org/Minecraft/in-414108\"}}]");
-		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "minecraft:tellraw " + player.getName() + " [\"\",{\"text\":\"[2] \",\"color\":\"dark_green\"},{\"text\":\"MinecraftServers.biz\",\"color\":\"green\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://minecraftservers.biz/servers/140916/\"}}]");
-		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "minecraft:tellraw " + player.getName() + " [\"\",{\"text\":\"[3] \",\"color\":\"dark_green\"},{\"text\":\"MinecraftServers.org\",\"color\":\"green\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"http://minecraftservers.org/vote/153833\"}}]");
-		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "minecraft:tellraw " + player.getName() + " [\"\",{\"text\":\"[4] \",\"color\":\"dark_green\"},{\"text\":\"Minecraft Multiplayer\",\"color\":\"green\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"http://minecraft-mp.com/server/155223/vote/\"}}]");
 		return true;
 	}
 }
