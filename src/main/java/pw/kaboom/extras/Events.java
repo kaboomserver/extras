@@ -5,8 +5,6 @@ import java.util.Iterator;
 
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 
-import com.destroystokyo.paper.profile.PlayerProfile;
-
 import com.boydti.fawe.FaweAPI;
 
 import org.bukkit.Bukkit;
@@ -17,28 +15,24 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
 
-import org.bukkit.block.Block;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 
-import org.bukkit.command.BlockCommandSender;
+import org.bukkit.block.Block;
 
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.MagmaCube;
 import org.bukkit.entity.Slime;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockBurnEvent;
-import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
-import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.block.BlockFromToEvent;
-import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 
 import org.bukkit.event.entity.EntityChangeBlockEvent;
@@ -53,36 +47,18 @@ import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerPreLoginEvent;
-import org.bukkit.event.player.PlayerBucketEmptyEvent;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerPortalEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 
-import org.bukkit.permissions.PermissionAttachment;
-
 import org.bukkit.scheduler.BukkitRunnable;
 
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
-
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.event.extent.EditSessionEvent;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
-import com.sk89q.worldedit.extent.logging.AbstractLoggingExtent;
-import com.sk89q.worldedit.math.transform.Transform;
-import com.sk89q.worldedit.util.eventbus.EventHandler.Priority;
-import com.sk89q.worldedit.util.eventbus.Subscribe;
 
 class Tick extends BukkitRunnable {
 	public void run() {
@@ -104,7 +80,7 @@ class Tick extends BukkitRunnable {
 
 class Update extends BukkitRunnable {
 	public void run() {
-		File file = new File("spawn.schematic");
+		File file = new File("worlds/world/spawn.schematic");
 		boolean allowUndo = false;
 		boolean noAir = false;
 		Vector position = new Vector(0, 100, 0);
@@ -140,46 +116,6 @@ class Events implements Listener {
 	}
 
 	@EventHandler
-	void onBlockBreakEvent(BlockBreakEvent event) {
-		Block block = event.getBlock();
-		double x = block.getLocation().getX();
-		double z = block.getLocation().getZ();
-
-		if (block.getWorld().getName().equals("world")) {
-			if ((x > -20 && x < 20) && (z > -20 && z < 20)) {
-				event.setCancelled(true);
-			}
-		}
-	}
-
-
-	@EventHandler
-	void onBlockBurnEvent(BlockBurnEvent event) {
-		Block block = event.getBlock();
-		double x = block.getLocation().getX();
-		double z = block.getLocation().getZ();
-
-		if (block.getWorld().getName().equals("world")) {
-			if ((x > -20 && x < 20) && (z > -20 && z < 20)) {
-				event.setCancelled(true);
-			}
-		}
-	}
-
-	@EventHandler
-	void onBlockDamage(BlockDamageEvent event) {
-		Block block = event.getBlock();
-		double x = block.getLocation().getX();
-		double z = block.getLocation().getZ();
-
-		if (block.getWorld().getName().equals("world")) {
-			if ((x > -20 && x < 20) && (z > -20 && z < 20)) {
-				event.setCancelled(true);
-			}
-		}
-	}
-
-	@EventHandler
 	void onBlockExplode(BlockExplodeEvent event) {
 		Block block = event.getBlock();
 		double x = block.getLocation().getX();
@@ -200,33 +136,7 @@ class Events implements Listener {
 	}
 
 	@EventHandler
-	void onBlockFade(BlockFadeEvent event) {
-		Block block = event.getBlock();
-		double x = block.getLocation().getX();
-		double z = block.getLocation().getZ();
-
-		if (block.getWorld().getName().equals("world")) {
-			if ((x > -20 && x < 20) && (z > -20 && z < 20)) {
-				event.setCancelled(true);
-			}
-		}
-	}
-
-	@EventHandler
 	void onBlockFromTo(BlockFromToEvent event) {
-		Block block = event.getBlock();
-		double x = block.getLocation().getX();
-		double z = block.getLocation().getZ();
-
-		if (block.getWorld().getName().equals("world")) {
-			if ((x > -20 && x < 20) && (z > -20 && z < 20)) {
-				event.setCancelled(true);
-			}
-		}
-	}
-
-	@EventHandler
-	void onBlockGrow(BlockGrowEvent event) {
 		Block block = event.getBlock();
 		double x = block.getLocation().getX();
 		double z = block.getLocation().getZ();
@@ -260,27 +170,10 @@ class Events implements Listener {
         }
 
 	@EventHandler
-	void onBlockPlaceEvent(BlockPlaceEvent event) {
-		Block block = event.getBlock();
-		double x = block.getLocation().getX();
-		double z = block.getLocation().getZ();
-
-		if (block.getWorld().getName().equals("world")) {
-			if ((x > -20 && x < 20) && (z > -20 && z < 20)) {
-				event.setCancelled(true);
-			}
-		}
-	}
-
-	@EventHandler
 	void onBlockRedstone(BlockRedstoneEvent event) {
-		Block block = event.getBlock();
-		double x = block.getLocation().getX();
-		double z = block.getLocation().getZ();
 		double tps = Bukkit.getServer().getTPS()[0];
 
-		if (block.getWorld().getName().equals("world") && (x > -20 && x < 20) && (z > -20 && z < 20) ||
-		tps < 14) {
+		if (tps < 14) {
 			event.setNewCurrent(0);
 		}
         }
@@ -368,6 +261,7 @@ class Events implements Listener {
 	@EventHandler
 	void onEntitySpawn(EntitySpawnEvent event) {
 		Entity entity = event.getEntity();
+		LivingEntity mob = (LivingEntity) event.getEntity();
 		Location entityLocation = event.getLocation();
 
 		int onChunk = 0;
@@ -380,6 +274,40 @@ class Events implements Listener {
 		if (onChunk >= 50) {
 			event.setCancelled(true);
 		}
+
+		AttributeInstance followAttribute = mob.getAttribute(Attribute.GENERIC_FOLLOW_RANGE);
+
+		if (followAttribute.getBaseValue() > 32) {
+			followAttribute.setBaseValue(32);
+		}
+
+		/*System.out.println(String.valueOf("begin"));
+		if (mob.getAttribute(Attribute.GENERIC_ARMOR) != null) {
+			System.out.println("ARMOR " + String.valueOf(mob.getAttribute(Attribute.GENERIC_ARMOR).getBaseValue()));
+		} else if (mob.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS) != null) {
+			System.out.println("ARMOR_TOUGHNESS " + String.valueOf(mob.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getBaseValue()));
+		} else if (mob.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE) != null) {
+			System.out.println("ATTACK_DAMAGE " + String.valueOf(mob.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getBaseValue()));
+		} else if (mob.getAttribute(Attribute.GENERIC_ATTACK_SPEED) != null) {
+			System.out.println("ATTACK_SPEED " + String.valueOf(mob.getAttribute(Attribute.GENERIC_ATTACK_SPEED).getBaseValue()));
+		} else if (mob.getAttribute(Attribute.GENERIC_FLYING_SPEED) != null) {
+			System.out.println("FLYING_SPEED " + String.valueOf(mob.getAttribute(Attribute.GENERIC_FLYING_SPEED).getBaseValue()));
+		} else if (mob.getAttribute(Attribute.GENERIC_FOLLOW_RANGE) != null) {
+			System.out.println("FOLLOW_RANGE " + String.valueOf(mob.getAttribute(Attribute.GENERIC_FOLLOW_RANGE).getBaseValue()));
+		} else if (mob.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE) != null) {
+			System.out.println("KNOCKBACK_RESISTANCE " + String.valueOf(mob.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).getBaseValue()));
+		} else if (mob.getAttribute(Attribute.GENERIC_LUCK) != null) {
+			System.out.println("LUCK " + String.valueOf(mob.getAttribute(Attribute.GENERIC_LUCK).getBaseValue()));
+		} else if (mob.getAttribute(Attribute.GENERIC_MAX_HEALTH) != null) {
+			System.out.println("MAX_HEALTH " + String.valueOf(mob.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()));
+		} else if (mob.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED) != null) {
+			System.out.println("MOVEMENT_SPEED " + String.valueOf(mob.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue()));
+		} else if (mob.getAttribute(Attribute.HORSE_JUMP_STRENGTH) != null) {
+			System.out.println("HORSE_JUMP_STRENGTH " + String.valueOf(mob.getAttribute(Attribute.HORSE_JUMP_STRENGTH).getBaseValue()));
+		} else if (mob.getAttribute(Attribute.ZOMBIE_SPAWN_REINFORCEMENTS) != null) {
+			System.out.println("ZOMBIE_SPAWN_REINFORCEMENTS " + String.valueOf(mob.getAttribute(Attribute.ZOMBIE_SPAWN_REINFORCEMENTS).getBaseValue()));
+		}
+		System.out.println(String.valueOf("end"));*/
 	}
 
 	@EventHandler
@@ -429,19 +357,6 @@ class Events implements Listener {
 		double z = entity.getLocation().getZ();
 
 		if (entity.getWorld().getName().equals("world")) {
-			if ((x > -20 && x < 20) && (z > -20 && z < 20)) {
-				event.setCancelled(true);
-			}
-		}
-	}
-
-	@EventHandler
-	void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
-		Player player = event.getPlayer();
-		double x = player.getLocation().getX();
-		double z = player.getLocation().getZ();
-
-		if (player.getWorld().getName().equals("world")) {
 			if ((x > -20 && x < 20) && (z > -20 && z < 20)) {
 				event.setCancelled(true);
 			}
@@ -544,20 +459,5 @@ class Events implements Listener {
 	@EventHandler
 	void onServerListPing(ServerListPingEvent event) {
 		event.setMaxPlayers(event.getNumPlayers() + 1);
-	}
-}
-
-class WorldEditEvent {
-	@Subscribe(priority = Priority.VERY_EARLY)
-	public void onEditSessionEvent(final EditSessionEvent event) {
-		event.setExtent(new AbstractLoggingExtent(event.getExtent()) {
-			private void onBlockChange(Vector position) {
-				double x = position.getBlockX();
-				double z = position.getBlockZ();
-				if (event.getWorld().getName().equals("world") && (x > -20 && x < 20) && (z > -20 && z < 20)) {
-					event.setCancelled(true);
-				}
-			}
-		});
 	}
 }

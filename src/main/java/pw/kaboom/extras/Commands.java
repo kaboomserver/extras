@@ -1,8 +1,5 @@
 package pw.kaboom.extras;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-
 import com.destroystokyo.paper.profile.PlayerProfile;
 
 import org.bukkit.Bukkit;

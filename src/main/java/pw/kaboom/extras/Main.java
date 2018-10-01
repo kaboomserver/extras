@@ -1,19 +1,9 @@
 package pw.kaboom.extras;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.UUID;
-
-import org.bukkit.WorldCreator;
-
-import org.bukkit.entity.Player;
-
-import org.bukkit.permissions.PermissionAttachment;
 
 import org.bukkit.plugin.java.JavaPlugin;
-
-import com.sk89q.worldedit.WorldEdit;
 
 public class Main extends JavaPlugin {
 	HashSet<String> consoleCommandBlacklist = new HashSet<String>(Arrays.asList(new String[] {
@@ -309,7 +299,6 @@ public class Main extends JavaPlugin {
 		"pm",
 		"shoutworld",
 		"say",
-		"setblock",
 		"silence",
 		"sp",
 		"spec",
@@ -364,6 +353,5 @@ public class Main extends JavaPlugin {
 		new Tick().runTaskTimer(this, 0, 1);
 		new Update().runTaskTimer(this, 0, 200);
 		this.getServer().getPluginManager().registerEvents(new Events(this), this);
-		WorldEdit.getInstance().getEventBus().register(new WorldEditEvent());
 	}
 }
