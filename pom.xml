@@ -4,28 +4,41 @@
 	<artifactId>Extras</artifactId>
 	<version>master</version>
 
+	<properties>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.destroystokyo.paper</groupId>
 			<artifactId>paper-api</artifactId>
 			<version>1.12.2-R0.1-SNAPSHOT</version>
-			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.boydti</groupId>
+			<artifactId>fawe-api</artifactId>
+			<version>latest</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sk89q.worldedit</groupId>
 			<artifactId>worldedit-bukkit</artifactId>
-			<version>6.1.1-SNAPSHOT</version>
+			<version>6.1.4-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
 	<repositories>
 		<repository>
-			<id>destroystokyo-repo</id>
-			<url>https://repo.destroystokyo.com/repository/maven-public/</url>
+			<id>papermc</id>
+			<url>https://papermc.io/repo/repository/maven-public/</url>
 		</repository>
 		<repository>
-			<id>sk89q-snapshots</id>
-			<url>http://maven.sk89q.com/artifactory/repo</url>
+			<id>fawe</id>
+			<url>https://ci.athion.net/job/FastAsyncWorldEdit/ws/mvn/</url>
+		</repository>
+		<repository>
+			<id>worldedit</id>
+			<url>https://maven.sk89q.com/repo/</url>
 		</repository>
 	</repositories>
 

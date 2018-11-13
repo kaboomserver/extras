@@ -29,6 +29,9 @@ commands:
       aliases: [rank, tag]
       description: Changes your tag
       permission: extras.prefix
+   skin:
+      description: Changes your skin
+      permission: extras.skin
    spawn:
       description: Teleports you to spawn
       permission: extras.spawn

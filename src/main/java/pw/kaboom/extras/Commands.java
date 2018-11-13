@@ -1,6 +1,14 @@
 package pw.kaboom.extras;
 
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.HttpURLConnection;
+
 import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -22,6 +30,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import org.bukkit.inventory.ItemStack;
+
+import org.bukkit.scheduler.BukkitRunnable;
 
 class CommandClearChat implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -169,6 +179,49 @@ class CommandPrefix implements CommandExecutor {
 	}
 }
 
+class CommandSkin implements CommandExecutor {
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		Player player = (Player)sender;
+		if (args.length == 0) {
+			player.sendMessage(ChatColor.RED + "Usage: /" + label + " <username>");
+		} else {
+			try {
+				String name = args[0];
+				URL nameurl = new URL("https://api.mojang.com/users/profiles/minecraft/" + name);
+				HttpURLConnection nameconnection = (HttpURLConnection) nameurl.openConnection();
+
+				if (nameconnection.getResponseCode() == 200) {
+					InputStreamReader namestream = new InputStreamReader(nameconnection.getInputStream());
+					String uuid = new JsonParser().parse(namestream).getAsJsonObject().get("id").getAsString();
+					URL uuidurl = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false");
+					HttpURLConnection uuidconnection = (HttpURLConnection) uuidurl.openConnection();
+
+					if (uuidconnection.getResponseCode() == 200) {
+						InputStreamReader uuidstream = new InputStreamReader(uuidconnection.getInputStream());
+						JsonObject response = new JsonParser().parse(uuidstream).getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject();
+						String texture = response.get("value").getAsString();
+						String signature = response.get("signature").getAsString();
+
+						PlayerProfile textureprofile = player.getPlayerProfile();
+						textureprofile.setProperty(new ProfileProperty("textures", texture, signature));
+						player.setPlayerProfile(textureprofile);
+						player.sendMessage("Successfully set your skin to " + name + "'s");
+					} else {
+						player.sendMessage("Failed to change skin. Try again later");
+					}
+					uuidconnection.disconnect();
+				} else {
+					player.sendMessage("A player with that username doesn't exist");
+				}
+				nameconnection.disconnect();
+			} catch (Exception exception) {
+				exception.printStackTrace();
+			}
+		}
+		return true;
+	}
+}
+
 class CommandSpawn implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		Player player = (Player)sender;
@@ -205,6 +258,11 @@ class CommandUnloadChunks implements CommandExecutor {
 }
 
 class CommandUsername implements CommandExecutor {
+	Main main;
+	CommandUsername(Main main) {
+		this.main = main;
+	}
+
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		Player player = (Player)sender;
 		if (args.length == 0) {
@@ -215,10 +273,10 @@ class CommandUsername implements CommandExecutor {
 
 			PlayerProfile profile = player.getPlayerProfile();
 			profile.setName(name);
-			profile.complete();
-			profile.clearProperties();
 			player.setPlayerProfile(profile);
 			player.sendMessage("Successfully set your username to \"" + name + "\"");
+
+			main.getSkin(name, player);
 		}
 		return true;
 	}

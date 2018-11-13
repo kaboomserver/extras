@@ -1,11 +1,32 @@
 package pw.kaboom.extras;
 
+import java.io.File;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.HttpURLConnection;
 import java.util.Arrays;
 import java.util.HashSet;
+
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import org.bukkit.Color;
+import org.bukkit.Material;
+
+import org.bukkit.entity.Player;
+
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
+	int onlineCount = 0;
+	File spawnSchematic = new File("worlds/world/spawn.schematic");
 	HashSet<String> consoleCommandBlacklist = new HashSet<String>(Arrays.asList(new String[] {
 		"essentials:action",
 		"essentials:adventure",
@@ -341,13 +362,58 @@ public class Main extends JavaPlugin {
 		this.getCommand("enchantall").setExecutor(new CommandEnchantAll());
 		this.getCommand("jumpscare").setExecutor(new CommandJumpscare());
 		this.getCommand("prefix").setExecutor(new CommandPrefix(this));
+		this.getCommand("skin").setExecutor(new CommandSkin());
 		this.getCommand("spawn").setExecutor(new CommandSpawn());
 		this.getCommand("tellraw").setExecutor(new CommandTellraw());
 		this.getCommand("unloadchunks").setExecutor(new CommandUnloadChunks());
-		this.getCommand("username").setExecutor(new CommandUsername());
+		this.getCommand("username").setExecutor(new CommandUsername(this));
 
-		new PasteSpawn().runTaskTimer(this, 0, 100);
+		new PasteSpawn(this).runTaskTimer(this, 0, 200);
 		new Tick().runTaskTimer(this, 0, 1);
 		this.getServer().getPluginManager().registerEvents(new Events(this), this);
+	}
+
+	public void getSkin(String name, Player player) {
+		try {
+			URL nameurl = new URL("https://api.mojang.com/users/profiles/minecraft/" + name);
+			HttpURLConnection nameconnection = (HttpURLConnection) nameurl.openConnection();
+
+			if (nameconnection.getResponseCode() == 200) {
+				InputStreamReader namestream = new InputStreamReader(nameconnection.getInputStream());
+				String uuid = new JsonParser().parse(namestream).getAsJsonObject().get("id").getAsString();
+				URL uuidurl = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false");
+				HttpURLConnection uuidconnection = (HttpURLConnection) uuidurl.openConnection();
+
+				if (uuidconnection.getResponseCode() == 200) {
+					InputStreamReader uuidstream = new InputStreamReader(uuidconnection.getInputStream());
+					JsonObject response = new JsonParser().parse(uuidstream).getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject();
+					String texture = response.get("value").getAsString();
+					String signature = response.get("signature").getAsString();
+
+					PlayerProfile textureprofile = player.getPlayerProfile();
+					textureprofile.setProperty(new ProfileProperty("textures", texture, signature));
+					player.setPlayerProfile(textureprofile);
+				}
+				uuidconnection.disconnect();
+			}
+			nameconnection.disconnect();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+	}
+
+	public void editMeta(ItemStack item) {
+		if (item.getType() == Material.LINGERING_POTION ||
+		item.getType() == Material.POTION ||
+		item.getType() == Material.SPLASH_POTION) {
+			PotionMeta potion = (PotionMeta) item.getItemMeta();
+			potion.setColor(Color.WHITE);
+		} else if (item.getType() == Material.LEATHER_BOOTS ||
+		item.getType() == Material.LEATHER_CHESTPLATE ||
+		item.getType() == Material.LEATHER_HELMET ||
+		item.getType() == Material.LEATHER_LEGGINGS) {
+			LeatherArmorMeta armor = (LeatherArmorMeta) item.getItemMeta();
+			armor.setColor(Color.fromRGB(160,101,64));
+		}
 	}
 }
