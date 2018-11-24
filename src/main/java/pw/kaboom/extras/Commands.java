@@ -45,7 +45,8 @@ class CommandClearChat implements CommandExecutor {
 
 class CommandConsole implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		Player player = (Player)sender;
+		Player player = (Player) sender;
+
 		if (args.length == 0) {
 			player.sendMessage(ChatColor.RED + "Usage: /" + label + " <message ..>");
 		} else {
@@ -57,13 +58,12 @@ class CommandConsole implements CommandExecutor {
 
 class CommandDestroyEntities implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		Player player = (Player)sender;
+		Player player = (Player) sender;
+
 		for (World world : Bukkit.getServer().getWorlds()) {
-			for (Chunk chunk : world.getLoadedChunks()) {
-				for (Entity entity : chunk.getEntities()) {
-					if (entity.getType() != EntityType.PLAYER) {
-						entity.remove();
-					}
+			for (Entity entity : world.getEntities()) {
+				if (entity.getType() != EntityType.PLAYER) {
+					entity.remove();
 				}
 			}
 		}
@@ -72,19 +72,11 @@ class CommandDestroyEntities implements CommandExecutor {
 	}
 }
 
-class CommandDiscord implements CommandExecutor {
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		Player player = (Player)sender;
-		player.sendMessage("Join the Kaboom.pw Discord server to chat with other users");
-		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "minecraft:tellraw " + player.getName() + " [\"\",{\"text\":\"https://discord.gg/UMGbMsU\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://discord.gg/UMGbMsU\"}}]");
-		return true;
-	}
-}
-
 class CommandEnchantAll implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		Player player = (Player)sender;
+		Player player = (Player) sender;
 		ItemStack item = player.getItemInHand();
+
 		if (item.getType() == Material.AIR) {
 			player.sendMessage("Please hold an item in your hand to enchant it");
 		} else {
@@ -101,7 +93,7 @@ class CommandEnchantAll implements CommandExecutor {
 			item.addUnsafeEnchantment(Enchantment.DURABILITY, 32767);
 			item.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 32767);
 			item.addUnsafeEnchantment(Enchantment.FROST_WALKER, 32767);
-			/*item.addUnsafeEnchantment(Enchantment.KNOCKBACK, 32767);*/
+			item.addUnsafeEnchantment(Enchantment.KNOCKBACK, 32767);
 			item.addUnsafeEnchantment(Enchantment.LOOT_BONUS_BLOCKS, 32767);
 			item.addUnsafeEnchantment(Enchantment.LOOT_BONUS_MOBS, 32767);
 			item.addUnsafeEnchantment(Enchantment.LUCK, 32767);
@@ -133,12 +125,13 @@ class CommandJumpscare implements CommandExecutor {
 	}
 
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		Player player = (Player)sender;
+		Player player = (Player) sender;
+
 		if (args.length == 0) {
 			player.sendMessage(ChatColor.RED + "Usage: /" + label + " <player>");
 		} else {
 			if (args[0].equals("*") || args[0].equals("**")) {
-				for (Player p: Bukkit.getOnlinePlayers()) {
+				for (Player p : Bukkit.getOnlinePlayers()) {
 					createJumpscare(p);
 				}
 				player.sendMessage("Successfully created jumpscare for every player");
@@ -163,7 +156,8 @@ class CommandPrefix implements CommandExecutor {
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		Player player = (Player)sender;
+		Player player = (Player) sender;
+
 		if (args.length == 0) {
 			player.sendMessage(ChatColor.RED + "Usage: /" + label + " <prefix|off>");
 		} else if (args[0].equalsIgnoreCase("off")) {
@@ -180,43 +174,57 @@ class CommandPrefix implements CommandExecutor {
 }
 
 class CommandSkin implements CommandExecutor {
+	Main main;
+	CommandSkin(Main main) {
+		this.main = main;
+	}
+
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		Player player = (Player)sender;
+		Player player = (Player) sender;
+
 		if (args.length == 0) {
 			player.sendMessage(ChatColor.RED + "Usage: /" + label + " <username>");
 		} else {
-			try {
-				String name = args[0];
-				URL nameurl = new URL("https://api.mojang.com/users/profiles/minecraft/" + name);
-				HttpURLConnection nameconnection = (HttpURLConnection) nameurl.openConnection();
+			Bukkit.getScheduler().runTaskAsynchronously(main, () -> {
+				try {
+					String name = args[0];
+					URL nameurl = new URL("https://api.mojang.com/users/profiles/minecraft/" + name);
+					HttpURLConnection nameconnection = (HttpURLConnection) nameurl.openConnection();
 
-				if (nameconnection.getResponseCode() == 200) {
-					InputStreamReader namestream = new InputStreamReader(nameconnection.getInputStream());
-					String uuid = new JsonParser().parse(namestream).getAsJsonObject().get("id").getAsString();
-					URL uuidurl = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false");
-					HttpURLConnection uuidconnection = (HttpURLConnection) uuidurl.openConnection();
+					if (nameconnection.getResponseCode() == 200) {
+						InputStreamReader namestream = new InputStreamReader(nameconnection.getInputStream());
+						String uuid = new JsonParser().parse(namestream).getAsJsonObject().get("id").getAsString();
+						URL uuidurl = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false");
+						HttpURLConnection uuidconnection = (HttpURLConnection) uuidurl.openConnection();
 
-					if (uuidconnection.getResponseCode() == 200) {
-						InputStreamReader uuidstream = new InputStreamReader(uuidconnection.getInputStream());
-						JsonObject response = new JsonParser().parse(uuidstream).getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject();
-						String texture = response.get("value").getAsString();
-						String signature = response.get("signature").getAsString();
+						if (uuidconnection.getResponseCode() == 200) {
+							InputStreamReader uuidstream = new InputStreamReader(uuidconnection.getInputStream());
+							JsonObject response = new JsonParser().parse(uuidstream).getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject();
+							String texture = response.get("value").getAsString();
+							String signature = response.get("signature").getAsString();
 
-						PlayerProfile textureprofile = player.getPlayerProfile();
-						textureprofile.setProperty(new ProfileProperty("textures", texture, signature));
-						player.setPlayerProfile(textureprofile);
-						player.sendMessage("Successfully set your skin to " + name + "'s");
+							Bukkit.getScheduler().scheduleSyncDelayedTask(main, () -> {
+								PlayerProfile textureprofile = player.getPlayerProfile();
+								textureprofile.setProperty(new ProfileProperty("textures", texture, signature));
+								player.setPlayerProfile(textureprofile);
+								player.sendMessage("Successfully set your skin to " + name + "'s");
+							});
+						} else {
+							Bukkit.getScheduler().scheduleSyncDelayedTask(main, () -> {
+								player.sendMessage("Failed to change skin. Try again later");
+							});
+						}
+						uuidconnection.disconnect();
 					} else {
-						player.sendMessage("Failed to change skin. Try again later");
+						Bukkit.getScheduler().scheduleSyncDelayedTask(main, () -> {
+							player.sendMessage("A player with that username doesn't exist");
+						});
 					}
-					uuidconnection.disconnect();
-				} else {
-					player.sendMessage("A player with that username doesn't exist");
+					nameconnection.disconnect();
+				} catch (Exception exception) {
+					exception.printStackTrace();
 				}
-				nameconnection.disconnect();
-			} catch (Exception exception) {
-				exception.printStackTrace();
-			}
+			});
 		}
 		return true;
 	}
@@ -224,7 +232,8 @@ class CommandSkin implements CommandExecutor {
 
 class CommandSpawn implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		Player player = (Player)sender;
+		Player player = (Player) sender;
+
 		World world = Bukkit.getWorld("world");
 		player.teleport(new Location(world, 0.5, 100, 0.5));
 		player.sendMessage("Successfully moved to the spawn");
@@ -234,7 +243,8 @@ class CommandSpawn implements CommandExecutor {
 
 class CommandTellraw implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		Player player = (Player)sender;
+		Player player = (Player) sender;
+
 		if (args.length == 0) {
 			player.sendMessage(ChatColor.RED + "Usage: /" + label + " <message ..>");
 		} else {
@@ -246,7 +256,8 @@ class CommandTellraw implements CommandExecutor {
 
 class CommandUnloadChunks implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		Player player = (Player)sender;
+		Player player = (Player) sender;
+
 		for (World world : Bukkit.getServer().getWorlds()) {
 			for (Chunk chunk : world.getLoadedChunks()) {
 				chunk.unload(true);
@@ -264,7 +275,8 @@ class CommandUsername implements CommandExecutor {
 	}
 
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		Player player = (Player)sender;
+		Player player = (Player) sender;
+
 		if (args.length == 0) {
 			player.sendMessage(ChatColor.RED + "Usage: /" + label + " <username>");
 		} else {

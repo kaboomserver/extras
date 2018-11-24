@@ -1,7 +1,7 @@
 name: Extras
 main: pw.kaboom.extras.Main
 description: Plugin that adds extra functionality to the Kaboom.pw server.
-depend: [WorldEdit]
+depend: [FastAsyncWorldEdit]
 version: master
 
 commands:
@@ -15,9 +15,6 @@ commands:
    destroyentities:
       description: Destroys all entities in every world
       permission: extras.destroyentities
-   discord:
-      description: Join the Kaboom.pw Discord server
-      permission: extras.discord
    enchantall:
       description: Adds every enchantment to a held item
       permission: extras.enchantall

@@ -13,14 +13,11 @@ import com.destroystokyo.paper.profile.ProfileProperty;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 
 import org.bukkit.entity.Player;
-
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.PotionMeta;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -358,18 +355,17 @@ public class Main extends JavaPlugin {
 		this.getCommand("clearchat").setExecutor(new CommandClearChat());
 		this.getCommand("console").setExecutor(new CommandConsole());
 		this.getCommand("destroyentities").setExecutor(new CommandDestroyEntities());
-		this.getCommand("discord").setExecutor(new CommandDiscord());
 		this.getCommand("enchantall").setExecutor(new CommandEnchantAll());
 		this.getCommand("jumpscare").setExecutor(new CommandJumpscare());
 		this.getCommand("prefix").setExecutor(new CommandPrefix(this));
-		this.getCommand("skin").setExecutor(new CommandSkin());
+		this.getCommand("skin").setExecutor(new CommandSkin(this));
 		this.getCommand("spawn").setExecutor(new CommandSpawn());
 		this.getCommand("tellraw").setExecutor(new CommandTellraw());
 		this.getCommand("unloadchunks").setExecutor(new CommandUnloadChunks());
 		this.getCommand("username").setExecutor(new CommandUsername(this));
 
-		new PasteSpawn(this).runTaskTimer(this, 0, 200);
-		new Tick().runTaskTimer(this, 0, 1);
+		new PasteSpawn(this).runTaskTimerAsynchronously(this, 0, 10);
+		new TickAsync(this).runTaskTimerAsynchronously(this, 0, 1);
 		this.getServer().getPluginManager().registerEvents(new Events(this), this);
 	}
 
@@ -390,30 +386,17 @@ public class Main extends JavaPlugin {
 					String texture = response.get("value").getAsString();
 					String signature = response.get("signature").getAsString();
 
-					PlayerProfile textureprofile = player.getPlayerProfile();
-					textureprofile.setProperty(new ProfileProperty("textures", texture, signature));
-					player.setPlayerProfile(textureprofile);
+					Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
+						PlayerProfile textureprofile = player.getPlayerProfile();
+						textureprofile.setProperty(new ProfileProperty("textures", texture, signature));
+						player.setPlayerProfile(textureprofile);
+					});
 				}
 				uuidconnection.disconnect();
 			}
 			nameconnection.disconnect();
 		} catch (Exception exception) {
 			exception.printStackTrace();
-		}
-	}
-
-	public void editMeta(ItemStack item) {
-		if (item.getType() == Material.LINGERING_POTION ||
-		item.getType() == Material.POTION ||
-		item.getType() == Material.SPLASH_POTION) {
-			PotionMeta potion = (PotionMeta) item.getItemMeta();
-			potion.setColor(Color.WHITE);
-		} else if (item.getType() == Material.LEATHER_BOOTS ||
-		item.getType() == Material.LEATHER_CHESTPLATE ||
-		item.getType() == Material.LEATHER_HELMET ||
-		item.getType() == Material.LEATHER_LEGGINGS) {
-			LeatherArmorMeta armor = (LeatherArmorMeta) item.getItemMeta();
-			armor.setColor(Color.fromRGB(160,101,64));
 		}
 	}
 }
