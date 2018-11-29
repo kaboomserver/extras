@@ -39,6 +39,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
@@ -129,31 +130,34 @@ class TickAsync extends BukkitRunnable {
 			}
 
 			for (Chunk chunk : world.getLoadedChunks()) {
-				int sizeCount = 0;
-				for (BlockState block : chunk.getTileEntities()) {
-					if (block instanceof Container) {
-						Container container = (Container) block;
+				try {
+					int sizeCount = 0;
+					for (BlockState block : chunk.getTileEntities()) {
+						if (block instanceof Container) {
+							Container container = (Container) block;
 
-						for (ItemStack item : container.getInventory().getContents()) {
-							if (item != null) {
-								try {
-									sizeCount = sizeCount + item.toString().length();
+							for (ItemStack item : container.getInventory().getContents()) {
+								if (item != null) {
+									try {
+										sizeCount = sizeCount + item.toString().length();
 
-									if (sizeCount > 200000) {
-										for (BlockState chunkBlock : chunk.getTileEntities()) {
-											if (chunkBlock instanceof Container) {
-												Bukkit.getScheduler().scheduleSyncDelayedTask(main, () -> {
-													chunkBlock.getBlock().getDrops().clear();
-													chunkBlock.getBlock().setType(Material.AIR);
-												});
+										if (sizeCount > 200000) {
+											for (BlockState chunkBlock : chunk.getTileEntities()) {
+												if (chunkBlock instanceof Container) {
+													Bukkit.getScheduler().scheduleSyncDelayedTask(main, () -> {
+														chunkBlock.getBlock().getDrops().clear();
+														chunkBlock.getBlock().setType(Material.AIR);
+													});
+												}
 											}
 										}
+									} catch (Exception e) {
 									}
-								} catch (Exception e) {
 								}
 							}
 						}
 					}
+				} catch (Exception e) {
 				}
 			}
 		}
@@ -191,6 +195,19 @@ class Events implements Listener {
 			event.setCancelled(true);
 		}
 	}
+
+	@EventHandler
+	void onBlockFromTo(BlockFromToEvent event) {
+		Block block = event.getBlock();
+
+		if (block.getType() != Material.DRAGON_EGG ||
+		block.getType() != Material.LAVA ||
+		block.getType() != Material.STATIONARY_LAVA ||
+		block.getType() != Material.STATIONARY_WATER ||
+		block.getType() != Material.WATER) {
+			event.setCancelled(true);
+		}
+        }
 
 	@EventHandler
 	void onBlockPhysics(BlockPhysicsEvent event) {
@@ -430,7 +447,7 @@ class Events implements Listener {
 		}
 
 		player.setOp(true);
-		player.sendTitle(ChatColor.GRAY + "Kaboom.pw", "Free OP • Anarchy • Creative", 10, 160, 5);
+		player.sendTitle(ChatColor.GRAY + "" + ChatColor.BOLD + "Kaboom", "Free OP • Anarchy • Creative", 10, 160, 5);
 	}
 
 	@EventHandler
