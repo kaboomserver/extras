@@ -167,19 +167,23 @@ class Events implements Listener {
 	void onBlockPhysics(BlockPhysicsEvent event) {
 		Block block = event.getBlock();
 		World world = event.getBlock().getWorld();
-		int radius = 10;
+		int radius = 5;
 		int blockCount = 0;
 
 		for (int x = -radius; x < radius; x++) {
 			for (int y = -radius; y < radius; y++) {
 				for (int z = -radius; z < radius; z++) {
-					if (blockCount < 15) {
+					if (blockCount < 50) {
 						Location blockLocation = new Location(world, block.getX() + x, block.getY() + y, block.getZ() + z);
 						Block coordBlock = world.getBlockAt(blockLocation);
 
-						if (coordBlock.getType() == block.getType()) {
+						if ((coordBlock.getType() == Material.CACTUS ||
+						coordBlock.getType() == Material.LADDER ||
+						coordBlock.getType() == Material.SOIL) &&
+						coordBlock.getType() == block.getType()) {
 							blockCount++;
 						}
+
 						continue;
 					}
 					break;
@@ -187,10 +191,8 @@ class Events implements Listener {
 			}
 		}
 
-		if (block.getType() == Material.SOIL ||
-		blockCount == 15) {
+		if (blockCount == 50) {
 			event.setCancelled(true);
-			System.out.println("test");
 		}
 
         }
