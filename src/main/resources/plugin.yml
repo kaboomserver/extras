@@ -1,7 +1,6 @@
 name: Extras
 main: pw.kaboom.extras.Main
 description: Plugin that adds extra functionality to the Kaboom.pw server.
-depend: [FastAsyncWorldEdit]
 version: master
 
 commands:

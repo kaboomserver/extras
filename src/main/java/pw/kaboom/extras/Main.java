@@ -5,7 +5,9 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.HttpURLConnection;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.UUID;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
@@ -23,7 +25,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
 	int onlineCount = 0;
-	File spawnSchematic = new File("worlds/world/spawn.schematic");
+	HashMap<UUID, Long> commandMillisList = new HashMap<UUID, Long>();
+	HashMap<UUID, Long> interactMillisList = new HashMap<UUID, Long>();
 	HashSet<String> consoleCommandBlacklist = new HashSet<String>(Arrays.asList(new String[] {
 		"essentials:action",
 		"essentials:adventure",
@@ -364,12 +367,12 @@ public class Main extends JavaPlugin {
 		this.getCommand("unloadchunks").setExecutor(new CommandUnloadChunks());
 		this.getCommand("username").setExecutor(new CommandUsername(this));
 
-		new PasteSpawn(this).runTaskTimerAsynchronously(this, 0, 10);
+		new Tick(this).runTaskTimer(this, 0, 1);
 		new TickAsync(this).runTaskTimerAsynchronously(this, 0, 1);
 		this.getServer().getPluginManager().registerEvents(new Events(this), this);
 	}
 
-	public void getSkin(String name, Player player) {
+	public void getSkin(String name, final Player player) {
 		try {
 			URL nameurl = new URL("https://api.mojang.com/users/profiles/minecraft/" + name);
 			HttpURLConnection nameconnection = (HttpURLConnection) nameurl.openConnection();
@@ -383,13 +386,16 @@ public class Main extends JavaPlugin {
 				if (uuidconnection.getResponseCode() == 200) {
 					InputStreamReader uuidstream = new InputStreamReader(uuidconnection.getInputStream());
 					JsonObject response = new JsonParser().parse(uuidstream).getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject();
-					String texture = response.get("value").getAsString();
-					String signature = response.get("signature").getAsString();
+					final String texture = response.get("value").getAsString();
+					final String signature = response.get("signature").getAsString();
 
-					Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
-						PlayerProfile textureprofile = player.getPlayerProfile();
-						textureprofile.setProperty(new ProfileProperty("textures", texture, signature));
-						player.setPlayerProfile(textureprofile);
+					Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+						@Override
+            					public void run() {
+							PlayerProfile textureprofile = player.getPlayerProfile();
+							textureprofile.setProperty(new ProfileProperty("textures", texture, signature));
+							player.setPlayerProfile(textureprofile);
+						}
 					});
 				}
 				uuidconnection.disconnect();

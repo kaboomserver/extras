@@ -3,8 +3,9 @@ package pw.kaboom.extras;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.UUID;
 
-import com.boydti.fawe.FaweAPI;
+import java.util.concurrent.TimeUnit;
 
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.destroystokyo.paper.event.entity.EntityKnockbackByEntityEvent;
@@ -26,6 +27,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
 import org.bukkit.block.CreatureSpawner;
+import org.bukkit.block.Sign;
 
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Entity;
@@ -38,31 +40,29 @@ import org.bukkit.entity.Slime;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import org.bukkit.event.block.BlockExplodeEvent;
-import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
+import org.bukkit.event.block.SignChangeEvent;
 
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
-import org.bukkit.event.entity.LingeringPotionSplashEvent;
-import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.entity.SpawnerSpawnEvent;
 
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import org.bukkit.event.server.ServerCommandEvent;
 
@@ -74,28 +74,13 @@ import org.bukkit.inventory.meta.PotionMeta;
 
 import org.bukkit.scheduler.BukkitRunnable;
 
-import org.spigotmc.event.player.PlayerSpawnLocationEvent;
-
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
-import com.sk89q.worldedit.math.transform.Transform;
-
-class PasteSpawn extends BukkitRunnable {
+class Tick extends BukkitRunnable {
 	Main main;
-	PasteSpawn(Main main) {
+	Tick(Main main) {
 		this.main = main;
 	}
 
 	public void run() {
-		try {
-			boolean allowUndo = false;
-			boolean noAir = false;
-			Vector position = new Vector(0, 100, 0);
-			EditSession editSession = ClipboardFormat.findByFile(main.spawnSchematic).load(main.spawnSchematic).paste(FaweAPI.getWorld("world"), position, allowUndo, !noAir, (Transform) null);
-		} catch (Exception exception) {
-			exception.printStackTrace();
- 		}
 	}
 }
 
@@ -106,11 +91,14 @@ class TickAsync extends BukkitRunnable {
 	}
 
 	public void run() {
-		for (World world : Bukkit.getServer().getWorlds()) {
+		for (final World world : Bukkit.getServer().getWorlds()) {
 			WorldBorder worldborder = world.getWorldBorder();
+
 			if (worldborder.getSize() != 60000000) {
 				worldborder.setSize(60000000);
-			} else if (worldborder.getCenter().getX() != 0 || worldborder.getCenter().getZ() != 0) {
+			}
+
+			if (worldborder.getCenter().getX() != 0 || worldborder.getCenter().getZ() != 0) {
 				worldborder.setCenter(0, 0);
 			}
 
@@ -118,47 +106,34 @@ class TickAsync extends BukkitRunnable {
 				world.setAutoSave(true);
 			}
 
-			for (Entity entity : world.getEntities()) {
-				if (entity instanceof LivingEntity) {
-					LivingEntity mob = (LivingEntity) entity;
-					AttributeInstance followAttribute = mob.getAttribute(Attribute.GENERIC_FOLLOW_RANGE);
-
-					if (followAttribute != null && followAttribute.getBaseValue() > 40) {
-						followAttribute.setBaseValue(32);
+			try {
+				for (final Chunk chunk : world.getLoadedChunks()) {
+					try {
+						chunk.getTileEntities();
+					} catch (Exception e) {
+						Bukkit.getScheduler().runTask(main, new Runnable() {
+							public void run() {
+								world.regenerateChunk(chunk.getX(), chunk.getZ());
+							}
+						});
 					}
 				}
+			} catch (Exception e) {
 			}
 
-			for (Chunk chunk : world.getLoadedChunks()) {
-				try {
-					int sizeCount = 0;
-					for (BlockState block : chunk.getTileEntities()) {
-						if (block instanceof Container) {
-							Container container = (Container) block;
+			try {
+				for (LivingEntity mob : world.getLivingEntities()) {
+					final AttributeInstance followAttribute = mob.getAttribute(Attribute.GENERIC_FOLLOW_RANGE);
 
-							for (ItemStack item : container.getInventory().getContents()) {
-								if (item != null) {
-									try {
-										sizeCount = sizeCount + item.toString().length();
-
-										if (sizeCount > 200000) {
-											for (BlockState chunkBlock : chunk.getTileEntities()) {
-												if (chunkBlock instanceof Container) {
-													Bukkit.getScheduler().scheduleSyncDelayedTask(main, () -> {
-														chunkBlock.getBlock().getDrops().clear();
-														chunkBlock.getBlock().setType(Material.AIR);
-													});
-												}
-											}
-										}
-									} catch (Exception e) {
-									}
-								}
+					if (followAttribute != null && followAttribute.getBaseValue() > 40) {
+						Bukkit.getScheduler().runTask(main, new Runnable() {
+							public void run() {
+								followAttribute.setBaseValue(40);
 							}
-						}
+						});
 					}
-				} catch (Exception e) {
 				}
+			} catch (Exception e) {
 			}
 		}
 	}
@@ -184,43 +159,51 @@ class Events implements Listener {
 			String prefix = ChatColor.translateAlternateColorCodes('&', "&8&l[&7&lDeOP&8&l]");
 			event.setFormat(prefix + ChatColor.GRAY + " " + player.getDisplayName().toString() + ChatColor.RESET + ": " + ChatColor.RESET + "%2$s");
 		}
+
 		event.setMessage(ChatColor.translateAlternateColorCodes('&', event.getMessage()));
 	}
 
 	@EventHandler
-	void onBlockExplode(BlockExplodeEvent event) {
-		double tps = Bukkit.getServer().getTPS()[0];
-
-		if (tps < 14) {
-			event.setCancelled(true);
-		}
-	}
-
-	@EventHandler
-	void onBlockFromTo(BlockFromToEvent event) {
-		Block block = event.getBlock();
-
-		if (block.getType() != Material.DRAGON_EGG ||
-		block.getType() != Material.LAVA ||
-		block.getType() != Material.STATIONARY_LAVA ||
-		block.getType() != Material.STATIONARY_WATER ||
-		block.getType() != Material.WATER) {
-			event.setCancelled(true);
-		}
-        }
-
-	@EventHandler
 	void onBlockPhysics(BlockPhysicsEvent event) {
 		Block block = event.getBlock();
+		World world = event.getBlock().getWorld();
+		int radius = 10;
+		int blockCount = 0;
 
-		if (block.getType() == Material.SOIL) {
-			event.setCancelled(true);
+		for (int x = -radius; x < radius; x++) {
+			for (int y = -radius; y < radius; y++) {
+				for (int z = -radius; z < radius; z++) {
+					if (blockCount < 15) {
+						Location blockLocation = new Location(world, block.getX() + x, block.getY() + y, block.getZ() + z);
+						Block coordBlock = world.getBlockAt(blockLocation);
+
+						if (coordBlock.getType() == block.getType()) {
+							blockCount++;
+						}
+						continue;
+					}
+					break;
+				}
+			}
 		}
+
+		if (block.getType() == Material.SOIL ||
+		blockCount == 15) {
+			event.setCancelled(true);
+			System.out.println("test");
+		}
+
         }
 
 	@EventHandler
 	void onBlockPlace(BlockPlaceEvent event) {
 		if (event.getItemInHand().toString().length() > 3019) {
+			event.setCancelled(true);
+		}
+
+		try {
+			event.getBlockPlaced().getState();
+		} catch (Exception e) {
 			event.setCancelled(true);
 		}
         }
@@ -251,13 +234,17 @@ class Events implements Listener {
 		int onChunk = 0;
 
 		for (Entity chunkEntity : chunkEntities) {
-			if (onChunk < 50 && chunkEntity.getType() != EntityType.PLAYER) {
-				onChunk++;
+			if (onChunk < 50) {
+				if (chunkEntity.getType() != EntityType.PLAYER) {
+					onChunk++;
+				}
+				continue;
 			}
+			break;
 		}
 
-		if (onChunk == 50 && !(entity instanceof LivingEntity) ||
-		tps < 14 && entity.getType() == EntityType.PRIMED_TNT) {
+		if ((onChunk == 50 && !(entity instanceof LivingEntity)) ||
+		(tps < 14 && entity.getType() == EntityType.PRIMED_TNT)) {
 			entity.remove();
 		}
 
@@ -272,12 +259,14 @@ class Events implements Listener {
 	}
 
 	@EventHandler
-	void onEntityDamage(EntityDamageEvent event) {
+	void onEntityDeath(EntityDeathEvent event) {
 		Entity entity = event.getEntity();
+
 		if (entity.getType() == EntityType.PLAYER) {
-			if (event.getCause() == DamageCause.VOID && entity.getLocation().getY() > -64 ||
-			event.getCause() == DamageCause.CUSTOM ||
-			event.getCause() == DamageCause.SUICIDE) {
+			if ((entity.getLastDamageCause().getCause() == DamageCause.VOID && entity.getLocation().getY() > -64) ||
+			entity.getLastDamageCause().getCause() == DamageCause.CUSTOM ||
+			entity.getLastDamageCause().getCause() == DamageCause.SUICIDE) {
+				((Player)entity).setHealth(20);
 				event.setCancelled(true);
 			}
 		}
@@ -299,9 +288,13 @@ class Events implements Listener {
 		int onChunk = 0;
 
 		for (Entity chunkEntity : chunkEntities) {
-			if (onChunk < 50 && chunkEntity.getType() != EntityType.PLAYER) {
-				onChunk++;
+			if (onChunk < 50) {
+				if (chunkEntity.getType() != EntityType.PLAYER) {
+					onChunk++;
+				}
+				continue;
 			}
+			break;
 		}
 
 		if (onChunk == 50 && entity.getType() != EntityType.PLAYER) {
@@ -382,35 +375,35 @@ class Events implements Listener {
 	}
 
 	@EventHandler
-	void onLingeringPotionSplash(LingeringPotionSplashEvent event) {
-		Entity entity = event.getEntity();
-		double x = entity.getLocation().getX();
-		double z = entity.getLocation().getZ();
-
-		if (entity.getWorld().getName().equals("world")) {
-			if ((x > -20 && x < 20) && (z > -20 && z < 20)) {
-				event.setCancelled(true);
-			}
-		}
-	}
-
-	@EventHandler
-	void onPotionSplash(PotionSplashEvent event) {
-		Entity entity = event.getEntity();
-		double x = entity.getLocation().getX();
-		double z = entity.getLocation().getZ();
-
-		if (entity.getWorld().getName().equals("world")) {
-			if ((x > -20 && x < 20) && (z > -20 && z < 20)) {
-				event.setCancelled(true);
-			}
-		}
-	}
-
-	@EventHandler
 	void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
 		String arr[] = event.getMessage().split(" ");
+		UUID playerUUID = event.getPlayer().getUniqueId();
+		long millisDifference = System.currentTimeMillis() - main.commandMillisList.get(playerUUID);
 
+		if (millisDifference < 400) {
+			event.setCancelled(true);
+		} else {
+			main.commandMillisList.put(playerUUID, System.currentTimeMillis());
+		}
+
+/*		if (arr[0].toLowerCase().equals("/minecraft:blockdata") ||
+		arr[0].toLowerCase().equals("/blockdata")) {
+			if (arr[4] != null &&
+			!arr[4].equals("{}")) {
+				final Player player = event.getPlayer();
+
+				Bukkit.getScheduler().scheduleAsyncDelayedTask(main, new Runnable() {
+					public void run() {
+						for (Chunk chunk : player.getWorld().getLoadedChunks()) {
+							try {
+								chunk.getTileEntities();
+							} catch (Exception e) {
+								player.getWorld().regenerateChunk(chunk.getX(), chunk.getZ());
+							}
+						}
+					}
+				}, 1L);
+			}*/
 		if (arr[0].toLowerCase().equals("/minecraft:gamerule") ||
 		arr[0].toLowerCase().equals("/gamerule")) {
 			if (arr[1] != null && arr[1].toLowerCase().equals("randomtickspeed")) {
@@ -429,25 +422,45 @@ class Events implements Listener {
 	}
 
 	@EventHandler
-	void onPlayerJoin(PlayerJoinEvent event) {
+	void onPlayerInteract(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
+		UUID playerUUID = event.getPlayer().getUniqueId();
+		long millisDifference = System.currentTimeMillis() - main.interactMillisList.get(playerUUID);
 
-		Bukkit.getScheduler().runTaskAsynchronously(main, () -> {
-			main.getSkin(player.getName(), player);
+		if (millisDifference < 200) {
+			event.setCancelled(true);
+		} else {
+			main.interactMillisList.put(playerUUID, System.currentTimeMillis());
+		}
+	}
+
+	@EventHandler
+	void onPlayerJoin(PlayerJoinEvent event) {
+		final Player player = event.getPlayer();
+
+		Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+			public void run() {
+				main.getSkin(player.getName(), player);
+			}
 		});
 
-		for (ItemStack item : player.getInventory().getContents()) {
-			if (item != null) {
-				try {
-					item.getItemMeta();
-				} catch (Exception e) {
-					player.getInventory().remove(item);
+		if (player.getInventory().getContents().length != 0) {
+			System.out.println("hm");
+			for (ItemStack item : player.getInventory().getContents()) {
+				if (item != null) {
+					try {
+						item.getItemMeta();
+					} catch (Exception e) {
+						player.getInventory().remove(item);
+					}
 				}
 			}
 		}
 
+		main.commandMillisList.put(player.getUniqueId(), System.currentTimeMillis());
+		main.interactMillisList.put(player.getUniqueId(), System.currentTimeMillis());
 		player.setOp(true);
-		player.sendTitle(ChatColor.GRAY + "" + ChatColor.BOLD + "Kaboom", "Free OP • Anarchy • Creative", 10, 160, 5);
+		player.sendTitle(ChatColor.GRAY + "Welcome to Kaboom!", "Free OP • Anarchy • Creative", 10, 160, 5);
 	}
 
 	@EventHandler
@@ -465,27 +478,21 @@ class Events implements Listener {
 				event.disallow(Result.KICK_OTHER, "The server is throttled due to bot attacks. Please try logging in again.");
 				main.onlineCount++;
 			}
+		} else if (!(event.getHostname().startsWith("play.kaboom.pw") &&
+		event.getHostname().endsWith(":64518"))) {
+			event.disallow(Result.KICK_OTHER, "You connected to the server using an outdated server address/IP.\nPlease use the following address/IP:\n\nkaboom.pw");
 		} else {
 			event.allow();
 		}
+		System.out.println("\"" + event.getHostname() + "\"");
 	}
 
 	@EventHandler
-	void onPlayerRespawn(PlayerRespawnEvent event) {
+	void onPlayerQuit(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
-		World world = event.getRespawnLocation().getWorld();
-		if (world.getName().equals("world") && player.getBedSpawnLocation() == null) {
-			event.setRespawnLocation(new Location(world, 0.5, 100, 0.5));
-		}
-	}
 
-	@EventHandler
-	void onPlayerSpawnLocation(PlayerSpawnLocationEvent event) {
-		Player player = event.getPlayer();
-		World world = event.getSpawnLocation().getWorld();
-		if (!player.hasPlayedBefore()) {
-			event.setSpawnLocation(new Location(world, 0.5, 100, 0.5));
-		}
+		main.commandMillisList.remove(player.getUniqueId());
+		main.interactMillisList.remove(player.getUniqueId());
 	}
 
 	@EventHandler
@@ -494,9 +501,13 @@ class Events implements Listener {
 		int onChunk = 0;
 
 		for (Entity chunkEntity : chunkEntities) {
-			if (onChunk < 50 && event.getType() != EntityType.PLAYER) {
-				onChunk++;
+			if (onChunk < 50) {
+				if (chunkEntity.getType() != EntityType.PLAYER) {
+					onChunk++;
+				}
+				continue;
 			}
+			break;
 		}
 
 		if (onChunk == 50 && event.getType() != EntityType.PLAYER) {
@@ -510,6 +521,24 @@ class Events implements Listener {
 
 		if (main.consoleCommandBlacklist.contains(arr[0].toLowerCase())) {
 			event.setCancelled(true);
+/*		} else if (arr[0].toLowerCase().equals("minecraft:blockdata") ||
+		arr[0].toLowerCase().equals("blockdata")) {
+			if (arr[4] != null &&
+			!arr[4].equals("{}")) {
+				final Player player = event.getPlayer();
+
+				Bukkit.getScheduler().scheduleAsyncDelayedTask(main, new Runnable() {
+					public void run() {
+						for (Chunk chunk : player.getWorld().getLoadedChunks()) {
+							try {
+								chunk.getTileEntities();
+							} catch (Exception e) {
+								player.getWorld().regenerateChunk(chunk.getX(), chunk.getZ());
+							}
+						}
+					}
+				}, 1L);
+			}*/
 		} else if (arr[0].toLowerCase().equals("minecraft:gamerule") ||
 		arr[0].toLowerCase().equals("gamerule")) {
 			if (arr[1] != null && arr[1].toLowerCase().equals("randomtickspeed")) {
@@ -524,6 +553,15 @@ class Events implements Listener {
 				String particleArr[] = event.getCommand().split(" ", 11);
 				event.setCommand(particleArr[0].replaceAll(" [^ ]+$", "") + " 10 " + particleArr[1]);
 			}
+		}
+	}
+
+	@EventHandler
+	void onSignChange(SignChangeEvent event) {
+		try {
+			event.getLines();
+		} catch (Exception e) {
+			event.setCancelled(true);
 		}
 	}
 

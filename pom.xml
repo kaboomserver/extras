@@ -4,26 +4,11 @@
 	<artifactId>Extras</artifactId>
 	<version>master</version>
 
-	<properties>
-		<maven.compiler.source>11</maven.compiler.source>
-		<maven.compiler.target>11</maven.compiler.target>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>com.destroystokyo.paper</groupId>
 			<artifactId>paper-api</artifactId>
 			<version>1.12.2-R0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>com.boydti</groupId>
-			<artifactId>fawe-api</artifactId>
-			<version>latest</version>
-		</dependency>
-		<dependency>
-			<groupId>com.sk89q.worldedit</groupId>
-			<artifactId>worldedit-bukkit</artifactId>
-			<version>6.1.4-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
@@ -31,14 +16,6 @@
 		<repository>
 			<id>papermc</id>
 			<url>https://papermc.io/repo/repository/maven-public/</url>
-		</repository>
-		<repository>
-			<id>fawe</id>
-			<url>https://ci.athion.net/job/FastAsyncWorldEdit/ws/mvn/</url>
-		</repository>
-		<repository>
-			<id>worldedit</id>
-			<url>https://maven.sk89q.com/repo/</url>
 		</repository>
 	</repositories>
 

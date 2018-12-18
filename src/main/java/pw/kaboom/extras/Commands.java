@@ -179,50 +179,58 @@ class CommandSkin implements CommandExecutor {
 		this.main = main;
 	}
 
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		Player player = (Player) sender;
+	public boolean onCommand(CommandSender sender, Command command, String label, final String[] args) {
+		final Player player = (Player) sender;
 
 		if (args.length == 0) {
 			player.sendMessage(ChatColor.RED + "Usage: /" + label + " <username>");
 		} else {
-			Bukkit.getScheduler().runTaskAsynchronously(main, () -> {
-				try {
-					String name = args[0];
-					URL nameurl = new URL("https://api.mojang.com/users/profiles/minecraft/" + name);
-					HttpURLConnection nameconnection = (HttpURLConnection) nameurl.openConnection();
+			Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+            			public void run() {
+					try {
+						final String name = args[0];
+						URL nameurl = new URL("https://api.mojang.com/users/profiles/minecraft/" + name);
+						HttpURLConnection nameconnection = (HttpURLConnection) nameurl.openConnection();
 
-					if (nameconnection.getResponseCode() == 200) {
-						InputStreamReader namestream = new InputStreamReader(nameconnection.getInputStream());
-						String uuid = new JsonParser().parse(namestream).getAsJsonObject().get("id").getAsString();
-						URL uuidurl = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false");
-						HttpURLConnection uuidconnection = (HttpURLConnection) uuidurl.openConnection();
+						if (nameconnection.getResponseCode() == 200) {
+							InputStreamReader namestream = new InputStreamReader(nameconnection.getInputStream());
+							String uuid = new JsonParser().parse(namestream).getAsJsonObject().get("id").getAsString();
+							URL uuidurl = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false");
+							HttpURLConnection uuidconnection = (HttpURLConnection) uuidurl.openConnection();
 
-						if (uuidconnection.getResponseCode() == 200) {
-							InputStreamReader uuidstream = new InputStreamReader(uuidconnection.getInputStream());
-							JsonObject response = new JsonParser().parse(uuidstream).getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject();
-							String texture = response.get("value").getAsString();
-							String signature = response.get("signature").getAsString();
+							if (uuidconnection.getResponseCode() == 200) {
+								InputStreamReader uuidstream = new InputStreamReader(uuidconnection.getInputStream());
+								JsonObject response = new JsonParser().parse(uuidstream).getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject();
+								final String texture = response.get("value").getAsString();
+								final String signature = response.get("signature").getAsString();
 
-							Bukkit.getScheduler().scheduleSyncDelayedTask(main, () -> {
-								PlayerProfile textureprofile = player.getPlayerProfile();
-								textureprofile.setProperty(new ProfileProperty("textures", texture, signature));
-								player.setPlayerProfile(textureprofile);
-								player.sendMessage("Successfully set your skin to " + name + "'s");
-							});
+								Bukkit.getScheduler().scheduleSyncDelayedTask(main, new Runnable() {
+            								public void run() {
+										PlayerProfile textureprofile = player.getPlayerProfile();
+										textureprofile.setProperty(new ProfileProperty("textures", texture, signature));
+										player.setPlayerProfile(textureprofile);
+										player.sendMessage("Successfully set your skin to " + name + "'s");
+									}
+								});
+							} else {
+								Bukkit.getScheduler().scheduleSyncDelayedTask(main, new Runnable() {
+            								public void run() {
+										player.sendMessage("Failed to change skin. Try again later");
+									}
+								});
+							}
+							uuidconnection.disconnect();
 						} else {
-							Bukkit.getScheduler().scheduleSyncDelayedTask(main, () -> {
-								player.sendMessage("Failed to change skin. Try again later");
+							Bukkit.getScheduler().scheduleSyncDelayedTask(main, new Runnable() {
+								public void run() {
+									player.sendMessage("A player with that username doesn't exist");
+								}
 							});
 						}
-						uuidconnection.disconnect();
-					} else {
-						Bukkit.getScheduler().scheduleSyncDelayedTask(main, () -> {
-							player.sendMessage("A player with that username doesn't exist");
-						});
+						nameconnection.disconnect();
+					} catch (Exception exception) {
+						exception.printStackTrace();
 					}
-					nameconnection.disconnect();
-				} catch (Exception exception) {
-					exception.printStackTrace();
 				}
 			});
 		}
@@ -235,7 +243,7 @@ class CommandSpawn implements CommandExecutor {
 		Player player = (Player) sender;
 
 		World world = Bukkit.getWorld("world");
-		player.teleport(new Location(world, 0.5, 100, 0.5));
+		player.teleport(world.getSpawnLocation());
 		player.sendMessage("Successfully moved to the spawn");
 		return true;
 	}
