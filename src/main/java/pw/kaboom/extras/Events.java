@@ -210,7 +210,7 @@ class Events implements Listener {
 			} else if (block.getRelative(BlockFace.DOWN).getType() == Material.AIR ||
 			(main.nonSolidBlockList.contains(block.getRelative(BlockFace.DOWN).getType()) &&
 			!main.nonSolidDoubleBlockList.contains(block.getRelative(BlockFace.DOWN).getType()))) {
- 				for (int y = block.getRelative(BlockFace.UP).getY(); y <= 128; y++) {
+ 				for (int y = block.getRelative(BlockFace.UP).getY(); y <= 256; y++) {
 					World world = event.getBlock().getWorld();
 					Block coordBlock = world.getBlockAt(new Location(world, block.getX(), y, block.getZ()));
 
