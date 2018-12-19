@@ -205,11 +205,23 @@ class Events implements Listener {
 				event.setCancelled(true);
 			}
 		} else if (main.nonSolidDoubleBlockList.contains(block.getType())) {
-			if (block.getRelative(BlockFace.DOWN).getType() == block.getType()) {
+			if (main.nonSolidDoubleBlockList.contains(block.getRelative(BlockFace.DOWN).getType())) {
 				event.setCancelled(true);
-			} else if ((block.getRelative(BlockFace.DOWN).getType() == Material.AIR ||
-			main.nonSolidBlockList.contains(block.getRelative(BlockFace.DOWN).getType())) && 
-			block.getRelative(BlockFace.UP).getType() == Material.AIR) {
+			} else if (block.getRelative(BlockFace.DOWN).getType() == Material.AIR ||
+			(main.nonSolidBlockList.contains(block.getRelative(BlockFace.DOWN).getType()) &&
+			!main.nonSolidDoubleBlockList.contains(block.getRelative(BlockFace.DOWN).getType()))) {
+ 				for (int y = block.getRelative(BlockFace.UP).getY(); y <= 128; y++) {
+					World world = event.getBlock().getWorld();
+					Block coordBlock = world.getBlockAt(new Location(world, block.getX(), y, block.getZ()));
+
+					if (main.nonSolidDoubleBlockList.contains(coordBlock.getType())) {
+						coordBlock.setType(Material.AIR, false);
+						continue;
+					}
+
+					break;
+				}
+
 				block.setType(Material.AIR, false);
 			}
 		} else if (main.nonSolidSingularBlockList.contains(block.getType())) {
