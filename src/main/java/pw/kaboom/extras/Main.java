@@ -25,6 +25,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
 	int onlineCount = 0;
+	int fallingBlockCount = 0;
 	HashMap<UUID, Long> commandMillisList = new HashMap<UUID, Long>();
 	HashMap<UUID, Long> interactMillisList = new HashMap<UUID, Long>();
 	HashSet<String> consoleCommandBlacklist = new HashSet<String>(Arrays.asList(new String[] {
@@ -353,8 +354,86 @@ public class Main extends JavaPlugin {
 		"warps",
 		"whisper",
 	}));
+	HashSet<Material> fallingBlockList = new HashSet<Material>(Arrays.asList(new Material[] {
+		Material.ANVIL,
+		Material.GRAVEL,
+		Material.SAND,
+	}));
+	HashSet<Material> nonSolidDoubleBlockList = new HashSet<Material>(Arrays.asList(new Material[] {
+		Material.LONG_GRASS,
+		Material.SIGN_POST,
+		Material.WOODEN_DOOR,
+		Material.IRON_DOOR_BLOCK,
+		Material.CACTUS,
+		Material.SUGAR_CANE_BLOCK,
+		Material.CAKE_BLOCK,
+		Material.DAYLIGHT_DETECTOR,
+		Material.CARPET,
+		Material.DOUBLE_PLANT,
+		Material.STANDING_BANNER,
+		Material.DAYLIGHT_DETECTOR_INVERTED,
+		Material.SPRUCE_DOOR,
+		Material.BIRCH_DOOR,
+		Material.JUNGLE_DOOR,
+		Material.ACACIA_DOOR,
+		Material.DARK_OAK_DOOR,
+	}));
+	HashSet<Material> nonSolidSingularBlockList = new HashSet<Material>(Arrays.asList(new Material[] {
+		Material.SAPLING,
+		Material.BED_BLOCK,
+		Material.POWERED_RAIL,
+		Material.DETECTOR_RAIL,
+		Material.DEAD_BUSH,
+		Material.YELLOW_FLOWER,
+		Material.RED_ROSE,
+		Material.BROWN_MUSHROOM,
+		Material.RED_MUSHROOM,
+		Material.FIRE,
+		/*Material.REDSTONE_WIRE,*/
+		Material.CROPS,
+		Material.RAILS,
+		Material.STONE_PLATE,
+		Material.WOOD_PLATE,
+		Material.SNOW,
+		Material.DIODE_BLOCK_OFF,
+		Material.DIODE_BLOCK_ON,
+		Material.PUMPKIN_STEM,
+		Material.MELON_STEM,
+		Material.WATER_LILY,
+		Material.FLOWER_POT,
+		Material.CARROT,
+		Material.POTATO,
+		Material.GOLD_PLATE,
+		Material.IRON_PLATE,
+		Material.REDSTONE_COMPARATOR_OFF,
+		Material.REDSTONE_COMPARATOR_ON,
+		Material.ACTIVATOR_RAIL,
+		Material.BEETROOT_BLOCK,
+		Material.NETHER_WART_BLOCK,
+	}));
+	HashSet<Material> nonSolidWallMountedBlockList = new HashSet<Material>(Arrays.asList(new Material[] {
+		Material.TORCH,
+		Material.LADDER,
+		Material.WALL_SIGN,
+		Material.LEVER,
+		Material.REDSTONE_TORCH_OFF,
+		Material.REDSTONE_TORCH_ON,
+		Material.STONE_BUTTON,
+		Material.TRAP_DOOR,
+		Material.VINE,
+		Material.COCOA,
+		Material.TRIPWIRE_HOOK,
+		Material.WOOD_BUTTON,
+		Material.IRON_TRAPDOOR,
+		Material.WALL_BANNER,
+	}));
+	HashSet<Material> nonSolidBlockList = new HashSet<Material>();
 
 	public void onEnable() {
+		this.nonSolidBlockList.addAll(nonSolidDoubleBlockList);
+		this.nonSolidBlockList.addAll(nonSolidSingularBlockList);
+		this.nonSolidBlockList.addAll(nonSolidWallMountedBlockList);
+
 		this.getCommand("clearchat").setExecutor(new CommandClearChat());
 		this.getCommand("console").setExecutor(new CommandConsole());
 		this.getCommand("destroyentities").setExecutor(new CommandDestroyEntities());

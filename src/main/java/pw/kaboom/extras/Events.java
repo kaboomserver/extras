@@ -24,6 +24,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
 import org.bukkit.block.CreatureSpawner;
@@ -166,35 +167,71 @@ class Events implements Listener {
 	@EventHandler
 	void onBlockPhysics(BlockPhysicsEvent event) {
 		Block block = event.getBlock();
-		World world = event.getBlock().getWorld();
-		int radius = 5;
-		int blockCount = 0;
 
-		for (int x = -radius; x < radius; x++) {
-			for (int y = -radius; y < radius; y++) {
-				for (int z = -radius; z < radius; z++) {
-					if (blockCount < 50) {
-						Location blockLocation = new Location(world, block.getX() + x, block.getY() + y, block.getZ() + z);
-						Block coordBlock = world.getBlockAt(blockLocation);
+		if (main.fallingBlockList.contains(block.getType())) {
+			main.fallingBlockCount++;
 
-						if ((coordBlock.getType() == Material.CACTUS ||
-						coordBlock.getType() == Material.LADDER ||
-						coordBlock.getType() == Material.SOIL) &&
-						coordBlock.getType() == block.getType()) {
-							blockCount++;
+			if (main.fallingBlockCount == 10) {
+				event.setCancelled(true);
+				main.fallingBlockCount = 0;
+			}
+		} else if (block.getType() == Material.SOIL) {
+			event.setCancelled(true);
+		} else if (main.nonSolidWallMountedBlockList.contains(block.getType())) {
+			World world = event.getBlock().getWorld();
+			int radius = 5;
+			int blockCount = 0;
+
+			for (int x = -radius; x <= radius; x++) {
+				for (int y = -radius; y <= radius; y++) {
+					for (int z = -radius; z <= radius; z++) {
+						if (blockCount < 42) {
+							Location blockLocation = new Location(world, block.getX() + x, block.getY() + y, block.getZ() + z);
+							Block coordBlock = world.getBlockAt(blockLocation);
+
+							if (coordBlock.getType() == block.getType() ||
+							main.nonSolidWallMountedBlockList.contains(coordBlock.getType())) {
+								blockCount++;
+							}
+
+							continue;
 						}
-
-						continue;
+						break;
 					}
-					break;
 				}
 			}
-		}
 
-		if (blockCount == 50) {
-			event.setCancelled(true);
-		}
+			if (blockCount == 42) {
+				event.setCancelled(true);
+			}
+		} else if (main.nonSolidDoubleBlockList.contains(block.getType())) {
+			/*if (block.getRelative(BlockFace.DOWN).getType() == Material.AIR ||
+			(main.nonSolidBlockList.contains(block.getRelative(BlockFace.DOWN).getType()) && block.getRelative(BlockFace.DOWN).getType() != block.getType())) {
+				for (int y = block.getRelative(BlockFace.UP).getY(); y <= 128; y++) {
+					World world = event.getBlock().getWorld();
+					Block coordBlock = world.getBlockAt(new Location(world, block.getX(), y, block.getZ()));
 
+					if (coordBlock.getType() == block.getType()) {
+						coordBlock.setType(Material.AIR, false);
+						continue;
+					}
+
+					break;
+				}
+
+				block.setType(Material.AIR, false);*/
+			/*} else */if (block.getRelative(BlockFace.DOWN).getType() == block.getType()) {
+				event.setCancelled(true);
+			}
+		} else if (main.nonSolidSingularBlockList.contains(block.getType())) {
+			/*if (block.getRelative(BlockFace.DOWN).getType() == Material.AIR ||
+			main.nonSolidBlockList.contains(block.getRelative(BlockFace.DOWN).getType())) {
+				block.setType(Material.AIR, false);
+				BlockState state = block.getState();
+				state.setType(Material.AIR);
+				state.update(true, false);
+			}*/
+		}
         }
 
 	@EventHandler
@@ -480,9 +517,9 @@ class Events implements Listener {
 				event.disallow(Result.KICK_OTHER, "The server is throttled due to bot attacks. Please try logging in again.");
 				main.onlineCount++;
 			}
-		} else if (!(event.getHostname().startsWith("play.kaboom.pw") &&
+		/*} else if (!(event.getHostname().startsWith("play.kaboom.pw") &&
 		event.getHostname().endsWith(":64518"))) {
-			event.disallow(Result.KICK_OTHER, "You connected to the server using an outdated server address/IP.\nPlease use the following address/IP:\n\nkaboom.pw");
+			event.disallow(Result.KICK_OTHER, "You connected to the server using an outdated server address/IP.\nPlease use the following address/IP:\n\nkaboom.pw");*/
 		} else {
 			event.allow();
 		}
