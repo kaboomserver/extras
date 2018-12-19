@@ -205,32 +205,18 @@ class Events implements Listener {
 				event.setCancelled(true);
 			}
 		} else if (main.nonSolidDoubleBlockList.contains(block.getType())) {
-			/*if (block.getRelative(BlockFace.DOWN).getType() == Material.AIR ||
-			(main.nonSolidBlockList.contains(block.getRelative(BlockFace.DOWN).getType()) && block.getRelative(BlockFace.DOWN).getType() != block.getType())) {
-				for (int y = block.getRelative(BlockFace.UP).getY(); y <= 128; y++) {
-					World world = event.getBlock().getWorld();
-					Block coordBlock = world.getBlockAt(new Location(world, block.getX(), y, block.getZ()));
-
-					if (coordBlock.getType() == block.getType()) {
-						coordBlock.setType(Material.AIR, false);
-						continue;
-					}
-
-					break;
-				}
-
-				block.setType(Material.AIR, false);*/
-			/*} else */if (block.getRelative(BlockFace.DOWN).getType() == block.getType()) {
+			if (block.getRelative(BlockFace.DOWN).getType() == block.getType()) {
 				event.setCancelled(true);
+			} else if ((block.getRelative(BlockFace.DOWN).getType() == Material.AIR ||
+			main.nonSolidBlockList.contains(block.getRelative(BlockFace.DOWN).getType())) && 
+			block.getRelative(BlockFace.UP).getType() == Material.AIR) {
+				block.setType(Material.AIR, false);
 			}
 		} else if (main.nonSolidSingularBlockList.contains(block.getType())) {
-			/*if (block.getRelative(BlockFace.DOWN).getType() == Material.AIR ||
+			if (block.getRelative(BlockFace.DOWN).getType() == Material.AIR ||
 			main.nonSolidBlockList.contains(block.getRelative(BlockFace.DOWN).getType())) {
 				block.setType(Material.AIR, false);
-				BlockState state = block.getState();
-				state.setType(Material.AIR);
-				state.update(true, false);
-			}*/
+			}
 		}
         }
 
@@ -517,9 +503,9 @@ class Events implements Listener {
 				event.disallow(Result.KICK_OTHER, "The server is throttled due to bot attacks. Please try logging in again.");
 				main.onlineCount++;
 			}
-		/*} else if (!(event.getHostname().startsWith("play.kaboom.pw") &&
+		} else if (!(event.getHostname().startsWith("play.kaboom.pw") &&
 		event.getHostname().endsWith(":64518"))) {
-			event.disallow(Result.KICK_OTHER, "You connected to the server using an outdated server address/IP.\nPlease use the following address/IP:\n\nkaboom.pw");*/
+			event.disallow(Result.KICK_OTHER, "You connected to the server using an outdated server address/IP.\nPlease use the following address/IP:\n\nkaboom.pw");
 		} else {
 			event.allow();
 		}
