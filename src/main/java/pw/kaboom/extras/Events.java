@@ -168,9 +168,48 @@ class Events implements Listener {
 	}
 
 	@EventHandler
-	void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent event) {
+	void onAsyncPlayerPreLogin(final AsyncPlayerPreLoginEvent event) {
 		main.commandMillisList.put(event.getUniqueId(), System.currentTimeMillis());
 		main.interactMillisList.put(event.getUniqueId(), System.currentTimeMillis());
+
+		/*try {
+			URL nameUrl = new URL("https://api.mojang.com/users/profiles/minecraft/" + event.getName());
+			HttpsURLConnection nameConnection = (HttpsURLConnection) nameUrl.openConnection();
+
+			if (nameConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+				System.out.println("ok");
+				InputStreamReader nameStream = new InputStreamReader(nameConnection.getInputStream());
+				String uuid = new JsonParser().parse(nameStream).getAsJsonObject().get("id").getAsString();
+				nameStream.close();
+				nameConnection.disconnect();
+
+				URL uuidUrl = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false");
+				HttpsURLConnection uuidConnection = (HttpsURLConnection) uuidUrl.openConnection();
+
+				if (uuidConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+					InputStreamReader uuidStream = new InputStreamReader(uuidConnection.getInputStream());
+					JsonObject response = new JsonParser().parse(uuidStream).getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject();
+					final String texture = response.get("value").getAsString();
+					final String signature = response.get("signature").getAsString();
+					uuidStream.close();
+					uuidConnection.disconnect();
+
+					Bukkit.getScheduler().runTask(main, new Runnable() {
+						@Override
+	    					public void run() {
+							PlayerProfile textureprofile = event.getPlayerProfile();
+							textureprofile.setProperty(new ProfileProperty("textures", texture, signature));
+							event.setPlayerProfile(textureprofile);
+						}
+					});
+				} else {
+					uuidConnection.disconnect();
+				}
+			} else {
+				nameConnection.disconnect();
+			}
+		} catch (Exception exception) {
+		}*/
 	}
 
 	@EventHandler
@@ -537,9 +576,9 @@ class Events implements Listener {
 				event.disallow(Result.KICK_OTHER, "The server is throttled due to bot attacks. Please try logging in again.");
 				main.onlineCount++;
 			}
-		/*} else if (!(event.getHostname().startsWith("play.kaboom.pw") &&
+		} else if (!(event.getHostname().startsWith("play.kaboom.pw") &&
 		event.getHostname().endsWith(":64518"))) {
-			event.disallow(Result.KICK_OTHER, "You connected to the server using an outdated server address/IP.\nPlease use the following address/IP:\n\nkaboom.pw");*/
+			event.disallow(Result.KICK_OTHER, "You connected to the server using an outdated server address/IP.\nPlease use the following address/IP:\n\nkaboom.pw");
 		} else {
 			event.allow();
 		}

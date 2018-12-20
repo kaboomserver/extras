@@ -2,7 +2,7 @@ package pw.kaboom.extras;
 
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.net.HttpURLConnection;
+import javax.net.ssl.HttpsURLConnection;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
@@ -189,47 +189,56 @@ class CommandSkin implements CommandExecutor {
             			public void run() {
 					try {
 						final String name = args[0];
-						URL nameurl = new URL("https://api.mojang.com/users/profiles/minecraft/" + name);
-						HttpURLConnection nameconnection = (HttpURLConnection) nameurl.openConnection();
+						URL nameUrl = new URL("https://api.mojang.com/users/profiles/minecraft/" + name);
+						HttpsURLConnection nameConnection = (HttpsURLConnection) nameUrl.openConnection();
 
-						if (nameconnection.getResponseCode() == 200) {
-							InputStreamReader namestream = new InputStreamReader(nameconnection.getInputStream());
-							String uuid = new JsonParser().parse(namestream).getAsJsonObject().get("id").getAsString();
-							URL uuidurl = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false");
-							HttpURLConnection uuidconnection = (HttpURLConnection) uuidurl.openConnection();
+						if (nameConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+							InputStreamReader nameStream = new InputStreamReader(nameConnection.getInputStream());
+							String uuid = new JsonParser().parse(nameStream).getAsJsonObject().get("id").getAsString();
+							nameStream.close();
+							nameConnection.disconnect();
 
-							if (uuidconnection.getResponseCode() == 200) {
-								InputStreamReader uuidstream = new InputStreamReader(uuidconnection.getInputStream());
-								JsonObject response = new JsonParser().parse(uuidstream).getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject();
+							URL uuidUrl = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false");
+							HttpsURLConnection uuidConnection = (HttpsURLConnection) uuidUrl.openConnection();
+
+							if (uuidConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+								InputStreamReader uuidStream = new InputStreamReader(uuidConnection.getInputStream());
+								JsonObject response = new JsonParser().parse(uuidStream).getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject();
 								final String texture = response.get("value").getAsString();
 								final String signature = response.get("signature").getAsString();
+								uuidStream.close();
+								uuidConnection.disconnect();
 
-								Bukkit.getScheduler().scheduleSyncDelayedTask(main, new Runnable() {
-            								public void run() {
-										PlayerProfile textureprofile = player.getPlayerProfile();
-										textureprofile.setProperty(new ProfileProperty("textures", texture, signature));
-										player.setPlayerProfile(textureprofile);
+								final PlayerProfile textureProfile = player.getPlayerProfile();
+								textureProfile.clearProperties();
+								textureProfile.setProperty(new ProfileProperty("textures", texture, signature));
+
+								Bukkit.getScheduler().runTask(main, new Runnable() {
+									@Override
+				    					public void run() {
+										player.setPlayerProfile(textureProfile);
 										player.sendMessage("Successfully set your skin to " + name + "'s");
 									}
 								});
 							} else {
-								Bukkit.getScheduler().scheduleSyncDelayedTask(main, new Runnable() {
-            								public void run() {
+								uuidConnection.disconnect();
+								Bukkit.getScheduler().runTask(main, new Runnable() {
+									@Override
+				    					public void run() {
 										player.sendMessage("Failed to change skin. Try again later");
 									}
 								});
 							}
-							uuidconnection.disconnect();
 						} else {
-							Bukkit.getScheduler().scheduleSyncDelayedTask(main, new Runnable() {
-								public void run() {
+							nameConnection.disconnect();
+							Bukkit.getScheduler().runTask(main, new Runnable() {
+								@Override
+			    					public void run() {
 									player.sendMessage("A player with that username doesn't exist");
 								}
 							});
 						}
-						nameconnection.disconnect();
 					} catch (Exception exception) {
-						exception.printStackTrace();
 					}
 				}
 			});

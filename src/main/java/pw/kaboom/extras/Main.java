@@ -457,7 +457,6 @@ public class Main extends JavaPlugin {
 			HttpsURLConnection nameConnection = (HttpsURLConnection) nameUrl.openConnection();
 
 			if (nameConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
-				System.out.println("ok");
 				InputStreamReader nameStream = new InputStreamReader(nameConnection.getInputStream());
 				String uuid = new JsonParser().parse(nameStream).getAsJsonObject().get("id").getAsString();
 				nameStream.close();
@@ -474,12 +473,14 @@ public class Main extends JavaPlugin {
 					uuidStream.close();
 					uuidConnection.disconnect();
 
+					final PlayerProfile textureProfile = player.getPlayerProfile();
+					textureProfile.clearProperties();
+					textureProfile.setProperty(new ProfileProperty("textures", texture, signature));
+
 					Bukkit.getScheduler().runTask(this, new Runnable() {
 						@Override
 	    					public void run() {
-							PlayerProfile textureprofile = player.getPlayerProfile();
-							textureprofile.setProperty(new ProfileProperty("textures", texture, signature));
-							player.setPlayerProfile(textureprofile);
+							player.setPlayerProfile(textureProfile);
 						}
 					});
 				} else {
