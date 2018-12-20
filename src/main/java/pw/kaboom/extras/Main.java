@@ -476,7 +476,7 @@ public class Main extends JavaPlugin {
 
 					Bukkit.getScheduler().runTask(this, new Runnable() {
 						@Override
-            					public void run() {
+	    					public void run() {
 							PlayerProfile textureprofile = player.getPlayerProfile();
 							textureprofile.setProperty(new ProfileProperty("textures", texture, signature));
 							player.setPlayerProfile(textureprofile);
