@@ -30,6 +30,8 @@ import org.bukkit.block.Container;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.Sign;
 
+import org.bukkit.command.CommandSender;
+
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -324,18 +326,34 @@ class Events implements Listener {
 		Entity[] chunkEntities = event.getLocation().getChunk().getEntities();
 		int onChunk = 0;
 
-		for (Entity chunkEntity : chunkEntities) {
-			if (onChunk < 50) {
-				if (chunkEntity.getType() != EntityType.PLAYER) {
-					onChunk++;
+		if (entity.getType() == EntityType.ENDER_DRAGON) {
+			for (Entity chunkEntity : chunkEntities) {
+				if (onChunk < 5) {
+					if (chunkEntity.getType() == EntityType.ENDER_DRAGON) {
+						onChunk++;
+						continue;
+					}
 				}
-				continue;
+				break;
 			}
-			break;
-		}
 
-		if (onChunk == 50 && entity.getType() != EntityType.PLAYER) {
-			event.setCancelled(true);
+			if (onChunk == 5) {
+				event.setCancelled(true);
+			}
+		} else if (entity.getType() != EntityType.PLAYER) {
+			for (Entity chunkEntity : chunkEntities) {
+				if (onChunk < 50) {
+					if (chunkEntity.getType() != EntityType.PLAYER) {
+						onChunk++;
+						continue;
+					}
+				}
+				break;
+			}
+
+			if (onChunk == 50) {
+				event.setCancelled(true);
+			}
 		}
 
 		if (entity instanceof LivingEntity) {
@@ -537,18 +555,34 @@ class Events implements Listener {
 		Entity[] chunkEntities = event.getSpawnLocation().getChunk().getEntities();
 		int onChunk = 0;
 
-		for (Entity chunkEntity : chunkEntities) {
-			if (onChunk < 50) {
-				if (chunkEntity.getType() != EntityType.PLAYER) {
-					onChunk++;
+		if (event.getType() == EntityType.ENDER_DRAGON) {
+			for (Entity chunkEntity : chunkEntities) {
+				if (onChunk < 5) {
+					if (chunkEntity.getType() == EntityType.ENDER_DRAGON) {
+						onChunk++;
+						continue;
+					}
 				}
-				continue;
+				break;
 			}
-			break;
-		}
 
-		if (onChunk == 50 && event.getType() != EntityType.PLAYER) {
-			event.setCancelled(true);
+			if (onChunk == 5) {
+				event.setCancelled(true);
+			}
+		} else if (event.getType() != EntityType.PLAYER) {
+			for (Entity chunkEntity : chunkEntities) {
+				if (onChunk < 50) {
+					if (chunkEntity.getType() != EntityType.PLAYER) {
+						onChunk++;
+						continue;
+					}
+				}
+				break;
+			}
+
+			if (onChunk == 50) {
+				event.setCancelled(true);
+			}
 		}
 	}
 
