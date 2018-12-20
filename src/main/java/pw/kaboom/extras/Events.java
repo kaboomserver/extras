@@ -55,6 +55,8 @@ import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.SpawnerSpawnEvent;
 
+import org.bukkit.event.inventory.InventoryClickEvent;
+
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -163,6 +165,12 @@ class Events implements Listener {
 		}
 
 		event.setMessage(ChatColor.translateAlternateColorCodes('&', event.getMessage()));
+	}
+
+	@EventHandler
+	void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent event) {
+		main.commandMillisList.put(event.getUniqueId(), System.currentTimeMillis());
+		main.interactMillisList.put(event.getUniqueId(), System.currentTimeMillis());
 	}
 
 	@EventHandler
@@ -418,6 +426,21 @@ class Events implements Listener {
 		}
 	}
 
+	/*@EventHandler
+	void onInventoryClick(InventoryClickEvent event) {
+		int length = 0;
+		for (ItemStack itemStack : event.getClickedInventory().getContents()) {
+			if (itemStack != null) {
+				length = length + itemStack.toString().length();
+			}
+		}
+		System.out.println("inventory");
+		System.out.println(length);
+		if (length > 100000) {
+			event.getClickedInventory().clear();
+		}
+        }*/
+
 	@EventHandler
 	void onItemSpawn(ItemSpawnEvent event) {
 		ItemStack item = event.getEntity().getItemStack();
@@ -491,30 +514,9 @@ class Events implements Listener {
 
 	@EventHandler
 	void onPlayerJoin(PlayerJoinEvent event) {
-		final Player player = event.getPlayer();
+		Player player = event.getPlayer();
 
-		Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
-			public void run() {
-				main.getSkin(player.getName(), player);
-			}
-		});
-
-		if (player.getInventory().getContents().length != 0) {
-			System.out.println("hm");
-			for (ItemStack item : player.getInventory().getContents()) {
-				if (item != null) {
-					try {
-						item.getItemMeta();
-					} catch (Exception e) {
-						player.getInventory().remove(item);
-					}
-				}
-			}
-		}
-
-		main.commandMillisList.put(player.getUniqueId(), System.currentTimeMillis());
-		main.interactMillisList.put(player.getUniqueId(), System.currentTimeMillis());
-		player.setOp(true);
+		player.getInventory().clear();
 		player.sendTitle(ChatColor.GRAY + "Welcome to Kaboom!", "Free OP • Anarchy • Creative", 10, 160, 5);
 	}
 
@@ -525,6 +527,8 @@ class Events implements Listener {
 
 	@EventHandler
 	void onPlayerLogin(PlayerLoginEvent event) {
+		final Player player = event.getPlayer();
+
 		if (Bukkit.getOnlinePlayers().size() > 30) {
 			if (main.onlineCount == 5) {
 				event.allow();
@@ -533,13 +537,20 @@ class Events implements Listener {
 				event.disallow(Result.KICK_OTHER, "The server is throttled due to bot attacks. Please try logging in again.");
 				main.onlineCount++;
 			}
-		} else if (!(event.getHostname().startsWith("play.kaboom.pw") &&
+		/*} else if (!(event.getHostname().startsWith("play.kaboom.pw") &&
 		event.getHostname().endsWith(":64518"))) {
-			event.disallow(Result.KICK_OTHER, "You connected to the server using an outdated server address/IP.\nPlease use the following address/IP:\n\nkaboom.pw");
+			event.disallow(Result.KICK_OTHER, "You connected to the server using an outdated server address/IP.\nPlease use the following address/IP:\n\nkaboom.pw");*/
 		} else {
 			event.allow();
 		}
-		System.out.println("\"" + event.getHostname() + "\"");
+
+		player.setOp(true);
+
+		Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+			public void run() {
+				main.getSkin(player.getName(), player);
+			}
+		});
 	}
 
 	@EventHandler

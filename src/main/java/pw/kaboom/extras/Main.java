@@ -3,11 +3,11 @@ package pw.kaboom.extras;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.net.HttpURLConnection;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
+import javax.net.ssl.HttpsURLConnection;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
@@ -453,22 +453,28 @@ public class Main extends JavaPlugin {
 
 	public void getSkin(String name, final Player player) {
 		try {
-			URL nameurl = new URL("https://api.mojang.com/users/profiles/minecraft/" + name);
-			HttpURLConnection nameconnection = (HttpURLConnection) nameurl.openConnection();
+			URL nameUrl = new URL("https://api.mojang.com/users/profiles/minecraft/" + name);
+			HttpsURLConnection nameConnection = (HttpsURLConnection) nameUrl.openConnection();
 
-			if (nameconnection.getResponseCode() == 200) {
-				InputStreamReader namestream = new InputStreamReader(nameconnection.getInputStream());
-				String uuid = new JsonParser().parse(namestream).getAsJsonObject().get("id").getAsString();
-				URL uuidurl = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false");
-				HttpURLConnection uuidconnection = (HttpURLConnection) uuidurl.openConnection();
+			if (nameConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+				System.out.println("ok");
+				InputStreamReader nameStream = new InputStreamReader(nameConnection.getInputStream());
+				String uuid = new JsonParser().parse(nameStream).getAsJsonObject().get("id").getAsString();
+				nameStream.close();
+				nameConnection.disconnect();
 
-				if (uuidconnection.getResponseCode() == 200) {
-					InputStreamReader uuidstream = new InputStreamReader(uuidconnection.getInputStream());
-					JsonObject response = new JsonParser().parse(uuidstream).getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject();
+				URL uuidUrl = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false");
+				HttpsURLConnection uuidConnection = (HttpsURLConnection) uuidUrl.openConnection();
+
+				if (uuidConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+					InputStreamReader uuidStream = new InputStreamReader(uuidConnection.getInputStream());
+					JsonObject response = new JsonParser().parse(uuidStream).getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject();
 					final String texture = response.get("value").getAsString();
 					final String signature = response.get("signature").getAsString();
+					uuidStream.close();
+					uuidConnection.disconnect();
 
-					Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+					Bukkit.getScheduler().runTask(this, new Runnable() {
 						@Override
             					public void run() {
 							PlayerProfile textureprofile = player.getPlayerProfile();
@@ -476,12 +482,13 @@ public class Main extends JavaPlugin {
 							player.setPlayerProfile(textureprofile);
 						}
 					});
+				} else {
+					uuidConnection.disconnect();
 				}
-				uuidconnection.disconnect();
+			} else {
+				nameConnection.disconnect();
 			}
-			nameconnection.disconnect();
 		} catch (Exception exception) {
-			exception.printStackTrace();
 		}
 	}
 }
