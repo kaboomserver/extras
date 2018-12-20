@@ -552,38 +552,39 @@ class Events implements Listener {
 
 	@EventHandler
 	void onPreCreatureSpawn(PreCreatureSpawnEvent event) {
-/*		Entity[] chunkEntities = event.getSpawnLocation().getChunk().getEntities();
-		int onChunk = 0;
+		Entity[] chunkEntities = event.getSpawnLocation().getChunk().getEntities();
+		List<LivingEntity> worldEntities = event.getSpawnLocation().getWorld().getLivingEntities();
+		int count = 0;
 
 		if (event.getType() == EntityType.ENDER_DRAGON) {
-			for (Entity chunkEntity : chunkEntities) {
-				if (onChunk < 5) {
-					if (chunkEntity.getType() == EntityType.ENDER_DRAGON) {
-						onChunk++;
-						continue;
+			for (LivingEntity worldEntity : worldEntities) {
+				if (count < 25) {
+					if (worldEntity.getType() == EntityType.ENDER_DRAGON) {
+						count++;
 					}
+					continue;
 				}
 				break;
 			}
 
-			if (onChunk == 5) {
+			if (count == 25) {
 				event.setCancelled(true);
 			}
 		} else if (event.getType() != EntityType.PLAYER) {
 			for (Entity chunkEntity : chunkEntities) {
-				if (onChunk < 50) {
+				if (count < 50) {
 					if (chunkEntity.getType() != EntityType.PLAYER) {
-						onChunk++;
-						continue;
+						count++;
 					}
+					continue;
 				}
 				break;
 			}
 
-			if (onChunk == 50) {
+			if (count == 50) {
 				event.setCancelled(true);
 			}
-		}*/
+		}
 	}
 
 	@EventHandler
