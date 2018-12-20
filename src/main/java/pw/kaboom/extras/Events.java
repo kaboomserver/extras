@@ -1,16 +1,21 @@
 package pw.kaboom.extras;
 
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import javax.net.ssl.HttpsURLConnection;
 
 import java.util.concurrent.TimeUnit;
 
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.destroystokyo.paper.event.entity.EntityKnockbackByEntityEvent;
 import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -77,6 +82,9 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 
 import org.bukkit.scheduler.BukkitRunnable;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 class Tick extends BukkitRunnable {
 	Main main;
@@ -168,11 +176,11 @@ class Events implements Listener {
 	}
 
 	@EventHandler
-	void onAsyncPlayerPreLogin(final AsyncPlayerPreLoginEvent event) {
+	void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent event) {
 		main.commandMillisList.put(event.getUniqueId(), System.currentTimeMillis());
 		main.interactMillisList.put(event.getUniqueId(), System.currentTimeMillis());
 
-		/*try {
+		try {
 			URL nameUrl = new URL("https://api.mojang.com/users/profiles/minecraft/" + event.getName());
 			HttpsURLConnection nameConnection = (HttpsURLConnection) nameUrl.openConnection();
 
@@ -180,36 +188,14 @@ class Events implements Listener {
 				System.out.println("ok");
 				InputStreamReader nameStream = new InputStreamReader(nameConnection.getInputStream());
 				String uuid = new JsonParser().parse(nameStream).getAsJsonObject().get("id").getAsString();
+				main.playerPremiumUUID.put(event.getName(), uuid);
 				nameStream.close();
 				nameConnection.disconnect();
-
-				URL uuidUrl = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false");
-				HttpsURLConnection uuidConnection = (HttpsURLConnection) uuidUrl.openConnection();
-
-				if (uuidConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
-					InputStreamReader uuidStream = new InputStreamReader(uuidConnection.getInputStream());
-					JsonObject response = new JsonParser().parse(uuidStream).getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject();
-					final String texture = response.get("value").getAsString();
-					final String signature = response.get("signature").getAsString();
-					uuidStream.close();
-					uuidConnection.disconnect();
-
-					Bukkit.getScheduler().runTask(main, new Runnable() {
-						@Override
-	    					public void run() {
-							PlayerProfile textureprofile = event.getPlayerProfile();
-							textureprofile.setProperty(new ProfileProperty("textures", texture, signature));
-							event.setPlayerProfile(textureprofile);
-						}
-					});
-				} else {
-					uuidConnection.disconnect();
-				}
 			} else {
 				nameConnection.disconnect();
 			}
 		} catch (Exception exception) {
-		}*/
+		}
 	}
 
 	@EventHandler
@@ -553,9 +539,12 @@ class Events implements Listener {
 
 	@EventHandler
 	void onPlayerJoin(PlayerJoinEvent event) {
-		Player player = event.getPlayer();
+		final Player player = event.getPlayer();
 
-		player.getInventory().clear();
+		if (player.hasPlayedBefore() == true) {
+			player.getInventory().clear();
+		}
+
 		player.sendTitle(ChatColor.GRAY + "Welcome to Kaboom!", "Free OP • Anarchy • Creative", 10, 160, 5);
 	}
 
@@ -568,15 +557,7 @@ class Events implements Listener {
 	void onPlayerLogin(PlayerLoginEvent event) {
 		final Player player = event.getPlayer();
 
-		if (Bukkit.getOnlinePlayers().size() > 30) {
-			if (main.onlineCount == 5) {
-				event.allow();
-				main.onlineCount = 0;
-			} else {
-				event.disallow(Result.KICK_OTHER, "The server is throttled due to bot attacks. Please try logging in again.");
-				main.onlineCount++;
-			}
-		} else if (!(event.getHostname().startsWith("play.kaboom.pw") &&
+		if (!(event.getHostname().startsWith("play.kaboom.pw") &&
 		event.getHostname().endsWith(":64518"))) {
 			event.disallow(Result.KICK_OTHER, "You connected to the server using an outdated server address/IP.\nPlease use the following address/IP:\n\nkaboom.pw");
 		} else {
@@ -585,11 +566,41 @@ class Events implements Listener {
 
 		player.setOp(true);
 
-		Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
-			public void run() {
-				main.getSkin(player.getName(), player);
-			}
-		});
+		if (main.playerPremiumUUID.containsKey(player.getName())) {
+			System.out.println(main.playerPremiumUUID.get(player.getName()));
+			Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+				public void run() {
+					try {
+						URL uuidUrl = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + main.playerPremiumUUID.get(player.getName()) + "?unsigned=false");
+						HttpsURLConnection uuidConnection = (HttpsURLConnection) uuidUrl.openConnection();
+
+						if (uuidConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+							InputStreamReader uuidStream = new InputStreamReader(uuidConnection.getInputStream());
+							JsonObject response = new JsonParser().parse(uuidStream).getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject();
+							final String texture = response.get("value").getAsString();
+							final String signature = response.get("signature").getAsString();
+							uuidStream.close();
+							uuidConnection.disconnect();
+
+							final PlayerProfile textureProfile = player.getPlayerProfile();
+							textureProfile.clearProperties();
+							textureProfile.setProperty(new ProfileProperty("textures", texture, signature));
+
+							Bukkit.getScheduler().runTask(main, new Runnable() {
+								@Override
+			    					public void run() {
+									player.setPlayerProfile(textureProfile);
+								}
+							});
+						} else {
+							uuidConnection.disconnect();
+						}
+						main.playerPremiumUUID.remove(player.getName());
+					} catch (Exception exception) {
+					}
+				}
+			});
+		}
 	}
 
 	@EventHandler

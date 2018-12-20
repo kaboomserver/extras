@@ -28,6 +28,7 @@ public class Main extends JavaPlugin {
 	int fallingBlockCount = 0;
 	HashMap<UUID, Long> commandMillisList = new HashMap<UUID, Long>();
 	HashMap<UUID, Long> interactMillisList = new HashMap<UUID, Long>();
+	HashMap<String, String> playerPremiumUUID = new HashMap<String, String>();
 	HashSet<String> consoleCommandBlacklist = new HashSet<String>(Arrays.asList(new String[] {
 		"essentials:action",
 		"essentials:adventure",
