@@ -211,6 +211,17 @@ class Events implements Listener {
 			}
 		} else if (block.getType() == Material.SOIL) {
 			event.setCancelled(true);
+		} else if (block.getType() == Material.STATIONARY_WATER ||
+		block.getType() == Material.STATIONARY_LAVA) {
+			if (block.getRelative(BlockFace.UP).getType() == block.getType()) {
+				if (block.getRelative(BlockFace.DOWN).getType() != Material.AIR &&
+				block.getRelative(BlockFace.NORTH).getType() != Material.AIR &&
+				block.getRelative(BlockFace.SOUTH).getType() != Material.AIR &&
+				block.getRelative(BlockFace.WEST).getType() != Material.AIR &&
+				block.getRelative(BlockFace.EAST).getType() != Material.AIR) {
+					event.setCancelled(true);
+				}
+			}
 		} else if (main.nonSolidWallMountedBlockList.contains(block.getType())) {
 			World world = event.getBlock().getWorld();
 			int radius = 5;
