@@ -47,6 +47,7 @@ import org.bukkit.entity.Slime;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
@@ -177,15 +178,11 @@ class Events implements Listener {
 
 	@EventHandler
 	void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent event) {
-		main.commandMillisList.put(event.getUniqueId(), System.currentTimeMillis());
-		main.interactMillisList.put(event.getUniqueId(), System.currentTimeMillis());
-
 		try {
 			URL nameUrl = new URL("https://api.mojang.com/users/profiles/minecraft/" + event.getName());
 			HttpsURLConnection nameConnection = (HttpsURLConnection) nameUrl.openConnection();
 
 			if (nameConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
-				System.out.println("ok");
 				InputStreamReader nameStream = new InputStreamReader(nameConnection.getInputStream());
 				String uuid = new JsonParser().parse(nameStream).getAsJsonObject().get("id").getAsString();
 				main.playerPremiumUUID.put(event.getName(), uuid);
@@ -197,6 +194,16 @@ class Events implements Listener {
 		} catch (Exception exception) {
 		}
 	}
+
+	@EventHandler
+	void onBlockFromTo(BlockFromToEvent event) {
+		try {
+			event.getBlock().getState();
+			event.getToBlock().getState();
+		} catch (Exception e) {
+			event.setCancelled(true);
+		}
+        }
 
 	@EventHandler
 	void onBlockPhysics(BlockPhysicsEvent event) {
@@ -366,38 +373,41 @@ class Events implements Listener {
 	@EventHandler
 	void onEntitySpawn(EntitySpawnEvent event) {
 		Entity entity = event.getEntity();
-		Entity[] chunkEntities = event.getLocation().getChunk().getEntities();
-		List<LivingEntity> worldEntities = event.getLocation().getWorld().getLivingEntities();
-		int count = 0;
+		try {
+			Entity[] chunkEntities = event.getLocation().getChunk().getEntities();
+			List<LivingEntity> worldEntities = event.getLocation().getWorld().getLivingEntities();
+			int count = 0;
 
-		if (entity.getType() == EntityType.ENDER_DRAGON) {
-			for (LivingEntity worldEntity : worldEntities) {
-				if (count < 25) {
-					if (worldEntity.getType() == EntityType.ENDER_DRAGON) {
-						count++;
+			if (entity.getType() == EntityType.ENDER_DRAGON) {
+				for (LivingEntity worldEntity : worldEntities) {
+					if (count < 25) {
+						if (worldEntity.getType() == EntityType.ENDER_DRAGON) {
+							count++;
+						}
+						continue;
 					}
-					continue;
+					break;
 				}
-				break;
-			}
 
-			if (count == 25) {
-				event.setCancelled(true);
-			}
-		} else if (entity.getType() != EntityType.PLAYER) {
-			for (Entity chunkEntity : chunkEntities) {
-				if (count < 50) {
-					if (chunkEntity.getType() != EntityType.PLAYER) {
-						count++;
+				if (count == 25) {
+					event.setCancelled(true);
+				}
+			} else if (entity.getType() != EntityType.PLAYER) {
+				for (Entity chunkEntity : chunkEntities) {
+					if (count < 50) {
+						if (chunkEntity.getType() != EntityType.PLAYER) {
+							count++;
+						}
+						continue;
 					}
-					continue;
+					break;
 				}
-				break;
-			}
 
-			if (count == 50) {
-				event.setCancelled(true);
+				if (count == 50) {
+					event.setCancelled(true);
+				}
 			}
+		} catch (Exception | StackOverflowError e) {
 		}
 
 		if (entity instanceof LivingEntity) {
@@ -479,11 +489,9 @@ class Events implements Listener {
 
 	@EventHandler
 	void onItemSpawn(ItemSpawnEvent event) {
-		ItemStack item = event.getEntity().getItemStack();
-
 		try {
-			item.getItemMeta();
-		} catch (Exception e) {
+			event.getEntity().getItemStack().getItemMeta();
+		} catch (Exception | StackOverflowError e) {
 			event.setCancelled(true);
 		}
 	}
@@ -492,13 +500,16 @@ class Events implements Listener {
 	void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
 		String arr[] = event.getMessage().split(" ");
 		UUID playerUUID = event.getPlayer().getUniqueId();
-		long millisDifference = System.currentTimeMillis() - main.commandMillisList.get(playerUUID);
 
-		if (millisDifference < 400) {
-			event.setCancelled(true);
-		} else {
-			main.commandMillisList.put(playerUUID, System.currentTimeMillis());
+		if (main.commandMillisList.containsKey(playerUUID)) {
+			long millisDifference = System.currentTimeMillis() - main.commandMillisList.get(playerUUID);
+
+			if (millisDifference < 400) {
+				event.setCancelled(true);
+			}
 		}
+
+		main.commandMillisList.put(playerUUID, System.currentTimeMillis());
 
 /*		if (arr[0].toLowerCase().equals("/minecraft:blockdata") ||
 		arr[0].toLowerCase().equals("/blockdata")) {
@@ -539,13 +550,16 @@ class Events implements Listener {
 	void onPlayerInteract(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 		UUID playerUUID = event.getPlayer().getUniqueId();
-		long millisDifference = System.currentTimeMillis() - main.interactMillisList.get(playerUUID);
 
-		if (millisDifference < 200) {
-			event.setCancelled(true);
-		} else {
-			main.interactMillisList.put(playerUUID, System.currentTimeMillis());
+		if (main.interactMillisList.containsKey(playerUUID)) {
+			long millisDifference = System.currentTimeMillis() - main.interactMillisList.get(playerUUID);
+
+			if (millisDifference < 200) {
+				event.setCancelled(true);
+			}
 		}
+
+		main.interactMillisList.put(playerUUID, System.currentTimeMillis());
 	}
 
 	@EventHandler
@@ -566,51 +580,50 @@ class Events implements Listener {
 
 	@EventHandler
 	void onPlayerLogin(PlayerLoginEvent event) {
-		final Player player = event.getPlayer();
-
 		if (!(event.getHostname().startsWith("play.kaboom.pw") &&
 		event.getHostname().endsWith(":64518"))) {
 			event.disallow(Result.KICK_OTHER, "You connected to the server using an outdated server address/IP.\nPlease use the following address/IP:\n\nkaboom.pw");
 		} else {
+			final Player player = event.getPlayer();
+
 			event.allow();
-		}
+			player.setOp(true);
 
-		player.setOp(true);
+			if (main.playerPremiumUUID.containsKey(player.getName())) {
+				System.out.println(main.playerPremiumUUID.get(player.getName()));
+				Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+					public void run() {
+						try {
+							URL uuidUrl = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + main.playerPremiumUUID.get(player.getName()) + "?unsigned=false");
+							HttpsURLConnection uuidConnection = (HttpsURLConnection) uuidUrl.openConnection();
 
-		if (main.playerPremiumUUID.containsKey(player.getName())) {
-			System.out.println(main.playerPremiumUUID.get(player.getName()));
-			Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
-				public void run() {
-					try {
-						URL uuidUrl = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + main.playerPremiumUUID.get(player.getName()) + "?unsigned=false");
-						HttpsURLConnection uuidConnection = (HttpsURLConnection) uuidUrl.openConnection();
+							if (uuidConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+								InputStreamReader uuidStream = new InputStreamReader(uuidConnection.getInputStream());
+								JsonObject response = new JsonParser().parse(uuidStream).getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject();
+								final String texture = response.get("value").getAsString();
+								final String signature = response.get("signature").getAsString();
+								uuidStream.close();
+								uuidConnection.disconnect();
 
-						if (uuidConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
-							InputStreamReader uuidStream = new InputStreamReader(uuidConnection.getInputStream());
-							JsonObject response = new JsonParser().parse(uuidStream).getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject();
-							final String texture = response.get("value").getAsString();
-							final String signature = response.get("signature").getAsString();
-							uuidStream.close();
-							uuidConnection.disconnect();
+								final PlayerProfile textureProfile = player.getPlayerProfile();
+								textureProfile.clearProperties();
+								textureProfile.setProperty(new ProfileProperty("textures", texture, signature));
 
-							final PlayerProfile textureProfile = player.getPlayerProfile();
-							textureProfile.clearProperties();
-							textureProfile.setProperty(new ProfileProperty("textures", texture, signature));
-
-							Bukkit.getScheduler().runTask(main, new Runnable() {
-								@Override
-			    					public void run() {
-									player.setPlayerProfile(textureProfile);
-								}
-							});
-						} else {
-							uuidConnection.disconnect();
+								Bukkit.getScheduler().runTask(main, new Runnable() {
+									@Override
+				    					public void run() {
+										player.setPlayerProfile(textureProfile);
+									}
+								});
+							} else {
+								uuidConnection.disconnect();
+							}
+							main.playerPremiumUUID.remove(player.getName());
+						} catch (Exception exception) {
 						}
-						main.playerPremiumUUID.remove(player.getName());
-					} catch (Exception exception) {
 					}
-				}
-			});
+				});
+			}
 		}
 	}
 

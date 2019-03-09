@@ -19,8 +19,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 
-import org.bukkit.block.BlockFace;
-
 import org.bukkit.entity.Player;
 
 import org.bukkit.plugin.java.JavaPlugin;
@@ -392,7 +390,6 @@ public class Main extends JavaPlugin {
 		Material.BROWN_MUSHROOM,
 		Material.RED_MUSHROOM,
 		Material.FIRE,
-		/*Material.REDSTONE_WIRE,*/
 		Material.CROPS,
 		Material.RAILS,
 		Material.STONE_PLATE,
@@ -419,6 +416,7 @@ public class Main extends JavaPlugin {
 		Material.LADDER,
 		Material.WALL_SIGN,
 		Material.LEVER,
+		Material.REDSTONE_WIRE,
 		Material.REDSTONE_TORCH_OFF,
 		Material.REDSTONE_TORCH_ON,
 		Material.STONE_BUTTON,
