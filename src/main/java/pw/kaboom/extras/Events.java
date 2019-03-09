@@ -318,24 +318,6 @@ class Events implements Listener {
 	@EventHandler
 	void onEntityAddToWorld(EntityAddToWorldEvent event) {
 		Entity entity = event.getEntity();
-		Entity[] chunkEntities = entity.getLocation().getChunk().getEntities();
-		double tps = Bukkit.getServer().getTPS()[0];
-		int onChunk = 0;
-
-		for (Entity chunkEntity : chunkEntities) {
-			if (onChunk < 50) {
-				if (chunkEntity.getType() != EntityType.PLAYER) {
-					onChunk++;
-				}
-				continue;
-			}
-			break;
-		}
-
-		if ((onChunk == 50 && !(entity instanceof LivingEntity)) ||
-		(tps < 14 && entity.getType() == EntityType.PRIMED_TNT)) {
-			entity.remove();
-		}
 
 		if (entity instanceof LivingEntity) {
 			LivingEntity mob = (LivingEntity) entity;
@@ -343,6 +325,25 @@ class Events implements Listener {
 
 			if (followAttribute != null && followAttribute.getBaseValue() > 40) {
 				followAttribute.setBaseValue(40);
+			}
+		} else {
+			Entity[] chunkEntities = entity.getLocation().getChunk().getEntities();
+			double tps = Bukkit.getServer().getTPS()[0];
+			int count = 0;
+
+			for (Entity chunkEntity : chunkEntities) {
+				if (chunkEntity.getType() != EntityType.PLAYER) {
+					if (count < 50) {
+						count++;
+					} else {
+						entity.remove();
+						break;
+					}
+				}
+			}
+
+			if (tps < 14 && entity.getType() == EntityType.PRIMED_TNT) {
+				entity.remove();
 			}
 		}
 	}
@@ -373,41 +374,32 @@ class Events implements Listener {
 	@EventHandler
 	void onEntitySpawn(EntitySpawnEvent event) {
 		Entity entity = event.getEntity();
-		try {
-			Entity[] chunkEntities = event.getLocation().getChunk().getEntities();
-			List<LivingEntity> worldEntities = event.getLocation().getWorld().getLivingEntities();
-			int count = 0;
+		Entity[] chunkEntities = event.getLocation().getChunk().getEntities();
+		List<LivingEntity> worldEntities = event.getLocation().getWorld().getLivingEntities();
+		int count = 0;
 
-			if (entity.getType() == EntityType.ENDER_DRAGON) {
-				for (LivingEntity worldEntity : worldEntities) {
+		if (entity.getType() == EntityType.ENDER_DRAGON) {
+			for (LivingEntity worldEntity : worldEntities) {
+				if (worldEntity.getType() == EntityType.ENDER_DRAGON) {
 					if (count < 25) {
-						if (worldEntity.getType() == EntityType.ENDER_DRAGON) {
-							count++;
-						}
-						continue;
+						count++;
+					} else {
+						event.setCancelled(true);
+						break;
 					}
-					break;
-				}
-
-				if (count == 25) {
-					event.setCancelled(true);
-				}
-			} else if (entity.getType() != EntityType.PLAYER) {
-				for (Entity chunkEntity : chunkEntities) {
-					if (count < 50) {
-						if (chunkEntity.getType() != EntityType.PLAYER) {
-							count++;
-						}
-						continue;
-					}
-					break;
-				}
-
-				if (count == 50) {
-					event.setCancelled(true);
 				}
 			}
-		} catch (Exception | StackOverflowError e) {
+		} else if (entity.getType() != EntityType.PLAYER) {
+			for (Entity chunkEntity : chunkEntities) {
+				if (chunkEntity.getType() != EntityType.PLAYER) {
+					if (count < 50) {
+						count++;
+					} else {
+						event.setCancelled(true);
+						break;
+					}
+				}
+			}
 		}
 
 		if (entity instanceof LivingEntity) {
@@ -580,7 +572,7 @@ class Events implements Listener {
 
 	@EventHandler
 	void onPlayerLogin(PlayerLoginEvent event) {
-		if (!(event.getHostname().startsWith("play.kaboom.pw") &&
+		if ((event.getHostname().startsWith("play.kaboom.pw") &&
 		event.getHostname().endsWith(":64518"))) {
 			event.disallow(Result.KICK_OTHER, "You connected to the server using an outdated server address/IP.\nPlease use the following address/IP:\n\nkaboom.pw");
 		} else {
@@ -643,31 +635,25 @@ class Events implements Listener {
 
 		if (event.getType() == EntityType.ENDER_DRAGON) {
 			for (LivingEntity worldEntity : worldEntities) {
-				if (count < 25) {
-					if (worldEntity.getType() == EntityType.ENDER_DRAGON) {
+				if (worldEntity.getType() == EntityType.ENDER_DRAGON) {
+					if (count < 25) {
 						count++;
+					} else {
+						event.setCancelled(true);
+						break;
 					}
-					continue;
 				}
-				break;
-			}
-
-			if (count == 25) {
-				event.setCancelled(true);
 			}
 		} else if (event.getType() != EntityType.PLAYER) {
 			for (Entity chunkEntity : chunkEntities) {
-				if (count < 50) {
-					if (chunkEntity.getType() != EntityType.PLAYER) {
+				if (chunkEntity.getType() != EntityType.PLAYER) {
+					if (count < 50) {
 						count++;
+					} else {
+						event.setCancelled(true);
+						break;
 					}
-					continue;
 				}
-				break;
-			}
-
-			if (count == 50) {
-				event.setCancelled(true);
 			}
 		}
 	}
