@@ -35,10 +35,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 class CommandClearChat implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		for (int i = 0; i < 100; ++i) {
-			Bukkit.broadcastMessage("");
+		for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+			for (int i = 0; i < 100; ++i) {
+				onlinePlayer.sendMessage("");
+			}
+			onlinePlayer.sendMessage(ChatColor.DARK_GREEN + "The chat has been cleared");
 		}
-		Bukkit.broadcastMessage(ChatColor.DARK_GREEN + "The chat has been cleared");
 		return true;
 	}
 }
@@ -265,7 +267,9 @@ class CommandTellraw implements CommandExecutor {
 		if (args.length == 0) {
 			player.sendMessage(ChatColor.RED + "Usage: /" + label + " <message ..>");
 		} else {
-			Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', String.join(" ", args)));
+			for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+				onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', String.join(" ", args)));
+			}
 		}
 		return true;
 	}

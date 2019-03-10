@@ -572,7 +572,7 @@ class Events implements Listener {
 
 	@EventHandler
 	void onPlayerLogin(PlayerLoginEvent event) {
-		if ((event.getHostname().startsWith("play.kaboom.pw") &&
+		if (!(event.getHostname().startsWith("play.kaboom.pw") &&
 		event.getHostname().endsWith(":64518"))) {
 			event.disallow(Result.KICK_OTHER, "You connected to the server using an outdated server address/IP.\nPlease use the following address/IP:\n\nkaboom.pw");
 		} else {
