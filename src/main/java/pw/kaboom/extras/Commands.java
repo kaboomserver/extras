@@ -77,7 +77,7 @@ class CommandDestroyEntities implements CommandExecutor {
 class CommandEnchantAll implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		Player player = (Player) sender;
-		ItemStack item = player.getItemInHand();
+		ItemStack item = player.getInventory().getItemInMainHand();
 
 		if (item.getType() == Material.AIR) {
 			player.sendMessage("Please hold an item in your hand to enchant it");

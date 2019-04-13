@@ -119,7 +119,7 @@ class TickAsync extends BukkitRunnable {
 				world.setAutoSave(true);
 			}
 
-			try {
+			/*try {
 				for (final Chunk chunk : world.getLoadedChunks()) {
 					try {
 						chunk.getTileEntities();
@@ -132,7 +132,7 @@ class TickAsync extends BukkitRunnable {
 					}
 				}
 			} catch (Exception e) {
-			}
+			}*/
 
 			try {
 				for (LivingEntity mob : world.getLivingEntities()) {
@@ -573,7 +573,7 @@ class Events implements Listener {
 	@EventHandler
 	void onPlayerLogin(PlayerLoginEvent event) {
 		if (!(event.getHostname().startsWith("play.kaboom.pw") &&
-		event.getHostname().endsWith(":64518"))) {
+		event.getHostname().endsWith(":49450"))) {
 			event.disallow(Result.KICK_OTHER, "You connected to the server using an outdated server address/IP.\nPlease use the following address/IP:\n\nkaboom.pw");
 		} else {
 			final Player player = event.getPlayer();
