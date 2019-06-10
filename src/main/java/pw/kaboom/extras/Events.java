@@ -535,6 +535,11 @@ class Events implements Listener {
 				String particleArr[] = event.getMessage().split(" ", 11);
 				event.setMessage(particleArr[0].replaceAll(" [^ ]+$", "") + " 10 " + particleArr[1]);
 			}
+		} else if (arr[0].toLowerCase().equals("/minecraft:setblock") ||
+		arr[0].toLowerCase().equals("/setblock")) {
+			if (event.getMessage().contains("translation.test.invalid")) {
+				event.setCancelled(true);
+			}
 		}
 	}
 
@@ -573,7 +578,7 @@ class Events implements Listener {
 	@EventHandler
 	void onPlayerLogin(PlayerLoginEvent event) {
 		if (!(event.getHostname().startsWith("play.kaboom.pw") &&
-		event.getHostname().endsWith(":49450"))) {
+		event.getHostname().endsWith(":53950"))) {
 			event.disallow(Result.KICK_OTHER, "You connected to the server using an outdated server address/IP.\nPlease use the following address/IP:\n\nkaboom.pw");
 		} else {
 			final Player player = event.getPlayer();
@@ -695,6 +700,11 @@ class Events implements Listener {
 			if (arr[9] != null && Integer.parseInt(arr[9]) > 10) {
 				String particleArr[] = event.getCommand().split(" ", 11);
 				event.setCommand(particleArr[0].replaceAll(" [^ ]+$", "") + " 10 " + particleArr[1]);
+			}
+		} else if (arr[0].toLowerCase().equals("minecraft:setblock") ||
+		arr[0].toLowerCase().equals("setblock")) {
+			if (event.getCommand().contains("translation.test.invalid")) {
+				event.setCancelled(true);
 			}
 		}
 	}
