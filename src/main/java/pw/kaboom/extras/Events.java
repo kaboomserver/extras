@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import javax.net.ssl.HttpsURLConnection;
 
@@ -14,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.destroystokyo.paper.event.entity.EntityKnockbackByEntityEvent;
 import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
+import com.destroystokyo.paper.event.server.PaperServerListPingEvent;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 
@@ -23,6 +25,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Location;
+import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
 
@@ -35,6 +38,9 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.Sign;
+
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.CommandSender.Spigot;
 
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Entity;
@@ -81,6 +87,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionAttachment;
+import org.bukkit.permissions.PermissionAttachmentInfo;
+
+import org.bukkit.plugin.Plugin;
 
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -151,6 +163,99 @@ class TickAsync extends BukkitRunnable {
 		}
 	}
 }
+
+/*class CommandSenderOutput implements CommandSender {
+	String lastOutput;
+    @Override
+    public void sendMessage(String output) {
+        lastOutput = output;
+    }
+   
+    @Override
+    public void sendMessage(String[] strings) {
+        String string = "";
+        for(String s : strings) {
+            string += s;
+            string += " ";
+        }
+        lastOutput = string;
+    }
+
+    @Override
+    public Server getServer() {
+        return Bukkit.getServer();
+    }
+
+
+    @Override
+    public String getName() {
+        return "CommandSender";
+    }
+
+   @Override
+    public boolean isPermissionSet(Permission permission) {
+		return true;
+	}
+
+   @Override
+    public boolean isPermissionSet(String s) {
+		return true;
+	}
+
+    @Override
+    public boolean hasPermission(Permission permission) {
+		return true;
+	}
+
+    @Override
+    public boolean hasPermission(String s) {
+		return true;
+	}
+
+    @Override
+    public PermissionAttachment addAttachment(Plugin plugin) {
+		return addAttachment(plugin);
+	}
+
+    @Override
+    public PermissionAttachment addAttachment(Plugin plugin, int i) {
+		return addAttachment(plugin, i);
+	}
+
+    @Override
+    public PermissionAttachment addAttachment(Plugin plugin, String s, boolean b, int i) {
+		return addAttachment(plugin, s, b, i);
+	}
+
+    @Override
+    public PermissionAttachment addAttachment(Plugin plugin, String s, boolean b) {
+		return addAttachment(plugin, s, b);
+	}
+
+    @Override
+    public void removeAttachment(PermissionAttachment permissionAttachment) {}
+
+    @Override
+    public void recalculatePermissions() {}
+
+    @Override
+    public Set<PermissionAttachmentInfo> getEffectivePermissions() {
+		return getEffectivePermissions();
+	}
+
+    @Override
+    public boolean isOp() {
+		return true;
+	}
+
+    @Override
+    public void setOp(boolean b) {}
+
+    @Override
+    public Spigot spigot() {
+		return null;
+	}
+}*/
 
 class Events implements Listener {
 	Main main;
@@ -535,7 +640,9 @@ class Events implements Listener {
 				String particleArr[] = event.getMessage().split(" ", 11);
 				event.setMessage(particleArr[0].replaceAll(" [^ ]+$", "") + " 10 " + particleArr[1]);
 			}
-		} else if (arr[0].toLowerCase().equals("/minecraft:setblock") ||
+		} else if (arr[0].toLowerCase().equals("/minecraft:blockdata") ||
+		arr[0].toLowerCase().equals("/minecraft:setblock") ||
+		arr[0].toLowerCase().equals("/blockdata") ||
 		arr[0].toLowerCase().equals("/setblock")) {
 			if (event.getMessage().contains("translation.test.invalid")) {
 				event.setCancelled(true);
@@ -701,12 +808,24 @@ class Events implements Listener {
 				String particleArr[] = event.getCommand().split(" ", 11);
 				event.setCommand(particleArr[0].replaceAll(" [^ ]+$", "") + " 10 " + particleArr[1]);
 			}
-		} else if (arr[0].toLowerCase().equals("minecraft:setblock") ||
+		} else if (arr[0].toLowerCase().equals("minecraft:blockdata") ||
+		arr[0].toLowerCase().equals("minecraft:setblock") ||
+		arr[0].toLowerCase().equals("blockdata") ||
 		arr[0].toLowerCase().equals("setblock")) {
 			if (event.getCommand().contains("translation.test.invalid")) {
 				event.setCancelled(true);
 			}
 		}
+	}
+
+	@EventHandler
+	void onServerListPing(PaperServerListPingEvent event) {
+		if (event.getClient().getProtocolVersion() != -1) {
+			event.setProtocolVersion(event.getClient().getProtocolVersion());
+		} else {
+			event.setProtocolVersion(485);
+		}
+		event.setVersion("1.14.2");
 	}
 
 	@EventHandler
