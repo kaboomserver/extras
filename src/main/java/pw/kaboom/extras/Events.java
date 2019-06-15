@@ -60,8 +60,8 @@ import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.SignChangeEvent;
 
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
@@ -72,6 +72,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -130,21 +131,6 @@ class TickAsync extends BukkitRunnable {
 			if (world.isAutoSave() == false) {
 				world.setAutoSave(true);
 			}
-
-			/*try {
-				for (final Chunk chunk : world.getLoadedChunks()) {
-					try {
-						chunk.getTileEntities();
-					} catch (Exception e) {
-						Bukkit.getScheduler().runTask(main, new Runnable() {
-							public void run() {
-								world.regenerateChunk(chunk.getX(), chunk.getZ());
-							}
-						});
-					}
-				}
-			} catch (Exception e) {
-			}*/
 
 			try {
 				for (LivingEntity mob : world.getLivingEntities()) {
@@ -453,24 +439,21 @@ class Events implements Listener {
 		}
 	}
 
-	@EventHandler
-	void onEntityDeath(EntityDeathEvent event) {
+	/*@EventHandler
+	void onEntityDamage(EntityDamageEvent event) {
 		Entity entity = event.getEntity();
 
 		if (entity.getType() == EntityType.PLAYER) {
-			if ((entity.getLastDamageCause().getCause() == DamageCause.VOID && entity.getLocation().getY() > -64) ||
-			entity.getLastDamageCause().getCause() == DamageCause.CUSTOM ||
-			entity.getLastDamageCause().getCause() == DamageCause.SUICIDE) {
-				((Player)entity).setHealth(20);
+			if ((event.getCause() == DamageCause.VOID && entity.getLocation().getY() > -64) ||
+			event.getCause() == DamageCause.CUSTOM ||
+			event.getCause() == DamageCause.SUICIDE) {
 				event.setCancelled(true);
 			}
 		}
-	}
+	}*/
 
 	@EventHandler
 	void onEntityKnockbackByEntity(EntityKnockbackByEntityEvent event) {
-		Entity entity = event.getEntity();
-
 		if (event.getKnockbackStrength() > 100) {
 			event.setCancelled(true);
 		}
@@ -569,21 +552,6 @@ class Events implements Listener {
 		}
 	}
 
-	/*@EventHandler
-	void onInventoryClick(InventoryClickEvent event) {
-		int length = 0;
-		for (ItemStack itemStack : event.getClickedInventory().getContents()) {
-			if (itemStack != null) {
-				length = length + itemStack.toString().length();
-			}
-		}
-		System.out.println("inventory");
-		System.out.println(length);
-		if (length > 100000) {
-			event.getClickedInventory().clear();
-		}
-        }*/
-
 	@EventHandler
 	void onItemSpawn(ItemSpawnEvent event) {
 		try {
@@ -608,24 +576,6 @@ class Events implements Listener {
 
 		main.commandMillisList.put(playerUUID, System.currentTimeMillis());
 
-/*		if (arr[0].toLowerCase().equals("/minecraft:blockdata") ||
-		arr[0].toLowerCase().equals("/blockdata")) {
-			if (arr[4] != null &&
-			!arr[4].equals("{}")) {
-				final Player player = event.getPlayer();
-
-				Bukkit.getScheduler().scheduleAsyncDelayedTask(main, new Runnable() {
-					public void run() {
-						for (Chunk chunk : player.getWorld().getLoadedChunks()) {
-							try {
-								chunk.getTileEntities();
-							} catch (Exception e) {
-								player.getWorld().regenerateChunk(chunk.getX(), chunk.getZ());
-							}
-						}
-					}
-				}, 1L);
-			}*/
 		if (arr[0].toLowerCase().equals("/minecraft:gamerule") ||
 		arr[0].toLowerCase().equals("/gamerule")) {
 			if (arr[1] != null && arr[1].toLowerCase().equals("randomtickspeed")) {
@@ -641,12 +591,28 @@ class Events implements Listener {
 				event.setMessage(particleArr[0].replaceAll(" [^ ]+$", "") + " 10 " + particleArr[1]);
 			}
 		} else if (arr[0].toLowerCase().equals("/minecraft:blockdata") ||
+		arr[0].toLowerCase().equals("/minecraft:clone") ||
+		arr[0].toLowerCase().equals("/minecraft:fill") ||
 		arr[0].toLowerCase().equals("/minecraft:setblock") ||
 		arr[0].toLowerCase().equals("/blockdata") ||
+		arr[0].toLowerCase().equals("/clone") ||
+		arr[0].toLowerCase().equals("/fill") ||
 		arr[0].toLowerCase().equals("/setblock")) {
 			if (event.getMessage().contains("translation.test.invalid")) {
 				event.setCancelled(true);
 			}
+		}
+	}
+
+	@EventHandler
+	void onPlayerDeath(PlayerDeathEvent event) {
+		Player player = event.getEntity();
+
+		if ((player.getLastDamageCause().getCause() == DamageCause.VOID && player.getLocation().getY() > -64) ||
+		player.getLastDamageCause().getCause() == DamageCause.CUSTOM ||
+		player.getLastDamageCause().getCause() == DamageCause.SUICIDE) {
+			event.setReviveHealth(20);
+			event.setCancelled(true);
 		}
 	}
 
@@ -776,24 +742,6 @@ class Events implements Listener {
 
 		if (main.consoleCommandBlacklist.contains(arr[0].toLowerCase())) {
 			event.setCancelled(true);
-/*		} else if (arr[0].toLowerCase().equals("minecraft:blockdata") ||
-		arr[0].toLowerCase().equals("blockdata")) {
-			if (arr[4] != null &&
-			!arr[4].equals("{}")) {
-				final Player player = event.getPlayer();
-
-				Bukkit.getScheduler().scheduleAsyncDelayedTask(main, new Runnable() {
-					public void run() {
-						for (Chunk chunk : player.getWorld().getLoadedChunks()) {
-							try {
-								chunk.getTileEntities();
-							} catch (Exception e) {
-								player.getWorld().regenerateChunk(chunk.getX(), chunk.getZ());
-							}
-						}
-					}
-				}, 1L);
-			}*/
 		} else if (arr[0].toLowerCase().equals("minecraft:gamerule") ||
 		arr[0].toLowerCase().equals("gamerule")) {
 			if (arr[1] != null && arr[1].toLowerCase().equals("randomtickspeed")) {
@@ -809,8 +757,12 @@ class Events implements Listener {
 				event.setCommand(particleArr[0].replaceAll(" [^ ]+$", "") + " 10 " + particleArr[1]);
 			}
 		} else if (arr[0].toLowerCase().equals("minecraft:blockdata") ||
+		arr[0].toLowerCase().equals("minecraft:clone") ||
+		arr[0].toLowerCase().equals("minecraft:fill") ||
 		arr[0].toLowerCase().equals("minecraft:setblock") ||
 		arr[0].toLowerCase().equals("blockdata") ||
+		arr[0].toLowerCase().equals("clone") ||
+		arr[0].toLowerCase().equals("fill") ||
 		arr[0].toLowerCase().equals("setblock")) {
 			if (event.getCommand().contains("translation.test.invalid")) {
 				event.setCancelled(true);

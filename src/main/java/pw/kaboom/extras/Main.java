@@ -427,6 +427,8 @@ public class Main extends JavaPlugin {
 		Material.WOOD_BUTTON,
 		Material.IRON_TRAPDOOR,
 		Material.WALL_BANNER,
+		Material.PORTAL,
+		Material.ENDER_PORTAL,
 	}));
 	HashSet<Material> nonSolidBlockList = new HashSet<Material>();
 
