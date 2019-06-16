@@ -19,6 +19,9 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
 
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -252,9 +255,19 @@ class CommandSkin implements CommandExecutor {
 class CommandSpawn implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		Player player = (Player) sender;
-
 		World world = Bukkit.getWorld("world");
-		player.teleport(world.getSpawnLocation());
+		Location spawnLoc = world.getSpawnLocation();
+
+		for (double y = spawnLoc.getY(); y <= 257; y++) {
+			Block coordBlock = world.getBlockAt(new Location(world, spawnLoc.getX(), y, spawnLoc.getZ()));
+
+			if (coordBlock.getType() == Material.AIR &&
+			coordBlock.getRelative(BlockFace.UP).getType() == Material.AIR) {
+				player.teleport(spawnLoc.add(0, y - spawnLoc.getY(), 0));
+				break;
+			}
+		}
+
 		player.sendMessage("Successfully moved to the spawn");
 		return true;
 	}

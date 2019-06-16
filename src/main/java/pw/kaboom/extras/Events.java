@@ -439,18 +439,16 @@ class Events implements Listener {
 		}
 	}
 
-	/*@EventHandler
+	@EventHandler
 	void onEntityDamage(EntityDamageEvent event) {
 		Entity entity = event.getEntity();
 
 		if (entity.getType() == EntityType.PLAYER) {
-			if ((event.getCause() == DamageCause.VOID && entity.getLocation().getY() > -64) ||
-			event.getCause() == DamageCause.CUSTOM ||
-			event.getCause() == DamageCause.SUICIDE) {
-				event.setCancelled(true);
+			if (event.getCause() == DamageCause.VOID && entity.getLocation().getY() > -64) {
+				event.setDamage(0);
 			}
 		}
-	}*/
+	}
 
 	@EventHandler
 	void onEntityKnockbackByEntity(EntityKnockbackByEntityEvent event) {
@@ -608,11 +606,30 @@ class Events implements Listener {
 	void onPlayerDeath(PlayerDeathEvent event) {
 		Player player = event.getEntity();
 
-		if ((player.getLastDamageCause().getCause() == DamageCause.VOID && player.getLocation().getY() > -64) ||
-		player.getLastDamageCause().getCause() == DamageCause.CUSTOM ||
-		player.getLastDamageCause().getCause() == DamageCause.SUICIDE) {
-			event.setReviveHealth(20);
-			event.setCancelled(true);
+		player.setHealth(20);
+		player.setFoodLevel(20);
+		player.setFireTicks(0);
+		player.setRemainingAir(player.getMaximumAir());
+		player.getActivePotionEffects().clear();
+
+		if (player.getLastDamageCause().getCause() != DamageCause.CUSTOM &&
+		player.getLastDamageCause().getCause() != DamageCause.SUICIDE) {
+			Bukkit.getScheduler().scheduleSyncDelayedTask(main, new Runnable() {
+				public void run() {
+					World world = Bukkit.getWorld("world");
+					Location spawnLoc = world.getSpawnLocation();
+
+					for (double y = spawnLoc.getY(); y <= 257; y++) {
+						Block coordBlock = world.getBlockAt(new Location(world, spawnLoc.getX(), y, spawnLoc.getZ()));
+
+						if (coordBlock.getType() == Material.AIR &&
+						coordBlock.getRelative(BlockFace.UP).getType() == Material.AIR) {
+							player.teleport(spawnLoc.add(0, y - spawnLoc.getY(), 0));
+							break;
+						}
+					}
+				}
+			});
 		}
 	}
 
