@@ -616,17 +616,21 @@ class Events implements Listener {
 		player.getLastDamageCause().getCause() != DamageCause.SUICIDE) {
 			Bukkit.getScheduler().scheduleSyncDelayedTask(main, new Runnable() {
 				public void run() {
-					World world = Bukkit.getWorld("world");
-					Location spawnLoc = world.getSpawnLocation();
+					if (player.getBedSpawnLocation() != null) {
+						player.teleport(player.getBedSpawnLocation());
+					} else {
+						World world = Bukkit.getWorld("world");
+						Location spawnLoc = world.getSpawnLocation();
 
-					for (double y = spawnLoc.getY(); y <= 256; y++) {
-						Location yLoc = new Location(world, spawnLoc.getX(), y, spawnLoc.getZ());
-						Block coordBlock = world.getBlockAt(yLoc);
+						for (double y = spawnLoc.getY(); y <= 256; y++) {
+							Location yLoc = new Location(world, spawnLoc.getX(), y, spawnLoc.getZ());
+							Block coordBlock = world.getBlockAt(yLoc);
 
-						if (coordBlock.getType().isTransparent() &&
-						coordBlock.getRelative(BlockFace.UP).getType().isTransparent()) {
-							player.teleport(yLoc);
-							break;
+							if (coordBlock.getType().isTransparent() &&
+							coordBlock.getRelative(BlockFace.UP).getType().isTransparent()) {
+								player.teleport(yLoc);
+								break;
+							}
 						}
 					}
 				}
