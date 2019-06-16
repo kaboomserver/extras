@@ -619,12 +619,13 @@ class Events implements Listener {
 					World world = Bukkit.getWorld("world");
 					Location spawnLoc = world.getSpawnLocation();
 
-					for (double y = spawnLoc.getY(); y <= 257; y++) {
-						Block coordBlock = world.getBlockAt(new Location(world, spawnLoc.getX(), y, spawnLoc.getZ()));
+					for (double y = spawnLoc.getY(); y <= 256; y++) {
+						Location yLoc = new Location(world, spawnLoc.getX(), y, spawnLoc.getZ());
+						Block coordBlock = world.getBlockAt(yLoc);
 
-						if (coordBlock.getType() == Material.AIR &&
-						coordBlock.getRelative(BlockFace.UP).getType() == Material.AIR) {
-							player.teleport(spawnLoc.add(0, y - spawnLoc.getY(), 0));
+						if (coordBlock.getType().isTransparent() &&
+						coordBlock.getRelative(BlockFace.UP).getType().isTransparent()) {
+							player.teleport(yLoc);
 							break;
 						}
 					}
