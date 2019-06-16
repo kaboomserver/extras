@@ -575,18 +575,27 @@ class Events implements Listener {
 
 		main.commandMillisList.put(playerUUID, System.currentTimeMillis());
 
-		if (arr[0].toLowerCase().equals("/minecraft:gamerule") ||
-		arr[0].toLowerCase().equals("/gamerule")) {
-			if (arr[1] != null && arr[1].toLowerCase().equals("randomtickspeed")) {
-				if (arr[2] != null && Integer.parseInt(arr[2]) > 6) {
-					event.setMessage(command.replaceFirst(arr[2], "6"));
-				}
+		if ((arr[0].toLowerCase().equals("/minecraft:gamerule") ||
+		arr[0].toLowerCase().equals("/gamerule")) &&
+		arr.length >= 3) {
+			if (arr[1].toLowerCase().equals("randomtickspeed") && Double.parseDouble(arr[2]) > 6) {
+				event.setMessage(command.replaceFirst(arr[2], "6"));
 			}
-		} else if (arr[0].toLowerCase().equals("/minecraft:particle") ||
-		arr[0].toLowerCase().equals("/particle")) {
-			if (arr[9] != null && Integer.parseInt(arr[9]) > 10) {
-				String particleArr[] = event.getMessage().split(" ", 11);
-				event.setMessage(particleArr[0].replaceAll(" [^ ]+$", "") + " 10 " + particleArr[1]);
+		} else if ((arr[0].toLowerCase().equals("/minecraft:particle") ||
+		arr[0].toLowerCase().equals("/particle")) &&
+		arr.length >= 10) {
+			if (Double.parseDouble(arr[9]) > 10) {
+				StringBuilder stringBuilder = new StringBuilder();
+
+				for (int i = 0; i < 9; i++) {
+					stringBuilder.append(arr[i] + " ");
+				}
+				stringBuilder.append("10 ");
+				for (int i = 10; i < arr.length; i++) {
+					stringBuilder.append(arr[i] + " ");
+				}
+				
+				event.setMessage(stringBuilder.toString());
 			}
 		} else if (arr[0].toLowerCase().equals("/minecraft:blockdata") ||
 		arr[0].toLowerCase().equals("/minecraft:clone") ||
@@ -672,10 +681,10 @@ class Events implements Listener {
 
 	@EventHandler
 	void onPlayerLogin(PlayerLoginEvent event) {
-		if (!(event.getHostname().startsWith("play.kaboom.pw") &&
+		/*if (!(event.getHostname().startsWith("play.kaboom.pw") &&
 		event.getHostname().endsWith(":53950"))) {
 			event.disallow(Result.KICK_OTHER, "You connected to the server using an outdated server address/IP.\nPlease use the following address/IP:\n\nkaboom.pw");
-		} else {
+		} else {*/
 			final Player player = event.getPlayer();
 
 			event.allow();
@@ -716,7 +725,7 @@ class Events implements Listener {
 					}
 				});
 			}
-		}
+		/*}*/
 	}
 
 	@EventHandler
@@ -765,18 +774,27 @@ class Events implements Listener {
 
 		if (main.consoleCommandBlacklist.contains(arr[0].toLowerCase())) {
 			event.setCancelled(true);
-		} else if (arr[0].toLowerCase().equals("minecraft:gamerule") ||
-		arr[0].toLowerCase().equals("gamerule")) {
-			if (arr[1] != null && arr[1].toLowerCase().equals("randomtickspeed")) {
-				if (arr[2] != null && Integer.parseInt(arr[2]) > 6) {
-					event.setCommand(command.replaceFirst(arr[2], "6"));
-				}
+		} else if ((arr[0].toLowerCase().equals("minecraft:gamerule") ||
+		arr[0].toLowerCase().equals("gamerule")) &&
+		arr.length >= 3) {
+			if (arr[1].toLowerCase().equals("randomtickspeed") && Double.parseDouble(arr[2]) > 6) {
+				event.setCommand(command.replaceFirst(arr[2], "6"));
 			}
-		} else if (arr[0].toLowerCase().equals("minecraft:particle") ||
-		arr[0].toLowerCase().equals("particle")) {
-			if (arr[9] != null && Integer.parseInt(arr[9]) > 10) {
-				String particleArr[] = event.getCommand().split(" ", 11);
-				event.setCommand(particleArr[0].replaceAll(" [^ ]+$", "") + " 10 " + particleArr[1]);
+		} else if ((arr[0].toLowerCase().equals("minecraft:particle") ||
+		arr[0].toLowerCase().equals("particle")) &&
+		arr.length >= 10) {
+			if (Double.parseDouble(arr[9]) > 10) {
+				StringBuilder stringBuilder = new StringBuilder();
+
+				for (int i = 0; i < 9; i++) {
+					stringBuilder.append(arr[i] + " ");
+				}
+				stringBuilder.append("10 ");
+				for (int i = 10; i < arr.length; i++) {
+					stringBuilder.append(arr[i] + " ");
+				}
+				
+				event.setCommand(stringBuilder.toString());
 			}
 		} else if (arr[0].toLowerCase().equals("minecraft:blockdata") ||
 		arr[0].toLowerCase().equals("minecraft:clone") ||
