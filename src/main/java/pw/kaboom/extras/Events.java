@@ -562,6 +562,7 @@ class Events implements Listener {
 	@EventHandler
 	void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
 		String arr[] = event.getMessage().split(" ");
+		String command = event.getMessage();
 		UUID playerUUID = event.getPlayer().getUniqueId();
 
 		if (main.commandMillisList.containsKey(playerUUID)) {
@@ -578,8 +579,7 @@ class Events implements Listener {
 		arr[0].toLowerCase().equals("/gamerule")) {
 			if (arr[1] != null && arr[1].toLowerCase().equals("randomtickspeed")) {
 				if (arr[2] != null && Integer.parseInt(arr[2]) > 6) {
-					String gameruleArr[] = event.getMessage().split(" ", 2);
-					event.setMessage(gameruleArr[0] + " 6");
+					event.setMessage(command.replaceFirst(arr[2], "6"));
 				}
 			}
 		} else if (arr[0].toLowerCase().equals("/minecraft:particle") ||
@@ -761,6 +761,7 @@ class Events implements Listener {
 	@EventHandler
 	void onServerCommand(ServerCommandEvent event) {
 		String arr[] = event.getCommand().split(" ");
+		String command = event.getCommand();
 
 		if (main.consoleCommandBlacklist.contains(arr[0].toLowerCase())) {
 			event.setCancelled(true);
@@ -768,8 +769,7 @@ class Events implements Listener {
 		arr[0].toLowerCase().equals("gamerule")) {
 			if (arr[1] != null && arr[1].toLowerCase().equals("randomtickspeed")) {
 				if (arr[2] != null && Integer.parseInt(arr[2]) > 6) {
-					String gameruleArr[] = event.getCommand().split(" ", 3);
-					event.setCommand(gameruleArr[0] + " 6");
+					event.setCommand(command.replaceFirst(arr[2], "6"));
 				}
 			}
 		} else if (arr[0].toLowerCase().equals("minecraft:particle") ||
