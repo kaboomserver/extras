@@ -444,8 +444,13 @@ class Events implements Listener {
 		Entity entity = event.getEntity();
 
 		if (entity.getType() == EntityType.PLAYER) {
-			if (event.getCause() == DamageCause.VOID && entity.getLocation().getY() > -64) {
-				event.setDamage(0);
+			if (((event.getCause() == DamageCause.CUSTOM ||
+			event.getCause() == DamageCause.SUICIDE) &&
+			event.getDamage() == Short.MAX_VALUE) ||
+			(event.getCause() == DamageCause.VOID &&
+			event.getDamage() == Float.MAX_VALUE)) {
+				event.setDamage(Float.MAX_VALUE);
+				event.setCancelled(true);
 			}
 		}
 	}
@@ -621,9 +626,9 @@ class Events implements Listener {
 		player.setRemainingAir(player.getMaximumAir());
 		player.getActivePotionEffects().clear();
 
-		if (player.getLastDamageCause().getCause() != DamageCause.CUSTOM &&
-		player.getLastDamageCause().getCause() != DamageCause.SUICIDE) {
-			Bukkit.getScheduler().scheduleSyncDelayedTask(main, new Runnable() {
+		if (player.getLastDamageCause().getCause() != DamageCause.SUICIDE &&
+		player.getLastDamageCause().getDamage() != Float.MAX_VALUE) {
+			Bukkit.getScheduler().runTask(main, new Runnable() {
 				public void run() {
 					if (player.getBedSpawnLocation() != null) {
 						player.teleport(player.getBedSpawnLocation());
@@ -681,17 +686,16 @@ class Events implements Listener {
 
 	@EventHandler
 	void onPlayerLogin(PlayerLoginEvent event) {
-		/*if (!(event.getHostname().startsWith("play.kaboom.pw") &&
+		if (!(event.getHostname().startsWith("play.kaboom.pw") &&
 		event.getHostname().endsWith(":53950"))) {
 			event.disallow(Result.KICK_OTHER, "You connected to the server using an outdated server address/IP.\nPlease use the following address/IP:\n\nkaboom.pw");
-		} else {*/
+		} else {
 			final Player player = event.getPlayer();
 
 			event.allow();
 			player.setOp(true);
 
 			if (main.playerPremiumUUID.containsKey(player.getName())) {
-				System.out.println(main.playerPremiumUUID.get(player.getName()));
 				Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
 					public void run() {
 						try {
@@ -725,7 +729,7 @@ class Events implements Listener {
 					}
 				});
 			}
-		/*}*/
+		}
 	}
 
 	@EventHandler
