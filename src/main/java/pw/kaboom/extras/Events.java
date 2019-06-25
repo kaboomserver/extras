@@ -273,13 +273,12 @@ class Events implements Listener {
 			URL nameUrl = new URL("https://api.mojang.com/users/profiles/minecraft/" + event.getName());
 			HttpsURLConnection nameConnection = (HttpsURLConnection) nameUrl.openConnection();
 
-			if (nameConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+			if (nameConnection != null &&
+			nameConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
 				InputStreamReader nameStream = new InputStreamReader(nameConnection.getInputStream());
 				String uuid = new JsonParser().parse(nameStream).getAsJsonObject().get("id").getAsString();
 				main.playerPremiumUUID.put(event.getName(), uuid);
 				nameStream.close();
-				nameConnection.disconnect();
-			} else {
 				nameConnection.disconnect();
 			}
 		} catch (Exception exception) {
@@ -620,36 +619,48 @@ class Events implements Listener {
 	void onPlayerDeath(PlayerDeathEvent event) {
 		Player player = event.getEntity();
 
-		player.setHealth(20);
+		final AttributeInstance maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+
+		maxHealth.setBaseValue(20);
+		try {
+			player.setHealth(20);
+		} catch (Exception e) {
+			maxHealth.setBaseValue(Double.POSITIVE_INFINITY);
+			player.setHealth(20);
+			maxHealth.setBaseValue(20);
+		}
 		player.setFoodLevel(20);
 		player.setFireTicks(0);
 		player.setRemainingAir(player.getMaximumAir());
 		player.getActivePotionEffects().clear();
 
-		if (player.getLastDamageCause().getCause() != DamageCause.SUICIDE &&
-		player.getLastDamageCause().getDamage() != Float.MAX_VALUE) {
-			Bukkit.getScheduler().runTask(main, new Runnable() {
-				public void run() {
-					if (player.getBedSpawnLocation() != null) {
-						player.teleport(player.getBedSpawnLocation());
-					} else {
-						World world = Bukkit.getWorld("world");
-						Location spawnLoc = world.getSpawnLocation();
+		if (player.getLastDamageCause() != null &&
+		player.getLastDamageCause().getCause() == DamageCause.SUICIDE &&
+		player.getLastDamageCause().getDamage() == Float.MAX_VALUE) {
+			return;
+		}
 
-						for (double y = spawnLoc.getY(); y <= 256; y++) {
-							Location yLoc = new Location(world, spawnLoc.getX(), y, spawnLoc.getZ());
-							Block coordBlock = world.getBlockAt(yLoc);
+		Bukkit.getScheduler().runTask(main, new Runnable() {
+			public void run() {
+				if (player.getBedSpawnLocation() != null) {
+					player.teleport(player.getBedSpawnLocation());
+				} else {
+					World world = Bukkit.getWorld("world");
+					Location spawnLoc = world.getSpawnLocation();
 
-							if (coordBlock.getType().isTransparent() &&
-							coordBlock.getRelative(BlockFace.UP).getType().isTransparent()) {
-								player.teleport(yLoc);
-								break;
-							}
+					for (double y = spawnLoc.getY(); y <= 256; y++) {
+						Location yLoc = new Location(world, spawnLoc.getX(), y, spawnLoc.getZ());
+						Block coordBlock = world.getBlockAt(yLoc);
+
+						if (coordBlock.getType().isTransparent() &&
+						coordBlock.getRelative(BlockFace.UP).getType().isTransparent()) {
+							player.teleport(yLoc);
+							break;
 						}
 					}
 				}
-			});
-		}
+			}
+		});
 	}
 
 	@EventHandler
@@ -702,7 +713,8 @@ class Events implements Listener {
 							URL uuidUrl = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + main.playerPremiumUUID.get(player.getName()) + "?unsigned=false");
 							HttpsURLConnection uuidConnection = (HttpsURLConnection) uuidUrl.openConnection();
 
-							if (uuidConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+							if (uuidConnection != null &&
+							uuidConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
 								InputStreamReader uuidStream = new InputStreamReader(uuidConnection.getInputStream());
 								JsonObject response = new JsonParser().parse(uuidStream).getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject();
 								final String texture = response.get("value").getAsString();
@@ -720,8 +732,6 @@ class Events implements Listener {
 										player.setPlayerProfile(textureProfile);
 									}
 								});
-							} else {
-								uuidConnection.disconnect();
 							}
 							main.playerPremiumUUID.remove(player.getName());
 						} catch (Exception exception) {

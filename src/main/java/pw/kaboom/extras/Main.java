@@ -459,7 +459,8 @@ public class Main extends JavaPlugin {
 			URL nameUrl = new URL("https://api.mojang.com/users/profiles/minecraft/" + name);
 			HttpsURLConnection nameConnection = (HttpsURLConnection) nameUrl.openConnection();
 
-			if (nameConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+			if (nameConnection != null &&
+			nameConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
 				InputStreamReader nameStream = new InputStreamReader(nameConnection.getInputStream());
 				String uuid = new JsonParser().parse(nameStream).getAsJsonObject().get("id").getAsString();
 				nameStream.close();
@@ -468,7 +469,8 @@ public class Main extends JavaPlugin {
 				URL uuidUrl = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false");
 				HttpsURLConnection uuidConnection = (HttpsURLConnection) uuidUrl.openConnection();
 
-				if (uuidConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+				if (uuidConnection != null &&
+				uuidConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
 					InputStreamReader uuidStream = new InputStreamReader(uuidConnection.getInputStream());
 					JsonObject response = new JsonParser().parse(uuidStream).getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject();
 					final String texture = response.get("value").getAsString();
@@ -486,11 +488,7 @@ public class Main extends JavaPlugin {
 							player.setPlayerProfile(textureProfile);
 						}
 					});
-				} else {
-					uuidConnection.disconnect();
 				}
-			} else {
-				nameConnection.disconnect();
 			}
 		} catch (Exception exception) {
 		}
