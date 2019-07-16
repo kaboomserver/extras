@@ -42,6 +42,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.CommandSender.Spigot;
 
+import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -561,11 +562,6 @@ class Events implements Listener {
 				}
 			}
 
-			if (entity.getType() == EntityType.MINECART_MOB_SPAWNER) {
-				event.setCancelled(true);
-				return;
-			}
-
 			if (entity.getType() == EntityType.SLIME) {
 				Slime slime = (Slime) entity;
 				if (slime.getSize() > 100) {
@@ -813,7 +809,8 @@ class Events implements Listener {
 				}
 			}
 
-			if (event.getType() == EntityType.MINECART_MOB_SPAWNER) {
+			if (event.getType() == EntityType.MINECART_MOB_SPAWNER &&
+			event.getReason() == SpawnReason.SPAWNER) {
 				event.setCancelled(true);
 				return;
 			}
@@ -880,8 +877,7 @@ class Events implements Listener {
 				spawner.setSpawnCount(200);
 				spawner.update();
 			}
-		} catch (Exception e) {
-			event.setCancelled(true);
+		} catch (Exception exception) {
 		}
 	}
 }
