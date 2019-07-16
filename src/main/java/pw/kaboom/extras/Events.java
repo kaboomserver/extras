@@ -48,6 +48,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.MagmaCube;
+import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Slime;
 
 import org.bukkit.event.EventHandler;
@@ -441,7 +442,6 @@ class Events implements Listener {
 			}
 		} else {
 			Entity[] chunkEntities = entity.getLocation().getChunk().getEntities();
-			double tps = Bukkit.getServer().getTPS()[0];
 			int count = 0;
 
 			for (Entity chunkEntity : chunkEntities) {
@@ -450,10 +450,12 @@ class Events implements Listener {
 						count++;
 					} else {
 						entity.remove();
-						break;
+						return;
 					}
 				}
 			}
+
+			double tps = Bukkit.getServer().getTPS()[0];
 
 			if (tps < 14 && entity.getType() == EntityType.PRIMED_TNT) {
 				entity.remove();
@@ -487,33 +489,6 @@ class Events implements Listener {
 	@EventHandler
 	void onEntitySpawn(EntitySpawnEvent event) {
 		Entity entity = event.getEntity();
-		Entity[] chunkEntities = event.getLocation().getChunk().getEntities();
-		List<LivingEntity> worldEntities = event.getLocation().getWorld().getLivingEntities();
-		int count = 0;
-
-		if (entity.getType() == EntityType.ENDER_DRAGON) {
-			for (LivingEntity worldEntity : worldEntities) {
-				if (worldEntity.getType() == EntityType.ENDER_DRAGON) {
-					if (count < 25) {
-						count++;
-					} else {
-						event.setCancelled(true);
-						break;
-					}
-				}
-			}
-		} else if (entity.getType() != EntityType.PLAYER) {
-			for (Entity chunkEntity : chunkEntities) {
-				if (chunkEntity.getType() != EntityType.PLAYER) {
-					if (count < 50) {
-						count++;
-					} else {
-						event.setCancelled(true);
-						break;
-					}
-				}
-			}
-		}
 
 		if (entity instanceof LivingEntity) {
 			LivingEntity mob = (LivingEntity) entity;
@@ -549,17 +524,53 @@ class Events implements Listener {
 			}
 		}
 
-		if (entity.getType() == EntityType.MAGMA_CUBE) {
-			MagmaCube magmacube = (MagmaCube) entity;
-			if (magmacube.getSize() > 100) {
-				magmacube.setSize(100);
-			}
-		}
+		if (entity.getType() != EntityType.PLAYER) {
+			int count = 0;
+			Entity[] chunkEntities = event.getLocation().getChunk().getEntities();
 
-		if (entity.getType() == EntityType.SLIME) {
-			Slime slime = (Slime) entity;
-			if (slime.getSize() > 100) {
-				slime.setSize(100);
+			for (Entity chunkEntity : chunkEntities) {
+				if (chunkEntity.getType() != EntityType.PLAYER) {
+					if (count < 50) {
+						count++;
+					} else {
+						event.setCancelled(true);
+						return;
+					}
+				}
+			}
+
+			if (entity.getType() == EntityType.ENDER_DRAGON) {
+				List<LivingEntity> worldEntities = event.getLocation().getWorld().getLivingEntities();
+
+				for (LivingEntity worldEntity : worldEntities) {
+					if (worldEntity.getType() == EntityType.ENDER_DRAGON) {
+						if (count < 25) {
+							count++;
+						} else {
+							event.setCancelled(true);
+							return;
+						}
+					}
+				}
+			}
+
+			if (entity.getType() == EntityType.MAGMA_CUBE) {
+				MagmaCube magmacube = (MagmaCube) entity;
+				if (magmacube.getSize() > 100) {
+					magmacube.setSize(100);
+				}
+			}
+
+			if (entity.getType() == EntityType.MINECART_MOB_SPAWNER) {
+				event.setCancelled(true);
+				return;
+			}
+
+			if (entity.getType() == EntityType.SLIME) {
+				Slime slime = (Slime) entity;
+				if (slime.getSize() > 100) {
+					slime.setSize(100);
+				}
 			}
 		}
 	}
@@ -674,7 +685,7 @@ class Events implements Listener {
 						if (coordBlock.getType().isTransparent() &&
 						coordBlock.getRelative(BlockFace.UP).getType().isTransparent()) {
 							player.teleport(yLoc);
-							break;
+							return;
 						}
 					}
 				}
@@ -771,31 +782,40 @@ class Events implements Listener {
 
 	@EventHandler
 	void onPreCreatureSpawn(PreCreatureSpawnEvent event) {
-		Entity[] chunkEntities = event.getSpawnLocation().getChunk().getEntities();
-		List<LivingEntity> worldEntities = event.getSpawnLocation().getWorld().getLivingEntities();
 		int count = 0;
 
-		if (event.getType() == EntityType.ENDER_DRAGON) {
-			for (LivingEntity worldEntity : worldEntities) {
-				if (worldEntity.getType() == EntityType.ENDER_DRAGON) {
-					if (count < 25) {
-						count++;
-					} else {
-						event.setCancelled(true);
-						break;
-					}
-				}
-			}
-		} else if (event.getType() != EntityType.PLAYER) {
+		if (event.getType() != EntityType.PLAYER) {
+			Entity[] chunkEntities = event.getSpawnLocation().getChunk().getEntities();
+
 			for (Entity chunkEntity : chunkEntities) {
 				if (chunkEntity.getType() != EntityType.PLAYER) {
 					if (count < 50) {
 						count++;
 					} else {
 						event.setCancelled(true);
-						break;
+						return;
 					}
 				}
+			}
+
+			if (event.getType() == EntityType.ENDER_DRAGON) {
+				List<LivingEntity> worldEntities = event.getSpawnLocation().getWorld().getLivingEntities();
+
+				for (LivingEntity worldEntity : worldEntities) {
+					if (worldEntity.getType() == EntityType.ENDER_DRAGON) {
+						if (count < 25) {
+							count++;
+						} else {
+							event.setCancelled(true);
+							return;
+						}
+					}
+				}
+			}
+
+			if (event.getType() == EntityType.MINECART_MOB_SPAWNER) {
+				event.setCancelled(true);
+				return;
 			}
 		}
 	}
@@ -855,9 +875,13 @@ class Events implements Listener {
 	void onSpawnerSpawn(SpawnerSpawnEvent event) {
 		CreatureSpawner spawner = event.getSpawner();
 
-		if (spawner.getSpawnCount() > 200) {
-			spawner.setSpawnCount(200);
-			spawner.update();
+		try {
+			if (spawner.getSpawnCount() > 200) {
+				spawner.setSpawnCount(200);
+				spawner.update();
+			}
+		} catch (Exception e) {
+			event.setCancelled(true);
 		}
 	}
 }
