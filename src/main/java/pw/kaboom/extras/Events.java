@@ -150,6 +150,29 @@ class TickAsync extends BukkitRunnable {
 	}
 }
 
+class TileEntityCheckAsync extends BukkitRunnable {
+	Main main;
+	TileEntityCheckAsync(Main main) {
+		this.main = main;
+	}
+
+	public void run() {
+		for (final World world : Bukkit.getServer().getWorlds()) {
+			for (final Chunk chunk : world.getLoadedChunks()) {
+				try {
+					chunk.getTileEntities();
+				} catch (Exception e) {
+					Bukkit.getScheduler().runTask(main, new Runnable() {
+						public void run() {
+							world.regenerateChunk(chunk.getX(), chunk.getZ());
+						}
+					});
+				}
+			}
+		}
+	}
+}
+
 /*class CommandSenderOutput implements CommandSender {
 	String lastOutput;
     @Override
@@ -601,25 +624,14 @@ class Events implements Listener {
 				
 				event.setMessage(stringBuilder.toString());
 			}
-		} else if (arr[0].toLowerCase().equals("/minecraft:blockdata") ||
-		arr[0].toLowerCase().equals("/minecraft:clone") ||
-		arr[0].toLowerCase().equals("/minecraft:fill") ||
-		arr[0].toLowerCase().equals("/minecraft:setblock") ||
-		arr[0].toLowerCase().equals("/blockdata") ||
-		arr[0].toLowerCase().equals("/clone") ||
-		arr[0].toLowerCase().equals("/fill") ||
-		arr[0].toLowerCase().equals("/setblock")) {
-			if (event.getMessage().contains("translation.test.invalid")) {
-				event.setCancelled(true);
-			}
 		}
 	}
 
 	@EventHandler
 	void onPlayerDeath(PlayerDeathEvent event) {
 		Player player = event.getEntity();
-
 		final AttributeInstance maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+		boolean maxHealthLow = false;
 
 		maxHealth.setBaseValue(20);
 		try {
@@ -628,15 +640,22 @@ class Events implements Listener {
 			maxHealth.setBaseValue(Double.POSITIVE_INFINITY);
 			player.setHealth(20);
 			maxHealth.setBaseValue(20);
+			maxHealthLow = true;
 		}
 		player.setFoodLevel(20);
 		player.setFireTicks(0);
 		player.setRemainingAir(player.getMaximumAir());
 		player.getActivePotionEffects().clear();
+		event.setCancelled(true);
 
-		if (player.getLastDamageCause() != null &&
+		for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+			onlinePlayer.sendMessage(event.getDeathMessage());
+		}
+
+		if ((player.getLastDamageCause() != null &&
 		player.getLastDamageCause().getCause() == DamageCause.SUICIDE &&
-		player.getLastDamageCause().getDamage() == Float.MAX_VALUE) {
+		player.getLastDamageCause().getDamage() == Float.MAX_VALUE) ||
+		maxHealthLow == true) {
 			return;
 		}
 
@@ -810,17 +829,6 @@ class Events implements Listener {
 				
 				event.setCommand(stringBuilder.toString());
 			}
-		} else if (arr[0].toLowerCase().equals("minecraft:blockdata") ||
-		arr[0].toLowerCase().equals("minecraft:clone") ||
-		arr[0].toLowerCase().equals("minecraft:fill") ||
-		arr[0].toLowerCase().equals("minecraft:setblock") ||
-		arr[0].toLowerCase().equals("blockdata") ||
-		arr[0].toLowerCase().equals("clone") ||
-		arr[0].toLowerCase().equals("fill") ||
-		arr[0].toLowerCase().equals("setblock")) {
-			if (event.getCommand().contains("translation.test.invalid")) {
-				event.setCancelled(true);
-			}
 		}
 	}
 
@@ -829,9 +837,9 @@ class Events implements Listener {
 		if (event.getClient().getProtocolVersion() != -1) {
 			event.setProtocolVersion(event.getClient().getProtocolVersion());
 		} else {
-			event.setProtocolVersion(485);
+			event.setProtocolVersion(490);
 		}
-		event.setVersion("1.14.2");
+		event.setVersion("1.14.3");
 	}
 
 	@EventHandler

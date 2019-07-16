@@ -443,14 +443,17 @@ public class Main extends JavaPlugin {
 		this.getCommand("enchantall").setExecutor(new CommandEnchantAll());
 		this.getCommand("jumpscare").setExecutor(new CommandJumpscare());
 		this.getCommand("prefix").setExecutor(new CommandPrefix(this));
+		this.getCommand("pumpkin").setExecutor(new CommandPumpkin());
 		this.getCommand("skin").setExecutor(new CommandSkin(this));
 		this.getCommand("spawn").setExecutor(new CommandSpawn());
+		this.getCommand("spidey").setExecutor(new CommandSpidey());
 		this.getCommand("tellraw").setExecutor(new CommandTellraw());
 		this.getCommand("unloadchunks").setExecutor(new CommandUnloadChunks());
 		this.getCommand("username").setExecutor(new CommandUsername(this));
 
 		new Tick(this).runTaskTimer(this, 0, 1);
 		new TickAsync(this).runTaskTimerAsynchronously(this, 0, 1);
+		new TileEntityCheckAsync(this).runTaskTimerAsynchronously(this, 0, 400);
 		this.getServer().getPluginManager().registerEvents(new Events(this), this);
 	}
 

@@ -36,6 +36,9 @@ import org.bukkit.inventory.ItemStack;
 
 import org.bukkit.scheduler.BukkitRunnable;
 
+import org.bukkit.util.BlockIterator;
+import org.bukkit.util.Vector;
+
 class CommandClearChat implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
@@ -178,6 +181,36 @@ class CommandPrefix implements CommandExecutor {
 	}
 }
 
+class CommandPumpkin implements CommandExecutor {
+	private void placePumpkin(Player player) {
+		player.getInventory().setHelmet(new ItemStack(Material.PUMPKIN));
+	}
+
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		Player player = (Player) sender;
+
+		if (args.length == 0) {
+			player.sendMessage(ChatColor.RED + "Usage: /" + label + " <player>");
+		} else {
+			if (args[0].equals("*") || args[0].equals("**")) {
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					placePumpkin(p);
+				}
+				player.sendMessage("Everyone is now a pumpkin");
+			} else {
+				Player target = Bukkit.getPlayer(args[0]);
+				if (target != null) {
+					placePumpkin(target);
+					player.sendMessage("Player \"" + target.getName() + "\" is now a pumpkin");
+				} else {
+					player.sendMessage("Player \"" + target.getName() + "\" not found");
+				}
+			}	
+		}
+		return true;
+	}
+}
+
 class CommandSkin implements CommandExecutor {
 	Main main;
 	CommandSkin(Main main) {
@@ -270,6 +303,27 @@ class CommandSpawn implements CommandExecutor {
 		}
 
 		player.sendMessage("Successfully moved to the spawn");
+		return true;
+	}
+}
+
+class CommandSpidey implements CommandExecutor {
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		Player player = (Player) sender;
+		Location eyePos = player.getEyeLocation();
+		Vector playerPos = new Vector(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ());
+		Vector direction = eyePos.getDirection();
+		int distance = 50;
+
+		BlockIterator blockIterator = new BlockIterator(player.getWorld(), playerPos, direction, 0, distance);
+
+		while (blockIterator.hasNext()) {
+			if (blockIterator.next().getType() != Material.AIR) {
+				break;
+			}
+
+			blockIterator.next().setType(Material.WEB);
+		}
 		return true;
 	}
 }

@@ -25,12 +25,18 @@ commands:
       aliases: [rank, tag]
       description: Changes your tag
       permission: extras.prefix
+   pumpkin:
+      description: Places a pumpkin on a player's head
+      permission: extras.pumpkin
    skin:
       description: Changes your skin
       permission: extras.skin
    spawn:
       description: Teleports you to spawn
       permission: extras.spawn
+   spidey:
+      description: Annoying little spider...
+      permission: extras.spidey
    tellraw:
       description: Broadcasts raw text to the server
       permission: extras.tellraw
