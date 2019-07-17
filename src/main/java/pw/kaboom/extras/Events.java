@@ -46,6 +46,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.MagmaCube;
@@ -873,11 +874,33 @@ class Events implements Listener {
 		CreatureSpawner spawner = event.getSpawner();
 
 		try {
+			if (spawner.getSpawnedType() == EntityType.FALLING_BLOCK) {
+				FallingBlock block = (FallingBlock) event.getEntity();
+
+				if (block.getMaterial() == Material.MOB_SPAWNER) {
+					event.setCancelled(true);
+					return;
+				}
+
+				if (spawner.getDelay() > 100) {
+					spawner.setMaxSpawnDelay(100);
+					spawner.setDelay(100);
+					spawner.update();
+				}
+			}
+
 			if (spawner.getSpawnCount() > 200) {
 				spawner.setSpawnCount(200);
 				spawner.update();
 			}
+
+			if (spawner.getSpawnRange() > 50) {
+				spawner.setSpawnRange(50);
+				spawner.update();
+			}
 		} catch (Exception exception) {
+			event.setCancelled(true);
+			return;
 		}
 	}
 }
