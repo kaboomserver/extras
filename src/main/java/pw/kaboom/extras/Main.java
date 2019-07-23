@@ -441,6 +441,7 @@ public class Main extends JavaPlugin {
 		this.getCommand("console").setExecutor(new CommandConsole());
 		this.getCommand("destroyentities").setExecutor(new CommandDestroyEntities());
 		this.getCommand("enchantall").setExecutor(new CommandEnchantAll());
+		this.getCommand("herobrine").setExecutor(new CommandHerobrine(this));
 		this.getCommand("jumpscare").setExecutor(new CommandJumpscare());
 		this.getCommand("prefix").setExecutor(new CommandPrefix(this));
 		this.getCommand("pumpkin").setExecutor(new CommandPumpkin());

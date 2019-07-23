@@ -30,6 +30,7 @@ import org.bukkit.enchantments.Enchantment;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
 import org.bukkit.inventory.ItemStack;
@@ -119,6 +120,52 @@ class CommandEnchantAll implements CommandExecutor {
 			item.addUnsafeEnchantment(Enchantment.VANISHING_CURSE, 32767);
 			item.addUnsafeEnchantment(Enchantment.WATER_WORKER, 32767);
 			player.sendMessage("I killed Tim.");
+		}
+		return true;
+	}
+}
+
+class CommandHerobrine implements CommandExecutor {
+	Main main;
+	CommandHerobrine(Main main) {
+		this.main = main;
+	}
+
+	private void spawnHerobrine(Player player) {
+		Location location = player.getLocation();
+
+		Player herobrine = (Player) location.getWorld().spawnEntity(
+			location.add(location.getDirection().multiply(6)),
+			EntityType.PLAYER
+		);
+		main.getSkin("Herobrine", herobrine);
+	}
+
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		Player player = (Player) sender;
+		Location location = player.getLocation();
+
+		if (args.length == 0) {
+			Player herobrine = (Player) location.getWorld().spawnEntity(
+				location,
+				EntityType.PLAYER
+			);
+			main.getSkin("Herobrine", herobrine);
+		} else {
+			if (args[0].equals("*") || args[0].equals("**")) {
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					spawnHerobrine(p);
+				}
+				player.sendMessage("Successfully spawned Herobrine behind every player");
+			} else {
+				Player target = Bukkit.getPlayer(args[0]);
+				if (target != null) {
+					spawnHerobrine(target);
+					player.sendMessage("Successfully spawned Herobrine behind player \"" + target.getName() + "\"");
+				} else {
+					player.sendMessage("Player \"" + target.getName() + "\" not found");
+				}
+			}	
 		}
 		return true;
 	}

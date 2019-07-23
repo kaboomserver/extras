@@ -17,6 +17,9 @@ commands:
    enchantall:
       description: Adds every enchantment to a held item
       permission: extras.enchantall
+   herobrine:
+      description: I wonder...
+      permission: extras.herobrine
    jumpscare:
       aliases: scare
       description: Scares a player
