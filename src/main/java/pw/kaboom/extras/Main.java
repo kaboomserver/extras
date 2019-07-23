@@ -1,34 +1,20 @@
 package pw.kaboom.extras;
 
-import java.io.File;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
-import javax.net.ssl.HttpsURLConnection;
 
-import com.destroystokyo.paper.profile.PlayerProfile;
-import com.destroystokyo.paper.profile.ProfileProperty;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Color;
 import org.bukkit.Material;
-
-import org.bukkit.entity.Player;
-
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
+
 public class Main extends JavaPlugin {
-	int onlineCount = 0;
-	int fallingBlockCount = 0;
+	int fallingBlockCount;
 	HashMap<UUID, Long> commandMillisList = new HashMap<UUID, Long>();
 	HashMap<UUID, Long> interactMillisList = new HashMap<UUID, Long>();
-	HashMap<String, String> playerPremiumUUID = new HashMap<String, String>();
+	HashMap<String, PlayerProfile> playerProfile = new HashMap<String, PlayerProfile>();
 	HashSet<String> consoleCommandBlacklist = new HashSet<String>(Arrays.asList(new String[] {
 		"essentials:action",
 		"essentials:adventure",
@@ -361,75 +347,202 @@ public class Main extends JavaPlugin {
 		Material.SAND,
 	}));
 	HashSet<Material> nonSolidDoubleBlockList = new HashSet<Material>(Arrays.asList(new Material[] {
-		Material.LONG_GRASS,
-		Material.SIGN_POST,
-		Material.WOODEN_DOOR,
-		Material.IRON_DOOR_BLOCK,
+		Material.GRASS,
+		Material.SIGN,
+		Material.OAK_DOOR,
+		Material.IRON_DOOR,
 		Material.CACTUS,
-		Material.SUGAR_CANE_BLOCK,
-		Material.CAKE_BLOCK,
+		Material.SUGAR_CANE,
+		Material.CAKE,
 		Material.DAYLIGHT_DETECTOR,
-		Material.CARPET,
-		Material.DOUBLE_PLANT,
-		Material.STANDING_BANNER,
-		Material.DAYLIGHT_DETECTOR_INVERTED,
+		Material.BLACK_CARPET,
+		Material.BLUE_CARPET,
+		Material.BROWN_CARPET,
+		Material.CYAN_CARPET,
+		Material.GRAY_CARPET,
+		Material.GREEN_CARPET,
+		Material.LIGHT_BLUE_CARPET,
+		Material.LIGHT_GRAY_CARPET,
+		Material.LIME_CARPET,
+		Material.MAGENTA_CARPET,
+		Material.ORANGE_CARPET,
+		Material.PINK_CARPET,
+		Material.PURPLE_CARPET,
+		Material.RED_CARPET,
+		Material.WHITE_CARPET,
+		Material.YELLOW_CARPET,
+		Material.BLACK_BANNER,
+		Material.BLUE_BANNER,
+		Material.BROWN_BANNER,
+		Material.CYAN_BANNER,
+		Material.GRAY_BANNER,
+		Material.GREEN_BANNER,
+		Material.LIGHT_BLUE_BANNER,
+		Material.LIGHT_GRAY_BANNER,
+		Material.LIME_BANNER,
+		Material.MAGENTA_BANNER,
+		Material.ORANGE_BANNER,
+		Material.PINK_BANNER,
+		Material.PURPLE_BANNER,
+		Material.RED_BANNER,
+		Material.WHITE_BANNER,
+		Material.YELLOW_BANNER,
 		Material.SPRUCE_DOOR,
 		Material.BIRCH_DOOR,
 		Material.JUNGLE_DOOR,
 		Material.ACACIA_DOOR,
 		Material.DARK_OAK_DOOR,
+		Material.KELP,
+		Material.TALL_SEAGRASS,
+		Material.TALL_GRASS,
+		Material.SUNFLOWER,
+		Material.LARGE_FERN,
+		Material.LILAC,
+		Material.ROSE_BUSH,
+		Material.PEONY,
 	}));
 	HashSet<Material> nonSolidSingularBlockList = new HashSet<Material>(Arrays.asList(new Material[] {
-		Material.SAPLING,
-		Material.BED_BLOCK,
+		Material.ACACIA_SAPLING,
+		Material.BIRCH_SAPLING,
+		Material.DARK_OAK_SAPLING,
+		Material.JUNGLE_SAPLING,
+		Material.OAK_SAPLING,
+		Material.SPRUCE_SAPLING,
+		Material.BLACK_BED,
+		Material.BLUE_BED,
+		Material.BROWN_BED,
+		Material.CYAN_BED,
+		Material.GRAY_BED,
+		Material.GREEN_BED,
+		Material.LIGHT_BLUE_BED,
+		Material.LIGHT_GRAY_BED,
+		Material.LIME_BED,
+		Material.MAGENTA_BED,
+		Material.ORANGE_BED,
+		Material.PINK_BED,
+		Material.PURPLE_BED,
+		Material.RED_BED,
+		Material.WHITE_BED,
+		Material.YELLOW_BED,
 		Material.POWERED_RAIL,
 		Material.DETECTOR_RAIL,
 		Material.DEAD_BUSH,
-		Material.YELLOW_FLOWER,
-		Material.RED_ROSE,
+		Material.AZURE_BLUET,
+		Material.ALLIUM,
+		Material.BLUE_ORCHID,
+		Material.DANDELION,
+		Material.FERN,
+		Material.ORANGE_TULIP,
+		Material.PINK_TULIP,
+		Material.POPPY,
+		Material.RED_TULIP,
+		Material.WHITE_TULIP,
+		Material.OXEYE_DAISY,
 		Material.BROWN_MUSHROOM,
 		Material.RED_MUSHROOM,
 		Material.FIRE,
-		Material.CROPS,
-		Material.RAILS,
-		Material.STONE_PLATE,
-		Material.WOOD_PLATE,
+		Material.WHEAT,
+		Material.RAIL,
+		Material.STONE_PRESSURE_PLATE,
+		Material.ACACIA_PRESSURE_PLATE,
+		Material.BIRCH_PRESSURE_PLATE,
+		Material.DARK_OAK_PRESSURE_PLATE,
+		Material.JUNGLE_PRESSURE_PLATE,
+		Material.OAK_PRESSURE_PLATE,
+		Material.SPRUCE_PRESSURE_PLATE,
 		Material.SNOW,
-		Material.DIODE_BLOCK_OFF,
-		Material.DIODE_BLOCK_ON,
+		Material.REPEATER,
 		Material.PUMPKIN_STEM,
 		Material.MELON_STEM,
-		Material.WATER_LILY,
+		Material.LILY_PAD,
 		Material.FLOWER_POT,
 		Material.CARROT,
 		Material.POTATO,
-		Material.GOLD_PLATE,
-		Material.IRON_PLATE,
-		Material.REDSTONE_COMPARATOR_OFF,
-		Material.REDSTONE_COMPARATOR_ON,
+		Material.HEAVY_WEIGHTED_PRESSURE_PLATE,
+		Material.LIGHT_WEIGHTED_PRESSURE_PLATE,
+		Material.COMPARATOR,
 		Material.ACTIVATOR_RAIL,
-		Material.BEETROOT_BLOCK,
+		Material.BEETROOTS,
 		Material.NETHER_WART_BLOCK,
+		Material.SEAGRASS,
+		Material.BRAIN_CORAL,
+		Material.BUBBLE_CORAL,
+		Material.DEAD_BRAIN_CORAL,
+		Material.DEAD_BUBBLE_CORAL,
+		Material.DEAD_FIRE_CORAL,
+		Material.DEAD_HORN_CORAL,
+		Material.DEAD_TUBE_CORAL,
+		Material.FIRE_CORAL,
+		Material.HORN_CORAL,
+		Material.TUBE_CORAL,
+		Material.SEA_PICKLE,
 	}));
 	HashSet<Material> nonSolidWallMountedBlockList = new HashSet<Material>(Arrays.asList(new Material[] {
 		Material.TORCH,
+		Material.WALL_TORCH,
 		Material.LADDER,
 		Material.WALL_SIGN,
 		Material.LEVER,
 		Material.REDSTONE_WIRE,
-		Material.REDSTONE_TORCH_OFF,
-		Material.REDSTONE_TORCH_ON,
+		Material.REDSTONE_TORCH,
+		Material.REDSTONE_WALL_TORCH,
 		Material.STONE_BUTTON,
-		Material.TRAP_DOOR,
+		Material.ACACIA_TRAPDOOR,
+		Material.BIRCH_TRAPDOOR,
+		Material.DARK_OAK_TRAPDOOR,
+		Material.JUNGLE_TRAPDOOR,
+		Material.OAK_TRAPDOOR,
+		Material.SPRUCE_TRAPDOOR,
 		Material.VINE,
 		Material.COCOA,
 		Material.TRIPWIRE_HOOK,
-		Material.WOOD_BUTTON,
+		Material.ACACIA_BUTTON,
+		Material.BIRCH_BUTTON,
+		Material.DARK_OAK_BUTTON,
+		Material.JUNGLE_BUTTON,
+		Material.OAK_BUTTON,
+		Material.SPRUCE_BUTTON,
 		Material.IRON_TRAPDOOR,
-		Material.WALL_BANNER,
-		Material.PORTAL,
-		Material.ENDER_PORTAL,
+		Material.BLACK_WALL_BANNER,
+		Material.BLUE_WALL_BANNER,
+		Material.BROWN_WALL_BANNER,
+		Material.CYAN_WALL_BANNER,
+		Material.GRAY_WALL_BANNER,
+		Material.GREEN_WALL_BANNER,
+		Material.LIGHT_BLUE_WALL_BANNER,
+		Material.LIGHT_GRAY_WALL_BANNER,
+		Material.LIME_WALL_BANNER,
+		Material.MAGENTA_WALL_BANNER,
+		Material.ORANGE_WALL_BANNER,
+		Material.PINK_WALL_BANNER,
+		Material.PURPLE_WALL_BANNER,
+		Material.RED_WALL_BANNER,
+		Material.WHITE_WALL_BANNER,
+		Material.YELLOW_WALL_BANNER,
+		Material.NETHER_PORTAL,
+		Material.END_PORTAL,
+		Material.BRAIN_CORAL_FAN,
+		Material.BRAIN_CORAL_WALL_FAN,
+		Material.BUBBLE_CORAL_FAN,
+		Material.BUBBLE_CORAL_WALL_FAN,
+		Material.DEAD_BRAIN_CORAL_FAN,
+		Material.DEAD_BRAIN_CORAL_WALL_FAN,
+		Material.DEAD_BUBBLE_CORAL_FAN,
+		Material.DEAD_BUBBLE_CORAL_WALL_FAN,
+		Material.DEAD_FIRE_CORAL_FAN,
+		Material.DEAD_FIRE_CORAL_WALL_FAN,
+		Material.DEAD_HORN_CORAL_FAN,
+		Material.DEAD_HORN_CORAL_WALL_FAN,
+		Material.DEAD_TUBE_CORAL_FAN,
+		Material.DEAD_TUBE_CORAL_WALL_FAN,
+		Material.FIRE_CORAL_FAN,
+		Material.FIRE_CORAL_WALL_FAN,
+		Material.HORN_CORAL_FAN,
+		Material.HORN_CORAL_WALL_FAN,
+		Material.TUBE_CORAL_FAN,
+		Material.TUBE_CORAL_WALL_FAN,
 	}));
+
 	HashSet<Material> nonSolidBlockList = new HashSet<Material>();
 
 	public void onEnable() {
@@ -452,49 +565,8 @@ public class Main extends JavaPlugin {
 		this.getCommand("unloadchunks").setExecutor(new CommandUnloadChunks());
 		this.getCommand("username").setExecutor(new CommandUsername(this));
 
-		new Tick(this).runTaskTimer(this, 0, 1);
-		new TickAsync(this).runTaskTimerAsynchronously(this, 0, 1);
-		new TileEntityCheckAsync(this).runTaskTimerAsynchronously(this, 0, 400);
+		new AutosaveCheck().runTaskTimerAsynchronously(this, 0, 20);
+		/*new TileEntityCheckAsync(this).runTaskTimerAsynchronously(this, 0, 400);*/
 		this.getServer().getPluginManager().registerEvents(new Events(this), this);
-	}
-
-	public void getSkin(String name, final Player player) {
-		try {
-			URL nameUrl = new URL("https://api.mojang.com/users/profiles/minecraft/" + name);
-			HttpsURLConnection nameConnection = (HttpsURLConnection) nameUrl.openConnection();
-
-			if (nameConnection != null &&
-			nameConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
-				InputStreamReader nameStream = new InputStreamReader(nameConnection.getInputStream());
-				String uuid = new JsonParser().parse(nameStream).getAsJsonObject().get("id").getAsString();
-				nameStream.close();
-				nameConnection.disconnect();
-
-				URL uuidUrl = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false");
-				HttpsURLConnection uuidConnection = (HttpsURLConnection) uuidUrl.openConnection();
-
-				if (uuidConnection != null &&
-				uuidConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
-					InputStreamReader uuidStream = new InputStreamReader(uuidConnection.getInputStream());
-					JsonObject response = new JsonParser().parse(uuidStream).getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject();
-					final String texture = response.get("value").getAsString();
-					final String signature = response.get("signature").getAsString();
-					uuidStream.close();
-					uuidConnection.disconnect();
-
-					final PlayerProfile textureProfile = player.getPlayerProfile();
-					textureProfile.clearProperties();
-					textureProfile.setProperty(new ProfileProperty("textures", texture, signature));
-
-					Bukkit.getScheduler().runTask(this, new Runnable() {
-						@Override
-	    					public void run() {
-							player.setPlayerProfile(textureProfile);
-						}
-					});
-				}
-			}
-		} catch (Exception exception) {
-		}
 	}
 }
