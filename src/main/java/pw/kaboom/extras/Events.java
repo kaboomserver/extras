@@ -21,6 +21,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.data.Levelled;
 
+import org.bukkit.command.BlockCommandSender;
+
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -632,6 +634,15 @@ class Events implements Listener {
 	void onServerCommand(ServerCommandEvent event) {
 		final String[] arr = event.getCommand().split(" ");
 		final String command = event.getCommand();
+
+		if (event.getSender() instanceof BlockCommandSender) {
+			try {
+				((BlockCommandSender)event.getSender()).getBlock().getState();
+			} catch (Exception exception) {
+				event.setCancelled(true);
+				return;
+			}
+		}
 
 		if (main.consoleCommandBlacklist.contains(arr[0].toLowerCase())) {
 			event.setCancelled(true);
