@@ -8,6 +8,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -36,7 +37,6 @@ import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
-import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.SignChangeEvent;
 
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -87,9 +87,9 @@ class AutosaveCheck extends BukkitRunnable {
 	}
 }
 
-/*class TileEntityCheckAsync extends BukkitRunnable {
+class TileEntityCheck extends BukkitRunnable {
 	Main main;
-	TileEntityCheckAsync(Main main) {
+	TileEntityCheck(Main main) {
 		this.main = main;
 	}
 
@@ -99,16 +99,16 @@ class AutosaveCheck extends BukkitRunnable {
 				try {
 					chunk.getTileEntities();
 				} catch (Exception e) {
-					Bukkit.getScheduler().runTask(main, new Runnable() {
+					new BukkitRunnable() {
 						public void run() {
 							world.regenerateChunk(chunk.getX(), chunk.getZ());
 						}
-					});
+					}.runTask(main);
 				}
 			}
 		}
 	}
-}*/
+}
 
 class Events implements Listener {
 	Main main;
@@ -291,17 +291,8 @@ class Events implements Listener {
 	void onBlockRedstone(BlockRedstoneEvent event) {
 		final double tps = Bukkit.getServer().getTPS()[0];
 
-		if (tps < 14) {
+		if (tps < 10) {
 			event.setNewCurrent(0);
-		}
-	}
-
-	@EventHandler
-	void onBlockSpread(BlockSpreadEvent event) {
-		final double tps = Bukkit.getServer().getTPS()[0];
-
-		if (tps < 14) {
-			event.setCancelled(true);
 		}
 	}
 
@@ -425,11 +416,7 @@ class Events implements Listener {
 
 	@EventHandler
 	void onExplosionPrime(ExplosionPrimeEvent event) {
-		final double tps = Bukkit.getServer().getTPS()[0];
-
-		if (tps < 14) {
-			event.setCancelled(true);
-		} else if (event.getRadius() > 20) {
+		if (event.getRadius() > 20) {
 			event.setRadius(20);
 		}
 	}
@@ -709,7 +696,7 @@ class Events implements Listener {
 	void onTNTPrime(TNTPrimeEvent event) {
 		final double tps = Bukkit.getServer().getTPS()[0];
 
-		if (tps < 14) {
+		if (tps < 10) {
 			event.setCancelled(true);
 		}
 	}

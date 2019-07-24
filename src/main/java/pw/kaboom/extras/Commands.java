@@ -29,6 +29,8 @@ import org.bukkit.entity.Player;
 
 import org.bukkit.inventory.ItemStack;
 
+import org.bukkit.scheduler.BukkitRunnable;
+
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
@@ -267,7 +269,7 @@ class CommandSkin implements CommandExecutor {
 		if (args.length == 0) {
 			player.sendMessage(ChatColor.RED + "Usage: /" + label + " <username>");
 		} else {
-			Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+			new BukkitRunnable() {
 				public void run() {
 					try {
 						final String name = args[0];
@@ -295,35 +297,35 @@ class CommandSkin implements CommandExecutor {
 								textureProfile.clearProperties();
 								textureProfile.setProperty(new ProfileProperty("textures", texture, signature));
 
-								Bukkit.getScheduler().runTask(main, new Runnable() {
+								new BukkitRunnable() {
 									@Override
 									public void run() {
 										player.setPlayerProfile(textureProfile);
 										player.sendMessage("Successfully set your skin to " + name + "'s");
 									}
-								});
+								}.runTask(main);
 							} else {
 								uuidConnection.disconnect();
-								Bukkit.getScheduler().runTask(main, new Runnable() {
+								new BukkitRunnable() {
 									@Override
 									public void run() {
 										player.sendMessage("Failed to change skin. Try again later");
 									}
-								});
+								}.runTask(main);
 							}
 						} else {
 							nameConnection.disconnect();
-							Bukkit.getScheduler().runTask(main, new Runnable() {
+							new BukkitRunnable() {
 								@Override
 								public void run() {
 									player.sendMessage("A player with that username doesn't exist");
 								}
-							});
+							}.runTask(main);
 						}
 					} catch (Exception exception) {
 					}
 				}
-			});
+			}.runTaskAsynchronously(main);
 		}
 		return true;
 	}
@@ -414,7 +416,7 @@ class CommandUsername implements CommandExecutor {
 		if (args.length == 0) {
 			player.sendMessage(ChatColor.RED + "Usage: /" + label + " <username>");
 		} else {
-			Bukkit.getScheduler().runTaskAsynchronously(main, new Runnable() {
+			new BukkitRunnable() {
 				public void run() {
 					try {
 						String texture = "";
@@ -457,17 +459,17 @@ class CommandUsername implements CommandExecutor {
 							profile.setProperty(new ProfileProperty("textures", texture, signature));
 						}
 
-						Bukkit.getScheduler().runTask(main, new Runnable() {
+						new BukkitRunnable() {
 							@Override
 							public void run() {
 								player.setPlayerProfile(profile);
 								player.sendMessage("Successfully set your username to \"" + name + "\"");
 							}
-						});
+						}.runTask(main);
 					} catch (Exception exception) {
 					}
 				}
-			});
+			}.runTaskAsynchronously(main);
 		}
 		return true;
 	}
