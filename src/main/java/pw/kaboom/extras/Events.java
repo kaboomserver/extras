@@ -191,38 +191,65 @@ class Events implements Listener {
 			event.getToBlock().getState();
 		} catch (Exception exception) {
 			event.setCancelled(true);
+			return;
+		}
+
+		final double tps = Bukkit.getServer().getTPS()[0];
+
+		if (tps < 15) {
+			event.setCancelled(true);
 		}
 	}
 
 	@EventHandler
 	void onBlockPhysics(BlockPhysicsEvent event) {
-		final Block block = event.getBlock();
+		final Material material = event.getChangedType();
 
-		if (main.fallingBlockList.contains(block.getType())) {
+		if (main.fallingBlockList.contains(material)) {
 			main.fallingBlockCount++;
 
 			if (main.fallingBlockCount == 10) {
 				event.setCancelled(true);
 				main.fallingBlockCount = 0;
 			}
-		} else if (block.getType() == Material.FARMLAND) {
+		} else if (material == Material.FARMLAND) {
 			event.setCancelled(true);
-		} else if (block.getType() == Material.WATER ||
-			block.getType() == Material.LAVA) {
+		} else if (material == Material.WATER ||
+			material == Material.LAVA) {
+			final Block block = event.getBlock();
 			final Levelled levelledBlock = (Levelled) block.getBlockData();
 
-			if (levelledBlock.getLevel() <= 7 &&
-				block.getRelative(BlockFace.UP).getType() == block.getType()) {
-				if (block.getRelative(BlockFace.DOWN).getType() != Material.AIR &&
-					block.getRelative(BlockFace.NORTH).getType() != Material.AIR &&
-					block.getRelative(BlockFace.SOUTH).getType() != Material.AIR &&
-					block.getRelative(BlockFace.WEST).getType() != Material.AIR &&
-					block.getRelative(BlockFace.EAST).getType() != Material.AIR) {
-					event.setCancelled(true);
+			if (levelledBlock.getLevel() <= 7) {
+				if (block.getRelative(BlockFace.UP).getType() != material) {
+					boolean cancel = true;
+					boolean solid = false;
+
+					for (BlockFace face : main.faces) {
+						if (block.getRelative(face).getType() == Material.AIR ||
+							block.getRelative(face).getType() == Material.CAVE_AIR) {
+							cancel = false;
+						}
+
+						if (block.getRelative(face).getType() != Material.AIR ||
+							block.getRelative(face).getType() != Material.CAVE_AIR ||
+							block.getRelative(face).getType() != Material.LAVA ||
+							block.getRelative(face).getType() != Material.WATER) {
+							solid = true;
+						}
+					}
+
+
+					if (block.getRelative(BlockFace.UP).getType() == Material.WATER &&
+					solid != true) {
+						event.setCancelled(true);
+					} else if (cancel == true) {
+						event.setCancelled(true);
+					}
 				}
 			}
-		} else if (main.nonSolidWallMountedBlockList.contains(block.getType())) {
-			final World world = event.getBlock().getWorld();
+		} else if (main.nonSolidWallMountedBlockList.contains(material)) {
+			final Block block = event.getBlock();
+			final World world = block.getWorld();
 			final int radius = 5;
 			int blockCount = 0;
 
@@ -233,7 +260,7 @@ class Events implements Listener {
 							final Location blockLocation = new Location(world, block.getX() + x, block.getY() + y, block.getZ() + z);
 							final Block coordBlock = world.getBlockAt(blockLocation);
 
-							if (coordBlock.getType() == block.getType() ||
+							if (coordBlock.getType() == material ||
 								main.nonSolidWallMountedBlockList.contains(coordBlock.getType())) {
 								blockCount++;
 							}
@@ -248,7 +275,9 @@ class Events implements Listener {
 			if (blockCount == 42) {
 				event.setCancelled(true);
 			}
-		} else if (main.nonSolidDoubleBlockList.contains(block.getType())) {
+		} else if (main.nonSolidDoubleBlockList.contains(material)) {
+			final Block block = event.getBlock();
+
 			if (main.nonSolidDoubleBlockList.contains(block.getRelative(BlockFace.DOWN).getType())) {
 				event.setCancelled(true);
 			} else if (block.getRelative(BlockFace.DOWN).getType() == Material.AIR ||
@@ -268,7 +297,9 @@ class Events implements Listener {
 
 				block.setType(Material.AIR, false);
 			}
-		} else if (main.nonSolidSingularBlockList.contains(block.getType())) {
+		} else if (main.nonSolidSingularBlockList.contains(material)) {
+			final Block block = event.getBlock();
+
 			if (block.getRelative(BlockFace.DOWN).getType() == Material.AIR ||
 				main.nonSolidBlockList.contains(block.getRelative(BlockFace.DOWN).getType())) {
 				block.setType(Material.AIR, false);
@@ -554,10 +585,10 @@ class Events implements Listener {
 
 	@EventHandler
 	void onPlayerLogin(PlayerLoginEvent event) {
-		if (!(event.getHostname().startsWith("play.kaboom.pw") &&
+		/*if (!(event.getHostname().startsWith("play.kaboom.pw") &&
 			event.getHostname().endsWith(":53950"))) {
 			event.disallow(Result.KICK_OTHER, "You connected to the server using an outdated server address/IP.\nPlease use the following address/IP:\n\nkaboom.pw");
-		} else {
+		} else {*/
 			final Player player = event.getPlayer();
 
 			event.allow();
@@ -569,7 +600,7 @@ class Events implements Listener {
 			} catch (Exception exception) {
 			}
 			main.playerProfile.remove(player.getName());
-		}
+		/*}*/
 	}
 
 	@EventHandler

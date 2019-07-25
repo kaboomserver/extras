@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.UUID;
 
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
@@ -16,6 +17,7 @@ public class Main extends JavaPlugin {
 	HashMap<UUID, Long> interactMillisList = new HashMap<>();
 	HashMap<String, PlayerProfile> playerProfile = new HashMap<>();
 	HashSet<String> consoleCommandBlacklist = new HashSet<>();
+	HashSet<BlockFace> faces = new HashSet<>();
 	HashSet<Material> fallingBlockList = new HashSet<>();
 	HashSet<Material> nonSolidBlockList = new HashSet<>();
 	HashSet<Material> nonSolidDoubleBlockList = new HashSet<>();
@@ -349,6 +351,16 @@ public class Main extends JavaPlugin {
 			"warp",
 			"warps",
 			"whisper"
+		);
+
+		Collections.addAll(
+			faces,
+			BlockFace.NORTH,
+			BlockFace.SOUTH,
+			BlockFace.WEST,
+			BlockFace.EAST,
+			BlockFace.UP,
+			BlockFace.DOWN
 		);
 
 		Collections.addAll(
