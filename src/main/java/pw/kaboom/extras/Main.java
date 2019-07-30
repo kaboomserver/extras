@@ -24,7 +24,8 @@ public class Main extends JavaPlugin {
 	HashSet<Material> nonSolidSingularBlockList = new HashSet<>();
 	HashSet<Material> nonSolidWallMountedBlockList = new HashSet<>();
 
-	public void onEnable() {
+	public void onLoad() {
+		/* Fill lists */
 		Collections.addAll(
 			consoleCommandBlacklist,
 			"essentials:action",
@@ -575,7 +576,10 @@ public class Main extends JavaPlugin {
 		this.nonSolidBlockList.addAll(nonSolidDoubleBlockList);
 		this.nonSolidBlockList.addAll(nonSolidSingularBlockList);
 		this.nonSolidBlockList.addAll(nonSolidWallMountedBlockList);
+	}
 
+	public void onEnable() {
+		/* Commands */
 		this.getCommand("clearchat").setExecutor(new CommandClearChat());
 		this.getCommand("console").setExecutor(new CommandConsole());
 		this.getCommand("destroyentities").setExecutor(new CommandDestroyEntities());
@@ -591,8 +595,26 @@ public class Main extends JavaPlugin {
 		this.getCommand("unloadchunks").setExecutor(new CommandUnloadChunks());
 		this.getCommand("username").setExecutor(new CommandUsername(this));
 
-		new AutosaveCheck().runTaskTimerAsynchronously(this, 0, 20);
+		/* Block-related modules */
+		this.getServer().getPluginManager().registerEvents(new BlockCheck(), this);
 		/*new TileEntityCheck(this).runTaskTimerAsynchronously(this, 0, 400);*/
-		this.getServer().getPluginManager().registerEvents(new Events(this), this);
+		this.getServer().getPluginManager().registerEvents(new BlockPhysics(this), this);
+
+		/* Entity-related modules */
+		this.getServer().getPluginManager().registerEvents(new EntityExplosion(), this);
+		this.getServer().getPluginManager().registerEvents(new EntityKnockback(), this);
+		this.getServer().getPluginManager().registerEvents(new EntitySpawn(), this);
+
+		/* Player-related modules */
+		this.getServer().getPluginManager().registerEvents(new PlayerChat(this), this);
+		this.getServer().getPluginManager().registerEvents(new PlayerCommand(this), this);
+		this.getServer().getPluginManager().registerEvents(new PlayerConnection(this), this);
+		this.getServer().getPluginManager().registerEvents(new PlayerDamage(), this);
+		this.getServer().getPluginManager().registerEvents(new PlayerInteract(this), this);
+
+		/* Server-related modules */
+		new AutosaveCheck().runTaskTimerAsynchronously(this, 0, 20);
+		this.getServer().getPluginManager().registerEvents(new ServerCommand(this), this);
+		this.getServer().getPluginManager().registerEvents(new ServerPing(), this);
 	}
 }
