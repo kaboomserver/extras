@@ -8,8 +8,12 @@ import com.destroystokyo.paper.event.entity.EntityKnockbackByEntityEvent;
 class EntityKnockback implements Listener {
 	@EventHandler
 	void onEntityKnockbackByEntity(EntityKnockbackByEntityEvent event) {
-		if (event.getKnockbackStrength() > 100) {
-			event.setCancelled(true);
+		final int knockbackLimit = 60;
+
+		if (event.getKnockbackStrength() > knockbackLimit) {
+			event.getAcceleration().multiply(
+				knockbackLimit / event.getKnockbackStrength()
+			);
 		}
 	}
 }
