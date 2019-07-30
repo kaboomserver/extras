@@ -89,7 +89,7 @@ class AutosaveCheck extends BukkitRunnable {
 	}
 }
 
-class TileEntityCheck extends BukkitRunnable {
+/*class TileEntityCheck extends BukkitRunnable {
 	Main main;
 	TileEntityCheck(Main main) {
 		this.main = main;
@@ -110,7 +110,7 @@ class TileEntityCheck extends BukkitRunnable {
 			}
 		}
 	}
-}
+}*/
 
 class Events implements Listener {
 	Main main;
@@ -585,10 +585,10 @@ class Events implements Listener {
 
 	@EventHandler
 	void onPlayerLogin(PlayerLoginEvent event) {
-		/*if (!(event.getHostname().startsWith("play.kaboom.pw") &&
+		if (!(event.getHostname().startsWith("play.kaboom.pw") &&
 			event.getHostname().endsWith(":53950"))) {
 			event.disallow(Result.KICK_OTHER, "You connected to the server using an outdated server address/IP.\nPlease use the following address/IP:\n\nkaboom.pw");
-		} else {*/
+		} else {
 			final Player player = event.getPlayer();
 
 			event.allow();
@@ -600,7 +600,7 @@ class Events implements Listener {
 			} catch (Exception exception) {
 			}
 			main.playerProfile.remove(player.getName());
-		/*}*/
+		}
 	}
 
 	@EventHandler
