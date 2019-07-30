@@ -23,7 +23,7 @@ class CommandUnloadChunks implements CommandExecutor {
 			}
 		}
 
-		player.sendMessage("Successfully unloaded " + chunkCount + "unused chunks");
+		player.sendMessage("Unloaded " + chunkCount + " unused chunks");
 		return true;
 	}
 }
