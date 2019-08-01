@@ -25,7 +25,7 @@ class CommandSpawn implements CommandExecutor {
 
 			if (!coordBlock.getType().isSolid() &&
 			!coordBlock.getRelative(BlockFace.UP).getType().isSolid()) {
-				player.teleport(yLocation);
+				player.teleportAsync(yLocation);
 				break;
 			}
 		}

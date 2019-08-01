@@ -68,7 +68,7 @@ class PlayerDamage implements Listener {
 		}
 
 		if (player.getBedSpawnLocation() != null) {
-			player.teleport(player.getBedSpawnLocation());
+			player.teleportAsync(player.getBedSpawnLocation());
 		} else {
 			final World world = Bukkit.getWorld("world");
 			final Location spawnLoc = world.getSpawnLocation();
@@ -79,7 +79,7 @@ class PlayerDamage implements Listener {
 
 				if (!coordBlock.getType().isSolid() &&
 					!coordBlock.getRelative(BlockFace.UP).getType().isSolid()) {
-					player.teleport(yLocation);
+					player.teleportAsync(yLocation);
 					return;
 				}
 			}
