@@ -25,8 +25,6 @@ import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.SpawnerSpawnEvent;
 
-import org.bukkit.event.world.ChunkLoadEvent;
-
 import org.bukkit.inventory.ItemStack;
 
 import com.destroystokyo.paper.event.block.TNTPrimeEvent;
@@ -36,17 +34,6 @@ import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import com.destroystokyo.paper.event.entity.PreSpawnerSpawnEvent;
 
 class EntitySpawn implements Listener {
-	@EventHandler
-	void onChunkLoad(ChunkLoadEvent event) {
-		final int count = event.getChunk().getEntities().length;
-
-		if (count > 50) {
-			for (int i = 51; i <= count; i++) {
-				event.getChunk().getEntities()[i].remove();
-			}
-		}
-	}
-
 	@EventHandler
 	void onCreatureSpawn(CreatureSpawnEvent event) {
 		if (event.getSpawnReason() == SpawnReason.CUSTOM ||
