@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import org.bukkit.entity.Player;
@@ -71,12 +72,25 @@ class PlayerConnection implements Listener {
 	@EventHandler
 	void onPlayerJoin(PlayerJoinEvent event) {
 		final Player player = event.getPlayer();
+		final int fadeIn = 10;
+		final int stay = 160;
+		final int fadeOut = 5;
 
 		if (player.hasPlayedBefore() == true) {
-			player.getInventory().clear();
+			try {
+				player.getInventory().getContents();
+			} catch (Exception exception) {
+				player.getInventory().clear();
+			}
 		}
 
-		player.sendTitle(ChatColor.GRAY + "Welcome to Kaboom!", "Free OP • Anarchy • Creative", 10, 160, 5);
+		player.sendTitle(
+			ChatColor.GRAY + "Welcome to Kaboom!",
+			"Free OP • Anarchy • Creative",
+			fadeIn,
+			stay,
+			fadeOut
+		);
 	}
 
 	@EventHandler
@@ -86,22 +100,23 @@ class PlayerConnection implements Listener {
 
 	@EventHandler
 	void onPlayerLogin(PlayerLoginEvent event) {
-		/*if (!(event.getHostname().startsWith("play.kaboom.pw") &&
+		if (!(event.getHostname().startsWith("play.kaboom.pw") &&
 			event.getHostname().endsWith(":53950"))) {
 			event.disallow(Result.KICK_OTHER, "You connected to the server using an outdated server address/IP.\nPlease use the following address/IP:\n\nkaboom.pw");
-		} else {*/
-			final Player player = event.getPlayer();
+			return;
+		}
 
-			event.allow();
-			player.setOp(true);
-			main.commandMillisList.put(player.getUniqueId(), System.currentTimeMillis());
-			main.interactMillisList.put(player.getUniqueId(), System.currentTimeMillis());
-			try {
-				player.setPlayerProfile(main.playerProfile.get(player.getName()));
-			} catch (Exception exception) {
-			}
-			main.playerProfile.remove(player.getName());
-		/*}*/
+		final Player player = event.getPlayer();
+
+		event.allow();
+		player.setOp(true);
+		main.commandMillisList.put(player.getUniqueId(), System.currentTimeMillis());
+		main.interactMillisList.put(player.getUniqueId(), System.currentTimeMillis());
+		try {
+			player.setPlayerProfile(main.playerProfile.get(player.getName()));
+		} catch (Exception exception) {
+		}
+		main.playerProfile.remove(player.getName());
 	}
 
 	@EventHandler
