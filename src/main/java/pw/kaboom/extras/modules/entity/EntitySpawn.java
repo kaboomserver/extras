@@ -111,11 +111,14 @@ class EntitySpawn implements Listener {
 	@EventHandler
 	void onEntityAddToWorld(EntityAddToWorldEvent event) {
 		if (event.getEntityType() != EntityType.PLAYER) {
-			final Entity entity = event.getEntity();
-			final int count = entity.getLocation().getChunk().getEntities().length;
+			if (event.getEntity().getLocation().isGenerated() == true &&
+				event.getEntity().getLocation().isChunkLoaded() == true) {
+				final Entity entity = event.getEntity();
+				final int count = entity.getLocation().getChunk().getEntities().length;
 
-			if (count > 50) {
-				entity.remove();
+				if (count > 50) {
+					entity.remove();
+				}
 			}
 		}
 	}
@@ -123,10 +126,13 @@ class EntitySpawn implements Listener {
 	@EventHandler
 	void onEntitySpawn(EntitySpawnEvent event) {
 		if (event.getEntityType() != EntityType.PLAYER) {
-			final int entityCount = event.getLocation().getChunk().getEntities().length;
+			if (event.getLocation().isGenerated() == true &&
+				event.getLocation().isChunkLoaded() == true) {
+				final int entityCount = event.getLocation().getChunk().getEntities().length;
 
-			if (entityCount > 50) {
-				event.setCancelled(true);
+				if (entityCount > 50) {
+					event.setCancelled(true);
+				}
 			}
 		}
 	}
@@ -143,12 +149,17 @@ class EntitySpawn implements Listener {
 	@EventHandler
 	void onPreCreatureSpawn(PreCreatureSpawnEvent event) {
 		if (event.getType() != EntityType.PLAYER) {
-			final int entityCount = event.getSpawnLocation().getChunk().getEntities().length;
+			if (event.getSpawnLocation().isGenerated() == true &&
+				event.getSpawnLocation().isChunkLoaded() == true) {
+				final int entityCount = event.getSpawnLocation().getChunk().getEntities().length;
 
-			if (entityCount > 50) {
-				event.setCancelled(true);
-				return;
-			} else if (event.getType() == EntityType.ENDER_DRAGON) {
+				if (entityCount > 50) {
+					event.setCancelled(true);
+					return;
+				}
+			}
+
+			if (event.getType() == EntityType.ENDER_DRAGON) {
 				final int dragonCount = event.getSpawnLocation().getWorld().getEntitiesByClass(EnderDragon.class).size();
 
 				if (dragonCount > 25) {
