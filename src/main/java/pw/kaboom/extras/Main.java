@@ -613,7 +613,6 @@ public class Main extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(new PlayerInteract(this), this);
 
 		/* Server-related modules */
-		new AutosaveCheck().runTaskTimerAsynchronously(this, 0, 20);
 		this.getServer().getPluginManager().registerEvents(new ServerCommand(this), this);
 		this.getServer().getPluginManager().registerEvents(new ServerPing(), this);
 	}

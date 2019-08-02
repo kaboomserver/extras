@@ -32,8 +32,6 @@ import com.destroystokyo.paper.profile.ProfileProperty;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import org.bukkit.event.world.WorldSaveEvent;
-
 class PlayerConnection implements Listener {
 	private Main main;
 	public PlayerConnection(Main main) {
@@ -149,10 +147,5 @@ class PlayerConnection implements Listener {
 		} catch (Exception exception) {
 		}
 		main.playerProfile.remove(player.getName());
-	}
-
-	@EventHandler
-	void onWorldSave(WorldSaveEvent event) {
-		System.out.println("1");
 	}
 }
