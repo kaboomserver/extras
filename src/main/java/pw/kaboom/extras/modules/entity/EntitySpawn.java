@@ -61,7 +61,7 @@ class EntitySpawn implements Listener {
 			}
 		}
 
-		/*if (event.getEntityType() == EntityType.ARMOR_STAND ||
+		if (event.getEntityType() == EntityType.ARMOR_STAND ||
 			event.getEntityType() == EntityType.DROWNED ||
 			event.getEntityType() == EntityType.GIANT ||
 			event.getEntityType() == EntityType.HUSK ||
@@ -93,7 +93,7 @@ class EntitySpawn implements Listener {
 			} catch (Exception exception) {
 				mob.getEquipment().setItemInOffHand(null);
 			}
-		} else */if (event.getEntityType() == EntityType.ENDER_DRAGON) {
+		} else if (event.getEntityType() == EntityType.ENDER_DRAGON) {
 			final int dragonCount = event.getLocation().getWorld().getEntitiesByClass(EnderDragon.class).size();
 
 			if (dragonCount > 25) {
@@ -128,7 +128,7 @@ class EntitySpawn implements Listener {
 				}
 			}
 
-			/*if (event.getEntityType() == EntityType.ARMOR_STAND ||
+			if (event.getEntityType() == EntityType.ARMOR_STAND ||
 				event.getEntityType() == EntityType.DROWNED ||
 				event.getEntityType() == EntityType.GIANT ||
 				event.getEntityType() == EntityType.HUSK ||
@@ -160,7 +160,7 @@ class EntitySpawn implements Listener {
 				} catch (Exception exception) {
 					mob.getEquipment().setItemInOffHand(null);
 				}
-			}*/
+			}
 		}
 	}
 

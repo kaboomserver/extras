@@ -6,11 +6,8 @@ import java.util.UUID;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.World;
 
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import org.bukkit.event.EventHandler;
@@ -126,7 +123,6 @@ class PlayerConnection implements Listener {
 	@EventHandler
 	void onPlayerQuit(PlayerQuitEvent event) {
 		final Player player = event.getPlayer();
-		final World world = player.getLocation().getWorld();
 
 		main.commandMillisList.remove(player.getUniqueId());
 		main.interactMillisList.remove(player.getUniqueId());
