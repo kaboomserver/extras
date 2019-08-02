@@ -19,6 +19,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.MagmaCube;
 import org.bukkit.entity.Slime;
 
+import org.bukkit.event.block.BlockDispenseEvent;
+
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntitySpawnEvent;
@@ -35,6 +37,15 @@ import com.destroystokyo.paper.event.entity.PreSpawnerSpawnEvent;
 
 class EntitySpawn implements Listener {
 	@EventHandler
+	void onBlockDispense(BlockDispenseEvent event) {
+		try {
+			event.getItem().getItemMeta();
+		} catch (Exception exception) {
+			event.setCancelled(true);
+		}
+	}
+
+	@EventHandler
 	void onCreatureSpawn(CreatureSpawnEvent event) {
 		if (event.getSpawnReason() == SpawnReason.CUSTOM ||
 			event.getSpawnReason() == SpawnReason.DEFAULT ||
@@ -50,7 +61,8 @@ class EntitySpawn implements Listener {
 			}
 		}
 
-		if (event.getEntityType() == EntityType.DROWNED ||
+		/*if (event.getEntityType() == EntityType.ARMOR_STAND ||
+			event.getEntityType() == EntityType.DROWNED ||
 			event.getEntityType() == EntityType.GIANT ||
 			event.getEntityType() == EntityType.HUSK ||
 			event.getEntityType() == EntityType.PIG_ZOMBIE ||
@@ -60,33 +72,28 @@ class EntitySpawn implements Listener {
 			event.getEntityType() == EntityType.WITHER_SKELETON ||
 			event.getEntityType() == EntityType.ZOMBIE ||
 			event.getEntityType() == EntityType.ZOMBIE_VILLAGER) {
-			final LivingEntity mob = event.getEntity();
+			final LivingEntity mob = (LivingEntity) event.getEntity();
 
 			try {
 				mob.getEquipment().getArmorContents();
 			} catch (Exception exception) {
 				mob.getEquipment().setArmorContents(
-					new ItemStack[] {
-						new ItemStack(Material.AIR),
-						new ItemStack(Material.AIR),
-						new ItemStack(Material.AIR),
-						new ItemStack(Material.AIR),
-					}
+					new ItemStack[] {null, null, null, null}
 				);
 			}
 
 			try {
 				mob.getEquipment().getItemInMainHand();
 			} catch (Exception exception) {
-				mob.getEquipment().setItemInMainHand(new ItemStack(Material.AIR));
+				mob.getEquipment().setItemInMainHand(null);
 			}
 
 			try {
 				mob.getEquipment().getItemInOffHand();
 			} catch (Exception exception) {
-				mob.getEquipment().setItemInOffHand(new ItemStack(Material.AIR));
+				mob.getEquipment().setItemInOffHand(null);
 			}
-		} else if (event.getEntityType() == EntityType.ENDER_DRAGON) {
+		} else */if (event.getEntityType() == EntityType.ENDER_DRAGON) {
 			final int dragonCount = event.getLocation().getWorld().getEntitiesByClass(EnderDragon.class).size();
 
 			if (dragonCount > 25) {
@@ -120,6 +127,40 @@ class EntitySpawn implements Listener {
 					entity.remove();
 				}
 			}
+
+			/*if (event.getEntityType() == EntityType.ARMOR_STAND ||
+				event.getEntityType() == EntityType.DROWNED ||
+				event.getEntityType() == EntityType.GIANT ||
+				event.getEntityType() == EntityType.HUSK ||
+				event.getEntityType() == EntityType.PIG_ZOMBIE ||
+				event.getEntityType() == EntityType.PLAYER ||
+				event.getEntityType() == EntityType.SKELETON ||
+				event.getEntityType() == EntityType.STRAY ||
+				event.getEntityType() == EntityType.WITHER_SKELETON ||
+				event.getEntityType() == EntityType.ZOMBIE ||
+				event.getEntityType() == EntityType.ZOMBIE_VILLAGER) {
+				final LivingEntity mob = (LivingEntity) event.getEntity();
+
+				try {
+					mob.getEquipment().getArmorContents();
+				} catch (Exception exception) {
+					mob.getEquipment().setArmorContents(
+						new ItemStack[] {null, null, null, null}
+					);
+				}
+
+				try {
+					mob.getEquipment().getItemInMainHand();
+				} catch (Exception exception) {
+					mob.getEquipment().setItemInMainHand(null);
+				}
+
+				try {
+					mob.getEquipment().getItemInOffHand();
+				} catch (Exception exception) {
+					mob.getEquipment().setItemInOffHand(null);
+				}
+			}*/
 		}
 	}
 

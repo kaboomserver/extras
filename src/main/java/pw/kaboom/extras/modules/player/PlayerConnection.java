@@ -8,7 +8,9 @@ import javax.net.ssl.HttpsURLConnection;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import org.bukkit.event.EventHandler;
@@ -20,6 +22,8 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import org.bukkit.inventory.ItemStack;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
@@ -122,6 +126,7 @@ class PlayerConnection implements Listener {
 	@EventHandler
 	void onPlayerQuit(PlayerQuitEvent event) {
 		final Player player = event.getPlayer();
+		final World world = player.getLocation().getWorld();
 
 		main.commandMillisList.remove(player.getUniqueId());
 		main.interactMillisList.remove(player.getUniqueId());

@@ -1,8 +1,9 @@
 name: Extras
 main: pw.kaboom.extras.Main
-description: Plugin that adds extra functionality to the Kaboom.pw server.
+description: Plugin that adds extra functionality to the server.
 api-version: 1.13
 version: master
+#depends: [ProtocolLib]
 
 commands:
    clearchat:
