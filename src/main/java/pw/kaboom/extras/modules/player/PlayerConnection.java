@@ -6,9 +6,10 @@ import java.util.UUID;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
-import org.bukkit.Location;
+import org.bukkit.World;
 
 import org.bukkit.entity.Player;
 
@@ -20,17 +21,18 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
-import org.bukkit.event.player.PlayerQuitEvent;
-
-import org.bukkit.inventory.ItemStack;
 
 import org.bukkit.scheduler.BukkitRunnable;
+
+import com.destroystokyo.paper.event.player.PlayerConnectionCloseEvent;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import org.bukkit.event.world.WorldSaveEvent;
 
 class PlayerConnection implements Listener {
 	private Main main;
@@ -40,6 +42,9 @@ class PlayerConnection implements Listener {
 
 	@EventHandler
 	void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent event) {
+		main.commandMillisList.put(event.getUniqueId(), System.currentTimeMillis());
+		main.interactMillisList.put(event.getUniqueId(), System.currentTimeMillis());
+
 		try {
 			final URL nameUrl = new URL("https://api.mojang.com/users/profiles/minecraft/" + event.getName());
 			final HttpsURLConnection nameConnection = (HttpsURLConnection) nameUrl.openConnection();
@@ -72,6 +77,30 @@ class PlayerConnection implements Listener {
 			}
 		} catch (Exception exception) {
 		}
+	}
+
+	@EventHandler
+	void onPlayerConnectionClose(final PlayerConnectionCloseEvent event) {
+		main.commandMillisList.remove(event.getPlayerUniqueId());
+		main.interactMillisList.remove(event.getPlayerUniqueId());
+
+		new BukkitRunnable() {
+			public void run() {
+				for (final World world : Bukkit.getWorlds()) {
+					for (final Chunk chunk : world.getLoadedChunks()) {
+						try {
+							chunk.getTileEntities();
+						} catch (Exception e) {
+							new BukkitRunnable() {
+								public void run() {
+									world.regenerateChunk(chunk.getX(), chunk.getZ());
+								}
+							}.runTask(main);
+						}
+					}
+				}
+			}
+		}.runTaskAsynchronously(main);
 	}
 
 	@EventHandler
@@ -115,8 +144,6 @@ class PlayerConnection implements Listener {
 
 		event.allow();
 		player.setOp(true);
-		main.commandMillisList.put(player.getUniqueId(), System.currentTimeMillis());
-		main.interactMillisList.put(player.getUniqueId(), System.currentTimeMillis());
 		try {
 			player.setPlayerProfile(main.playerProfile.get(player.getName()));
 		} catch (Exception exception) {
@@ -125,47 +152,7 @@ class PlayerConnection implements Listener {
 	}
 
 	@EventHandler
-	void onPlayerQuit(PlayerQuitEvent event) {
-		final Player player = event.getPlayer();
-
-		main.commandMillisList.remove(player.getUniqueId());
-		main.interactMillisList.remove(player.getUniqueId());
-
-		final Location location = player.getLocation();
-
-		new BukkitRunnable() {
-			public void run() {
-				for (final Chunk chunk : location.getWorld().getLoadedChunks()) {
-					try {
-						chunk.getTileEntities();
-					} catch (Exception e) {
-						new BukkitRunnable() {
-							public void run() {
-								location.getWorld().regenerateChunk(chunk.getX(), chunk.getZ());
-							}
-						}.runTask(main);
-					}
-				}
-			}
-		}.runTaskAsynchronously(main);
-
-		/*final int chunkX = player.getLocation().getChunk().getX();
-		final int chunkZ = player.getLocation().getChunk().getZ();
-		final int radius = 4;
-
-		for (int x = chunkX - radius; x < chunkX + radius; x++) {
-			for (int z = chunkZ - radius; z < chunkZ + radius; z++) {
-				try {
-					Chunk chunk = player.getLocation().getWorld().getChunkAtAsync(x, z).get();
-
-					try {
-						chunk.getTileEntities();
-					} catch (Exception e) {
-						player.getLocation().getWorld().regenerateChunk(chunk.getX(), chunk.getZ());
-					}
-				} catch (Exception e) {
-				}
-			}
-		}*/
+	void onWorldSave(WorldSaveEvent event) {
+		System.out.println("1");
 	}
 }

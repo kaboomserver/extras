@@ -2,10 +2,16 @@ package pw.kaboom.extras;
 
 import java.util.UUID;
 
+import org.bukkit.ChatColor;
+
+import org.bukkit.command.Command;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+
+import org.bukkit.scheduler.BukkitRunnable;
 
 class PlayerCommand implements Listener {
 	private Main main;
@@ -22,7 +28,7 @@ class PlayerCommand implements Listener {
 
 		main.commandMillisList.put(playerUuid, System.currentTimeMillis());
 
-		if (millisDifference < 400) {
+		if (millisDifference < 200) {
 			event.setCancelled(true);
 			return;
 		}
@@ -50,6 +56,32 @@ class PlayerCommand implements Listener {
 
 				event.setMessage(stringBuilder.toString());
 			}
+		} else if (("/bukkit:reload".equals(arr[0].toLowerCase()) ||
+			"/bukkit:rl".equals(arr[0].toLowerCase()) ||
+			"/reload".equals(arr[0].toLowerCase()) || 
+			"/rl".equals(arr[0].toLowerCase())) &&
+			event.getPlayer().hasPermission("bukkit.command.reload")) {
+			if (arr.length >= 2 &&
+				"confirm".equals(arr[1].toLowerCase())) {
+				event.setCancelled(true);
+				Command.broadcastCommandMessage(event.getPlayer(), ChatColor.RED + "Please note that this command is not supported and may cause issues when using some plugins.");
+				Command.broadcastCommandMessage(event.getPlayer(), ChatColor.RED + "If you encounter any issues please use the /stop command to restart your server.");
+				Command.broadcastCommandMessage(event.getPlayer(), ChatColor.GREEN + "Reload complete.");
+			}
+		} else if (("/restart".equals(arr[0].toLowerCase()) ||
+			"/spigot:restart".equals(arr[0].toLowerCase())) &&
+			event.getPlayer().hasPermission("bukkit.command.restart")) {
+			event.setCancelled(true);
+		} else if (("/minecraft:save-off".equals(arr[0].toLowerCase()) ||
+			"/save-off".equals(arr[0].toLowerCase())) &&
+			event.getPlayer().hasPermission("minecraft.command.save.disable")) {
+			event.setCancelled(true);
+			Command.broadcastCommandMessage(event.getPlayer(), "Automatic saving is now disabled");
+		} else if (("/minecraft:stop".equals(arr[0].toLowerCase()) ||
+			"/stop".equals(arr[0].toLowerCase())) &&
+			event.getPlayer().hasPermission("minecraft.command.stop")) {
+			event.setCancelled(true);
+			Command.broadcastCommandMessage(event.getPlayer(), "Stopping the server");
 		}
 	}
 }

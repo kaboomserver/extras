@@ -1,5 +1,10 @@
 package pw.kaboom.extras;
 
+import org.bukkit.ChatColor;
+
+import org.bukkit.command.BlockCommandSender;
+import org.bukkit.command.Command;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -41,6 +46,29 @@ class ServerCommand implements Listener {
 
 				event.setCommand(stringBuilder.toString());
 			}
+		} else if ("bukkit:reload".equals(arr[0].toLowerCase()) ||
+			"bukkit:rl".equals(arr[0].toLowerCase()) ||
+			"reload".equals(arr[0].toLowerCase()) || 
+			"rl".equals(arr[0].toLowerCase())) {
+			if (arr.length >= 2 &&
+				"confirm".equals(arr[1].toLowerCase())) {
+				event.setCancelled(true);
+				Command.broadcastCommandMessage(event.getSender(), ChatColor.RED + "Please note that this command is not supported and may cause issues when using some plugins.");
+				Command.broadcastCommandMessage(event.getSender(), ChatColor.RED + "If you encounter any issues please use the /stop command to restart your server.");
+				Command.broadcastCommandMessage(event.getSender(), ChatColor.GREEN + "Reload complete.");
+			}
+		} else if ("restart".equals(arr[0].toLowerCase()) ||
+			"spigot:restart".equals(arr[0].toLowerCase())) {
+			event.setCancelled(true);
+		} else if ("minecraft:save-off".equals(arr[0].toLowerCase()) ||
+			"save-off".equals(arr[0].toLowerCase())) {
+			event.setCancelled(true);
+			Command.broadcastCommandMessage(event.getSender(), "Automatic saving is now disabled");
+		} else if (("minecraft:stop".equals(arr[0].toLowerCase()) ||
+			"stop".equals(arr[0].toLowerCase())) &&
+			!(event.getSender() instanceof BlockCommandSender)) {
+			event.setCancelled(true);
+			Command.broadcastCommandMessage(event.getSender(), "Stopping the server");
 		}
 	}
 }

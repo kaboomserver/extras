@@ -9,8 +9,6 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.plugin.java.JavaPlugin;
 
-/*import com.comphenix.protocol.ProtocolLibrary;*/
-
 import com.destroystokyo.paper.profile.PlayerProfile;
 
 public class Main extends JavaPlugin {
@@ -613,7 +611,6 @@ public class Main extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(new PlayerConnection(this), this);
 		this.getServer().getPluginManager().registerEvents(new PlayerDamage(), this);
 		this.getServer().getPluginManager().registerEvents(new PlayerInteract(this), this);
-		/*ProtocolLibrary.getProtocolManager().addPacketListener(new PlayerInventory(this));*/
 
 		/* Server-related modules */
 		new AutosaveCheck().runTaskTimerAsynchronously(this, 0, 20);

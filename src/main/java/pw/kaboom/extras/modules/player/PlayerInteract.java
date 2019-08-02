@@ -23,7 +23,7 @@ class PlayerInteract implements Listener {
 
 		main.interactMillisList.put(playerUuid, System.currentTimeMillis());
 
-		if (millisDifference < 200) {
+		if (millisDifference < 150) {
 			event.setCancelled(true);
 		}
 	}
