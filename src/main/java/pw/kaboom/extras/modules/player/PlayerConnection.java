@@ -7,6 +7,8 @@ import java.util.UUID;
 import javax.net.ssl.HttpsURLConnection;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
 
 import org.bukkit.entity.Player;
 
@@ -21,6 +23,8 @@ import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import org.bukkit.inventory.ItemStack;
+
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
@@ -126,5 +130,42 @@ class PlayerConnection implements Listener {
 
 		main.commandMillisList.remove(player.getUniqueId());
 		main.interactMillisList.remove(player.getUniqueId());
+
+		final Location location = player.getLocation();
+
+		new BukkitRunnable() {
+			public void run() {
+				for (final Chunk chunk : location.getWorld().getLoadedChunks()) {
+					try {
+						chunk.getTileEntities();
+					} catch (Exception e) {
+						new BukkitRunnable() {
+							public void run() {
+								location.getWorld().regenerateChunk(chunk.getX(), chunk.getZ());
+							}
+						}.runTask(main);
+					}
+				}
+			}
+		}.runTaskAsynchronously(main);
+
+		/*final int chunkX = player.getLocation().getChunk().getX();
+		final int chunkZ = player.getLocation().getChunk().getZ();
+		final int radius = 4;
+
+		for (int x = chunkX - radius; x < chunkX + radius; x++) {
+			for (int z = chunkZ - radius; z < chunkZ + radius; z++) {
+				try {
+					Chunk chunk = player.getLocation().getWorld().getChunkAtAsync(x, z).get();
+
+					try {
+						chunk.getTileEntities();
+					} catch (Exception e) {
+						player.getLocation().getWorld().regenerateChunk(chunk.getX(), chunk.getZ());
+					}
+				} catch (Exception e) {
+				}
+			}
+		}*/
 	}
 }
