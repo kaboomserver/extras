@@ -79,9 +79,9 @@ class BlockPhysics implements Listener {
 
 
 					if (block.getRelative(BlockFace.UP).getType() == Material.WATER &&
-					solid != true) {
+					!solid) {
 						event.setCancelled(true);
-					} else if (cancel == true) {
+					} else if (cancel) {
 						event.setCancelled(true);
 					}
 				}

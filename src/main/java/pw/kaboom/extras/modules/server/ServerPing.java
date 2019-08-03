@@ -8,10 +8,10 @@ import com.destroystokyo.paper.event.server.PaperServerListPingEvent;
 class ServerPing implements Listener {
 	@EventHandler
 	void onServerListPing(PaperServerListPingEvent event) {
-		if (event.getClient().getProtocolVersion() != -1) {
-			event.setProtocolVersion(event.getClient().getProtocolVersion());
-		} else {
+		if (event.getClient().getProtocolVersion() == -1) {
 			event.setProtocolVersion(498);
+		} else {
+			event.setProtocolVersion(event.getClient().getProtocolVersion());
 		}
 		event.setVersion("1.14.4");
 	}

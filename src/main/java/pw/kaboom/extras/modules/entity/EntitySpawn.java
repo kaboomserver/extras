@@ -1,6 +1,7 @@
 package pw.kaboom.extras;
 
 import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 
 import org.bukkit.attribute.Attribute;
@@ -28,12 +29,17 @@ import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.SpawnerSpawnEvent;
 
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 
 import com.destroystokyo.paper.event.block.TNTPrimeEvent;
 
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import com.destroystokyo.paper.event.entity.PreSpawnerSpawnEvent;
+
+import  org.bukkit.block.banner.Pattern;
 
 class EntitySpawn implements Listener {
 	@EventHandler
@@ -75,7 +81,19 @@ class EntitySpawn implements Listener {
 			final LivingEntity mob = (LivingEntity) event.getEntity();
 
 			try {
-				mob.getEquipment().getArmorContents();
+				for (ItemStack item : mob.getEquipment().getArmorContents()) {
+					if (item.getItemMeta() instanceof BannerMeta) {
+						final BannerMeta banner = (BannerMeta) item.getItemMeta();
+
+						for (Pattern pattern : banner.getPatterns()) {
+							if (pattern.getColor() == null) {
+								mob.getEquipment().setArmorContents(
+									new ItemStack[] {null, null, null, null}
+								);
+							}
+						}
+					}
+				}
 			} catch (Exception exception) {
 				mob.getEquipment().setArmorContents(
 					new ItemStack[] {null, null, null, null}
@@ -83,13 +101,29 @@ class EntitySpawn implements Listener {
 			}
 
 			try {
-				mob.getEquipment().getItemInMainHand();
+				if (mob.getEquipment().getItemInMainHand().getItemMeta() instanceof BannerMeta) {
+					final BannerMeta banner = (BannerMeta) mob.getEquipment().getItemInMainHand().getItemMeta();
+
+					for (Pattern pattern : banner.getPatterns()) {
+						if (pattern.getColor() == null) {
+							mob.getEquipment().setItemInMainHand(null);
+						}
+					}
+				}
 			} catch (Exception exception) {
 				mob.getEquipment().setItemInMainHand(null);
 			}
 
 			try {
-				mob.getEquipment().getItemInOffHand();
+				if (mob.getEquipment().getItemInOffHand().getItemMeta() instanceof BannerMeta) {
+					final BannerMeta banner = (BannerMeta) mob.getEquipment().getItemInOffHand().getItemMeta();
+
+					for (Pattern pattern : banner.getPatterns()) {
+						if (pattern.getColor() == null) {
+							mob.getEquipment().setItemInOffHand(null);
+						}
+					}
+				}
 			} catch (Exception exception) {
 				mob.getEquipment().setItemInOffHand(null);
 			}
@@ -118,8 +152,8 @@ class EntitySpawn implements Listener {
 	@EventHandler
 	void onEntityAddToWorld(EntityAddToWorldEvent event) {
 		if (event.getEntityType() != EntityType.PLAYER) {
-			if (event.getEntity().getLocation().isGenerated() == true &&
-				event.getEntity().getLocation().isChunkLoaded() == true) {
+			if (event.getEntity().getLocation().isGenerated() &&
+				event.getEntity().getLocation().isChunkLoaded()) {
 				final Entity entity = event.getEntity();
 				final int count = entity.getLocation().getChunk().getEntities().length;
 
@@ -142,7 +176,19 @@ class EntitySpawn implements Listener {
 				final LivingEntity mob = (LivingEntity) event.getEntity();
 
 				try {
-					mob.getEquipment().getArmorContents();
+					for (ItemStack item : mob.getEquipment().getArmorContents()) {
+						if (item.getItemMeta() instanceof BannerMeta) {
+							final BannerMeta banner = (BannerMeta) item.getItemMeta();
+
+							for (Pattern pattern : banner.getPatterns()) {
+								if (pattern.getColor() == null) {
+									mob.getEquipment().setArmorContents(
+										new ItemStack[] {null, null, null, null}
+									);
+								}
+							}
+						}
+					}
 				} catch (Exception exception) {
 					mob.getEquipment().setArmorContents(
 						new ItemStack[] {null, null, null, null}
@@ -150,13 +196,29 @@ class EntitySpawn implements Listener {
 				}
 
 				try {
-					mob.getEquipment().getItemInMainHand();
+					if (mob.getEquipment().getItemInMainHand().getItemMeta() instanceof BannerMeta) {
+						final BannerMeta banner = (BannerMeta) mob.getEquipment().getItemInMainHand().getItemMeta();
+
+						for (Pattern pattern : banner.getPatterns()) {
+							if (pattern.getColor() == null) {
+								mob.getEquipment().setItemInMainHand(null);
+							}
+						}
+					}
 				} catch (Exception exception) {
 					mob.getEquipment().setItemInMainHand(null);
 				}
 
 				try {
-					mob.getEquipment().getItemInOffHand();
+					if (mob.getEquipment().getItemInOffHand().getItemMeta() instanceof BannerMeta) {
+						final BannerMeta banner = (BannerMeta) mob.getEquipment().getItemInOffHand().getItemMeta();
+
+						for (Pattern pattern : banner.getPatterns()) {
+							if (pattern.getColor() == null) {
+								mob.getEquipment().setItemInOffHand(null);
+							}
+						}
+					}
 				} catch (Exception exception) {
 					mob.getEquipment().setItemInOffHand(null);
 				}
@@ -167,8 +229,8 @@ class EntitySpawn implements Listener {
 	@EventHandler
 	void onEntitySpawn(EntitySpawnEvent event) {
 		if (event.getEntityType() != EntityType.PLAYER) {
-			if (event.getLocation().isGenerated() == true &&
-				event.getLocation().isChunkLoaded() == true) {
+			if (event.getLocation().isGenerated() &&
+				event.getLocation().isChunkLoaded()) {
 				final int entityCount = event.getLocation().getChunk().getEntities().length;
 
 				if (entityCount > 50) {
@@ -190,8 +252,8 @@ class EntitySpawn implements Listener {
 	@EventHandler
 	void onPreCreatureSpawn(PreCreatureSpawnEvent event) {
 		if (event.getType() != EntityType.PLAYER) {
-			if (event.getSpawnLocation().isGenerated() == true &&
-				event.getSpawnLocation().isChunkLoaded() == true) {
+			if (event.getSpawnLocation().isGenerated() &&
+				event.getSpawnLocation().isChunkLoaded()) {
 				final int entityCount = event.getSpawnLocation().getChunk().getEntities().length;
 
 				if (entityCount > 50) {

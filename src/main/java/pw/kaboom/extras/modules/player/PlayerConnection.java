@@ -108,7 +108,7 @@ class PlayerConnection implements Listener {
 		final int stay = 160;
 		final int fadeOut = 5;
 
-		if (player.hasPlayedBefore() == true) {
+		if (player.hasPlayedBefore()) {
 			try {
 				player.getInventory().getContents();
 			} catch (Exception exception) {

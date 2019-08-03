@@ -17,7 +17,7 @@ class CommandUnloadChunks implements CommandExecutor {
 
 		for (World world : Bukkit.getServer().getWorlds()) {
 			for (Chunk chunk : world.getLoadedChunks()) {
-				if (chunk.unload() == true) {
+				if (chunk.unload()) {
 					chunkCount++;
 				}
 			}

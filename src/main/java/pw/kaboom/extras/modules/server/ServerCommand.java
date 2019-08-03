@@ -23,15 +23,15 @@ class ServerCommand implements Listener {
 
 		if (main.consoleCommandBlacklist.contains(arr[0].toLowerCase())) {
 			event.setCancelled(true);
-		} else if (("minecraft:gamerule".equals(arr[0].toLowerCase()) ||
-			"gamerule".equals(arr[0].toLowerCase())) &&
+		} else if (("minecraft:gamerule".equalsIgnoreCase(arr[0]) ||
+			"gamerule".equalsIgnoreCase(arr[0])) &&
 			arr.length >= 3) {
-			if ("randomtickspeed".equals(arr[1].toLowerCase()) &&
+			if ("randomTickSpeed".equalsIgnoreCase(arr[1]) &&
 				Double.parseDouble(arr[2]) > 6) {
 				event.setCommand(command.replaceFirst(arr[2], "6"));
 			}
-		} else if (("minecraft:particle".equals(arr[0].toLowerCase()) ||
-			"particle".equals(arr[0].toLowerCase())) &&
+		} else if (("minecraft:particle".equalsIgnoreCase(arr[0]) ||
+			"particle".equalsIgnoreCase(arr[0])) &&
 			arr.length >= 10) {
 			if (Double.parseDouble(arr[9]) > 10) {
 				final StringBuilder stringBuilder = new StringBuilder();
@@ -46,26 +46,26 @@ class ServerCommand implements Listener {
 
 				event.setCommand(stringBuilder.toString());
 			}
-		} else if ("bukkit:reload".equals(arr[0].toLowerCase()) ||
-			"bukkit:rl".equals(arr[0].toLowerCase()) ||
-			"reload".equals(arr[0].toLowerCase()) || 
-			"rl".equals(arr[0].toLowerCase())) {
+		} else if ("bukkit:reload".equalsIgnoreCase(arr[0]) ||
+			"bukkit:rl".equalsIgnoreCase(arr[0]) ||
+			"reload".equalsIgnoreCase(arr[0]) || 
+			"rl".equalsIgnoreCase(arr[0])) {
 			if (arr.length >= 2 &&
-				"confirm".equals(arr[1].toLowerCase())) {
+				"confirm".equalsIgnoreCase(arr[1])) {
 				event.setCancelled(true);
 				Command.broadcastCommandMessage(event.getSender(), ChatColor.RED + "Please note that this command is not supported and may cause issues when using some plugins.");
 				Command.broadcastCommandMessage(event.getSender(), ChatColor.RED + "If you encounter any issues please use the /stop command to restart your server.");
 				Command.broadcastCommandMessage(event.getSender(), ChatColor.GREEN + "Reload complete.");
 			}
-		} else if ("restart".equals(arr[0].toLowerCase()) ||
-			"spigot:restart".equals(arr[0].toLowerCase())) {
+		} else if ("restart".equalsIgnoreCase(arr[0]) ||
+			"spigot:restart".equalsIgnoreCase(arr[0])) {
 			event.setCancelled(true);
-		} else if ("minecraft:save-off".equals(arr[0].toLowerCase()) ||
-			"save-off".equals(arr[0].toLowerCase())) {
+		} else if ("minecraft:save-off".equalsIgnoreCase(arr[0]) ||
+			"save-off".equalsIgnoreCase(arr[0])) {
 			event.setCancelled(true);
 			Command.broadcastCommandMessage(event.getSender(), "Automatic saving is now disabled");
-		} else if (("minecraft:stop".equals(arr[0].toLowerCase()) ||
-			"stop".equals(arr[0].toLowerCase())) &&
+		} else if (("minecraft:stop".equalsIgnoreCase(arr[0]) ||
+			"stop".equalsIgnoreCase(arr[0])) &&
 			!(event.getSender() instanceof BlockCommandSender)) {
 			event.setCancelled(true);
 			Command.broadcastCommandMessage(event.getSender(), "Stopping the server");

@@ -63,7 +63,7 @@ class PlayerDamage implements Listener {
 		if ((player.getLastDamageCause() != null &&
 			player.getLastDamageCause().getCause() == DamageCause.SUICIDE &&
 			player.getLastDamageCause().getDamage() == Float.MAX_VALUE) ||
-			maxHealthLow == true) {
+			maxHealthLow) {
 			return;
 		}
 
@@ -71,10 +71,10 @@ class PlayerDamage implements Listener {
 			player.teleportAsync(player.getBedSpawnLocation());
 		} else {
 			final World world = Bukkit.getWorld("world");
-			final Location spawnLoc = world.getSpawnLocation();
+			final Location spawnLocation = world.getSpawnLocation();
 
-			for (double y = spawnLoc.getY(); y <= 256; y++) {
-				final Location yLocation = new Location(world, spawnLoc.getX(), y, spawnLoc.getZ());
+			for (double y = spawnLocation.getY(); y <= 256; y++) {
+				final Location yLocation = new Location(world, spawnLocation.getX(), y, spawnLocation.getZ());
 				final Block coordBlock = world.getBlockAt(yLocation);
 
 				if (!coordBlock.getType().isSolid() &&
