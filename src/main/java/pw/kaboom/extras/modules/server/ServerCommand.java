@@ -10,6 +10,8 @@ import org.bukkit.event.Listener;
 
 import org.bukkit.event.server.ServerCommandEvent;
 
+import org.bukkit.event.world.ChunkLoadEvent;
+
 class ServerCommand implements Listener {
 	private Main main;
 	public ServerCommand(Main main) {

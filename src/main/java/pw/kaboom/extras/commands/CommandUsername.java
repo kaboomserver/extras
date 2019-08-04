@@ -27,60 +27,6 @@ class CommandUsername implements CommandExecutor {
 		this.main = main;
 	}
 
-	private void changeUsernameSkin(final Player player, final String[] name) {
-		new BukkitRunnable() {
-			public void run() {
-				try {
-					String texture = "";
-					String signature = "";
-
-					final String nameColor = ChatColor.translateAlternateColorCodes('&', String.join(" ", name));
-					final String nameShort = nameColor.substring(0, Math.min(16, nameColor.length()));
-
-					final URL nameUrl = new URL("https://api.mojang.com/users/profiles/minecraft/" + nameShort);
-					final HttpsURLConnection nameConnection = (HttpsURLConnection) nameUrl.openConnection();
-
-					if (nameConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
-						final InputStreamReader nameStream = new InputStreamReader(nameConnection.getInputStream());
-						final String uuid = new JsonParser().parse(nameStream).getAsJsonObject().get("id").getAsString();
-						nameStream.close();
-						nameConnection.disconnect();
-
-						final URL uuidUrl = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false");
-						final HttpsURLConnection uuidConnection = (HttpsURLConnection) uuidUrl.openConnection();
-
-						if (uuidConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
-							final InputStreamReader uuidStream = new InputStreamReader(uuidConnection.getInputStream());
-							final JsonObject response = new JsonParser().parse(uuidStream).getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject();
-							texture = response.get("value").getAsString();
-							signature = response.get("signature").getAsString();
-
-							uuidStream.close();
-							uuidConnection.disconnect();
-						}
-					}
-
-					final PlayerProfile profile = player.getPlayerProfile();
-					profile.clearProperties();
-					profile.setName(nameShort);
-
-					if (!("".equals(texture)) &&
-						!("".equals(signature))) {
-						profile.setProperty(new ProfileProperty("textures", texture, signature));
-					}
-
-					new BukkitRunnable() {
-						public void run() {
-							player.setPlayerProfile(profile);
-							player.sendMessage("Successfully set your username to \"" + nameShort + "\"");
-						}
-					}.runTask(main);
-				} catch (Exception exception) {
-				}
-			}
-		}.runTaskAsynchronously(main);
-	}
-
 	public boolean onCommand(CommandSender sender, Command command, String label, final String[] args) {
 		final Player player = (Player) sender;
 
@@ -88,7 +34,49 @@ class CommandUsername implements CommandExecutor {
 			player.sendMessage(ChatColor.RED + "Usage: /" + label + " <username>");
 		} else {
 			final String[] name = args;
-			changeUsernameSkin(player, name);
+
+			new BukkitRunnable() {
+				public void run() {
+					try {
+						String texture = "";
+						String signature = "";
+
+						final String nameColor = ChatColor.translateAlternateColorCodes('&', String.join(" ", name));
+						final String nameShort = nameColor.substring(0, Math.min(16, nameColor.length()));
+
+						final URL skinUrl = new URL("https://api.ashcon.app/mojang/v2/user/" + nameShort);
+						final HttpsURLConnection skinConnection = (HttpsURLConnection) skinUrl.openConnection();
+
+						if (skinConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+							final InputStreamReader skinStream = new InputStreamReader(skinConnection.getInputStream());
+							final JsonObject response = new JsonParser().parse(skinStream).getAsJsonObject();
+							final String uuid = response.get("uuid").getAsString();
+							final JsonObject rawSkin = response.getAsJsonObject("textures").getAsJsonObject("raw");
+							texture = rawSkin.get("value").getAsString();
+							signature = rawSkin.get("signature").getAsString();
+							skinStream.close();
+						}
+
+						skinConnection.disconnect();
+
+						final PlayerProfile profile = player.getPlayerProfile();
+						profile.setName(nameShort);
+
+						if (!("".equals(texture)) &&
+							!("".equals(signature))) {
+							profile.setProperty(new ProfileProperty("textures", texture, signature));
+						}
+
+						player.sendMessage("Successfully set your username to \"" + nameShort + "\"");
+						new BukkitRunnable() {
+							public void run() {
+								player.setPlayerProfile(profile);
+							}
+						}.runTask(main);
+					} catch (Exception exception) {
+					}
+				}
+			}.runTaskAsynchronously(main);
 		}
 		return true;
 	}

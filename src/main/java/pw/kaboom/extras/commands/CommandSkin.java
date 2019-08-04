@@ -27,62 +27,6 @@ class CommandSkin implements CommandExecutor {
 		this.main = main;
 	}
 
-	private void changeSkin(final Player player, final String name) {
-		new BukkitRunnable() {
-			public void run() {
-				try {
-					final URL nameUrl = new URL("https://api.mojang.com/users/profiles/minecraft/" + name);
-					final HttpsURLConnection nameConnection = (HttpsURLConnection) nameUrl.openConnection();
-
-					if (nameConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
-						final InputStreamReader nameStream = new InputStreamReader(nameConnection.getInputStream());
-						final String uuid = new JsonParser().parse(nameStream).getAsJsonObject().get("id").getAsString();
-						nameStream.close();
-						nameConnection.disconnect();
-
-						final URL uuidUrl = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false");
-						final HttpsURLConnection uuidConnection = (HttpsURLConnection) uuidUrl.openConnection();
-
-						if (uuidConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
-							final InputStreamReader uuidStream = new InputStreamReader(uuidConnection.getInputStream());
-							final JsonObject response = new JsonParser().parse(uuidStream).getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject();
-							final String texture = response.get("value").getAsString();
-							final String signature = response.get("signature").getAsString();
-							uuidStream.close();
-							uuidConnection.disconnect();
-
-							final PlayerProfile textureProfile = player.getPlayerProfile();
-							textureProfile.clearProperties();
-							textureProfile.setProperty(new ProfileProperty("textures", texture, signature));
-
-							new BukkitRunnable() {
-								public void run() {
-									player.setPlayerProfile(textureProfile);
-									player.sendMessage("Successfully set your skin to " + name + "'s");
-								}
-							}.runTask(main);
-						} else {
-							uuidConnection.disconnect();
-							new BukkitRunnable() {
-								public void run() {
-									player.sendMessage("Failed to change skin. Try again later");
-								}
-							}.runTask(main);
-						}
-					} else {
-						nameConnection.disconnect();
-						new BukkitRunnable() {
-							public void run() {
-								player.sendMessage("A player with that username doesn't exist");
-							}
-						}.runTask(main);
-					}
-				} catch (Exception exception) {
-				}
-			}
-		}.runTaskAsynchronously(main);
-	}
-
 	public boolean onCommand(CommandSender sender, Command command, String label, final String[] args) {
 		final Player player = (Player) sender;
 
@@ -90,7 +34,40 @@ class CommandSkin implements CommandExecutor {
 			player.sendMessage(ChatColor.RED + "Usage: /" + label + " <username>");
 		} else {
 			final String name = args[0];
-			changeSkin(player, name);
+			new BukkitRunnable() {
+				public void run() {
+					try {
+						final URL skinUrl = new URL("https://api.ashcon.app/mojang/v2/user/" + name);
+						final HttpsURLConnection skinConnection = (HttpsURLConnection) skinUrl.openConnection();
+
+						if (skinConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+							final InputStreamReader skinStream = new InputStreamReader(skinConnection.getInputStream());
+							final JsonObject response = new JsonParser().parse(skinStream).getAsJsonObject();
+							final String uuid = response.get("uuid").getAsString();
+							final JsonObject rawSkin = response.getAsJsonObject("textures").getAsJsonObject("raw");
+							final String texture = rawSkin.get("value").getAsString();
+							final String signature = rawSkin.get("signature").getAsString();
+							skinStream.close();
+
+							final PlayerProfile textureProfile = player.getPlayerProfile();
+							textureProfile.clearProperties();
+							textureProfile.setProperty(new ProfileProperty("textures", texture, signature));
+
+							player.sendMessage("Successfully set your skin to " + name + "'s");
+							new BukkitRunnable() {
+								public void run() {
+									player.setPlayerProfile(textureProfile);
+								}
+							}.runTask(main);
+						} else {
+							player.sendMessage("A player with that username doesn't exist");
+						}
+
+						skinConnection.disconnect();
+					} catch (Exception exception) {
+					}
+				}
+			}.runTaskAsynchronously(main);
 		}
 		return true;
 	}

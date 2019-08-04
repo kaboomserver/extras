@@ -24,12 +24,8 @@ class PlayerDamage implements Listener {
 	@EventHandler
 	void onEntityDamage(EntityDamageEvent event) {
 		if (event.getEntityType() == EntityType.PLAYER) {
-			if (((event.getCause() == DamageCause.CUSTOM ||
-				event.getCause() == DamageCause.SUICIDE) &&
-				event.getDamage() == Short.MAX_VALUE) ||
-				(event.getCause() == DamageCause.VOID &&
-				event.getDamage() == Float.MAX_VALUE)) {
-				event.setDamage(Float.MAX_VALUE);
+			if (event.getCause() == DamageCause.VOID &&
+				event.getDamage() == Float.MAX_VALUE) {
 				event.setCancelled(true);
 			}
 		}
@@ -60,10 +56,7 @@ class PlayerDamage implements Listener {
 			onlinePlayer.sendMessage(event.getDeathMessage());
 		}
 
-		if ((player.getLastDamageCause() != null &&
-			player.getLastDamageCause().getCause() == DamageCause.SUICIDE &&
-			player.getLastDamageCause().getDamage() == Float.MAX_VALUE) ||
-			maxHealthLow) {
+		if (maxHealthLow) {
 			return;
 		}
 

@@ -44,35 +44,26 @@ class PlayerConnection implements Listener {
 		main.interactMillisList.put(event.getUniqueId(), System.currentTimeMillis());
 
 		try {
-			final URL nameUrl = new URL("https://api.mojang.com/users/profiles/minecraft/" + event.getName());
-			final HttpsURLConnection nameConnection = (HttpsURLConnection) nameUrl.openConnection();
+			final URL skinUrl = new URL("https://api.ashcon.app/mojang/v2/user/" + event.getName());
+			final HttpsURLConnection skinConnection = (HttpsURLConnection) skinUrl.openConnection();
 
-			if (nameConnection != null &&
-				nameConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
-				final InputStreamReader nameStream = new InputStreamReader(nameConnection.getInputStream());
-				final String uuid = new JsonParser().parse(nameStream).getAsJsonObject().get("id").getAsString();
-				nameStream.close();
-				nameConnection.disconnect();
+			if (skinConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+				final InputStreamReader skinStream = new InputStreamReader(skinConnection.getInputStream());
+				final JsonObject response = new JsonParser().parse(skinStream).getAsJsonObject();
+				final String uuid = response.get("uuid").getAsString();
+				final JsonObject rawSkin = response.getAsJsonObject("textures").getAsJsonObject("raw");
+				final String texture = rawSkin.get("value").getAsString();
+				final String signature = rawSkin.get("signature").getAsString();
+				skinStream.close();
 
-				final URL uuidUrl = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false");
-				final HttpsURLConnection uuidConnection = (HttpsURLConnection) uuidUrl.openConnection();
+				final PlayerProfile textureProfile = event.getPlayerProfile();
+				textureProfile.clearProperties();
+				textureProfile.setProperty(new ProfileProperty("textures", texture, signature));
 
-				if (uuidConnection != null &&
-					uuidConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
-					final InputStreamReader uuidStream = new InputStreamReader(uuidConnection.getInputStream());
-					final JsonObject response = new JsonParser().parse(uuidStream).getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject();
-					final String texture = response.get("value").getAsString();
-					final String signature = response.get("signature").getAsString();
-					uuidStream.close();
-					uuidConnection.disconnect();
-
-					final PlayerProfile textureProfile = event.getPlayerProfile();
-					textureProfile.clearProperties();
-					textureProfile.setProperty(new ProfileProperty("textures", texture, signature));
-
-					main.playerProfile.put(event.getName(), textureProfile);
-				}
+				main.playerProfile.put(event.getName(), textureProfile);
 			}
+
+			skinConnection.disconnect();
 		} catch (Exception exception) {
 		}
 	}
