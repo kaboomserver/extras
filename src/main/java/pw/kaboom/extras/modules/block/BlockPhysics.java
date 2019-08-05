@@ -56,40 +56,40 @@ class BlockPhysics implements Listener {
 		} else if (material == Material.WATER ||
 			material == Material.LAVA) {
 			final Block block = event.getBlock();
-			try {
+
+			if (block.getBlockData() instanceof Levelled) {
 				final Levelled levelledBlock = (Levelled) block.getBlockData();
-			} catch (Exception exception) {
-			}
 
-			if (levelledBlock.getLevel() <= 7) {
-				if (block.getRelative(BlockFace.UP).getType() != material) {
-					boolean cancel = true;
-					boolean solid = false;
+				if (levelledBlock.getLevel() <= 7) {
+					if (block.getRelative(BlockFace.UP).getType() != material) {
+						boolean cancel = true;
+						boolean solid = false;
 
-					for (BlockFace face : main.faces) {
-						if (block.getRelative(face).getType() == Material.AIR ||
-							block.getRelative(face).getType() == Material.CAVE_AIR ||
-							block.getRelative(BlockFace.UP).getType() == Material.WATER) {
-							cancel = false;
+						for (BlockFace face : main.faces) {
+							if (block.getRelative(face).getType() == Material.AIR ||
+								block.getRelative(face).getType() == Material.CAVE_AIR ||
+								block.getRelative(BlockFace.UP).getType() == Material.WATER) {
+								cancel = false;
+							}
+
+							if (block.getRelative(face).getType() != Material.AIR ||
+								block.getRelative(face).getType() != Material.CAVE_AIR ||
+								block.getRelative(face).getType() != Material.LAVA ||
+								block.getRelative(face).getType() != Material.WATER) {
+								solid = true;
+							}
 						}
 
-						if (block.getRelative(face).getType() != Material.AIR ||
-							block.getRelative(face).getType() != Material.CAVE_AIR ||
-							block.getRelative(face).getType() != Material.LAVA ||
-							block.getRelative(face).getType() != Material.WATER) {
-							solid = true;
+
+						if (block.getRelative(BlockFace.UP).getType() == Material.WATER &&
+						!solid) {
+							event.setCancelled(true);
+						} else if (cancel) {
+							event.setCancelled(true);
 						}
-					}
-
-
-					if (block.getRelative(BlockFace.UP).getType() == Material.WATER &&
-					!solid) {
-						event.setCancelled(true);
-					} else if (cancel) {
+					} else if (block.getRelative(BlockFace.DOWN).getType() == material) {
 						event.setCancelled(true);
 					}
-				} else if (block.getRelative(BlockFace.DOWN).getType() == material) {
-					event.setCancelled(true);
 				}
 			}
 		} else if (main.nonSolidWallMountedBlockList.contains(material)) {
