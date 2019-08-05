@@ -56,7 +56,10 @@ class BlockPhysics implements Listener {
 		} else if (material == Material.WATER ||
 			material == Material.LAVA) {
 			final Block block = event.getBlock();
-			final Levelled levelledBlock = (Levelled) block.getBlockData();
+			try {
+				final Levelled levelledBlock = (Levelled) block.getBlockData();
+			} catch (Exception exception) {
+			}
 
 			if (levelledBlock.getLevel() <= 7) {
 				if (block.getRelative(BlockFace.UP).getType() != material) {
@@ -65,7 +68,8 @@ class BlockPhysics implements Listener {
 
 					for (BlockFace face : main.faces) {
 						if (block.getRelative(face).getType() == Material.AIR ||
-							block.getRelative(face).getType() == Material.CAVE_AIR) {
+							block.getRelative(face).getType() == Material.CAVE_AIR ||
+							block.getRelative(BlockFace.UP).getType() == Material.WATER) {
 							cancel = false;
 						}
 
@@ -84,6 +88,8 @@ class BlockPhysics implements Listener {
 					} else if (cancel) {
 						event.setCancelled(true);
 					}
+				} else if (block.getRelative(BlockFace.DOWN).getType() == material) {
+					event.setCancelled(true);
 				}
 			}
 		} else if (main.nonSolidWallMountedBlockList.contains(material)) {

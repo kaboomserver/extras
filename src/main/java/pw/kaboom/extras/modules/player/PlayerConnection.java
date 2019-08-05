@@ -40,9 +40,6 @@ class PlayerConnection implements Listener {
 
 	@EventHandler
 	void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent event) {
-		main.commandMillisList.put(event.getUniqueId(), System.currentTimeMillis());
-		main.interactMillisList.put(event.getUniqueId(), System.currentTimeMillis());
-
 		try {
 			final URL skinUrl = new URL("https://api.ashcon.app/mojang/v2/user/" + event.getName());
 			final HttpsURLConnection skinConnection = (HttpsURLConnection) skinUrl.openConnection();
@@ -66,6 +63,20 @@ class PlayerConnection implements Listener {
 			skinConnection.disconnect();
 		} catch (Exception exception) {
 		}
+
+		for (final World world : Bukkit.getWorlds()) {
+			for (final Chunk chunk : world.getLoadedChunks()) {
+				try {
+					chunk.getTileEntities(false);
+				} catch (Exception exception) {
+					new BukkitRunnable() {
+						public void run() {
+							world.regenerateChunk(chunk.getX(), chunk.getZ());
+						}
+					}.runTask(main);
+				}
+			}
+		}
 	}
 
 	@EventHandler
@@ -73,13 +84,13 @@ class PlayerConnection implements Listener {
 		main.commandMillisList.remove(event.getPlayerUniqueId());
 		main.interactMillisList.remove(event.getPlayerUniqueId());
 
-		new BukkitRunnable() {
+		/*new BukkitRunnable() {
 			public void run() {
 				for (final World world : Bukkit.getWorlds()) {
 					for (final Chunk chunk : world.getLoadedChunks()) {
 						try {
-							chunk.getTileEntities();
-						} catch (Exception e) {
+							chunk.getTileEntities(false);
+						} catch (Exception exception) {
 							new BukkitRunnable() {
 								public void run() {
 									world.regenerateChunk(chunk.getX(), chunk.getZ());
@@ -89,7 +100,7 @@ class PlayerConnection implements Listener {
 					}
 				}
 			}
-		}.runTaskAsynchronously(main);
+		}.runTaskAsynchronously(main);*/
 	}
 
 	@EventHandler
@@ -130,6 +141,9 @@ class PlayerConnection implements Listener {
 		}
 
 		final Player player = event.getPlayer();
+
+		main.commandMillisList.put(player.getUniqueId(), System.currentTimeMillis());
+		main.interactMillisList.put(player.getUniqueId(), System.currentTimeMillis());
 
 		event.allow();
 		player.setOp(true);

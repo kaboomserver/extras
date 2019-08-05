@@ -12,6 +12,11 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 
 class BlockCheck implements Listener {
+	private Main main;
+	public BlockCheck(Main main) {
+		this.main = main;
+	}
+
 	@EventHandler
 	void onBlockPlace(BlockPlaceEvent event) {
 		if (event.getItemInHand().toString().length() > 3019) {
@@ -26,12 +31,20 @@ class BlockCheck implements Listener {
 	}
 
 	@EventHandler
-	void onChunkLoad(ChunkLoadEvent event) {
+	void onChunkLoad(final ChunkLoadEvent event) {
 		if (!event.isNewChunk()) {
-			for (BlockState block : event.getChunk().getTileEntities()) {
-				if (block instanceof CommandBlock) {
-					block.update();
+			try {
+				for (BlockState block : event.getChunk().getTileEntities()) {
+					if (block instanceof CommandBlock) {
+						block.update();
+					}
 				}
+			} catch (Exception exception) {
+				event.getChunk().getWorld().regenerateChunk(
+					event.getChunk().getX(),
+					event.getChunk().getZ()
+				);
+				System.out.println("REGEN");
 			}
 		}
 	}

@@ -596,7 +596,7 @@ public class Main extends JavaPlugin {
 		this.getCommand("username").setExecutor(new CommandUsername(this));
 
 		/* Block-related modules */
-		this.getServer().getPluginManager().registerEvents(new BlockCheck(), this);
+		this.getServer().getPluginManager().registerEvents(new BlockCheck(this), this);
 		/*new TileEntityCheck(this).runTaskTimerAsynchronously(this, 0, 400);*/
 		this.getServer().getPluginManager().registerEvents(new BlockPhysics(this), this);
 
