@@ -38,9 +38,17 @@ class CommandSkin implements CommandExecutor {
 				public void run() {
 					try {
 						final URL skinUrl = new URL("https://api.ashcon.app/mojang/v2/user/" + name);
-						final HttpsURLConnection skinConnection = (HttpsURLConnection) skinUrl.openConnection();
+						final HttpsURLConnection premiumCheck = (HttpsURLConnection) skinUrl.openConnection();
+						premiumCheck.setConnectTimeout(0);
+						premiumCheck.setRequestMethod("HEAD");
+						premiumCheck.setDefaultUseCaches(false);
+						premiumCheck.setUseCaches(false);
 
-						if (skinConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+						if (premiumCheck.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+							final HttpsURLConnection skinConnection = (HttpsURLConnection) skinUrl.openConnection();
+							skinConnection.setConnectTimeout(0);
+							skinConnection.setDefaultUseCaches(false);
+							skinConnection.setUseCaches(false);
 							final InputStreamReader skinStream = new InputStreamReader(skinConnection.getInputStream());
 							final JsonObject response = new JsonParser().parse(skinStream).getAsJsonObject();
 							final String uuid = response.get("uuid").getAsString();
@@ -48,6 +56,7 @@ class CommandSkin implements CommandExecutor {
 							final String texture = rawSkin.get("value").getAsString();
 							final String signature = rawSkin.get("signature").getAsString();
 							skinStream.close();
+							skinConnection.disconnect();
 
 							final PlayerProfile textureProfile = player.getPlayerProfile();
 							textureProfile.clearProperties();
@@ -63,7 +72,7 @@ class CommandSkin implements CommandExecutor {
 							player.sendMessage("A player with that username doesn't exist");
 						}
 
-						skinConnection.disconnect();
+						premiumCheck.disconnect();
 					} catch (Exception exception) {
 					}
 				}
