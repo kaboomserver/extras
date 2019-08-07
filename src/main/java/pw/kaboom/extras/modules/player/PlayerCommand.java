@@ -33,7 +33,19 @@ class PlayerCommand implements Listener {
 			return;
 		}
 
-		if (("/minecraft:gamerule".equalsIgnoreCase(arr[0]) ||
+		if (("/minecraft:execute".equals(arr[0].toLowerCase()) ||
+			"/execute".equals(arr[0].toLowerCase())) &&
+			arr.length >= 1) {
+			final StringBuilder stringBuilder = new StringBuilder();
+
+			for (int i = 1; i < arr.length; i++) {
+				stringBuilder.append(arr[i] + " ");
+			}
+			if (stringBuilder.toString().toLowerCase().contains("execute") ||
+				stringBuilder.toString().toLowerCase().contains("sudo")) {
+				event.setCancelled(true);
+			}
+		} else if (("/minecraft:gamerule".equalsIgnoreCase(arr[0]) ||
 			"/gamerule".equalsIgnoreCase(arr[0])) &&
 			arr.length >= 3) {
 			if ("randomTickSpeed".equalsIgnoreCase(arr[1]) &&

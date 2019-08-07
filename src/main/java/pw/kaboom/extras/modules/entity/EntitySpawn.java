@@ -321,7 +321,7 @@ class EntitySpawn implements Listener {
 		final double tps = Bukkit.getTPS()[0];
 
 		if (tps < 10) {
-			event.setCancelled(true);
+			event.getBlock().setType(Material.AIR, false);
 		}
 	}
 }
