@@ -332,9 +332,9 @@ class EntitySpawn implements Listener {
 	void onTNTPrime(TNTPrimeEvent event) {
 		final double tps = Bukkit.getTPS()[0];
 
-		/*if (tps < 10) {*/
+		if (tps < 10) {
 			event.setCancelled(true);
 			event.getBlock().setType(Material.AIR, false);
-		/*}*/
+		}
 	}
 }
