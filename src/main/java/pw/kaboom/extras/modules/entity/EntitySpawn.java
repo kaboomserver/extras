@@ -7,7 +7,9 @@ import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 
+import org.bukkit.block.BlockState;
 import org.bukkit.block.CreatureSpawner;
+import org.bukkit.block.ShulkerBox;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,6 +32,8 @@ import org.bukkit.event.entity.SpawnerSpawnEvent;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.inventory.meta.BlockStateMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 
@@ -49,6 +53,14 @@ class EntitySpawn implements Listener {
 		} catch (Exception exception) {
 			event.setCancelled(true);
 		}
+
+		/*try {
+			BlockStateMeta state = (BlockStateMeta) event.getItem().getItemMeta();
+			state.getBlockState();
+		} catch (UnsupportedOperationException exception) {
+			System.out.println("I caught: " + exception);
+			event.setCancelled(true);
+		}*/
 	}
 
 	@EventHandler
@@ -320,8 +332,9 @@ class EntitySpawn implements Listener {
 	void onTNTPrime(TNTPrimeEvent event) {
 		final double tps = Bukkit.getTPS()[0];
 
-		if (tps < 10) {
+		/*if (tps < 10) {*/
+			event.setCancelled(true);
 			event.getBlock().setType(Material.AIR, false);
-		}
+		/*}*/
 	}
 }

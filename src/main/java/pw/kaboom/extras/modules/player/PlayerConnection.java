@@ -11,6 +11,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 
+import org.bukkit.block.banner.Pattern;
+
 import org.bukkit.entity.Player;
 
 import org.bukkit.event.EventHandler;
@@ -21,6 +23,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
+
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BannerMeta;
 
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -122,7 +127,17 @@ class PlayerConnection implements Listener {
 
 		if (player.hasPlayedBefore()) {
 			try {
-				player.getInventory().getContents();
+				for (ItemStack item : player.getInventory().getContents()) {
+					if (item.getItemMeta() instanceof BannerMeta) {
+						final BannerMeta banner = (BannerMeta) item.getItemMeta();
+
+						for (Pattern pattern : banner.getPatterns()) {
+							if (pattern.getColor() == null) {
+								player.getInventory().clear();
+							}
+						}
+					}
+				}
 			} catch (Exception exception) {
 				player.getInventory().clear();
 			}
