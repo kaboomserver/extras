@@ -135,7 +135,6 @@ class PlayerConnection implements Listener {
 					premiumCheck.setRequestMethod("HEAD");
 					premiumCheck.setDefaultUseCaches(false);
 					premiumCheck.setUseCaches(false);
-					System.out.println(premiumCheck.getResponseCode());
 
 					if (premiumCheck.getResponseCode() == HttpsURLConnection.HTTP_OK) {
 						final HttpsURLConnection skinConnection = (HttpsURLConnection) skinUrl.openConnection();

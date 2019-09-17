@@ -25,7 +25,6 @@ class PlayerCommand implements Listener {
 		final String command = event.getMessage();
 		final UUID playerUuid = event.getPlayer().getUniqueId();
 		final long millisDifference = System.currentTimeMillis() - main.commandMillisList.get(playerUuid);
-		System.out.println("b " + command);
 
 		main.commandMillisList.put(playerUuid, System.currentTimeMillis());
 
