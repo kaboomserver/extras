@@ -15,7 +15,6 @@ public class Main extends JavaPlugin {
 	int fallingBlockCount;
 	HashMap<UUID, Long> commandMillisList = new HashMap<>();
 	HashMap<UUID, Long> interactMillisList = new HashMap<>();
-	HashMap<String, PlayerProfile> playerProfile = new HashMap<>();
 	HashSet<String> consoleCommandBlacklist = new HashSet<>();
 	HashSet<BlockFace> faces = new HashSet<>();
 	HashSet<Material> fallingBlockList = new HashSet<>();

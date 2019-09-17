@@ -45,38 +45,9 @@ class PlayerConnection implements Listener {
 
 	@EventHandler
 	void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent event) {
-		try {
-			final URL skinUrl = new URL("https://api.ashcon.app/mojang/v2/user/" + event.getName());
-			final HttpsURLConnection premiumCheck = (HttpsURLConnection) skinUrl.openConnection();
-			premiumCheck.setConnectTimeout(0);
-			premiumCheck.setRequestMethod("HEAD");
-			premiumCheck.setDefaultUseCaches(false);
-			premiumCheck.setUseCaches(false);
-			System.out.println(premiumCheck.getResponseCode());
-
-			if (premiumCheck.getResponseCode() == HttpsURLConnection.HTTP_OK) {
-				final HttpsURLConnection skinConnection = (HttpsURLConnection) skinUrl.openConnection();
-				skinConnection.setConnectTimeout(0);
-				skinConnection.setDefaultUseCaches(false);
-				skinConnection.setUseCaches(false);
-				final InputStreamReader skinStream = new InputStreamReader(skinConnection.getInputStream());
-				final JsonObject response = new JsonParser().parse(skinStream).getAsJsonObject();
-				final String uuid = response.get("uuid").getAsString();
-				final JsonObject rawSkin = response.getAsJsonObject("textures").getAsJsonObject("raw");
-				final String texture = rawSkin.get("value").getAsString();
-				final String signature = rawSkin.get("signature").getAsString();
-				skinStream.close();
-				skinConnection.disconnect();
-
-				final PlayerProfile textureProfile = event.getPlayerProfile();
-				textureProfile.clearProperties();
-				textureProfile.setProperty(new ProfileProperty("textures", texture, signature));
-
-				main.playerProfile.put(event.getName(), textureProfile);
-			}
-
-			premiumCheck.disconnect();
-		} catch (Exception exception) {
+		if (event.getName().length() > 16) {
+			event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "Your username can't be longer than 16 characters");
+			return;
 		}
 
 		for (final World world : Bukkit.getWorlds()) {
@@ -98,24 +69,6 @@ class PlayerConnection implements Listener {
 	void onPlayerConnectionClose(final PlayerConnectionCloseEvent event) {
 		main.commandMillisList.remove(event.getPlayerUniqueId());
 		main.interactMillisList.remove(event.getPlayerUniqueId());
-
-		/*new BukkitRunnable() {
-			public void run() {
-				for (final World world : Bukkit.getWorlds()) {
-					for (final Chunk chunk : world.getLoadedChunks()) {
-						try {
-							chunk.getTileEntities(false);
-						} catch (Exception exception) {
-							new BukkitRunnable() {
-								public void run() {
-									world.regenerateChunk(chunk.getX(), chunk.getZ());
-								}
-							}.runTask(main);
-						}
-					}
-				}
-			}
-		}.runTaskAsynchronously(main);*/
 	}
 
 	@EventHandler
@@ -172,10 +125,47 @@ class PlayerConnection implements Listener {
 
 		event.allow();
 		player.setOp(true);
-		try {
-			player.setPlayerProfile(main.playerProfile.get(player.getName()));
-		} catch (Exception exception) {
-		}
-		main.playerProfile.remove(player.getName());
+
+		new BukkitRunnable() {
+			public void run() {
+				try {
+					final URL skinUrl = new URL("https://api.ashcon.app/mojang/v2/user/" + player.getName());
+					final HttpsURLConnection premiumCheck = (HttpsURLConnection) skinUrl.openConnection();
+					premiumCheck.setConnectTimeout(0);
+					premiumCheck.setRequestMethod("HEAD");
+					premiumCheck.setDefaultUseCaches(false);
+					premiumCheck.setUseCaches(false);
+					System.out.println(premiumCheck.getResponseCode());
+
+					if (premiumCheck.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+						final HttpsURLConnection skinConnection = (HttpsURLConnection) skinUrl.openConnection();
+						skinConnection.setConnectTimeout(0);
+						skinConnection.setDefaultUseCaches(false);
+						skinConnection.setUseCaches(false);
+						final InputStreamReader skinStream = new InputStreamReader(skinConnection.getInputStream());
+						final JsonObject response = new JsonParser().parse(skinStream).getAsJsonObject();
+						final String uuid = response.get("uuid").getAsString();
+						final JsonObject rawSkin = response.getAsJsonObject("textures").getAsJsonObject("raw");
+						final String texture = rawSkin.get("value").getAsString();
+						final String signature = rawSkin.get("signature").getAsString();
+						skinStream.close();
+						skinConnection.disconnect();
+
+						final PlayerProfile textureProfile = player.getPlayerProfile();
+						textureProfile.clearProperties();
+						textureProfile.setProperty(new ProfileProperty("textures", texture, signature));
+
+						new BukkitRunnable() {
+							public void run() {
+								player.setPlayerProfile(textureProfile);
+							}
+						}.runTask(main);
+					}
+
+					premiumCheck.disconnect();
+				} catch (Exception exception) {
+				}
+			}
+		}.runTaskAsynchronously(main);
 	}
 }

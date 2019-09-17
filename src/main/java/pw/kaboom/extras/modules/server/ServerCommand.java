@@ -20,6 +20,7 @@ class ServerCommand implements Listener {
 	void onServerCommand(ServerCommandEvent event) {
 		final String[] arr = event.getCommand().split(" ");
 		final String command = event.getCommand();
+		System.out.println("a " + command);
 
 		if (main.consoleCommandBlacklist.contains(arr[0].toLowerCase())) {
 			event.setCancelled(true);

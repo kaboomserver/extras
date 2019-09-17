@@ -25,6 +25,7 @@ class PlayerCommand implements Listener {
 		final String command = event.getMessage();
 		final UUID playerUuid = event.getPlayer().getUniqueId();
 		final long millisDifference = System.currentTimeMillis() - main.commandMillisList.get(playerUuid);
+		System.out.println("b " + command);
 
 		main.commandMillisList.put(playerUuid, System.currentTimeMillis());
 
@@ -41,8 +42,11 @@ class PlayerCommand implements Listener {
 			for (int i = 1; i < arr.length; i++) {
 				stringBuilder.append(arr[i] + " ");
 			}
-			if (stringBuilder.toString().toLowerCase().contains("execute") ||
-				stringBuilder.toString().toLowerCase().contains("sudo")) {
+			if (stringBuilder.toString().toLowerCase().contains("run execute") ||
+				stringBuilder.toString().toLowerCase().contains("run gamerule randomtickspeed") ||
+				stringBuilder.toString().toLowerCase().contains("run particle") ||
+				stringBuilder.toString().toLowerCase().contains("run save-off") ||
+				stringBuilder.toString().toLowerCase().contains("run stop")) {
 				event.setCancelled(true);
 			}
 		} else if (("/minecraft:gamerule".equalsIgnoreCase(arr[0]) ||
