@@ -144,7 +144,6 @@ class EntitySpawn implements Listener {
 
 			if (dragonCount > 25) {
 				event.setCancelled(true);
-				return;
 			}
 		} else if (event.getEntityType() == EntityType.MAGMA_CUBE) {
 			final MagmaCube magmacube = (MagmaCube) event.getEntity();
@@ -279,7 +278,6 @@ class EntitySpawn implements Listener {
 
 				if (dragonCount > 25) {
 					event.setCancelled(true);
-					return;
 				}
 			}
 		}
@@ -312,7 +310,6 @@ class EntitySpawn implements Listener {
 			}
 		} catch (Exception exception) {
 			event.setCancelled(true);
-			return;
 		}
 	}
 
@@ -323,7 +320,6 @@ class EntitySpawn implements Listener {
 
 			if (block.getBlockData().getMaterial() == Material.SPAWNER) {
 				event.setCancelled(true);
-				return;
 			}
 		}
 	}

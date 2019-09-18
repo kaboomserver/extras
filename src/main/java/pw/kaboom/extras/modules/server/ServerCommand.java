@@ -21,13 +21,15 @@ class ServerCommand implements Listener {
 		final String[] arr = event.getCommand().split(" ");
 		final String command = event.getCommand();
 
-		if (("minecraft:execute".equals(arr[0].toLowerCase()) ||
+		if (main.consoleCommandBlacklist.contains(arr[0].toLowerCase())) {
+			event.setCancelled(true);
+		} else if (("minecraft:execute".equals(arr[0].toLowerCase()) ||
 			"execute".equals(arr[0].toLowerCase())) &&
-			arr.length >= 1) {
+			arr.length >= 2) {
 			final StringBuilder stringBuilder = new StringBuilder();
 
 			for (int i = 1; i < arr.length; i++) {
-				stringBuilder.append(arr[i] + " ");
+				stringBuilder.append(arr[i]).append(" ");
 			}
 			if (stringBuilder.toString().toLowerCase().contains("run execute") ||
 				stringBuilder.toString().toLowerCase().contains("run gamerule randomtickspeed") ||
@@ -36,8 +38,6 @@ class ServerCommand implements Listener {
 				stringBuilder.toString().toLowerCase().contains("run stop")) {
 				event.setCancelled(true);
 			}
-		} else if (main.consoleCommandBlacklist.contains(arr[0].toLowerCase())) {
-			event.setCancelled(true);
 		} else if (("minecraft:gamerule".equalsIgnoreCase(arr[0]) ||
 			"gamerule".equalsIgnoreCase(arr[0])) &&
 			arr.length >= 3) {
@@ -52,11 +52,11 @@ class ServerCommand implements Listener {
 				final StringBuilder stringBuilder = new StringBuilder();
 
 				for (int i = 0; i < 9; i++) {
-					stringBuilder.append(arr[i] + " ");
+					stringBuilder.append(arr[i]).append(" ");
 				}
 				stringBuilder.append("10 ");
 				for (int i = 10; i < arr.length; i++) {
-					stringBuilder.append(arr[i] + " ");
+					stringBuilder.append(arr[i]).append(" ");
 				}
 
 				event.setCommand(stringBuilder.toString());
