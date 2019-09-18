@@ -120,9 +120,6 @@ class PlayerConnection implements Listener {
 
 		final Player player = event.getPlayer();
 
-		main.commandMillisList.put(player.getUniqueId(), System.currentTimeMillis());
-		main.interactMillisList.put(player.getUniqueId(), System.currentTimeMillis());
-
 		event.allow();
 		player.setOp(true);
 

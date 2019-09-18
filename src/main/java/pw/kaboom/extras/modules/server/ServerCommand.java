@@ -21,7 +21,22 @@ class ServerCommand implements Listener {
 		final String[] arr = event.getCommand().split(" ");
 		final String command = event.getCommand();
 
-		if (main.consoleCommandBlacklist.contains(arr[0].toLowerCase())) {
+		if (("minecraft:execute".equals(arr[0].toLowerCase()) ||
+			"execute".equals(arr[0].toLowerCase())) &&
+			arr.length >= 1) {
+			final StringBuilder stringBuilder = new StringBuilder();
+
+			for (int i = 1; i < arr.length; i++) {
+				stringBuilder.append(arr[i] + " ");
+			}
+			if (stringBuilder.toString().toLowerCase().contains("run execute") ||
+				stringBuilder.toString().toLowerCase().contains("run gamerule randomtickspeed") ||
+				stringBuilder.toString().toLowerCase().contains("run particle") ||
+				stringBuilder.toString().toLowerCase().contains("run save-off") ||
+				stringBuilder.toString().toLowerCase().contains("run stop")) {
+				event.setCancelled(true);
+			}
+		} else if (main.consoleCommandBlacklist.contains(arr[0].toLowerCase())) {
 			event.setCancelled(true);
 		} else if (("minecraft:gamerule".equalsIgnoreCase(arr[0]) ||
 			"gamerule".equalsIgnoreCase(arr[0])) &&

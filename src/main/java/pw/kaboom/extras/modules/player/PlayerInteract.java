@@ -19,12 +19,15 @@ class PlayerInteract implements Listener {
 	void onPlayerInteract(PlayerInteractEvent event) {
 		final Player player = event.getPlayer();
 		final UUID playerUuid = event.getPlayer().getUniqueId();
-		final long millisDifference = System.currentTimeMillis() - main.interactMillisList.get(playerUuid);
-
-		main.interactMillisList.put(playerUuid, System.currentTimeMillis());
-
-		if (millisDifference < 150) {
-			event.setCancelled(true);
+		
+		if (main.interactMillisList.get(playerUuid) != null) {
+			final long millisDifference = System.currentTimeMillis() - main.interactMillisList.get(playerUuid);
+	
+			if (millisDifference < 150) {
+				event.setCancelled(true);
+			}
 		}
+		
+		main.interactMillisList.put(playerUuid, System.currentTimeMillis());
 	}
 }

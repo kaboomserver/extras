@@ -24,12 +24,18 @@ class PlayerCommand implements Listener {
 		final String[] arr = event.getMessage().split(" ");
 		final String command = event.getMessage();
 		final UUID playerUuid = event.getPlayer().getUniqueId();
-		final long millisDifference = System.currentTimeMillis() - main.commandMillisList.get(playerUuid);
-
+		
+		if (main.commandMillisList.get(playerUuid) != null) {
+			final long millisDifference = System.currentTimeMillis() - main.commandMillisList.get(playerUuid);
+	
+			if (millisDifference < 200) {
+				event.setCancelled(true);
+			}
+		}
+		
 		main.commandMillisList.put(playerUuid, System.currentTimeMillis());
-
-		if (millisDifference < 200) {
-			event.setCancelled(true);
+		
+		if (event.isCancelled()) {
 			return;
 		}
 
