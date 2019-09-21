@@ -45,28 +45,21 @@ class CommandUsername implements CommandExecutor {
 						final String nameShort = nameColor.substring(0, Math.min(16, nameColor.length()));
 
 						final URL skinUrl = new URL("https://api.ashcon.app/mojang/v2/user/" + nameShort);
-						final HttpsURLConnection premiumCheck = (HttpsURLConnection) skinUrl.openConnection();
-						premiumCheck.setConnectTimeout(0);
-						premiumCheck.setRequestMethod("HEAD");
-						premiumCheck.setDefaultUseCaches(false);
-						premiumCheck.setUseCaches(false);
+						final HttpsURLConnection skinConnection = (HttpsURLConnection) skinUrl.openConnection();
+						skinConnection.setConnectTimeout(0);
+						skinConnection.setDefaultUseCaches(false);
+						skinConnection.setUseCaches(false);
 
-						if (premiumCheck.getResponseCode() == HttpsURLConnection.HTTP_OK) {
-							final HttpsURLConnection skinConnection = (HttpsURLConnection) skinUrl.openConnection();
-							skinConnection.setConnectTimeout(0);
-							skinConnection.setDefaultUseCaches(false);
-							skinConnection.setUseCaches(false);
+						if (skinConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
 							final InputStreamReader skinStream = new InputStreamReader(skinConnection.getInputStream());
 							final JsonObject response = new JsonParser().parse(skinStream).getAsJsonObject();
-							final String uuid = response.get("uuid").getAsString();
 							final JsonObject rawSkin = response.getAsJsonObject("textures").getAsJsonObject("raw");
 							texture = rawSkin.get("value").getAsString();
 							signature = rawSkin.get("signature").getAsString();
 							skinStream.close();
-							skinConnection.disconnect();
 						}
 
-						premiumCheck.disconnect();
+						skinConnection.disconnect();
 
 						final PlayerProfile profile = player.getPlayerProfile();
 						profile.setName(nameShort);

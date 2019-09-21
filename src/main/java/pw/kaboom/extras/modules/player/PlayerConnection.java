@@ -50,7 +50,7 @@ class PlayerConnection implements Listener {
 			return;
 		}
 
-		for (final World world : Bukkit.getWorlds()) {
+		/*for (final World world : Bukkit.getWorlds()) {
 			for (final Chunk chunk : world.getLoadedChunks()) {
 				try {
 					chunk.getTileEntities(false);
@@ -62,7 +62,7 @@ class PlayerConnection implements Listener {
 					}.runTask(main);
 				}
 			}
-		}
+		}*/
 	}
 
 	@EventHandler
@@ -127,25 +127,18 @@ class PlayerConnection implements Listener {
 			public void run() {
 				try {
 					final URL skinUrl = new URL("https://api.ashcon.app/mojang/v2/user/" + player.getName());
-					final HttpsURLConnection premiumCheck = (HttpsURLConnection) skinUrl.openConnection();
-					premiumCheck.setConnectTimeout(0);
-					premiumCheck.setRequestMethod("HEAD");
-					premiumCheck.setDefaultUseCaches(false);
-					premiumCheck.setUseCaches(false);
+					final HttpsURLConnection skinConnection = (HttpsURLConnection) skinUrl.openConnection();
+					skinConnection.setConnectTimeout(0);
+					skinConnection.setDefaultUseCaches(false);
+					skinConnection.setUseCaches(false);
 
-					if (premiumCheck.getResponseCode() == HttpsURLConnection.HTTP_OK) {
-						final HttpsURLConnection skinConnection = (HttpsURLConnection) skinUrl.openConnection();
-						skinConnection.setConnectTimeout(0);
-						skinConnection.setDefaultUseCaches(false);
-						skinConnection.setUseCaches(false);
+					if (skinConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
 						final InputStreamReader skinStream = new InputStreamReader(skinConnection.getInputStream());
 						final JsonObject response = new JsonParser().parse(skinStream).getAsJsonObject();
-						final String uuid = response.get("uuid").getAsString();
 						final JsonObject rawSkin = response.getAsJsonObject("textures").getAsJsonObject("raw");
 						final String texture = rawSkin.get("value").getAsString();
 						final String signature = rawSkin.get("signature").getAsString();
 						skinStream.close();
-						skinConnection.disconnect();
 
 						final PlayerProfile textureProfile = player.getPlayerProfile();
 						textureProfile.clearProperties();
@@ -158,7 +151,7 @@ class PlayerConnection implements Listener {
 						}.runTask(main);
 					}
 
-					premiumCheck.disconnect();
+					skinConnection.disconnect();
 				} catch (Exception exception) {
 				}
 			}

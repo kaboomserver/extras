@@ -42,17 +42,35 @@ class PlayerCommand implements Listener {
 		if (("/minecraft:execute".equals(arr[0].toLowerCase()) ||
 			"/execute".equals(arr[0].toLowerCase())) &&
 			arr.length >= 2) {
-			final StringBuilder stringBuilder = new StringBuilder();
-
 			for (int i = 1; i < arr.length; i++) {
-				stringBuilder.append(arr[i]).append(" ");
-			}
-			if (stringBuilder.toString().toLowerCase().contains("run execute") ||
-				stringBuilder.toString().toLowerCase().contains("run gamerule randomtickspeed") ||
-				stringBuilder.toString().toLowerCase().contains("run particle") ||
-				stringBuilder.toString().toLowerCase().contains("run save-off") ||
-				stringBuilder.toString().toLowerCase().contains("run stop")) {
-				event.setCancelled(true);
+				if ("as".equalsIgnoreCase(arr[i]) ||
+					"at".equalsIgnoreCase(arr[i])) {
+					for (int i2 = i+1; i2 < arr.length; i2++) {
+						if ("at".equalsIgnoreCase(arr[i2]) ||
+							"as".equalsIgnoreCase(arr[i2])) {
+							Command.broadcastCommandMessage(event.getPlayer(), "Forbidden execute pattern detected");
+							event.setCancelled(true);
+							break;
+						}
+					}
+				} else if (i+1 < arr.length &&
+					"run".equalsIgnoreCase(arr[i])) {
+					if ("execute".equalsIgnoreCase(arr[i+1]) ||
+						"particle".equalsIgnoreCase(arr[i+1]) ||
+						"save-off".equalsIgnoreCase(arr[i+1]) ||
+						"stop".equalsIgnoreCase(arr[i+1])) {
+						Command.broadcastCommandMessage(event.getPlayer(), "Forbidden execute command detected");
+						event.setCancelled(true);
+						break;
+					} else if (i+3 < arr.length &&
+						"gamerule".equalsIgnoreCase(arr[i+1])) {
+						if ("randomTickSpeed".equalsIgnoreCase(arr[i+2]) &&
+							Double.parseDouble(arr[i+3]) > 6) {
+							event.setMessage(command.replaceFirst("(?i)" + "randomTickSpeed " + arr[i+3], "randomTickSpeed 6"));
+							break;
+						}
+					}
+				}
 			}
 		} else if (("/minecraft:gamerule".equalsIgnoreCase(arr[0]) ||
 			"/gamerule".equalsIgnoreCase(arr[0])) &&

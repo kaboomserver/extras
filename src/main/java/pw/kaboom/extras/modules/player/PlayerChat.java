@@ -1,5 +1,7 @@
 package pw.kaboom.extras;
 
+import java.util.UUID;
+
 import org.bukkit.ChatColor;
 
 import org.bukkit.entity.Player;
@@ -18,6 +20,21 @@ class PlayerChat implements Listener {
 	@EventHandler
 	void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
 		final Player player = event.getPlayer();
+		final UUID playerUuid = event.getPlayer().getUniqueId();
+		
+		if (main.commandMillisList.get(playerUuid) != null) {
+			final long millisDifference = System.currentTimeMillis() - main.commandMillisList.get(playerUuid);
+	
+			if (millisDifference < 20) {
+				event.setCancelled(true);
+			}
+		}
+		
+		main.commandMillisList.put(playerUuid, System.currentTimeMillis());
+		
+		if (event.isCancelled()) {
+			return;
+		}
 
 		if (main.getConfig().getString(player.getUniqueId().toString()) != null) {
 			final String prefix = ChatColor.translateAlternateColorCodes(
