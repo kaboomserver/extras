@@ -81,12 +81,15 @@ class PlayerConnection implements Listener {
 		if (player.hasPlayedBefore()) {
 			try {
 				for (ItemStack item : player.getInventory().getContents()) {
-					if (item.getItemMeta() instanceof BannerMeta) {
-						final BannerMeta banner = (BannerMeta) item.getItemMeta();
-
-						for (Pattern pattern : banner.getPatterns()) {
-							if (pattern.getColor() == null) {
-								player.getInventory().clear();
+					if (item != null &&
+						item.hasItemMeta()) {
+						if (item.getItemMeta() instanceof BannerMeta) {
+							final BannerMeta banner = (BannerMeta) item.getItemMeta();
+	
+							for (Pattern pattern : banner.getPatterns()) {
+								if (pattern.getColor() == null) {
+									player.getInventory().clear();
+								}
 							}
 						}
 					}

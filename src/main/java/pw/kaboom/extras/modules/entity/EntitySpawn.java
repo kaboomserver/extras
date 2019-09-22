@@ -94,14 +94,17 @@ class EntitySpawn implements Listener {
 
 			try {
 				for (ItemStack item : mob.getEquipment().getArmorContents()) {
-					if (item.getItemMeta() instanceof BannerMeta) {
-						final BannerMeta banner = (BannerMeta) item.getItemMeta();
-
-						for (Pattern pattern : banner.getPatterns()) {
-							if (pattern.getColor() == null) {
-								mob.getEquipment().setArmorContents(
-									new ItemStack[] {null, null, null, null}
-								);
+					if (item != null &&
+						item.hasItemMeta()) {
+						if (item.getItemMeta() instanceof BannerMeta) {
+							final BannerMeta banner = (BannerMeta) item.getItemMeta();
+		
+							for (Pattern pattern : banner.getPatterns()) {
+								if (pattern.getColor() == null) {
+									mob.getEquipment().setArmorContents(
+										new ItemStack[] {null, null, null, null}
+									);
+								}
 							}
 						}
 					}
@@ -113,12 +116,17 @@ class EntitySpawn implements Listener {
 			}
 
 			try {
-				if (mob.getEquipment().getItemInMainHand().getItemMeta() instanceof BannerMeta) {
-					final BannerMeta banner = (BannerMeta) mob.getEquipment().getItemInMainHand().getItemMeta();
+				ItemStack item = mob.getEquipment().getItemInMainHand();
 
-					for (Pattern pattern : banner.getPatterns()) {
-						if (pattern.getColor() == null) {
-							mob.getEquipment().setItemInMainHand(null);
+				if (item != null &&
+					item.hasItemMeta()) {
+					if (item.getItemMeta() instanceof BannerMeta) {
+						final BannerMeta banner = (BannerMeta) item.getItemMeta();
+	
+						for (Pattern pattern : banner.getPatterns()) {
+							if (pattern.getColor() == null) {
+								mob.getEquipment().setItemInMainHand(null);
+							}
 						}
 					}
 				}
@@ -127,12 +135,17 @@ class EntitySpawn implements Listener {
 			}
 
 			try {
-				if (mob.getEquipment().getItemInOffHand().getItemMeta() instanceof BannerMeta) {
-					final BannerMeta banner = (BannerMeta) mob.getEquipment().getItemInOffHand().getItemMeta();
+				ItemStack item = mob.getEquipment().getItemInMainHand();
 
-					for (Pattern pattern : banner.getPatterns()) {
-						if (pattern.getColor() == null) {
-							mob.getEquipment().setItemInOffHand(null);
+				if (item != null &&
+					item.hasItemMeta()) {
+					if (mob.getEquipment().getItemInOffHand().getItemMeta() instanceof BannerMeta) {
+						final BannerMeta banner = (BannerMeta) mob.getEquipment().getItemInOffHand().getItemMeta();
+	
+						for (Pattern pattern : banner.getPatterns()) {
+							if (pattern.getColor() == null) {
+								mob.getEquipment().setItemInOffHand(null);
+							}
 						}
 					}
 				}
@@ -188,14 +201,17 @@ class EntitySpawn implements Listener {
 
 				try {
 					for (ItemStack item : mob.getEquipment().getArmorContents()) {
-						if (item.getItemMeta() instanceof BannerMeta) {
-							final BannerMeta banner = (BannerMeta) item.getItemMeta();
-
-							for (Pattern pattern : banner.getPatterns()) {
-								if (pattern.getColor() == null) {
-									mob.getEquipment().setArmorContents(
-										new ItemStack[] {null, null, null, null}
-									);
+						if (item != null &&
+							item.hasItemMeta()) {
+							if (item.getItemMeta() instanceof BannerMeta) {
+								final BannerMeta banner = (BannerMeta) item.getItemMeta();
+			
+								for (Pattern pattern : banner.getPatterns()) {
+									if (pattern.getColor() == null) {
+										mob.getEquipment().setArmorContents(
+											new ItemStack[] {null, null, null, null}
+										);
+									}
 								}
 							}
 						}
@@ -205,28 +221,38 @@ class EntitySpawn implements Listener {
 						new ItemStack[] {null, null, null, null}
 					);
 				}
-
+	
 				try {
-					if (mob.getEquipment().getItemInMainHand().getItemMeta() instanceof BannerMeta) {
-						final BannerMeta banner = (BannerMeta) mob.getEquipment().getItemInMainHand().getItemMeta();
-
-						for (Pattern pattern : banner.getPatterns()) {
-							if (pattern.getColor() == null) {
-								mob.getEquipment().setItemInMainHand(null);
+					ItemStack item = mob.getEquipment().getItemInMainHand();
+	
+					if (item != null &&
+						item.hasItemMeta()) {
+						if (item.getItemMeta() instanceof BannerMeta) {
+							final BannerMeta banner = (BannerMeta) item.getItemMeta();
+		
+							for (Pattern pattern : banner.getPatterns()) {
+								if (pattern.getColor() == null) {
+									mob.getEquipment().setItemInMainHand(null);
+								}
 							}
 						}
 					}
 				} catch (Exception exception) {
 					mob.getEquipment().setItemInMainHand(null);
 				}
-
+	
 				try {
-					if (mob.getEquipment().getItemInOffHand().getItemMeta() instanceof BannerMeta) {
-						final BannerMeta banner = (BannerMeta) mob.getEquipment().getItemInOffHand().getItemMeta();
-
-						for (Pattern pattern : banner.getPatterns()) {
-							if (pattern.getColor() == null) {
-								mob.getEquipment().setItemInOffHand(null);
+					ItemStack item = mob.getEquipment().getItemInMainHand();
+	
+					if (item != null &&
+						item.hasItemMeta()) {
+						if (mob.getEquipment().getItemInOffHand().getItemMeta() instanceof BannerMeta) {
+							final BannerMeta banner = (BannerMeta) mob.getEquipment().getItemInOffHand().getItemMeta();
+		
+							for (Pattern pattern : banner.getPatterns()) {
+								if (pattern.getColor() == null) {
+									mob.getEquipment().setItemInOffHand(null);
+								}
 							}
 						}
 					}
