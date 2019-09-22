@@ -25,7 +25,7 @@ class PlayerChat implements Listener {
 		if (main.commandMillisList.get(playerUuid) != null) {
 			final long millisDifference = System.currentTimeMillis() - main.commandMillisList.get(playerUuid);
 	
-			if (millisDifference < 20) {
+			if (millisDifference < 5) {
 				event.setCancelled(true);
 			}
 		}

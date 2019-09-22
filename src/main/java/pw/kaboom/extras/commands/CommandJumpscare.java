@@ -20,23 +20,21 @@ class CommandJumpscare implements CommandExecutor {
 	}
 
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		final Player player = (Player) sender;
-
 		if (args.length == 0) {
-			player.sendMessage(ChatColor.RED + "Usage: /" + label + " <player>");
+			sender.sendMessage(ChatColor.RED + "Usage: /" + label + " <player>");
 		} else {
 			if (args[0].equals("*") || args[0].equals("**")) {
 				for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
 					createJumpscare(onlinePlayer);
 				}
-				player.sendMessage("Successfully created jumpscare for every player");
+				sender.sendMessage("Successfully created jumpscare for every player");
 			} else {
 				final Player target = Bukkit.getPlayer(args[0]);
 				if (target != null) {
 					createJumpscare(target);
-					player.sendMessage("Successfully created jumpscare for player \"" + target.getName() + "\"");
+					sender.sendMessage("Successfully created jumpscare for player \"" + target.getName() + "\"");
 				} else {
-					player.sendMessage("Player \"" + target.getName() + "\" not found");
+					sender.sendMessage("Player \"" + target.getName() + "\" not found");
 				}
 			}	
 		}

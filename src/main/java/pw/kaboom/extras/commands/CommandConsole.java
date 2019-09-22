@@ -11,10 +11,8 @@ import org.bukkit.entity.Player;
 
 class CommandConsole implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		final Player player = (Player) sender;
-
 		if (args.length == 0) {
-			player.sendMessage(ChatColor.RED + "Usage: /" + label + " <message ..>");
+			sender.sendMessage(ChatColor.RED + "Usage: /" + label + " <message ..>");
 		} else {
 			Bukkit.dispatchCommand(
 				Bukkit.getConsoleSender(),

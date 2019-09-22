@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 
 class CommandUnloadChunks implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		final Player player = (Player) sender;
 		int chunkCount = 0;
 
 		for (World world : Bukkit.getServer().getWorlds()) {
@@ -23,7 +22,7 @@ class CommandUnloadChunks implements CommandExecutor {
 			}
 		}
 
-		player.sendMessage("Unloaded " + chunkCount + " unused chunks");
+		sender.sendMessage("Unloaded " + chunkCount + " unused chunks");
 		return true;
 	}
 }

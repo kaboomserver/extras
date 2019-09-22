@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 
 class CommandDestroyEntities implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		final Player player = (Player) sender;
 		int entityCount = 0;
 		int worldCount = 0;
 
@@ -26,7 +25,7 @@ class CommandDestroyEntities implements CommandExecutor {
 			}
 			worldCount++;
 		}
-		player.sendMessage("Successfully destroyed " + entityCount + " entities in " + worldCount + " worlds");
+		sender.sendMessage("Successfully destroyed " + entityCount + " entities in " + worldCount + " worlds");
 		return true;
 	}
 }

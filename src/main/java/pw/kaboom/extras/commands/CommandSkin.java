@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 
 import org.bukkit.entity.Player;
 
@@ -28,47 +29,51 @@ class CommandSkin implements CommandExecutor {
 	}
 
 	public boolean onCommand(CommandSender sender, Command command, String label, final String[] args) {
-		final Player player = (Player) sender;
-
-		if (args.length == 0) {
-			player.sendMessage(ChatColor.RED + "Usage: /" + label + " <username>");
+		if (sender instanceof ConsoleCommandSender) {
+			sender.sendMessage("Command has to be run by a player");
 		} else {
-			final String name = args[0];
-			new BukkitRunnable() {
-				public void run() {
-					try {
-						final URL skinUrl = new URL("https://api.ashcon.app/mojang/v2/user/" + name);
-						final HttpsURLConnection skinConnection = (HttpsURLConnection) skinUrl.openConnection();
-						skinConnection.setConnectTimeout(0);
-						skinConnection.setDefaultUseCaches(false);
-						skinConnection.setUseCaches(false);
-
-						if (skinConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
-							final InputStreamReader skinStream = new InputStreamReader(skinConnection.getInputStream());
-							final JsonObject response = new JsonParser().parse(skinStream).getAsJsonObject();
-							final JsonObject rawSkin = response.getAsJsonObject("textures").getAsJsonObject("raw");
-							final String texture = rawSkin.get("value").getAsString();
-							final String signature = rawSkin.get("signature").getAsString();
-							skinStream.close();
-
-							final PlayerProfile textureProfile = player.getPlayerProfile();
-							textureProfile.setProperty(new ProfileProperty("textures", texture, signature));
-
-							player.sendMessage("Successfully set your skin to " + name + "'s");
-							new BukkitRunnable() {
-								public void run() {
-									player.setPlayerProfile(textureProfile);
-								}
-							}.runTask(main);
-						} else {
-							player.sendMessage("A player with that username doesn't exist");
+			final Player player = (Player) sender;
+	
+			if (args.length == 0) {
+				player.sendMessage(ChatColor.RED + "Usage: /" + label + " <username>");
+			} else {
+				final String name = args[0];
+				new BukkitRunnable() {
+					public void run() {
+						try {
+							final URL skinUrl = new URL("https://api.ashcon.app/mojang/v2/user/" + name);
+							final HttpsURLConnection skinConnection = (HttpsURLConnection) skinUrl.openConnection();
+							skinConnection.setConnectTimeout(0);
+							skinConnection.setDefaultUseCaches(false);
+							skinConnection.setUseCaches(false);
+	
+							if (skinConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+								final InputStreamReader skinStream = new InputStreamReader(skinConnection.getInputStream());
+								final JsonObject response = new JsonParser().parse(skinStream).getAsJsonObject();
+								final JsonObject rawSkin = response.getAsJsonObject("textures").getAsJsonObject("raw");
+								final String texture = rawSkin.get("value").getAsString();
+								final String signature = rawSkin.get("signature").getAsString();
+								skinStream.close();
+	
+								final PlayerProfile textureProfile = player.getPlayerProfile();
+								textureProfile.setProperty(new ProfileProperty("textures", texture, signature));
+	
+								player.sendMessage("Successfully set your skin to " + name + "'s");
+								new BukkitRunnable() {
+									public void run() {
+										player.setPlayerProfile(textureProfile);
+									}
+								}.runTask(main);
+							} else {
+								player.sendMessage("A player with that username doesn't exist");
+							}
+	
+							skinConnection.disconnect();
+						} catch (Exception exception) {
 						}
-
-						skinConnection.disconnect();
-					} catch (Exception exception) {
 					}
-				}
-			}.runTaskAsynchronously(main);
+				}.runTaskAsynchronously(main);
+			}
 		}
 		return true;
 	}
