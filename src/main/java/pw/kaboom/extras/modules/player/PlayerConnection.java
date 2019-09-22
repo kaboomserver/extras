@@ -141,7 +141,6 @@ class PlayerConnection implements Listener {
 						skinStream.close();
 
 						final PlayerProfile textureProfile = player.getPlayerProfile();
-						textureProfile.clearProperties();
 						textureProfile.setProperty(new ProfileProperty("textures", texture, signature));
 
 						new BukkitRunnable() {

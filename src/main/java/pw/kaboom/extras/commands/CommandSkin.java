@@ -52,7 +52,6 @@ class CommandSkin implements CommandExecutor {
 							skinStream.close();
 
 							final PlayerProfile textureProfile = player.getPlayerProfile();
-							textureProfile.clearProperties();
 							textureProfile.setProperty(new ProfileProperty("textures", texture, signature));
 
 							player.sendMessage("Successfully set your skin to " + name + "'s");
