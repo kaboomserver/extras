@@ -1,10 +1,12 @@
 package pw.kaboom.extras;
 
 import java.io.InputStreamReader;
-import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
+import java.net.URI;
 import java.util.UUID;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -123,37 +125,33 @@ class PlayerConnection implements Listener {
 		event.allow();
 		player.setOp(true);
 
-		new BukkitRunnable() {
-			public void run() {
+		HttpClient client = HttpClient.newHttpClient();
+		HttpRequest request = HttpRequest.newBuilder()
+			.uri(URI.create("https://api.ashcon.app/mojang/v2/user/" + player.getName()))
+			.build();
+		client.sendAsync(request, BodyHandlers.ofInputStream())
+			.thenAccept(response -> {
+			if (response.statusCode() == 200) {
+				final InputStreamReader skinStream = new InputStreamReader(response.body());
+				final JsonObject responseJson = new JsonParser().parse(skinStream).getAsJsonObject();
+				final JsonObject rawSkin = responseJson.getAsJsonObject("textures").getAsJsonObject("raw");
+				final String texture = rawSkin.get("value").getAsString();
+				final String signature = rawSkin.get("signature").getAsString();
 				try {
-					final URL skinUrl = new URL("https://api.ashcon.app/mojang/v2/user/" + player.getName());
-					final HttpsURLConnection skinConnection = (HttpsURLConnection) skinUrl.openConnection();
-					skinConnection.setConnectTimeout(0);
-					skinConnection.setDefaultUseCaches(false);
-					skinConnection.setUseCaches(false);
-
-					if (skinConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
-						final InputStreamReader skinStream = new InputStreamReader(skinConnection.getInputStream());
-						final JsonObject response = new JsonParser().parse(skinStream).getAsJsonObject();
-						final JsonObject rawSkin = response.getAsJsonObject("textures").getAsJsonObject("raw");
-						final String texture = rawSkin.get("value").getAsString();
-						final String signature = rawSkin.get("signature").getAsString();
-						skinStream.close();
-
-						final PlayerProfile textureProfile = player.getPlayerProfile();
-						textureProfile.setProperty(new ProfileProperty("textures", texture, signature));
-
-						new BukkitRunnable() {
-							public void run() {
-								player.setPlayerProfile(textureProfile);
-							}
-						}.runTask(JavaPlugin.getPlugin(Main.class));
-					}
-
-					skinConnection.disconnect();
+					skinStream.close();
 				} catch (Exception exception) {
+					System.out.println(exception);
 				}
+
+				final PlayerProfile profile = player.getPlayerProfile();
+				profile.setProperty(new ProfileProperty("textures", texture, signature));
+
+				new BukkitRunnable() {
+					public void run() {
+						player.setPlayerProfile(profile);
+					}
+				}.runTask(JavaPlugin.getPlugin(Main.class));
 			}
-		}.runTaskAsynchronously(JavaPlugin.getPlugin(Main.class));
+		});
 	}
 }

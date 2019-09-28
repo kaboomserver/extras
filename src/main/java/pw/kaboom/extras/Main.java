@@ -13,6 +13,8 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 
 public class Main extends JavaPlugin {
 	static int fallingBlockCount;
+	static HashSet<UUID> skinInProgress = new HashSet<>();
+	static HashSet<UUID> usernameInProgress = new HashSet<>();
 	static HashMap<UUID, Long> commandMillisList = new HashMap<>();
 	static HashMap<UUID, Long> interactMillisList = new HashMap<>();
 	static HashSet<String> consoleCommandBlacklist = new HashSet<>();
