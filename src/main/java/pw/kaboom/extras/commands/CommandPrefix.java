@@ -9,27 +9,25 @@ import org.bukkit.command.ConsoleCommandSender;
 
 import org.bukkit.entity.Player;
 
-class CommandPrefix implements CommandExecutor {
-	private Main main;
-	public CommandPrefix(Main main) {
-		this.main = main;
-	}
+import org.bukkit.plugin.java.JavaPlugin;
 
+class CommandPrefix implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (sender instanceof ConsoleCommandSender) {
 			sender.sendMessage("Command has to be run by a player");
 		} else {
 			final Player player = (Player) sender;
+			final JavaPlugin plugin = JavaPlugin.getPlugin(Main.class);
 	
 			if (args.length == 0) {
 				player.sendMessage(ChatColor.RED + "Usage: /" + label + " <prefix|off>");
 			} else if (args[0].equalsIgnoreCase("off")) {
-				main.getConfig().set(player.getUniqueId().toString(), null);
-				main.saveConfig();
+				plugin.getConfig().set(player.getUniqueId().toString(), null);
+				plugin.saveConfig();
 				player.sendMessage("You no longer have a tag");
 			} else {
-				main.getConfig().set(player.getUniqueId().toString(), String.join(" ", args));
-				main.saveConfig();
+				plugin.getConfig().set(player.getUniqueId().toString(), String.join(" ", args));
+				plugin.saveConfig();
 				player.sendMessage("You now have the tag: " + ChatColor.translateAlternateColorCodes('&', String.join(" ", args)));
 			}
 		}

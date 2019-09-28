@@ -14,6 +14,8 @@ import org.bukkit.command.ConsoleCommandSender;
 
 import org.bukkit.entity.Player;
 
+import org.bukkit.plugin.java.JavaPlugin;
+
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
@@ -23,11 +25,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 class CommandUsername implements CommandExecutor {
-	private Main main;
-	public CommandUsername(Main main) {
-		this.main = main;
-	}
-
 	public boolean onCommand(CommandSender sender, Command command, String label, final String[] args) {
 		if (sender instanceof ConsoleCommandSender) {
 			sender.sendMessage("Command has to be run by a player");
@@ -78,11 +75,11 @@ class CommandUsername implements CommandExecutor {
 								public void run() {
 									player.setPlayerProfile(profile);
 								}
-							}.runTask(main);
+							}.runTask(JavaPlugin.getPlugin(Main.class));
 						} catch (Exception exception) {
 						}
 					}
-				}.runTaskAsynchronously(main);
+				}.runTaskAsynchronously(JavaPlugin.getPlugin(Main.class));
 			}
 		}
 		return true;

@@ -11,35 +11,32 @@ import org.bukkit.event.Listener;
 
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-class PlayerChat implements Listener {
-	private Main main;
-	public PlayerChat(Main main) {
-		this.main = main;
-	}
+import org.bukkit.plugin.java.JavaPlugin;
 
+class PlayerChat implements Listener {
 	@EventHandler
 	void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
 		final Player player = event.getPlayer();
 		final UUID playerUuid = event.getPlayer().getUniqueId();
 		
-		if (main.commandMillisList.get(playerUuid) != null) {
-			final long millisDifference = System.currentTimeMillis() - main.commandMillisList.get(playerUuid);
+		if (Main.commandMillisList.get(playerUuid) != null) {
+			final long millisDifference = System.currentTimeMillis() - Main.commandMillisList.get(playerUuid);
 	
 			if (millisDifference < 5) {
 				event.setCancelled(true);
 			}
 		}
 		
-		main.commandMillisList.put(playerUuid, System.currentTimeMillis());
+		Main.commandMillisList.put(playerUuid, System.currentTimeMillis());
 		
 		if (event.isCancelled()) {
 			return;
 		}
 
-		if (main.getConfig().getString(player.getUniqueId().toString()) != null) {
+		if (JavaPlugin.getPlugin(Main.class).getConfig().getString(player.getUniqueId().toString()) != null) {
 			final String prefix = ChatColor.translateAlternateColorCodes(
 				'&',
-				main.getConfig().getString(player.getUniqueId().toString())
+				JavaPlugin.getPlugin(Main.class).getConfig().getString(player.getUniqueId().toString())
 			);
 
 			event.setFormat(prefix + ChatColor.RESET + " " + player.getDisplayName().toString() + ChatColor.RESET + ": " + ChatColor.RESET + "%2$s");

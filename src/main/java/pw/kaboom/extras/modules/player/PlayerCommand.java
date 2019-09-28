@@ -15,26 +15,21 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 class PlayerCommand implements Listener {
-	private Main main;
-	public PlayerCommand(Main main) {
-		this.main = main;
-	}
-
 	@EventHandler
 	void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
 		final String[] arr = event.getMessage().split(" ");
 		final String command = event.getMessage();
 		final UUID playerUuid = event.getPlayer().getUniqueId();
 		
-		if (main.commandMillisList.get(playerUuid) != null) {
-			final long millisDifference = System.currentTimeMillis() - main.commandMillisList.get(playerUuid);
+		if (Main.commandMillisList.get(playerUuid) != null) {
+			final long millisDifference = System.currentTimeMillis() - Main.commandMillisList.get(playerUuid);
 	
 			if (millisDifference < 75) {
 				event.setCancelled(true);
 			}
 		}
 		
-		main.commandMillisList.put(playerUuid, System.currentTimeMillis());
+		Main.commandMillisList.put(playerUuid, System.currentTimeMillis());
 		
 		if (event.isCancelled()) {
 			return;

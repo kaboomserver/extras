@@ -12,16 +12,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.destroystokyo.paper.profile.PlayerProfile;
 
 public class Main extends JavaPlugin {
-	int fallingBlockCount;
-	HashMap<UUID, Long> commandMillisList = new HashMap<>();
-	HashMap<UUID, Long> interactMillisList = new HashMap<>();
-	HashSet<String> consoleCommandBlacklist = new HashSet<>();
-	HashSet<BlockFace> faces = new HashSet<>();
-	HashSet<Material> fallingBlockList = new HashSet<>();
-	HashSet<Material> nonSolidBlockList = new HashSet<>();
-	HashSet<Material> nonSolidDoubleBlockList = new HashSet<>();
-	HashSet<Material> nonSolidSingularBlockList = new HashSet<>();
-	HashSet<Material> nonSolidWallMountedBlockList = new HashSet<>();
+	static int fallingBlockCount;
+	static HashMap<UUID, Long> commandMillisList = new HashMap<>();
+	static HashMap<UUID, Long> interactMillisList = new HashMap<>();
+	static HashSet<String> consoleCommandBlacklist = new HashSet<>();
+	static HashSet<Material> nonSolidBlockList = new HashSet<>();
+	static HashSet<Material> nonSolidDoubleBlockList = new HashSet<>();
+	static HashSet<Material> nonSolidSingularBlockList = new HashSet<>();
+	static HashSet<Material> nonSolidWallMountedBlockList = new HashSet<>();
 
 	public void onLoad() {
 		/* Fill lists */
@@ -382,23 +380,6 @@ public class Main extends JavaPlugin {
 		);
 
 		Collections.addAll(
-			faces,
-			BlockFace.NORTH,
-			BlockFace.SOUTH,
-			BlockFace.WEST,
-			BlockFace.EAST,
-			BlockFace.UP,
-			BlockFace.DOWN
-		);
-
-		Collections.addAll(
-			fallingBlockList,
-			Material.ANVIL,
-			Material.GRAVEL,
-			Material.SAND
-		);
-
-		Collections.addAll(
 			nonSolidDoubleBlockList,
 			Material.GRASS,
 			Material.SIGN,
@@ -613,19 +594,19 @@ public class Main extends JavaPlugin {
 		this.getCommand("destroyentities").setExecutor(new CommandDestroyEntities());
 		this.getCommand("enchantall").setExecutor(new CommandEnchantAll());
 		this.getCommand("jumpscare").setExecutor(new CommandJumpscare());
-		this.getCommand("prefix").setExecutor(new CommandPrefix(this));
+		this.getCommand("prefix").setExecutor(new CommandPrefix());
 		this.getCommand("pumpkin").setExecutor(new CommandPumpkin());
-		this.getCommand("skin").setExecutor(new CommandSkin(this));
+		this.getCommand("skin").setExecutor(new CommandSkin());
 		this.getCommand("spawn").setExecutor(new CommandSpawn());
 		this.getCommand("spidey").setExecutor(new CommandSpidey());
 		this.getCommand("tellraw").setExecutor(new CommandTellraw());
 		this.getCommand("unloadchunks").setExecutor(new CommandUnloadChunks());
-		this.getCommand("username").setExecutor(new CommandUsername(this));
+		this.getCommand("username").setExecutor(new CommandUsername());
 
 		/* Block-related modules */
-		this.getServer().getPluginManager().registerEvents(new BlockCheck(this), this);
+		this.getServer().getPluginManager().registerEvents(new BlockCheck(), this);
 		/*new TileEntityCheck(this).runTaskTimerAsynchronously(this, 0, 400);*/
-		this.getServer().getPluginManager().registerEvents(new BlockPhysics(this), this);
+		this.getServer().getPluginManager().registerEvents(new BlockPhysics(), this);
 
 		/* Entity-related modules */
 		this.getServer().getPluginManager().registerEvents(new EntityExplosion(), this);
@@ -633,14 +614,14 @@ public class Main extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(new EntitySpawn(), this);
 
 		/* Player-related modules */
-		this.getServer().getPluginManager().registerEvents(new PlayerChat(this), this);
-		this.getServer().getPluginManager().registerEvents(new PlayerCommand(this), this);
-		this.getServer().getPluginManager().registerEvents(new PlayerConnection(this), this);
+		this.getServer().getPluginManager().registerEvents(new PlayerChat(), this);
+		this.getServer().getPluginManager().registerEvents(new PlayerCommand(), this);
+		this.getServer().getPluginManager().registerEvents(new PlayerConnection(), this);
 		this.getServer().getPluginManager().registerEvents(new PlayerDamage(), this);
-		this.getServer().getPluginManager().registerEvents(new PlayerInteract(this), this);
+		this.getServer().getPluginManager().registerEvents(new PlayerInteract(), this);
 
 		/* Server-related modules */
-		this.getServer().getPluginManager().registerEvents(new ServerCommand(this), this);
+		this.getServer().getPluginManager().registerEvents(new ServerCommand(), this);
 		this.getServer().getPluginManager().registerEvents(new ServerPing(), this);
 	}
 }

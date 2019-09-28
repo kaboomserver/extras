@@ -27,6 +27,8 @@ import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 
+import org.bukkit.plugin.java.JavaPlugin;
+
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.destroystokyo.paper.event.player.PlayerConnectionCloseEvent;
@@ -38,11 +40,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 class PlayerConnection implements Listener {
-	private Main main;
-	public PlayerConnection(Main main) {
-		this.main = main;
-	}
-
 	@EventHandler
 	void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent event) {
 		if (event.getName().length() > 16) {
@@ -67,8 +64,8 @@ class PlayerConnection implements Listener {
 
 	@EventHandler
 	void onPlayerConnectionClose(final PlayerConnectionCloseEvent event) {
-		main.commandMillisList.remove(event.getPlayerUniqueId());
-		main.interactMillisList.remove(event.getPlayerUniqueId());
+		Main.commandMillisList.remove(event.getPlayerUniqueId());
+		Main.interactMillisList.remove(event.getPlayerUniqueId());
 	}
 
 	@EventHandler
@@ -150,13 +147,13 @@ class PlayerConnection implements Listener {
 							public void run() {
 								player.setPlayerProfile(textureProfile);
 							}
-						}.runTask(main);
+						}.runTask(JavaPlugin.getPlugin(Main.class));
 					}
 
 					skinConnection.disconnect();
 				} catch (Exception exception) {
 				}
 			}
-		}.runTaskAsynchronously(main);
+		}.runTaskAsynchronously(JavaPlugin.getPlugin(Main.class));
 	}
 }

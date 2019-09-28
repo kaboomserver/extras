@@ -13,6 +13,7 @@ commands:
       description: Broadcasts a message as the console
       permission: extras.console
    destroyentities:
+      aliases: de
       description: Destroys all entities in every world
       permission: extras.destroyentities
    enchantall:
@@ -42,6 +43,7 @@ commands:
       description: Broadcasts raw text to the server
       permission: extras.tellraw
    unloadchunks:
+      aliases: uc
       description: Unloads all unused chunks
       permission: extras.unloadchunks
    username:

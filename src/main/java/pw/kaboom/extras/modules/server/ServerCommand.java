@@ -12,18 +12,13 @@ import org.bukkit.event.server.RemoteServerCommandEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 
 class ServerCommand implements Listener {
-	private Main main;
-	public ServerCommand(Main main) {
-		this.main = main;
-	}
-
 	@EventHandler
 	void onServerCommand(ServerCommandEvent event) {
 		final String[] arr = event.getCommand().split(" ");
 		final String command = event.getCommand();
 
 		if (event.getSender() instanceof BlockCommandSender) {
-			if (main.consoleCommandBlacklist.contains(arr[0].toLowerCase())) {
+			if (Main.consoleCommandBlacklist.contains(arr[0].toLowerCase())) {
 				event.setCancelled(true);
 			}
 		}

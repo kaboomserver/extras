@@ -10,6 +10,9 @@ import org.bukkit.block.BlockFace;
 
 import org.bukkit.block.data.Levelled;
 
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.TNTPrimed;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -17,12 +20,9 @@ import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 
-class BlockPhysics implements Listener {
-	private Main main;
-	public BlockPhysics(Main main) {
-		this.main = main;
-	}
+import org.bukkit.event.entity.EntityChangeBlockEvent;
 
+class BlockPhysics implements Listener {
 	@EventHandler
 	void onBlockFromTo(BlockFromToEvent event) {
 		try {
@@ -32,10 +32,40 @@ class BlockPhysics implements Listener {
 			event.setCancelled(true);
 			return;
 		}
-
+		
 		final double tps = Bukkit.getServer().getTPS()[0];
 
-		if (tps < 15) {
+		if (tps < 17) {
+			event.setCancelled(true);
+			return;
+		}
+		
+		final Block block = event.getBlock();
+		final World world = block.getWorld();
+		final int radius = 5;
+		int blockCount = 0;
+
+		for (int x = -radius; x <= radius; x++) {
+			for (int y = -radius; y <= radius; y++) {
+				for (int z = -radius; z <= radius; z++) {
+					if (blockCount < 500) {
+						final Location blockLocation = new Location(world, block.getX() + x, block.getY() + y, block.getZ() + z);
+						final Block coordBlock = world.getBlockAt(blockLocation);
+
+						if (coordBlock.getType() == Material.LAVA ||
+							coordBlock.getType() == Material.WATER ||
+							coordBlock.getType() == Material.OBSIDIAN) {
+							blockCount++;
+						}
+
+						continue;
+					}
+					break;
+				}
+			}
+		}
+
+		if (blockCount == 500) {
 			event.setCancelled(true);
 		}
 	}
@@ -44,55 +74,9 @@ class BlockPhysics implements Listener {
 	void onBlockPhysics(BlockPhysicsEvent event) {
 		final Material material = event.getChangedType();
 
-		if (main.fallingBlockList.contains(material)) {
-			main.fallingBlockCount++;
-
-			if (main.fallingBlockCount == 10) {
-				event.setCancelled(true);
-				main.fallingBlockCount = 0;
-			}
-		} else if (material == Material.FARMLAND) {
+		if (material == Material.FARMLAND) {
 			event.setCancelled(true);
-		} else if (material == Material.WATER ||
-			material == Material.LAVA) {
-			final Block block = event.getBlock();
-
-			if (block.getBlockData() instanceof Levelled) {
-				final Levelled levelledBlock = (Levelled) block.getBlockData();
-
-				if (levelledBlock.getLevel() <= 7) {
-					if (block.getRelative(BlockFace.UP).getType() != material) {
-						boolean cancel = true;
-						boolean solid = false;
-
-						for (BlockFace face : main.faces) {
-							if (block.getRelative(face).getType() == Material.AIR ||
-								block.getRelative(face).getType() == Material.CAVE_AIR ||
-								block.getRelative(BlockFace.UP).getType() == Material.WATER) {
-								cancel = false;
-							}
-
-							if (block.getRelative(face).getType() != Material.AIR ||
-								block.getRelative(face).getType() != Material.CAVE_AIR ||
-								block.getRelative(face).getType() != Material.LAVA ||
-								block.getRelative(face).getType() != Material.WATER) {
-								solid = true;
-							}
-						}
-
-
-						if (block.getRelative(BlockFace.UP).getType() == Material.WATER &&
-						!solid) {
-							event.setCancelled(true);
-						} else if (cancel) {
-							event.setCancelled(true);
-						}
-					} else if (block.getRelative(BlockFace.DOWN).getType() == material) {
-						event.setCancelled(true);
-					}
-				}
-			}
-		} else if (main.nonSolidWallMountedBlockList.contains(material)) {
+		} else if (Main.nonSolidWallMountedBlockList.contains(material)) {
 			final Block block = event.getBlock();
 			final World world = block.getWorld();
 			final int radius = 5;
@@ -106,7 +90,7 @@ class BlockPhysics implements Listener {
 							final Block coordBlock = world.getBlockAt(blockLocation);
 
 							if (coordBlock.getType() == material ||
-								main.nonSolidWallMountedBlockList.contains(coordBlock.getType())) {
+								Main.nonSolidWallMountedBlockList.contains(coordBlock.getType())) {
 								blockCount++;
 							}
 
@@ -120,19 +104,19 @@ class BlockPhysics implements Listener {
 			if (blockCount == 42) {
 				event.setCancelled(true);
 			}
-		} else if (main.nonSolidDoubleBlockList.contains(material)) {
+		} else if (Main.nonSolidDoubleBlockList.contains(material)) {
 			final Block block = event.getBlock();
 
-			if (main.nonSolidDoubleBlockList.contains(block.getRelative(BlockFace.DOWN).getType())) {
+			if (Main.nonSolidDoubleBlockList.contains(block.getRelative(BlockFace.DOWN).getType())) {
 				event.setCancelled(true);
 			} else if (block.getRelative(BlockFace.DOWN).getType() == Material.AIR ||
-				(main.nonSolidBlockList.contains(block.getRelative(BlockFace.DOWN).getType()) &&
-				!main.nonSolidDoubleBlockList.contains(block.getRelative(BlockFace.DOWN).getType()))) {
+				(Main.nonSolidBlockList.contains(block.getRelative(BlockFace.DOWN).getType()) &&
+				!Main.nonSolidDoubleBlockList.contains(block.getRelative(BlockFace.DOWN).getType()))) {
  				for (int y = block.getRelative(BlockFace.UP).getY(); y <= 256; y++) {
 					final World world = event.getBlock().getWorld();
 					final Block coordBlock = world.getBlockAt(new Location(world, block.getX(), y, block.getZ()));
 
-					if (main.nonSolidDoubleBlockList.contains(coordBlock.getType())) {
+					if (Main.nonSolidDoubleBlockList.contains(coordBlock.getType())) {
 						coordBlock.setType(Material.AIR, false);
 						continue;
 					}
@@ -142,11 +126,11 @@ class BlockPhysics implements Listener {
 
 				block.setType(Material.AIR, false);
 			}
-		} else if (main.nonSolidSingularBlockList.contains(material)) {
+		} else if (Main.nonSolidSingularBlockList.contains(material)) {
 			final Block block = event.getBlock();
 
 			if (block.getRelative(BlockFace.DOWN).getType() == Material.AIR ||
-				main.nonSolidBlockList.contains(block.getRelative(BlockFace.DOWN).getType())) {
+				Main.nonSolidBlockList.contains(block.getRelative(BlockFace.DOWN).getType())) {
 				block.setType(Material.AIR, false);
 			}
 		}
@@ -158,6 +142,19 @@ class BlockPhysics implements Listener {
 
 		if (tps < 10) {
 			event.setNewCurrent(0);
+		}
+	}
+	
+	@EventHandler
+	void onEntityChangeBlock(EntityChangeBlockEvent event) {
+		if (event.getEntityType() == EntityType.FALLING_BLOCK &&
+			event.getTo() == Material.AIR) {
+			Main.fallingBlockCount++;
+
+			if (Main.fallingBlockCount == 10) {
+				event.setCancelled(true);
+				Main.fallingBlockCount = 0;
+			}
 		}
 	}
 }

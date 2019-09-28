@@ -10,24 +10,19 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 class PlayerInteract implements Listener {
-	private Main main;
-	public PlayerInteract(Main main) {
-		this.main = main;
-	}
-
 	@EventHandler
 	void onPlayerInteract(PlayerInteractEvent event) {
 		final Player player = event.getPlayer();
 		final UUID playerUuid = event.getPlayer().getUniqueId();
 		
-		if (main.interactMillisList.get(playerUuid) != null) {
-			final long millisDifference = System.currentTimeMillis() - main.interactMillisList.get(playerUuid);
+		if (Main.interactMillisList.get(playerUuid) != null) {
+			final long millisDifference = System.currentTimeMillis() - Main.interactMillisList.get(playerUuid);
 	
 			if (millisDifference < 150) {
 				event.setCancelled(true);
 			}
 		}
 		
-		main.interactMillisList.put(playerUuid, System.currentTimeMillis());
+		Main.interactMillisList.put(playerUuid, System.currentTimeMillis());
 	}
 }

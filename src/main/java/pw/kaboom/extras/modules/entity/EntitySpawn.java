@@ -3,6 +3,7 @@ package pw.kaboom.extras;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.World;
 
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -14,6 +15,7 @@ import org.bukkit.block.ShulkerBox;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import org.bukkit.entity.AreaEffectCloud;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -21,9 +23,11 @@ import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.MagmaCube;
 import org.bukkit.entity.Slime;
+import org.bukkit.entity.TNTPrimed;
 
 import org.bukkit.event.block.BlockDispenseEvent;
 
+import org.bukkit.event.entity.AreaEffectCloudApplyEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntitySpawnEvent;
@@ -46,6 +50,23 @@ import com.destroystokyo.paper.event.entity.PreSpawnerSpawnEvent;
 import  org.bukkit.block.banner.Pattern;
 
 class EntitySpawn implements Listener {
+	@EventHandler
+	void onAreaEffectCloudApply(AreaEffectCloudApplyEvent event) {
+		final AreaEffectCloud cloud = event.getEntity();
+		
+		if (cloud.getRadius() > 40) {
+			cloud.setRadius(40);
+		}
+		
+		if (cloud.getRadiusOnUse() > 0.01f) {
+			cloud.setRadiusOnUse(0.1f);
+		}
+		
+		if (cloud.getRadiusPerTick() > 0) {
+			cloud.setRadiusPerTick(0);
+		}
+	}
+
 	@EventHandler
 	void onBlockDispense(BlockDispenseEvent event) {
 		try {
@@ -161,14 +182,14 @@ class EntitySpawn implements Listener {
 		} else if (event.getEntityType() == EntityType.MAGMA_CUBE) {
 			final MagmaCube magmacube = (MagmaCube) event.getEntity();
 
-			if (magmacube.getSize() > 100) {
-				magmacube.setSize(100);
+			if (magmacube.getSize() > 50) {
+				magmacube.setSize(50);
 			}
 		} else if (event.getEntityType() == EntityType.SLIME) {
 			final Slime slime = (Slime) event.getEntity();
 
-			if (slime.getSize() > 100) {
-				slime.setSize(100);
+			if (slime.getSize() > 50) {
+				slime.setSize(50);
 			}
 		}
 	}
@@ -176,6 +197,17 @@ class EntitySpawn implements Listener {
 	@EventHandler
 	void onEntityAddToWorld(EntityAddToWorldEvent event) {
 		if (event.getEntityType() != EntityType.PLAYER) {
+			final World world = event.getEntity().getWorld();
+
+			if (world.getEntities().size() > 1024) {
+				for (Entity entity : world.getEntities()) {
+					if (entity.getType() != EntityType.PLAYER) {
+						entity.remove();
+					}
+				}
+				return;
+			}
+
 			if (event.getEntity().getLocation().isGenerated() &&
 				event.getEntity().getLocation().isChunkLoaded()) {
 				final Entity entity = event.getEntity();
@@ -183,6 +215,7 @@ class EntitySpawn implements Listener {
 
 				if (count > 50) {
 					entity.remove();
+					return;
 				}
 			}
 
@@ -259,6 +292,26 @@ class EntitySpawn implements Listener {
 				} catch (Exception exception) {
 					mob.getEquipment().setItemInOffHand(null);
 				}
+			} else if (event.getEntityType() == EntityType.AREA_EFFECT_CLOUD) {
+				final AreaEffectCloud cloud = (AreaEffectCloud) event.getEntity();
+				
+				if (cloud.getRadius() > 40) {
+					cloud.setRadius(40);
+				}
+				
+				if (cloud.getRadiusOnUse() > 0.01f) {
+					cloud.setRadiusOnUse(0.1f);
+				}
+				
+				if (cloud.getRadiusPerTick() > 0) {
+					cloud.setRadiusPerTick(0);
+				}
+			} else if (event.getEntityType() == EntityType.PRIMED_TNT) {
+				if (world.getEntitiesByClass(TNTPrimed.class).size() > 180) {
+					for (Entity entity : world.getEntitiesByClass(TNTPrimed.class)) {
+						entity.remove();
+					}
+				}
 			}
 		}
 	}
@@ -266,6 +319,17 @@ class EntitySpawn implements Listener {
 	@EventHandler
 	void onEntitySpawn(EntitySpawnEvent event) {
 		if (event.getEntityType() != EntityType.PLAYER) {
+			final World world = event.getLocation().getWorld();
+
+			if (world.getEntities().size() > 1024) {
+				for (Entity entity : world.getEntities()) {
+					if (entity.getType() != EntityType.PLAYER) {
+						entity.remove();
+					}
+				}
+				return;
+			}		
+
 			if (event.getLocation().isGenerated() &&
 				event.getLocation().isChunkLoaded()) {
 				final int entityCount = event.getLocation().getChunk().getEntities().length;
@@ -289,6 +353,17 @@ class EntitySpawn implements Listener {
 	@EventHandler
 	void onPreCreatureSpawn(PreCreatureSpawnEvent event) {
 		if (event.getType() != EntityType.PLAYER) {
+			final World world = event.getSpawnLocation().getWorld();
+
+			if (world.getEntities().size() > 1024) {
+				for (Entity entity : world.getEntities()) {
+					if (entity.getType() != EntityType.PLAYER) {
+						entity.remove();
+					}
+				}
+				return;
+			}
+
 			if (event.getSpawnLocation().isGenerated() &&
 				event.getSpawnLocation().isChunkLoaded()) {
 				final int entityCount = event.getSpawnLocation().getChunk().getEntities().length;
@@ -354,9 +429,9 @@ class EntitySpawn implements Listener {
 	void onTNTPrime(TNTPrimeEvent event) {
 		final double tps = Bukkit.getTPS()[0];
 
-		if (tps < 10) {
+		if (tps < 10 ||
+			event.getBlock().getWorld().getEntitiesByClass(TNTPrimed.class).size() > 140) {
 			event.setCancelled(true);
-			event.getBlock().setType(Material.AIR, false);
 		}
 	}
 }
