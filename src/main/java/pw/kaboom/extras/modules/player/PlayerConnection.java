@@ -25,6 +25,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
@@ -48,20 +49,6 @@ class PlayerConnection implements Listener {
 			event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "Your username can't be longer than 16 characters");
 			return;
 		}
-
-		/*for (final World world : Bukkit.getWorlds()) {
-			for (final Chunk chunk : world.getLoadedChunks()) {
-				try {
-					chunk.getTileEntities(false);
-				} catch (Exception exception) {
-					new BukkitRunnable() {
-						public void run() {
-							world.regenerateChunk(chunk.getX(), chunk.getZ());
-						}
-					}.runTask(main);
-				}
-			}
-		}*/
 	}
 
 	@EventHandler
@@ -153,5 +140,18 @@ class PlayerConnection implements Listener {
 				}.runTask(JavaPlugin.getPlugin(Main.class));
 			}
 		});
+	}
+
+	@EventHandler
+	void onPlayerQuit(PlayerQuitEvent event) {
+		final World world = event.getPlayer().getWorld();
+
+		for (final Chunk chunk : world.getLoadedChunks()) {
+			try {
+				if (chunk.getTileEntities(false).length == 0);
+			} catch (Exception exception) {
+				world.regenerateChunk(chunk.getX(), chunk.getZ());
+			}
+		}
 	}
 }

@@ -76,6 +76,32 @@ class BlockPhysics implements Listener {
 
 		if (material == Material.FARMLAND) {
 			event.setCancelled(true);
+		} else if (material == Material.LAVA ||
+			material == Material.WATER) {
+		
+		final Block block = event.getBlock();
+		final World world = block.getWorld();
+		final int radius = 5;
+		int blockCount = 0;
+		for (int x = -radius; x <= radius; x++) {
+			for (int y = -radius; y <= radius; y++) {
+				for (int z = -radius; z <= radius; z++) {
+					if (blockCount < 500) {
+						final Location blockLocation = new Location(world, block.getX() + x, block.getY() + y, block.getZ() + z);
+						final Block coordBlock = world.getBlockAt(blockLocation);
+
+						if (coordBlock.getType() == Material.LAVA ||
+							coordBlock.getType() == Material.WATER ||
+							coordBlock.getType() == Material.OBSIDIAN) {
+							blockCount++;
+						}
+
+						continue;
+					}
+					break;
+				}
+			}
+		}
 		} else if (Main.nonSolidWallMountedBlockList.contains(material)) {
 			final Block block = event.getBlock();
 			final World world = block.getWorld();

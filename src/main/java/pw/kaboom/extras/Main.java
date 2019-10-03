@@ -514,7 +514,28 @@ public class Main extends JavaPlugin {
 			Material.HORN_CORAL,
 			Material.TUBE_CORAL,
 			Material.SEA_PICKLE,
-			Material.KELP
+			Material.KELP,
+			Material.POTTED_ACACIA_SAPLING,
+			Material.POTTED_ALLIUM,
+			Material.POTTED_AZURE_BLUET,
+			Material.POTTED_BIRCH_SAPLING,
+			Material.POTTED_BLUE_ORCHID,
+			Material.POTTED_BROWN_MUSHROOM,
+			Material.POTTED_CACTUS,
+			Material.POTTED_DANDELION,
+			Material.POTTED_DARK_OAK_SAPLING,
+			Material.POTTED_DEAD_BUSH,
+			Material.POTTED_FERN,
+			Material.POTTED_JUNGLE_SAPLING,
+			Material.POTTED_OAK_SAPLING,
+			Material.POTTED_ORANGE_TULIP,
+			Material.POTTED_OXEYE_DAISY,
+			Material.POTTED_PINK_TULIP,
+			Material.POTTED_POPPY,
+			Material.POTTED_RED_MUSHROOM,
+			Material.POTTED_RED_TULIP,
+			Material.POTTED_SPRUCE_SAPLING,
+			Material.POTTED_WHITE_TULIP
 		);
 
 		Collections.addAll(
