@@ -48,13 +48,14 @@ class BlockPhysics implements Listener {
 		for (int x = -radius; x <= radius; x++) {
 			for (int y = -radius; y <= radius; y++) {
 				for (int z = -radius; z <= radius; z++) {
-					if (blockCount < 500) {
+					if (blockCount < 300) {
 						final Location blockLocation = new Location(world, block.getX() + x, block.getY() + y, block.getZ() + z);
 						final Block coordBlock = world.getBlockAt(blockLocation);
 
-						if (coordBlock.getType() == Material.LAVA ||
+						if ((coordBlock.getType() == Material.LAVA ||
 							coordBlock.getType() == Material.WATER ||
-							coordBlock.getType() == Material.OBSIDIAN) {
+							coordBlock.getType() == Material.OBSIDIAN) &&
+							block.getType() != coordBlock.getType()) {
 							blockCount++;
 						}
 
@@ -65,7 +66,7 @@ class BlockPhysics implements Listener {
 			}
 		}
 
-		if (blockCount == 500) {
+		if (blockCount == 300) {
 			event.setCancelled(true);
 		}
 	}
@@ -78,30 +79,34 @@ class BlockPhysics implements Listener {
 			event.setCancelled(true);
 		} else if (material == Material.LAVA ||
 			material == Material.WATER) {
-		
-		final Block block = event.getBlock();
-		final World world = block.getWorld();
-		final int radius = 5;
-		int blockCount = 0;
-		for (int x = -radius; x <= radius; x++) {
-			for (int y = -radius; y <= radius; y++) {
-				for (int z = -radius; z <= radius; z++) {
-					if (blockCount < 500) {
-						final Location blockLocation = new Location(world, block.getX() + x, block.getY() + y, block.getZ() + z);
-						final Block coordBlock = world.getBlockAt(blockLocation);
-
-						if (coordBlock.getType() == Material.LAVA ||
-							coordBlock.getType() == Material.WATER ||
-							coordBlock.getType() == Material.OBSIDIAN) {
-							blockCount++;
+			final Block block = event.getBlock();
+			final World world = block.getWorld();
+			final int radius = 5;
+			int blockCount = 0;
+			for (int x = -radius; x <= radius; x++) {
+				for (int y = -radius; y <= radius; y++) {
+					for (int z = -radius; z <= radius; z++) {
+						if (blockCount < 300) {
+							final Location blockLocation = new Location(world, block.getX() + x, block.getY() + y, block.getZ() + z);
+							final Block coordBlock = world.getBlockAt(blockLocation);
+	
+							if ((coordBlock.getType() == Material.LAVA ||
+								coordBlock.getType() == Material.WATER ||
+								coordBlock.getType() == Material.OBSIDIAN) &&
+								block.getType() != coordBlock.getType()) {
+								blockCount++;
+							}
+	
+							continue;
 						}
-
-						continue;
+						break;
 					}
-					break;
 				}
 			}
-		}
+			
+			if (blockCount == 300) {
+				block.setType(Material.AIR, false);
+			}
 		} else if (Main.nonSolidWallMountedBlockList.contains(material)) {
 			final Block block = event.getBlock();
 			final World world = block.getWorld();
@@ -128,36 +133,65 @@ class BlockPhysics implements Listener {
 			}
 
 			if (blockCount == 42) {
-				event.setCancelled(true);
+				Material materialReplacement = Material.AIR;
+				
+				if (Main.nonSolidWaterBlockList.contains(material)) {
+					materialReplacement = Material.WATER;
+				}
+
+				block.setType(materialReplacement, false);
 			}
 		} else if (Main.nonSolidDoubleBlockList.contains(material)) {
-			final Block block = event.getBlock();
+			final Block block = event.getBlock();	
 
 			if (Main.nonSolidDoubleBlockList.contains(block.getRelative(BlockFace.DOWN).getType())) {
 				event.setCancelled(true);
 			} else if (block.getRelative(BlockFace.DOWN).getType() == Material.AIR ||
+				(Main.nonSolidWaterBlockList.contains(material) &&
+				block.getRelative(BlockFace.DOWN).getType() == Material.WATER) ||
 				(Main.nonSolidBlockList.contains(block.getRelative(BlockFace.DOWN).getType()) &&
 				!Main.nonSolidDoubleBlockList.contains(block.getRelative(BlockFace.DOWN).getType()))) {
+				Material materialReplacement = Material.AIR;
+				
+				if (Main.nonSolidWaterBlockList.contains(material)) {
+					materialReplacement = Material.WATER;
+				}
+
  				for (int y = block.getRelative(BlockFace.UP).getY(); y <= 256; y++) {
 					final World world = event.getBlock().getWorld();
 					final Block coordBlock = world.getBlockAt(new Location(world, block.getX(), y, block.getZ()));
 
-					if (Main.nonSolidDoubleBlockList.contains(coordBlock.getType())) {
-						coordBlock.setType(Material.AIR, false);
+					if (Main.nonSolidDoubleBlockList.contains(coordBlock.getType()) ||
+						(block.getType() == Material.KELP_PLANT &&
+						coordBlock.getType() == Material.KELP)) {
+						coordBlock.setType(materialReplacement, false);
 						continue;
 					}
 
 					break;
 				}
 
-				block.setType(Material.AIR, false);
+				block.setType(materialReplacement, false);
 			}
 		} else if (Main.nonSolidSingularBlockList.contains(material)) {
 			final Block block = event.getBlock();
 
 			if (block.getRelative(BlockFace.DOWN).getType() == Material.AIR ||
+				(Main.nonSolidWaterBlockList.contains(material) &&
+				block.getRelative(BlockFace.DOWN).getType() == Material.WATER) ||
 				Main.nonSolidBlockList.contains(block.getRelative(BlockFace.DOWN).getType())) {
-				block.setType(Material.AIR, false);
+				if (block.getType() == Material.KELP &&
+					block.getRelative(BlockFace.DOWN).getType() == Material.KELP_PLANT) {
+					return;
+				}
+
+				Material materialReplacement = Material.AIR;
+				
+				if (Main.nonSolidWaterBlockList.contains(material)) {
+					materialReplacement = Material.WATER;
+				}
+
+				block.setType(materialReplacement, false);
 			}
 		}
 	}

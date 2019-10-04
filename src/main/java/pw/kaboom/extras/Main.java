@@ -22,6 +22,7 @@ public class Main extends JavaPlugin {
 	static HashSet<Material> nonSolidDoubleBlockList = new HashSet<>();
 	static HashSet<Material> nonSolidSingularBlockList = new HashSet<>();
 	static HashSet<Material> nonSolidWallMountedBlockList = new HashSet<>();
+	static HashSet<Material> nonSolidWaterBlockList = new HashSet<>();
 
 	public void onLoad() {
 		/* Fill lists */
@@ -603,6 +604,45 @@ public class Main extends JavaPlugin {
 			Material.HORN_CORAL_WALL_FAN,
 			Material.TUBE_CORAL_FAN,
 			Material.TUBE_CORAL_WALL_FAN
+		);
+
+		Collections.addAll(
+			nonSolidWaterBlockList,
+			Material.BRAIN_CORAL_FAN,
+			Material.BRAIN_CORAL_WALL_FAN,
+			Material.BUBBLE_CORAL_FAN,
+			Material.BUBBLE_CORAL_WALL_FAN,
+			Material.DEAD_BRAIN_CORAL_FAN,
+			Material.DEAD_BRAIN_CORAL_WALL_FAN,
+			Material.DEAD_BUBBLE_CORAL_FAN,
+			Material.DEAD_BUBBLE_CORAL_WALL_FAN,
+			Material.DEAD_FIRE_CORAL_FAN,
+			Material.DEAD_FIRE_CORAL_WALL_FAN,
+			Material.DEAD_HORN_CORAL_FAN,
+			Material.DEAD_HORN_CORAL_WALL_FAN,
+			Material.DEAD_TUBE_CORAL_FAN,
+			Material.DEAD_TUBE_CORAL_WALL_FAN,
+			Material.FIRE_CORAL_FAN,
+			Material.FIRE_CORAL_WALL_FAN,
+			Material.HORN_CORAL_FAN,
+			Material.HORN_CORAL_WALL_FAN,
+			Material.TUBE_CORAL_FAN,
+			Material.TUBE_CORAL_WALL_FAN,
+			Material.SEAGRASS,
+			Material.BRAIN_CORAL,
+			Material.BUBBLE_CORAL,
+			Material.DEAD_BRAIN_CORAL,
+			Material.DEAD_BUBBLE_CORAL,
+			Material.DEAD_FIRE_CORAL,
+			Material.DEAD_HORN_CORAL,
+			Material.DEAD_TUBE_CORAL,
+			Material.FIRE_CORAL,
+			Material.HORN_CORAL,
+			Material.TUBE_CORAL,
+			Material.SEA_PICKLE,
+			Material.KELP,
+			Material.KELP_PLANT,
+			Material.TALL_SEAGRASS
 		);
 
 		this.nonSolidBlockList.addAll(nonSolidDoubleBlockList);
