@@ -43,7 +43,7 @@ class CommandUsername implements CommandExecutor {
 				
 				HttpClient client = HttpClient.newHttpClient();
 				HttpRequest request = HttpRequest.newBuilder()
-					.uri(URI.create("https://api.ashcon.app/mojang/v2/user/" + nameShort))
+					.uri(URI.create("https://api.ashcon.app/mojang/v2/user/" + nameShort.replace(" ", "%20")))
 					.build();
 				client.sendAsync(request, BodyHandlers.ofInputStream())
 					.thenAccept(response -> {

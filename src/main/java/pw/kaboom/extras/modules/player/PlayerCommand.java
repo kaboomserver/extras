@@ -64,6 +64,9 @@ class PlayerCommand implements Listener {
 							Double.parseDouble(arr[i+3]) > 6) {
 							event.setMessage(command.replaceFirst("(?i)" + "randomTickSpeed " + arr[i+3], "randomTickSpeed 6"));
 							break;
+						} else if ("spawnRadius".equalsIgnoreCase(arr[i+2]) &&
+							Double.parseDouble(arr[i+3]) > 100) {
+							event.setMessage(command.replaceFirst("(?i)" + "spawnRadius " + arr[i+3], "spawnRadius 100"));
 						}
 					}
 				}
@@ -74,6 +77,9 @@ class PlayerCommand implements Listener {
 			if ("randomTickSpeed".equalsIgnoreCase(arr[1]) &&
 				Double.parseDouble(arr[2]) > 6) {
 				event.setMessage(command.replaceFirst(arr[2], "6"));
+			} else if ("spawnRadius".equalsIgnoreCase(arr[1]) &&
+				Double.parseDouble(arr[2]) > 100) {
+				event.setMessage(command.replaceFirst(arr[2], "100"));
 			}
 		} else if (("/minecraft:particle".equalsIgnoreCase(arr[0]) ||
 			"/particle".equalsIgnoreCase(arr[0])) &&

@@ -55,6 +55,7 @@ class PlayerConnection implements Listener {
 	void onPlayerConnectionClose(final PlayerConnectionCloseEvent event) {
 		Main.commandMillisList.remove(event.getPlayerUniqueId());
 		Main.interactMillisList.remove(event.getPlayerUniqueId());
+		Main.usernameInProgress.remove(event.getPlayerUniqueId());
 	}
 
 	@EventHandler
@@ -114,7 +115,7 @@ class PlayerConnection implements Listener {
 
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder()
-			.uri(URI.create("https://api.ashcon.app/mojang/v2/user/" + player.getName()))
+			.uri(URI.create("https://api.ashcon.app/mojang/v2/user/" + player.getName().replace(" ", "%20")))
 			.build();
 		client.sendAsync(request, BodyHandlers.ofInputStream())
 			.thenAccept(response -> {
