@@ -13,6 +13,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 
+import org.bukkit.block.BlockState;
 import org.bukkit.block.banner.Pattern;
 
 import org.bukkit.entity.Player;
@@ -149,7 +150,14 @@ class PlayerConnection implements Listener {
 
 		for (final Chunk chunk : world.getLoadedChunks()) {
 			try {
-				if (chunk.getTileEntities(false).length == 0);
+				int data = 0;
+				for (BlockState block : chunk.getTileEntities()) {
+					data = data + block.getBlockData().getAsString().length();
+				}
+
+				if (data > 1285579) {
+					world.regenerateChunk(chunk.getX(), chunk.getZ());
+				}
 			} catch (Exception exception) {
 				world.regenerateChunk(chunk.getX(), chunk.getZ());
 			}

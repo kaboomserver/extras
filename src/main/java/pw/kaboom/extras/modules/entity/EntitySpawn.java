@@ -69,7 +69,9 @@ class EntitySpawn implements Listener {
 
 	@EventHandler
 	void onBlockDispense(BlockDispenseEvent event) {
+		System.out.println("lol");
 		try {
+			event.getBlock().getState();
 			event.getItem().getItemMeta();
 		} catch (Exception exception) {
 			event.setCancelled(true);

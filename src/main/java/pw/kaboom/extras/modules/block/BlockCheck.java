@@ -52,26 +52,3 @@ class BlockCheck implements Listener {
 		}
 	}
 }
-
-/*class TileEntityCheck extends BukkitRunnable {
-	private Main main;
-	public TileEntityCheck(Main main) {
-		this.main = main;
-	}
-
-	public void run() {
-		for (final World world : Bukkit.getServer().getWorlds()) {
-			for (final Chunk chunk : world.getLoadedChunks()) {
-				try {
-					chunk.getTileEntities();
-				} catch (Exception e) {
-					new BukkitRunnable() {
-						public void run() {
-							world.regenerateChunk(chunk.getX(), chunk.getZ());
-						}
-					}.runTask(main);
-				}
-			}
-		}
-	}
-}*/

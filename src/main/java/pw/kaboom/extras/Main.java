@@ -479,7 +479,6 @@ public class Main extends JavaPlugin {
 			Material.OXEYE_DAISY,
 			Material.BROWN_MUSHROOM,
 			Material.RED_MUSHROOM,
-			Material.FIRE,
 			Material.WHEAT,
 			Material.RAIL,
 			Material.STONE_PRESSURE_PLATE,
@@ -541,6 +540,7 @@ public class Main extends JavaPlugin {
 
 		Collections.addAll(
 			nonSolidWallMountedBlockList,
+			Material.FIRE,
 			Material.TORCH,
 			Material.WALL_TORCH,
 			Material.LADDER,
@@ -603,7 +603,9 @@ public class Main extends JavaPlugin {
 			Material.HORN_CORAL_FAN,
 			Material.HORN_CORAL_WALL_FAN,
 			Material.TUBE_CORAL_FAN,
-			Material.TUBE_CORAL_WALL_FAN
+			Material.TUBE_CORAL_WALL_FAN,
+			Material.CHORUS_FLOWER,
+			Material.CHORUS_PLANT
 		);
 
 		Collections.addAll(
