@@ -30,6 +30,10 @@ commands:
    pumpkin:
       description: Places a pumpkin on a player's head
       permission: extras.pumpkin
+   serverinfo:
+      aliases: specs
+      description: Shows detailed server information
+      permission: extras.serverinfo
    skin:
       description: Changes your skin
       permission: extras.skin

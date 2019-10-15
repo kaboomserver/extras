@@ -661,6 +661,7 @@ public class Main extends JavaPlugin {
 		this.getCommand("jumpscare").setExecutor(new CommandJumpscare());
 		this.getCommand("prefix").setExecutor(new CommandPrefix());
 		this.getCommand("pumpkin").setExecutor(new CommandPumpkin());
+		this.getCommand("serverinfo").setExecutor(new CommandServerInfo());
 		this.getCommand("skin").setExecutor(new CommandSkin());
 		this.getCommand("spawn").setExecutor(new CommandSpawn());
 		this.getCommand("spidey").setExecutor(new CommandSpidey());
