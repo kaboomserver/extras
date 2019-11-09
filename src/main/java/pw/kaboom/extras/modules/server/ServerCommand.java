@@ -5,6 +5,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 
+import org.bukkit.block.Block;
+import org.bukkit.block.CommandBlock;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -14,10 +17,21 @@ import org.bukkit.event.server.ServerCommandEvent;
 class ServerCommand implements Listener {
 	@EventHandler
 	void onServerCommand(ServerCommandEvent event) {
+		event.setCancelled(true);
 		final String[] arr = event.getCommand().split(" ");
 		final String command = event.getCommand();
 
 		if (event.getSender() instanceof BlockCommandSender) {
+			/*Block block = ((BlockCommandSender)event.getSender()).getBlock();
+			CommandBlock state = (CommandBlock)block.getState();
+			
+			System.out.println(state.getName());
+			state.setName("@");
+			
+			if (state.getName() == null) {
+				state.setName("");
+			}
+			*/
 			if (Main.consoleCommandBlacklist.contains(arr[0].toLowerCase())) {
 				event.setCancelled(true);
 			}
