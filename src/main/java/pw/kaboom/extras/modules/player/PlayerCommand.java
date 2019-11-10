@@ -81,6 +81,9 @@ class PlayerCommand implements Listener {
 				Double.parseDouble(arr[2]) > 100) {
 				event.setMessage(command.replaceFirst(arr[2], "100"));
 			}
+		} else if ("/minecraft:give".equalsIgnoreCase(arr[0]) ||
+			"/give".equalsIgnoreCase(arr[0])) {
+			event.setMessage(command.replace("Color:-", "Color:"));
 		} else if (("/minecraft:particle".equalsIgnoreCase(arr[0]) ||
 			"/particle".equalsIgnoreCase(arr[0])) &&
 			arr.length >= 10) {

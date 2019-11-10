@@ -73,7 +73,7 @@ class PlayerConnection implements Listener {
 						item.hasItemMeta()) {
 						if (item.getItemMeta() instanceof BannerMeta) {
 							final BannerMeta banner = (BannerMeta) item.getItemMeta();
-	
+
 							for (Pattern pattern : banner.getPatterns()) {
 								if (pattern.getColor() == null) {
 									player.getInventory().clear();
@@ -104,7 +104,7 @@ class PlayerConnection implements Listener {
 	@EventHandler
 	void onPlayerLogin(PlayerLoginEvent event) {
 		if (event.getHostname().startsWith("play.flame.ga") &&
-			event.getHostname().endsWith(":53950")) {
+			event.getHostname().endsWith(":25565")) {
 			event.disallow(Result.KICK_OTHER, "You connected to the server using an outdated server address/IP.\nPlease use the following address/IP:\n\nkaboom.pw");
 			return;
 		}
