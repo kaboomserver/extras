@@ -38,38 +38,42 @@ class PlayerCommand implements Listener {
 		if (("/minecraft:execute".equals(arr[0].toLowerCase()) ||
 			"/execute".equals(arr[0].toLowerCase())) &&
 			arr.length >= 2) {
+			int asAtCount = 0;
+
 			for (int i = 1; i < arr.length; i++) {
+				if ("run".equalsIgnoreCase(arr[i])) {
+					if (i+1 < arr.length) {
+						if ("execute".equalsIgnoreCase(arr[i+1]) ||
+							"particle".equalsIgnoreCase(arr[i+1]) ||
+							"save-off".equalsIgnoreCase(arr[i+1]) ||
+							"stop".equalsIgnoreCase(arr[i+1])) {
+							Command.broadcastCommandMessage(event.getPlayer(), "Forbidden execute command detected");
+							event.setCancelled(true);
+							return;
+						} else if (i+3 < arr.length &&
+							"gamerule".equalsIgnoreCase(arr[i+1])) {
+							if ("randomTickSpeed".equalsIgnoreCase(arr[i+2]) &&
+								Double.parseDouble(arr[i+3]) > 6) {
+								event.setMessage(command.replaceFirst("(?i)" + "randomTickSpeed " + arr[i+3], "randomTickSpeed 6"));
+								return;
+							} else if ("spawnRadius".equalsIgnoreCase(arr[i+2]) &&
+								Double.parseDouble(arr[i+3]) > 100) {
+								event.setMessage(command.replaceFirst("(?i)" + "spawnRadius " + arr[i+3], "spawnRadius 100"));
+							}
+						}
+					}
+					break;
+				}
+
 				if ("as".equalsIgnoreCase(arr[i]) ||
 					"at".equalsIgnoreCase(arr[i])) {
-					for (int i2 = i+1; i2 < arr.length; i2++) {
-						if ("at".equalsIgnoreCase(arr[i2]) ||
-							"as".equalsIgnoreCase(arr[i2])) {
-							Command.broadcastCommandMessage(event.getPlayer(), "Forbidden execute pattern detected");
-							event.setCancelled(true);
-							break;
-						}
-					}
-				} else if (i+1 < arr.length &&
-					"run".equalsIgnoreCase(arr[i])) {
-					if ("execute".equalsIgnoreCase(arr[i+1]) ||
-						"particle".equalsIgnoreCase(arr[i+1]) ||
-						"save-off".equalsIgnoreCase(arr[i+1]) ||
-						"stop".equalsIgnoreCase(arr[i+1])) {
-						Command.broadcastCommandMessage(event.getPlayer(), "Forbidden execute command detected");
-						event.setCancelled(true);
-						break;
-					} else if (i+3 < arr.length &&
-						"gamerule".equalsIgnoreCase(arr[i+1])) {
-						if ("randomTickSpeed".equalsIgnoreCase(arr[i+2]) &&
-							Double.parseDouble(arr[i+3]) > 6) {
-							event.setMessage(command.replaceFirst("(?i)" + "randomTickSpeed " + arr[i+3], "randomTickSpeed 6"));
-							break;
-						} else if ("spawnRadius".equalsIgnoreCase(arr[i+2]) &&
-							Double.parseDouble(arr[i+3]) > 100) {
-							event.setMessage(command.replaceFirst("(?i)" + "spawnRadius " + arr[i+3], "spawnRadius 100"));
-						}
-					}
+					asAtCount++;
 				}
+			}
+			
+			if (asAtCount >= 2) {
+				Command.broadcastCommandMessage(event.getPlayer(), "Forbidden execute pattern detected");
+				event.setCancelled(true);
 			}
 		} else if (("/minecraft:gamerule".equalsIgnoreCase(arr[0]) ||
 			"/gamerule".equalsIgnoreCase(arr[0])) &&
@@ -81,8 +85,12 @@ class PlayerCommand implements Listener {
 				Double.parseDouble(arr[2]) > 100) {
 				event.setMessage(command.replaceFirst(arr[2], "100"));
 			}
-		} else if ("/minecraft:give".equalsIgnoreCase(arr[0]) ||
-			"/give".equalsIgnoreCase(arr[0])) {
+		} else if ("/minecraft:entitydata".equalsIgnoreCase(arr[0]) ||
+			"/minecraft:give".equalsIgnoreCase(arr[0]) ||
+			"/minecraft:replaceitem".equalsIgnoreCase(arr[0]) ||
+			"/entitydata".equalsIgnoreCase(arr[0]) ||
+			"/give".equalsIgnoreCase(arr[0]) ||
+			"/replaceitem".equalsIgnoreCase(arr[0])) {
 			event.setMessage(command.replace("Color:-", "Color:"));
 		} else if (("/minecraft:particle".equalsIgnoreCase(arr[0]) ||
 			"/particle".equalsIgnoreCase(arr[0])) &&

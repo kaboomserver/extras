@@ -137,7 +137,7 @@ class PlayerConnection implements Listener {
 
 				new BukkitRunnable() {
 					public void run() {
-						if (player != null) {
+						if (profile != null) {
 							player.setPlayerProfile(profile);
 						}
 					}

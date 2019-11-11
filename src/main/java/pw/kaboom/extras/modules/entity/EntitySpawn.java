@@ -351,13 +351,6 @@ class EntitySpawn implements Listener {
 			event.setCancelled(true);
 			return;
 		}
-		
-
-		/*PotionMeta potion = (PotionMeta) event.getEntity().getItemStack().getItemMeta();
-		System.out.println(potion.getColor().asRGB());
-		if (potion.getColor().asRGB() < 0) {
-			event.setCancelled(true);
-		}*/
 	}
 
 	@EventHandler
