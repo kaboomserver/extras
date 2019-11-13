@@ -351,6 +351,9 @@ class EntitySpawn implements Listener {
 			event.setCancelled(true);
 			return;
 		}
+		/*System.out.println("better work");
+		event.getEntity().setPickupDelay(99999);
+		event.getEntity().setItemStack(new ItemStack(Material.TORCH));*/
 	}
 
 	@EventHandler

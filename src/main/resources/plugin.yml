@@ -5,6 +5,10 @@ api-version: 1.13
 version: master
 
 commands:
+   broadcastraw:
+      aliases: [bcraw, tellraw]
+      description: Broadcasts raw text to the server
+      permission: extras.broadcastraw
    clearchat:
       aliases: cc
       description: Clears messages from the chat
@@ -43,9 +47,6 @@ commands:
    spidey:
       description: Annoying little spider...
       permission: extras.spidey
-   tellraw:
-      description: Broadcasts raw text to the server
-      permission: extras.tellraw
    unloadchunks:
       aliases: uc
       description: Unloads all unused chunks

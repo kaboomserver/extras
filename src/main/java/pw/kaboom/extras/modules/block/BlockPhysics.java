@@ -1,5 +1,7 @@
 package pw.kaboom.extras;
 
+import java.util.ArrayList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -60,7 +62,6 @@ class BlockPhysics implements Listener {
 						continue;
 					} else {
 						event.setCancelled(true);
-						return;
 					}
 				}
 			}
