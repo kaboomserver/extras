@@ -35,17 +35,34 @@ class PlayerDamage implements Listener {
 	void onPlayerDeath(PlayerDeathEvent event) {
 		final Player player = event.getEntity();
 		final AttributeInstance maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-		boolean maxHealthLow = false;
 
-		maxHealth.setBaseValue(20);
 		try {
+			maxHealth.setBaseValue(20);
 			player.setHealth(20);
+
+			if (player.getBedSpawnLocation() != null) {
+				player.teleportAsync(player.getBedSpawnLocation());
+			} else {
+				final World world = Bukkit.getWorld("world");
+				final Location spawnLocation = world.getSpawnLocation();
+	
+				for (double y = spawnLocation.getY(); y <= 256; y++) {
+					final Location yLocation = new Location(world, spawnLocation.getX(), y, spawnLocation.getZ());
+					final Block coordBlock = world.getBlockAt(yLocation);
+	
+					if (!coordBlock.getType().isSolid() &&
+						!coordBlock.getRelative(BlockFace.UP).getType().isSolid()) {
+						player.teleportAsync(yLocation);
+						return;
+					}
+				}
+			}
 		} catch (Exception exception) {
 			maxHealth.setBaseValue(Double.POSITIVE_INFINITY);
 			player.setHealth(20);
 			maxHealth.setBaseValue(20);
-			maxHealthLow = true;
 		}
+
 		player.setFoodLevel(20);
 		player.setFireTicks(0);
 		player.setRemainingAir(player.getMaximumAir());
@@ -54,28 +71,6 @@ class PlayerDamage implements Listener {
 
 		for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
 			onlinePlayer.sendMessage(event.getDeathMessage());
-		}
-
-		if (maxHealthLow) {
-			return;
-		}
-
-		if (player.getBedSpawnLocation() != null) {
-			player.teleportAsync(player.getBedSpawnLocation());
-		} else {
-			final World world = Bukkit.getWorld("world");
-			final Location spawnLocation = world.getSpawnLocation();
-
-			for (double y = spawnLocation.getY(); y <= 256; y++) {
-				final Location yLocation = new Location(world, spawnLocation.getX(), y, spawnLocation.getZ());
-				final Block coordBlock = world.getBlockAt(yLocation);
-
-				if (!coordBlock.getType().isSolid() &&
-					!coordBlock.getRelative(BlockFace.UP).getType().isSolid()) {
-					player.teleportAsync(yLocation);
-					return;
-				}
-			}
 		}
 	}
 }
