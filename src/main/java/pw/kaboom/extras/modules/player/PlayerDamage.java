@@ -11,6 +11,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 
 import org.bukkit.event.EventHandler;
@@ -19,6 +20,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
+
+import org.bukkit.inventory.ItemStack;
 
 class PlayerDamage implements Listener {
 	@EventHandler
@@ -35,6 +38,23 @@ class PlayerDamage implements Listener {
 	void onPlayerDeath(PlayerDeathEvent event) {
 		final Player player = event.getEntity();
 		final AttributeInstance maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+
+		for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+			onlinePlayer.sendMessage(event.getDeathMessage());
+		}
+
+		if (!event.getKeepInventory()) {
+			player.getInventory().clear();
+			
+			for (ItemStack item : event.getDrops()) {
+				player.getWorld().dropItemNaturally(player.getLocation(), item);
+			}
+		}
+
+		if (event.getDroppedExp() > 0) {
+			ExperienceOrb xp = player.getWorld().spawn(player.getLocation(), ExperienceOrb.class);
+			xp.setExperience(event.getDroppedExp());
+		}
 
 		try {
 			maxHealth.setBaseValue(20);
@@ -53,7 +73,7 @@ class PlayerDamage implements Listener {
 					if (!coordBlock.getType().isSolid() &&
 						!coordBlock.getRelative(BlockFace.UP).getType().isSolid()) {
 						player.teleportAsync(yLocation);
-						return;
+						break;
 					}
 				}
 			}
@@ -63,14 +83,13 @@ class PlayerDamage implements Listener {
 			maxHealth.setBaseValue(20);
 		}
 
+		player.setExp(event.getNewExp());
+		player.setLevel(event.getNewLevel());
 		player.setFoodLevel(20);
 		player.setFireTicks(0);
 		player.setRemainingAir(player.getMaximumAir());
 		player.getActivePotionEffects().clear();
-		event.setCancelled(true);
 
-		for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-			onlinePlayer.sendMessage(event.getDeathMessage());
-		}
+		event.setCancelled(true);
 	}
 }
