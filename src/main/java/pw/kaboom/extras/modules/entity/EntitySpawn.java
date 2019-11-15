@@ -69,21 +69,18 @@ class EntitySpawn implements Listener {
 
 	@EventHandler
 	void onBlockDispense(BlockDispenseEvent event) {
-		System.out.println("lol");
 		try {
+			/*BlockStateMeta stateMeta = (BlockStateMeta) event.getItem().getItemMeta();
+
+			/*if (stateMeta.getBlockState() instanceof ShulkerBox) {
+				ShulkerBox shulkerBox = (ShulkerBox) stateMeta.getBlockState();
+			}
+			stateMeta.getBlockState();*/
 			event.getBlock().getState();
 			event.getItem().getItemMeta();
 		} catch (Exception exception) {
 			event.setCancelled(true);
 		}
-
-		/*try {
-			BlockStateMeta state = (BlockStateMeta) event.getItem().getItemMeta();
-			state.getBlockState();
-		} catch (UnsupportedOperationException exception) {
-			System.out.println("I caught: " + exception);
-			event.setCancelled(true);
-		}*/
 	}
 
 	@EventHandler

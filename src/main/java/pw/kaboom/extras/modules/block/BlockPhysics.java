@@ -9,6 +9,8 @@ import org.bukkit.World;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.CommandBlock;
+import org.bukkit.block.ShulkerBox;
 
 import org.bukkit.block.data.Levelled;
 
@@ -74,6 +76,10 @@ class BlockPhysics implements Listener {
 
 		if (material == Material.FARMLAND) {
 			event.setCancelled(true);
+		} else if (event.getSourceBlock().getState() instanceof CommandBlock) {
+			event.getSourceBlock().getState().update();
+		} else if (event.getBlock().getState() instanceof CommandBlock) {
+			event.getBlock().getState().update();
 		} else if (event.getBlock().isLiquid()) {
 			final Block block = event.getBlock();
 			final World world = block.getWorld();
