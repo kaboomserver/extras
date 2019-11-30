@@ -62,6 +62,8 @@ class PlayerConnection implements Listener {
 	@EventHandler
 	void onPlayerJoin(PlayerJoinEvent event) {
 		final Player player = event.getPlayer();
+		final String title = JavaPlugin.getPlugin(Main.class).getConfig().getString("playerJoinTitle");
+		final String subtitle = JavaPlugin.getPlugin(Main.class).getConfig().getString("playerJoinSubtitle");
 		final int fadeIn = 10;
 		final int stay = 160;
 		final int fadeOut = 5;
@@ -87,13 +89,16 @@ class PlayerConnection implements Listener {
 			}
 		}
 
-		player.sendTitle(
-			ChatColor.GRAY + "Welcome to Kaboom!",
-			"Free OP • Anarchy • Creative",
-			fadeIn,
-			stay,
-			fadeOut
-		);
+		if (title != null ||
+			subtitle != null) {
+				player.sendTitle(
+				title,
+				subtitle,
+				fadeIn,
+				stay,
+				fadeOut
+			);
+		}
 	}
 
 	@EventHandler

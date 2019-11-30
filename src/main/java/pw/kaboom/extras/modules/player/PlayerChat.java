@@ -1,8 +1,12 @@
 package pw.kaboom.extras;
 
+import java.io.File;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
+
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import org.bukkit.entity.Player;
 
@@ -32,11 +36,14 @@ class PlayerChat implements Listener {
 		if (event.isCancelled()) {
 			return;
 		}
+		
+		final File configFile = new File(JavaPlugin.getPlugin(Main.class).getDataFolder(), "prefixes.yml");
+		final FileConfiguration prefixConfig = YamlConfiguration.loadConfiguration(configFile);
 
-		if (JavaPlugin.getPlugin(Main.class).getConfig().getString(player.getUniqueId().toString()) != null) {
+		if (prefixConfig.getString(player.getUniqueId().toString()) != null) {
 			final String prefix = ChatColor.translateAlternateColorCodes(
 				'&',
-				JavaPlugin.getPlugin(Main.class).getConfig().getString(player.getUniqueId().toString())
+				prefixConfig.getString(player.getUniqueId().toString())
 			);
 
 			event.setFormat(prefix + ChatColor.RESET + " " + player.getDisplayName().toString() + ChatColor.RESET + ": " + ChatColor.RESET + "%2$s");

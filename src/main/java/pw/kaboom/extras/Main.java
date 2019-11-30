@@ -650,6 +650,8 @@ public class Main extends JavaPlugin {
 		this.nonSolidBlockList.addAll(nonSolidDoubleBlockList);
 		this.nonSolidBlockList.addAll(nonSolidSingularBlockList);
 		this.nonSolidBlockList.addAll(nonSolidWallMountedBlockList);
+		
+		saveResource("config.yml", false);
 	}
 
 	public void onEnable() {
