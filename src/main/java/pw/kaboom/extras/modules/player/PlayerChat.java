@@ -39,30 +39,23 @@ class PlayerChat implements Listener {
 		
 		final File configFile = new File(JavaPlugin.getPlugin(Main.class).getDataFolder(), "prefixes.yml");
 		final FileConfiguration prefixConfig = YamlConfiguration.loadConfiguration(configFile);
+		final String prefix;
+		final String name = player.getDisplayName().toString();
 
 		if (prefixConfig.getString(player.getUniqueId().toString()) != null) {
-			final String prefix = ChatColor.translateAlternateColorCodes(
+			prefix = ChatColor.translateAlternateColorCodes(
 				'&',
-				prefixConfig.getString(player.getUniqueId().toString())
+				prefixConfig.getString(player.getUniqueId().toString()) +  " " + ChatColor.RESET
 			);
-
-			event.setFormat(prefix + ChatColor.RESET + " " + player.getDisplayName().toString() + ChatColor.RESET + ": " + ChatColor.RESET + "%2$s");
 		} else if (event.getPlayer().isOp()) {
-			final String prefix = ChatColor.translateAlternateColorCodes(
-				'&',
-				"&4&l[&c&lOP&4&l]"
-			);
-
-			event.setFormat(prefix + ChatColor.RED + " " + player.getDisplayName().toString() + ChatColor.RESET + ": " + ChatColor.RESET + "%2$s");
+			prefix = JavaPlugin.getPlugin(Main.class).getConfig().getString("opTag");
 		} else {
-			final String prefix = ChatColor.translateAlternateColorCodes(
-				'&',
-				"&8&l[&7&lDeOP&8&l]"
-			);
-
-			event.setFormat(prefix + ChatColor.GRAY + " " + player.getDisplayName().toString() + ChatColor.RESET + ": " + ChatColor.RESET + "%2$s");
+			prefix = JavaPlugin.getPlugin(Main.class).getConfig().getString("deOpTag");
 		}
 
-		event.setMessage(ChatColor.translateAlternateColorCodes('&', event.getMessage()));
+		event.setFormat(prefix + name + ChatColor.RESET + ": " + ChatColor.RESET + "%2$s");
+		event.setMessage(
+			ChatColor.translateAlternateColorCodes('&', event.getMessage())
+		);
 	}
 }

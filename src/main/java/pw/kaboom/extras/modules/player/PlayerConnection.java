@@ -103,7 +103,9 @@ class PlayerConnection implements Listener {
 
 	@EventHandler
 	void onPlayerKick(PlayerKickEvent event) {
-		event.setCancelled(true);
+		if (!JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("enableKick")) {
+			event.setCancelled(true);
+		}
 	}
 
 	@EventHandler
@@ -116,8 +118,13 @@ class PlayerConnection implements Listener {
 
 		final Player player = event.getPlayer();
 
-		event.allow();
-		player.setOp(true);
+		if (!JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("enableJoinRestrictions")) {
+			event.allow();
+		}
+		
+		if (JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("opOnJoin")) {
+			player.setOp(true);
+		}
 
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder()
@@ -142,7 +149,7 @@ class PlayerConnection implements Listener {
 
 				new BukkitRunnable() {
 					public void run() {
-						if (profile != null) {
+						if (player.isOnline()) {
 							player.setPlayerProfile(profile);
 						}
 					}
