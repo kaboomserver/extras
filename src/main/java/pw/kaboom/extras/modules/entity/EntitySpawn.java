@@ -82,10 +82,10 @@ class EntitySpawn implements Listener {
 		return false;
 	}
 
-	private void checkIllegalArmor(LivingEntity mob) {
+	private void checkIllegalEquipment(LivingEntity mob) {
 		try {
 			for (ItemStack item : mob.getEquipment().getArmorContents()) {
-				if (checkIllegalBanner(item)) {
+				if (checkIllegalBannerItem(item)) {
 					mob.getEquipment().setArmorContents(
 						new ItemStack[] {null, null, null, null}
 					);
@@ -100,7 +100,7 @@ class EntitySpawn implements Listener {
 		try {
 			ItemStack item = mob.getEquipment().getItemInMainHand();
 
-			if (checkIllegalBanner(item)) {
+			if (checkIllegalBannerItem(item)) {
 				mob.getEquipment().setItemInMainHand(null);
 			}
 		} catch (Exception exception) {
@@ -110,7 +110,7 @@ class EntitySpawn implements Listener {
 		try {
 			ItemStack item = mob.getEquipment().getItemInOffHand();
 
-			if (checkIllegalBanner(item)) {
+			if (checkIllegalBannerItem(item)) {
 				mob.getEquipment().setItemInOffHand(null);
 			}
 		} catch (Exception exception) {
@@ -118,7 +118,7 @@ class EntitySpawn implements Listener {
 		}
 	}
 	
-	private boolean checkIllegalBanner(ItemStack item) {
+	private boolean checkIllegalBannerItem(ItemStack item) {
 		if (item != null &&
 			item.hasItemMeta()) {
 			if (item.getItemMeta() instanceof BannerMeta) {
@@ -218,7 +218,7 @@ class EntitySpawn implements Listener {
 			case WITHER_SKELETON:
 			case ZOMBIE:
 			case ZOMBIE_VILLAGER:
-				checkIllegalArmor(mob);
+				checkIllegalEquipment(mob);
 				break;
 			case ENDER_DRAGON:
 				final World world = event.getLocation().getWorld();
@@ -262,7 +262,7 @@ class EntitySpawn implements Listener {
 				case ZOMBIE_VILLAGER:
 					final LivingEntity mob = (LivingEntity) entity;
 					
-					checkIllegalArmor(mob);
+					checkIllegalEquipment(mob);
 					break;
 				case AREA_EFFECT_CLOUD:
 					final AreaEffectCloud cloud = (AreaEffectCloud) entity;
