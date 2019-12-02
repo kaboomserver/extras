@@ -27,14 +27,7 @@ import org.bukkit.inventory.meta.BannerMeta;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import org.bukkit.scheduler.BukkitRunnable;
-
-import pw.kaboom.extras.SkinDownloader;
-
 import com.destroystokyo.paper.event.player.PlayerConnectionCloseEvent;
-
-import com.destroystokyo.paper.profile.PlayerProfile;
-import com.destroystokyo.paper.profile.ProfileProperty;
 
 class PlayerConnection implements Listener {
 	@EventHandler
@@ -119,25 +112,11 @@ class PlayerConnection implements Listener {
 			player.setOp(true);
 		}
 
-		new BukkitRunnable() {
-			public void run() {
-				SkinDownloader skinDownloader = new SkinDownloader();
-				if (skinDownloader.fetchSkinData(player.getName())) {
-					final PlayerProfile profile = player.getPlayerProfile();
-					final String texture = skinDownloader.getTexture();
-					final String signature = skinDownloader.getSignature();
-					profile.setProperty(new ProfileProperty("textures", texture, signature));
-	
-					new BukkitRunnable() {
-						public void run() {
-							if (player.isOnline()) {
-								player.setPlayerProfile(profile);
-							}
-						}
-					}.runTask(JavaPlugin.getPlugin(Main.class));
-				}
-			}
-		}.runTaskAsynchronously(JavaPlugin.getPlugin(Main.class));
+		final boolean shouldChangeUsername = false;
+		final boolean shouldSendMessage = false;
+
+		SkinDownloader skinDownloader = new SkinDownloader();
+		skinDownloader.applySkin(player, player.getName(), shouldChangeUsername, shouldSendMessage);
 	}
 
 	@EventHandler
