@@ -40,10 +40,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 
-import org.bukkit.plugin.java.JavaPlugin;
-
-import org.bukkit.scheduler.BukkitRunnable;
-
 import com.destroystokyo.paper.event.block.TNTPrimeEvent;
 
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
@@ -83,15 +79,6 @@ class EntitySpawn implements Listener {
 				
 				limitAreaEffectCloudRadius(cloud);
 				break;
-			case PRIMED_TNT:
-				final int tntCount = world.getEntitiesByClass(TNTPrimed.class).size();
-
-				if (tntCount > 180) {
-					for (Entity tnt : world.getEntitiesByClass(TNTPrimed.class)) {
-						tnt.remove();
-					}
-				}
-				break;
 			case MAGMA_CUBE:
 			case SLIME:
 				final Slime slime = (Slime) entity;
@@ -112,35 +99,6 @@ class EntitySpawn implements Listener {
 			
 			(entityType == EntityType.ENDER_DRAGON &&
 			isEntityLimitReached(location, worldDragonCount, worldDragonCountLimit, isAddToWorldEvent))) {
-			return true;
-		}
-		return false;
-	}
-
-	private boolean isEntityLimitReached(Location location, int count, int countLimit, boolean isAddToWorldEvent) {
-		/*
-			Add 1 if EntitySpawnEvent triggered the method, due to the entity count being
-			one larger in EntityAddToWorldEvent compared to EntitySpawnEvent
-			This prevents EntityAddToWorldEvent from triggering an entity removal before
-			EntitySpawnEvent's event cancel
-		*/
-		if (!isAddToWorldEvent) {
-			count += 1;
-		}
-
-		if (count >= countLimit) {
-			return true;
-		}
-		return false;
-	}
-
-	private boolean checkEntityWorldLimitRemove(World world) {
-		if (world.getEntities().size() > 1024) {
-			for (Entity entity : world.getEntities()) {
-				if (entity.getType() != EntityType.PLAYER) {
-					entity.remove();
-				}
-			}
 			return true;
 		}
 		return false;
@@ -194,6 +152,43 @@ class EntitySpawn implements Listener {
 					}
 				}
 			}
+		}
+		return false;
+	}
+
+	private boolean checkShouldRemoveEntities(World world) {
+		final int entityCount = world.getEntities().size();
+		final int tntCount = world.getEntitiesByClass(TNTPrimed.class).size();
+
+		if (entityCount > 1024) {
+			for (Entity entity : world.getEntities()) {
+				if (entity.getType() != EntityType.PLAYER) {
+					entity.remove();
+				}
+			}
+			return true;
+		} else if (tntCount > 180) {
+			for (Entity tnt : world.getEntitiesByClass(TNTPrimed.class)) {
+				tnt.remove();
+			}
+			return true;
+		}	
+		return false;
+	}
+
+	private boolean isEntityLimitReached(Location location, int count, int countLimit, boolean isAddToWorldEvent) {
+		/*
+			Add 1 if EntitySpawnEvent triggered the method, due to the entity count being
+			one larger in EntityAddToWorldEvent compared to EntitySpawnEvent
+			This prevents EntityAddToWorldEvent from triggering an entity removal before
+			EntitySpawnEvent's event cancel
+		*/
+		if (!isAddToWorldEvent) {
+			count += 1;
+		}
+
+		if (count >= countLimit) {
+			return true;
 		}
 		return false;
 	}
@@ -264,21 +259,19 @@ class EntitySpawn implements Listener {
 
 	@EventHandler
 	void onEntityAddToWorld(EntityAddToWorldEvent event) {
-		final World world = event.getEntity().getWorld();
 		final Entity entity = event.getEntity();
-
-		if (!checkEntityWorldLimitRemove(world)) {
-			final EntityType entityType = entity.getType();
-			final Location location = entity.getLocation();
-			final boolean isAddToWorldEvent = true;
-			
-			if (checkEntityLimits(entityType, location, isAddToWorldEvent)) {
-				entity.remove();
-				return;
-			}
+		final World world = entity.getWorld();
+		final EntityType entityType = entity.getType();
+		final Location location = entity.getLocation();
+		final boolean isAddToWorldEvent = true;
+		
+		if (checkEntityLimits(entityType, location, isAddToWorldEvent)) {
+			entity.remove();
+			return;
 		}
-
+		
 		applyEntityChanges(entity);
+		checkShouldRemoveEntities(world);
 	}
 
 	@EventHandler
