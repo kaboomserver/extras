@@ -24,7 +24,6 @@ public class Main extends JavaPlugin {
 	static HashSet<Material> nonSolidSingularBlockList = new HashSet<>();
 	static HashSet<Material> nonSolidWallMountedBlockList = new HashSet<>();
 	static HashSet<Material> nonSolidWaterBlockList = new HashSet<>();
-	static HashSet<SpawnReason> spawnReasonList = new HashSet<>();
 
 	public void onLoad() {
 		/* Fill lists */
@@ -652,15 +651,6 @@ public class Main extends JavaPlugin {
 		this.nonSolidBlockList.addAll(nonSolidDoubleBlockList);
 		this.nonSolidBlockList.addAll(nonSolidSingularBlockList);
 		this.nonSolidBlockList.addAll(nonSolidWallMountedBlockList);
-
-		Collections.addAll(
-			spawnReasonList,
-			SpawnReason.CUSTOM,
-			SpawnReason.DEFAULT,
-			SpawnReason.DISPENSE_EGG,
-			SpawnReason.SPAWNER,
-			SpawnReason.SPAWNER_EGG
-		);
 		
 		saveResource("config.yml", false);
 	}

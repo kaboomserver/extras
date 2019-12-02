@@ -29,7 +29,6 @@ import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.block.BlockDispenseEvent;
 
 import org.bukkit.event.entity.AreaEffectCloudApplyEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.SpawnerSpawnEvent;
@@ -41,6 +40,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 
+import org.bukkit.plugin.java.JavaPlugin;
+
+import org.bukkit.scheduler.BukkitRunnable;
+
 import com.destroystokyo.paper.event.block.TNTPrimeEvent;
 
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
@@ -50,22 +53,83 @@ import com.destroystokyo.paper.event.entity.PreSpawnerSpawnEvent;
 import  org.bukkit.block.banner.Pattern;
 
 class EntitySpawn implements Listener {
-	private boolean checkDragonWorldLimit(World world) {
-		final int dragonCount = world.getEntitiesByClass(EnderDragon.class).size();
+	private void applyEntityChanges(Entity entity) {
+		final World world = entity.getWorld();
+		
+		if (entity instanceof LivingEntity) {
+			final LivingEntity mob = (LivingEntity) entity;
 
-		if (dragonCount > 25) {
+			limitFollowAttribute(mob);
+		}
+
+		switch (entity.getType()) {
+			case ARMOR_STAND:
+			case DROWNED:
+			case GIANT:
+			case HUSK:
+			case PIG_ZOMBIE:
+			case PLAYER:
+			case SKELETON:
+			case STRAY:
+			case WITHER_SKELETON:
+			case ZOMBIE:
+			case ZOMBIE_VILLAGER:
+				final LivingEntity mob = (LivingEntity) entity;
+				
+				checkIllegalEquipment(mob);
+				break;
+			case AREA_EFFECT_CLOUD:
+				final AreaEffectCloud cloud = (AreaEffectCloud) entity;
+				
+				limitAreaEffectCloudRadius(cloud);
+				break;
+			case PRIMED_TNT:
+				final int tntCount = world.getEntitiesByClass(TNTPrimed.class).size();
+
+				if (tntCount > 180) {
+					for (Entity tnt : world.getEntitiesByClass(TNTPrimed.class)) {
+						tnt.remove();
+					}
+				}
+				break;
+			case MAGMA_CUBE:
+			case SLIME:
+				final Slime slime = (Slime) entity;
+
+				limitSlimeSize(slime);
+		}
+	}
+
+	private boolean checkEntityLimits(EntityType entityType, Location location, boolean isAddToWorldEvent) {
+		final int chunkEntityCount = location.getChunk().getEntities().length;
+		final int chunkEntityCountLimit = 50;
+
+		final int worldDragonCount = location.getWorld().getEntitiesByClass(EnderDragon.class).size();
+		final int worldDragonCountLimit = 24;
+		
+		if ((entityType != EntityType.PLAYER &&
+			isEntityLimitReached(location, chunkEntityCount, chunkEntityCountLimit, isAddToWorldEvent)) ||
+			
+			(entityType == EntityType.ENDER_DRAGON &&
+			isEntityLimitReached(location, worldDragonCount, worldDragonCountLimit, isAddToWorldEvent))) {
 			return true;
 		}
 		return false;
 	}
-	
-	private boolean checkEntityChunkLimit(Location location) {
-		if (location.isChunkLoaded()) {
-			final int count = location.getChunk().getEntities().length;
 
-			if (count > 50) {
-				return true;
-			}
+	private boolean isEntityLimitReached(Location location, int count, int countLimit, boolean isAddToWorldEvent) {
+		/*
+			Add 1 if EntitySpawnEvent triggered the method, due to the entity count being
+			one larger in EntityAddToWorldEvent compared to EntitySpawnEvent
+			This prevents EntityAddToWorldEvent from triggering an entity removal before
+			EntitySpawnEvent's event cancel
+		*/
+		if (!isAddToWorldEvent) {
+			count += 1;
+		}
+
+		if (count >= countLimit) {
+			return true;
 		}
 		return false;
 	}
@@ -199,92 +263,37 @@ class EntitySpawn implements Listener {
 	}
 
 	@EventHandler
-	void onCreatureSpawn(CreatureSpawnEvent event) {
-		final LivingEntity mob = event.getEntity();
-
-		if (Main.spawnReasonList.contains(event.getSpawnReason())) {
-			limitFollowAttribute(mob);
-		}
-
-		switch (event.getEntityType()) {
-			case ARMOR_STAND:
-			case DROWNED:
-			case GIANT:
-			case HUSK:
-			case PIG_ZOMBIE:
-			case PLAYER:
-			case SKELETON:
-			case STRAY:
-			case WITHER_SKELETON:
-			case ZOMBIE:
-			case ZOMBIE_VILLAGER:
-				checkIllegalEquipment(mob);
-				break;
-			case ENDER_DRAGON:
-				final World world = event.getLocation().getWorld();
-
-				if (checkDragonWorldLimit(world)) {
-					event.setCancelled(true);
-				}
-				break;
-			case MAGMA_CUBE:
-			case SLIME: 
-				final Slime slime = (Slime) mob;
-
-				limitSlimeSize(slime);
-		}
-	}
-
-	@EventHandler
 	void onEntityAddToWorld(EntityAddToWorldEvent event) {
-		if (event.getEntityType() != EntityType.PLAYER) {
-			final World world = event.getEntity().getWorld();
-			final Entity entity = event.getEntity();
+		final World world = event.getEntity().getWorld();
+		final Entity entity = event.getEntity();
 
-			if (!checkEntityWorldLimitRemove(world)) {
-				if (checkEntityChunkLimit(entity.getLocation())) {
-					entity.remove();
-					return;
-				}
-			}
+		if (!checkEntityWorldLimitRemove(world)) {
+			final EntityType entityType = entity.getType();
+			final Location location = entity.getLocation();
+			final boolean isAddToWorldEvent = true;
 			
-			switch (event.getEntityType()) {
-				case ARMOR_STAND:
-				case DROWNED:
-				case GIANT:
-				case HUSK:
-				case PIG_ZOMBIE:
-				case PLAYER:
-				case SKELETON:
-				case STRAY:
-				case WITHER_SKELETON:
-				case ZOMBIE:
-				case ZOMBIE_VILLAGER:
-					final LivingEntity mob = (LivingEntity) entity;
-					
-					checkIllegalEquipment(mob);
-					break;
-				case AREA_EFFECT_CLOUD:
-					final AreaEffectCloud cloud = (AreaEffectCloud) entity;
-					
-					limitAreaEffectCloudRadius(cloud);
-					break;
-				case PRIMED_TNT: 
-					if (world.getEntitiesByClass(TNTPrimed.class).size() > 180) {
-						for (Entity tnt : world.getEntitiesByClass(TNTPrimed.class)) {
-							tnt.remove();
-						}
-					}
+			if (checkEntityLimits(entityType, location, isAddToWorldEvent)) {
+				entity.remove();
+				return;
 			}
 		}
+
+		applyEntityChanges(entity);
 	}
 
 	@EventHandler
 	void onEntitySpawn(EntitySpawnEvent event) {
-		if (event.getEntityType() != EntityType.PLAYER &&
-			checkEntityChunkLimit(event.getLocation())) {
+		final Entity entity = event.getEntity();
+		final EntityType entityType = entity.getType();
+		final Location location = event.getLocation();
+		final boolean isAddToWorldEvent = false;
+		
+		if (checkEntityLimits(entityType, location, isAddToWorldEvent)) {
 			event.setCancelled(true);
+			return;
 		}
+
+		applyEntityChanges(entity);
 	}
 
 	@EventHandler
@@ -298,11 +307,11 @@ class EntitySpawn implements Listener {
 
 	@EventHandler
 	void onPreCreatureSpawn(PreCreatureSpawnEvent event) {
-		if ((event.getType() != EntityType.PLAYER &&
-			checkEntityChunkLimit(event.getSpawnLocation())) ||
-			
-			(event.getType() == EntityType.ENDER_DRAGON &&
-			checkDragonWorldLimit(event.getSpawnLocation().getWorld()))) {
+		final EntityType mobType = event.getType();
+		final Location location = event.getSpawnLocation();
+		final boolean isAddToWorldEvent = false;
+
+		if (checkEntityLimits(mobType, location, isAddToWorldEvent)) {
 			event.setCancelled(true);
 		}
 	}
