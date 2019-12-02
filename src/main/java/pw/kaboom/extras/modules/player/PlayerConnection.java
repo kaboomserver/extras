@@ -1,11 +1,5 @@
 package pw.kaboom.extras;
 
-import java.io.InputStreamReader;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
-import java.net.URI;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -35,13 +29,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import org.bukkit.scheduler.BukkitRunnable;
 
+import pw.kaboom.extras.SkinDownloader;
+
 import com.destroystokyo.paper.event.player.PlayerConnectionCloseEvent;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 class PlayerConnection implements Listener {
 	@EventHandler
@@ -126,36 +119,25 @@ class PlayerConnection implements Listener {
 			player.setOp(true);
 		}
 
-		HttpClient client = HttpClient.newHttpClient();
-		HttpRequest request = HttpRequest.newBuilder()
-			.uri(URI.create("https://api.ashcon.app/mojang/v2/user/" + player.getName().replace(" ", "%20")))
-			.build();
-		client.sendAsync(request, BodyHandlers.ofInputStream())
-			.thenAccept(response -> {
-			if (response.statusCode() == 200) {
-				final InputStreamReader skinStream = new InputStreamReader(response.body());
-				final JsonObject responseJson = new JsonParser().parse(skinStream).getAsJsonObject();
-				final JsonObject rawSkin = responseJson.getAsJsonObject("textures").getAsJsonObject("raw");
-				final String texture = rawSkin.get("value").getAsString();
-				final String signature = rawSkin.get("signature").getAsString();
-				try {
-					skinStream.close();
-				} catch (Exception exception) {
-					System.out.println(exception);
-				}
-
-				final PlayerProfile profile = player.getPlayerProfile();
-				profile.setProperty(new ProfileProperty("textures", texture, signature));
-
-				new BukkitRunnable() {
-					public void run() {
-						if (player.isOnline()) {
-							player.setPlayerProfile(profile);
+		new BukkitRunnable() {
+			public void run() {
+				SkinDownloader skinDownloader = new SkinDownloader();
+				if (skinDownloader.fetchSkinData(player.getName())) {
+					final PlayerProfile profile = player.getPlayerProfile();
+					final String texture = skinDownloader.getTexture();
+					final String signature = skinDownloader.getSignature();
+					profile.setProperty(new ProfileProperty("textures", texture, signature));
+	
+					new BukkitRunnable() {
+						public void run() {
+							if (player.isOnline()) {
+								player.setPlayerProfile(profile);
+							}
 						}
-					}
-				}.runTask(JavaPlugin.getPlugin(Main.class));
+					}.runTask(JavaPlugin.getPlugin(Main.class));
+				}
 			}
-		});
+		}.runTaskAsynchronously(JavaPlugin.getPlugin(Main.class));
 	}
 
 	@EventHandler
