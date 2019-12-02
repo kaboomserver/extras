@@ -14,6 +14,8 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import org.bukkit.scheduler.BukkitRunnable;
 
+import org.bukkit.plugin.java.JavaPlugin;
+
 class PlayerCommand implements Listener {
 	@EventHandler
 	void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
@@ -85,13 +87,6 @@ class PlayerCommand implements Listener {
 				Double.parseDouble(arr[2]) > 100) {
 				event.setMessage(command.replaceFirst(arr[2], "100"));
 			}
-		} else if ("/minecraft:entitydata".equalsIgnoreCase(arr[0]) ||
-			"/minecraft:give".equalsIgnoreCase(arr[0]) ||
-			"/minecraft:replaceitem".equalsIgnoreCase(arr[0]) ||
-			"/entitydata".equalsIgnoreCase(arr[0]) ||
-			"/give".equalsIgnoreCase(arr[0]) ||
-			"/replaceitem".equalsIgnoreCase(arr[0])) {
-			event.setMessage(command.replace("Color:-", "Color:"));
 		} else if (("/minecraft:particle".equalsIgnoreCase(arr[0]) ||
 			"/particle".equalsIgnoreCase(arr[0])) &&
 			arr.length >= 10) {

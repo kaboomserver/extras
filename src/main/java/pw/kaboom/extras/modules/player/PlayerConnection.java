@@ -12,6 +12,7 @@ import org.bukkit.block.banner.Pattern;
 
 import org.bukkit.entity.Player;
 
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -22,6 +23,7 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 
@@ -53,27 +55,6 @@ class PlayerConnection implements Listener {
 		final int fadeIn = 10;
 		final int stay = 160;
 		final int fadeOut = 5;
-
-		if (player.hasPlayedBefore()) {
-			try {
-				for (ItemStack item : player.getInventory().getContents()) {
-					if (item != null &&
-						item.hasItemMeta()) {
-						if (item.getItemMeta() instanceof BannerMeta) {
-							final BannerMeta banner = (BannerMeta) item.getItemMeta();
-
-							for (Pattern pattern : banner.getPatterns()) {
-								if (pattern.getColor() == null) {
-									player.getInventory().clear();
-								}
-							}
-						}
-					}
-				}
-			} catch (Exception exception) {
-				player.getInventory().clear();
-			}
-		}
 
 		if (title != null ||
 			subtitle != null) {
@@ -121,6 +102,14 @@ class PlayerConnection implements Listener {
 
 	@EventHandler
 	void onPlayerQuit(PlayerQuitEvent event) {
+		final Inventory inventory = event.getPlayer().getInventory();
+
+		for (ItemStack item : inventory.getContents()) {
+			if (EntitySpawn.isIllegalItem(item)) {
+				inventory.clear();
+			}
+		}
+
 		final World world = event.getPlayer().getWorld();
 
 		for (final Chunk chunk : world.getLoadedChunks()) {

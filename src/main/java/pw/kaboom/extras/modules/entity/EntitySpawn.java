@@ -2,6 +2,7 @@ package pw.kaboom.extras;
 
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
+import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -21,6 +22,7 @@ import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.MagmaCube;
 import org.bukkit.entity.Slime;
@@ -29,10 +31,14 @@ import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.block.BlockDispenseEvent;
 
 import org.bukkit.event.entity.AreaEffectCloudApplyEvent;
+import org.bukkit.event.entity.EntityAirChangeEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.SpawnerSpawnEvent;
 
+import org.bukkit.event.player.PlayerDropItemEvent;
+
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.BlockStateMeta;
@@ -48,6 +54,10 @@ import com.destroystokyo.paper.event.entity.PreSpawnerSpawnEvent;
 
 import  org.bukkit.block.banner.Pattern;
 
+import org.bukkit.plugin.java.JavaPlugin;
+
+import org.bukkit.scheduler.BukkitRunnable;
+
 class EntitySpawn implements Listener {
 	private void applyEntityChanges(Entity entity) {
 		final World world = entity.getWorld();
@@ -55,30 +65,28 @@ class EntitySpawn implements Listener {
 		if (entity instanceof LivingEntity) {
 			final LivingEntity mob = (LivingEntity) entity;
 
+			checkIllegalEquipment(mob);
 			limitFollowAttribute(mob);
 		}
 
 		switch (entity.getType()) {
-			case ARMOR_STAND:
-			case DROWNED:
-			case GIANT:
-			case HUSK:
-			case PIG_ZOMBIE:
-			case PLAYER:
-			case SKELETON:
-			case STRAY:
-			case WITHER_SKELETON:
-			case ZOMBIE:
-			case ZOMBIE_VILLAGER:
-				final LivingEntity mob = (LivingEntity) entity;
-				
-				checkIllegalEquipment(mob);
-				break;
 			case AREA_EFFECT_CLOUD:
 				final AreaEffectCloud cloud = (AreaEffectCloud) entity;
 				
 				limitAreaEffectCloudRadius(cloud);
 				break;
+			/*case FIREWORK:
+				final Firework firework = (Firework) entity;
+				firework.setFireworkMeta(null);
+
+				try {
+					for (FireworkEffect effect : firework.getFireworkMeta().getEffects()) {
+						System.out.println(effect.getType());
+					}
+				} catch (Exception exception) {
+					firework.setFireworkMeta(null);
+				}
+				break;*/
 			case MAGMA_CUBE:
 			case SLIME:
 				final Slime slime = (Slime) entity;
@@ -107,7 +115,7 @@ class EntitySpawn implements Listener {
 	private void checkIllegalEquipment(LivingEntity mob) {
 		try {
 			for (ItemStack item : mob.getEquipment().getArmorContents()) {
-				if (checkIllegalBannerItem(item)) {
+				if (isIllegalItem(item)) {
 					mob.getEquipment().setArmorContents(
 						new ItemStack[] {null, null, null, null}
 					);
@@ -121,8 +129,8 @@ class EntitySpawn implements Listener {
 
 		try {
 			ItemStack item = mob.getEquipment().getItemInMainHand();
-
-			if (checkIllegalBannerItem(item)) {
+	
+			if (isIllegalItem(item)) {
 				mob.getEquipment().setItemInMainHand(null);
 			}
 		} catch (Exception exception) {
@@ -131,29 +139,13 @@ class EntitySpawn implements Listener {
 
 		try {
 			ItemStack item = mob.getEquipment().getItemInOffHand();
-
-			if (checkIllegalBannerItem(item)) {
+	
+			if (isIllegalItem(item)) {
 				mob.getEquipment().setItemInOffHand(null);
 			}
 		} catch (Exception exception) {
 			mob.getEquipment().setItemInOffHand(null);
 		}
-	}
-	
-	private boolean checkIllegalBannerItem(ItemStack item) {
-		if (item != null &&
-			item.hasItemMeta()) {
-			if (item.getItemMeta() instanceof BannerMeta) {
-				final BannerMeta banner = (BannerMeta) item.getItemMeta();
-
-				for (Pattern pattern : banner.getPatterns()) {
-					if (pattern.getColor() == null) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
 	}
 
 	private boolean checkShouldRemoveEntities(World world) {
@@ -188,6 +180,26 @@ class EntitySpawn implements Listener {
 		}
 
 		if (count >= countLimit) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isIllegalItem(ItemStack item) {
+		try {
+			if (item != null &&
+				item.hasItemMeta()) {
+				if (item.getItemMeta() instanceof BannerMeta) {
+					final BannerMeta banner = (BannerMeta) item.getItemMeta();
+
+					for (Pattern pattern : banner.getPatterns()) {
+						if (pattern.getColor() == null) {
+							return true;
+						}
+					}
+				}
+			}
+		} catch (Exception | StackOverflowError exception) {
 			return true;
 		}
 		return false;
@@ -274,6 +286,23 @@ class EntitySpawn implements Listener {
 		checkShouldRemoveEntities(world);
 	}
 
+	/*@EventHandler
+	void onEntityAirChange(EntityAirChangeEvent event) {
+		if (event.getAmount() == 300) {
+			final Entity entity = event.getEntity();
+
+			applyEntityChanges(entity);
+			if (entity instanceof LivingEntity) {
+				for (ItemStack item : ((LivingEntity) entity).getEquipment().getArmorContents()) {
+					System.out.println(item);
+				}
+			}
+
+			//entity.remove();
+			//applyEntityChanges(entity);
+		}
+	}*/
+
 	@EventHandler
 	void onEntitySpawn(EntitySpawnEvent event) {
 		final Entity entity = event.getEntity();
@@ -291,10 +320,21 @@ class EntitySpawn implements Listener {
 
 	@EventHandler
 	void onItemSpawn(ItemSpawnEvent event) {
-		try {
-			event.getEntity().getItemStack().getItemMeta();
-		} catch (Exception | StackOverflowError exception) {
+		final ItemStack item = event.getEntity().getItemStack();
+
+		if (isIllegalItem(item)) {
 			event.setCancelled(true);
+		}
+	}
+
+	@EventHandler
+	void onPlayerDropItem(PlayerDropItemEvent event) {
+		final Inventory inventory = event.getPlayer().getInventory();
+
+		for (ItemStack item : inventory.getContents()) {
+			if (isIllegalItem(item)) {
+				inventory.clear();
+			}
 		}
 	}
 
