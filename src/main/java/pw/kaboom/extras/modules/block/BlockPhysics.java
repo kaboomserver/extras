@@ -1,22 +1,14 @@
 package pw.kaboom.extras;
 
-import java.util.ArrayList;
-
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Nameable;
-import org.bukkit.World;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.CommandBlock;
 
-import org.bukkit.block.data.Levelled;
-
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.TNTPrimed;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
