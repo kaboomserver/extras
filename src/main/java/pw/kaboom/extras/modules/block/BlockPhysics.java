@@ -73,12 +73,12 @@ class BlockPhysics implements Listener {
 		}
 	}
 
-	@EventHandler
+	/*@EventHandler
 	void onBlockPhysics(BlockPhysicsEvent event) {
 		if (event.getSourceBlock().getState() instanceof CommandBlock) {
 			event.getSourceBlock().getState().update();
 		}
-	}
+	}*/
 
 	@EventHandler
 	void onBlockRedstone(BlockRedstoneEvent event) {

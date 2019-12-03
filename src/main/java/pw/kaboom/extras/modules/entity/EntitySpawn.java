@@ -47,6 +47,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 
 import com.destroystokyo.paper.event.block.TNTPrimeEvent;
+import com.destroystokyo.paper.event.block.TNTPrimeEvent.PrimeReason;
 
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
@@ -101,7 +102,7 @@ class EntitySpawn implements Listener {
 
 		final int worldDragonCount = location.getWorld().getEntitiesByClass(EnderDragon.class).size();
 		final int worldDragonCountLimit = 24;
-		
+
 		if ((entityType != EntityType.PLAYER &&
 			isEntityLimitReached(location, chunkEntityCount, chunkEntityCountLimit, isAddToWorldEvent)) ||
 			
@@ -157,11 +158,6 @@ class EntitySpawn implements Listener {
 				if (entity.getType() != EntityType.PLAYER) {
 					entity.remove();
 				}
-			}
-			return true;
-		} else if (tntCount > 180) {
-			for (Entity tnt : world.getEntitiesByClass(TNTPrimed.class)) {
-				tnt.remove();
 			}
 			return true;
 		}	
@@ -378,12 +374,10 @@ class EntitySpawn implements Listener {
 
 	@EventHandler
 	void onTNTPrime(TNTPrimeEvent event) {
-		final double tps = Bukkit.getTPS()[0];
-		final int tntCount = event.getBlock().getWorld().getEntitiesByClass(TNTPrimed.class).size();
-
-		if (tps < 10 ||
-			tntCount > 140) {
-			event.setCancelled(true);
+		if (event.getBlock().getWorld().getEntitiesByClass(TNTPrimed.class).size() > 120) {
+			if (event.getReason() == PrimeReason.EXPLOSION) {
+				event.setCancelled(true);
+			}
 		}
 	}
 }
