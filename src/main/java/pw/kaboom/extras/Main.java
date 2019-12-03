@@ -24,6 +24,8 @@ public class Main extends JavaPlugin {
 	static HashSet<Material> nonSolidSingularBlockList = new HashSet<>();
 	static HashSet<Material> nonSolidWallMountedBlockList = new HashSet<>();
 	static HashSet<Material> nonSolidWaterBlockList = new HashSet<>();
+	
+	static HashSet<BlockFace> faces = new HashSet<>();
 
 	public void onLoad() {
 		/* Fill lists */
@@ -651,6 +653,15 @@ public class Main extends JavaPlugin {
 		this.nonSolidBlockList.addAll(nonSolidDoubleBlockList);
 		this.nonSolidBlockList.addAll(nonSolidSingularBlockList);
 		this.nonSolidBlockList.addAll(nonSolidWallMountedBlockList);
+		
+		Collections.addAll(
+			faces,
+			BlockFace.NORTH,
+			BlockFace.SOUTH,
+			BlockFace.WEST,
+			BlockFace.EAST,
+			BlockFace.UP
+		);
 		
 		saveResource("config.yml", false);
 	}
