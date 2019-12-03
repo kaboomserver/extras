@@ -1,4 +1,5 @@
 # Player connection
+allowJoinOnFullServer: true
 enableKick: false
 enableJoinRestrictions: false
 opOnJoin: true

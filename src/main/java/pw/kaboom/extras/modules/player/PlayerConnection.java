@@ -89,6 +89,11 @@ class PlayerConnection implements Listener {
 			event.allow();
 		}
 		
+		if (event.getResult() == Result.KICK_FULL &&
+			JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("allowJoinOnFullServer")) {
+			event.allow();
+		}
+		
 		if (JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("opOnJoin")) {
 			player.setOp(true);
 		}
