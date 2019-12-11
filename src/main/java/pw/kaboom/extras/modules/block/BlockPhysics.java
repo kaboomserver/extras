@@ -89,15 +89,17 @@ class BlockPhysics implements Listener {
 		}
 	}
 	
+	int fallingBlockCount;
+	
 	@EventHandler
 	void onEntityChangeBlock(EntityChangeBlockEvent event) {
 		if (event.getEntityType() == EntityType.FALLING_BLOCK &&
 			event.getTo() == Material.AIR) {
-			Main.fallingBlockCount++;
+			fallingBlockCount++;
 
-			if (Main.fallingBlockCount == 10) {
+			if (fallingBlockCount == 10) {
 				event.setCancelled(true);
-				Main.fallingBlockCount = 0;
+				fallingBlockCount = 0;
 			}
 		}
 	}

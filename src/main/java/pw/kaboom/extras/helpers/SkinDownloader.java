@@ -21,7 +21,7 @@ class SkinDownloader {
 	private String signature;
 
 	public void applySkin(Player player, String name, boolean shouldChangeName, boolean shouldSendMessage) {
-		Main.usernameInProgress.add(player.getUniqueId());
+		Main.skinInProgress.add(player.getUniqueId());
 
 		new BukkitRunnable() {
 			public void run() {
@@ -39,7 +39,7 @@ class SkinDownloader {
 					}
 				} else if (!shouldChangeName && shouldSendMessage) {
 					player.sendMessage("A player with that username doesn't exist");
-					Main.usernameInProgress.remove(player.getUniqueId());
+					Main.skinInProgress.remove(player.getUniqueId());
 					return;
 				}
 
@@ -52,7 +52,7 @@ class SkinDownloader {
 								player.sendMessage("Successfully set your username to \"" + name + "\"");
 							}
 						}
-						Main.usernameInProgress.remove(player.getUniqueId());
+						Main.skinInProgress.remove(player.getUniqueId());
 					}
 				}.runTask(JavaPlugin.getPlugin(Main.class));
 			}

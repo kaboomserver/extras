@@ -18,7 +18,7 @@ class CommandUsername implements CommandExecutor {
 		
 			if (args.length == 0) {
 				player.sendMessage(ChatColor.RED + "Usage: /" + label + " <username>");
-			} else if (!Main.usernameInProgress.contains(player.getUniqueId())) {
+			} else if (!Main.skinInProgress.contains(player.getUniqueId())) {
 				final String nameColor = ChatColor.translateAlternateColorCodes('&', String.join(" ", args));
 				final String name = nameColor.substring(0, Math.min(16, nameColor.length()));
 				final boolean shouldChangeUsername = true;

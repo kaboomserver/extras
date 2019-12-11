@@ -1,7 +1,6 @@
 package pw.kaboom.extras;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
@@ -11,11 +10,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.destroystokyo.paper.profile.PlayerProfile;
 
 public class Main extends JavaPlugin {
-	static int fallingBlockCount;
 	static HashSet<UUID> skinInProgress = new HashSet<>();
-	static HashSet<UUID> usernameInProgress = new HashSet<>();
-	static HashMap<UUID, Long> commandMillisList = new HashMap<>();
-	static HashMap<UUID, Long> interactMillisList = new HashMap<>();
+
 	static HashSet<String> consoleCommandBlacklist = new HashSet<>();
 	static HashSet<BlockFace> faces = new HashSet<>();
 
@@ -408,7 +404,6 @@ public class Main extends JavaPlugin {
 
 		/* Block-related modules */
 		this.getServer().getPluginManager().registerEvents(new BlockCheck(), this);
-		/*new TileEntityCheck(this).runTaskTimerAsynchronously(this, 0, 400);*/
 		this.getServer().getPluginManager().registerEvents(new BlockPhysics(), this);
 
 		/* Entity-related modules */

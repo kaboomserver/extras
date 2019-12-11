@@ -1,5 +1,6 @@
 package pw.kaboom.extras;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -17,21 +18,23 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.plugin.java.JavaPlugin;
 
 class PlayerCommand implements Listener {
+	static HashMap<UUID, Long> commandMillisList = new HashMap<>();
+	
 	@EventHandler
 	void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
 		final String[] arr = event.getMessage().split(" ");
 		final String command = event.getMessage();
 		final UUID playerUuid = event.getPlayer().getUniqueId();
 		
-		if (Main.commandMillisList.get(playerUuid) != null) {
-			final long millisDifference = System.currentTimeMillis() - Main.commandMillisList.get(playerUuid);
+		if (commandMillisList.get(playerUuid) != null) {
+			final long millisDifference = System.currentTimeMillis() - commandMillisList.get(playerUuid);
 	
 			if (millisDifference < 75) {
 				event.setCancelled(true);
 			}
 		}
 		
-		Main.commandMillisList.put(playerUuid, System.currentTimeMillis());
+		commandMillisList.put(playerUuid, System.currentTimeMillis());
 		
 		if (event.isCancelled()) {
 			return;

@@ -42,9 +42,9 @@ class PlayerConnection implements Listener {
 
 	@EventHandler
 	void onPlayerConnectionClose(final PlayerConnectionCloseEvent event) {
-		Main.commandMillisList.remove(event.getPlayerUniqueId());
-		Main.interactMillisList.remove(event.getPlayerUniqueId());
-		Main.usernameInProgress.remove(event.getPlayerUniqueId());
+		PlayerCommand.commandMillisList.remove(event.getPlayerUniqueId());
+		PlayerInteract.interactMillisList.remove(event.getPlayerUniqueId());
+		Main.skinInProgress.remove(event.getPlayerUniqueId());
 	}
 
 	@EventHandler

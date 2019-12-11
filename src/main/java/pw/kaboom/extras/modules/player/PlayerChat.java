@@ -23,15 +23,15 @@ class PlayerChat implements Listener {
 		final Player player = event.getPlayer();
 		final UUID playerUuid = event.getPlayer().getUniqueId();
 		
-		if (Main.commandMillisList.get(playerUuid) != null) {
-			final long millisDifference = System.currentTimeMillis() - Main.commandMillisList.get(playerUuid);
+		if (PlayerCommand.commandMillisList.get(playerUuid) != null) {
+			final long millisDifference = System.currentTimeMillis() - PlayerCommand.commandMillisList.get(playerUuid);
 	
 			if (millisDifference < 5) {
 				event.setCancelled(true);
 			}
 		}
 		
-		Main.commandMillisList.put(playerUuid, System.currentTimeMillis());
+		PlayerCommand.commandMillisList.put(playerUuid, System.currentTimeMillis());
 		
 		if (event.isCancelled()) {
 			return;
