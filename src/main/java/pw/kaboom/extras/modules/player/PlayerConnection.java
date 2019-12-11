@@ -16,6 +16,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import org.bukkit.event.inventory.InventoryCloseEvent;
+
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -29,8 +31,6 @@ import org.bukkit.inventory.meta.BannerMeta;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.destroystokyo.paper.event.player.PlayerConnectionCloseEvent;
-
 class PlayerConnection implements Listener {
 	@EventHandler
 	void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent event) {
@@ -41,10 +41,14 @@ class PlayerConnection implements Listener {
 	}
 
 	@EventHandler
-	void onPlayerConnectionClose(final PlayerConnectionCloseEvent event) {
-		PlayerCommand.commandMillisList.remove(event.getPlayerUniqueId());
-		PlayerInteract.interactMillisList.remove(event.getPlayerUniqueId());
-		Main.skinInProgress.remove(event.getPlayerUniqueId());
+	void onInventoryClose(InventoryCloseEvent event) {
+		for (int i = 0; i < 64; i++) {
+		//for (ItemStack item : event.getInventory().getContents()) {
+			System.out.println(event.getInventory().getItem(i));
+			if (EntitySpawn.isIllegalItem(event.getInventory().getItem(i))) {
+				event.getInventory().clear();
+			}
+		}
 	}
 
 	@EventHandler
@@ -107,13 +111,9 @@ class PlayerConnection implements Listener {
 
 	@EventHandler
 	void onPlayerQuit(PlayerQuitEvent event) {
-		final Inventory inventory = event.getPlayer().getInventory();
-
-		for (ItemStack item : inventory.getContents()) {
-			if (EntitySpawn.isIllegalItem(item)) {
-				inventory.clear();
-			}
-		}
+		PlayerCommand.commandMillisList.remove(event.getPlayer().getUniqueId());
+		PlayerInteract.interactMillisList.remove(event.getPlayer().getUniqueId());
+		Main.skinInProgress.remove(event.getPlayer().getUniqueId());
 
 		final World world = event.getPlayer().getWorld();
 

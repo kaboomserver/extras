@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 class CommandJumpscare implements CommandExecutor {
 	private void createJumpscare(Player player) {
 		player.spawnParticle(Particle.MOB_APPEARANCE, player.getLocation(), 4);
-		for (int i = 0; i < 10; ++i) {
+		for (int i = 0; i < 10; i++) {
 			player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_SCREAM, 1, 0);
 		}
 	}
