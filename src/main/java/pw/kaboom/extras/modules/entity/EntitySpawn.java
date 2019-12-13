@@ -76,18 +76,6 @@ class EntitySpawn implements Listener {
 				
 				limitAreaEffectCloudRadius(cloud);
 				break;
-			/*case FIREWORK:
-				final Firework firework = (Firework) entity;
-				firework.setFireworkMeta(null);
-
-				try {
-					for (FireworkEffect effect : firework.getFireworkMeta().getEffects()) {
-						System.out.println(effect.getType());
-					}
-				} catch (Exception exception) {
-					firework.setFireworkMeta(null);
-				}
-				break;*/
 			case MAGMA_CUBE:
 			case SLIME:
 				final Slime slime = (Slime) entity;
@@ -97,7 +85,7 @@ class EntitySpawn implements Listener {
 	}
 
 	private boolean checkEntityLimits(EntityType entityType, Location location, boolean isAddToWorldEvent) {
-		final int chunkEntityCount = location.getChunk().getEntities().length;
+		final int chunkEntityCount = 0;//location.getChunk().getEntities().length;
 		final int chunkEntityCountLimit = 50;
 
 		final int worldDragonCount = location.getWorld().getEntitiesByClass(EnderDragon.class).size();
@@ -150,7 +138,7 @@ class EntitySpawn implements Listener {
 	}
 
 	private boolean checkShouldRemoveEntities(World world) {
-		final int entityCount = world.getEntities().size();
+		final int entityCount = 0;//world.getEntities().size();
 		final int tntCount = world.getEntitiesByClass(TNTPrimed.class).size();
 
 		if (entityCount > 1024) {
@@ -189,7 +177,8 @@ class EntitySpawn implements Listener {
 					final BannerMeta banner = (BannerMeta) item.getItemMeta();
 
 					for (Pattern pattern : banner.getPatterns()) {
-						if (pattern.getColor() == null) {
+						if (pattern.getPattern() == null ||
+							pattern.getColor() == null) {
 							return true;
 						}
 					}
@@ -281,23 +270,6 @@ class EntitySpawn implements Listener {
 		applyEntityChanges(entity);
 		checkShouldRemoveEntities(world);
 	}
-
-	/*@EventHandler
-	void onEntityAirChange(EntityAirChangeEvent event) {
-		if (event.getAmount() == 300) {
-			final Entity entity = event.getEntity();
-
-			applyEntityChanges(entity);
-			if (entity instanceof LivingEntity) {
-				for (ItemStack item : ((LivingEntity) entity).getEquipment().getArmorContents()) {
-					System.out.println(item);
-				}
-			}
-
-			//entity.remove();
-			//applyEntityChanges(entity);
-		}
-	}*/
 
 	@EventHandler
 	void onEntitySpawn(EntitySpawnEvent event) {
