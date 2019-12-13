@@ -1,6 +1,7 @@
 package pw.kaboom.extras;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.DyeColor;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
@@ -50,10 +51,11 @@ import com.destroystokyo.paper.event.block.TNTPrimeEvent;
 import com.destroystokyo.paper.event.block.TNTPrimeEvent.PrimeReason;
 
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
+import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import com.destroystokyo.paper.event.entity.PreSpawnerSpawnEvent;
 
-import  org.bukkit.block.banner.Pattern;
+import org.bukkit.block.banner.Pattern;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -84,18 +86,18 @@ class EntitySpawn implements Listener {
 		}
 	}
 
-	private boolean checkEntityLimits(EntityType entityType, Location location, boolean isAddToWorldEvent) {
-		final int chunkEntityCount = 0;//location.getChunk().getEntities().length;
+	private boolean checkEntityLimits(EntityType entityType, Chunk chunk, World world, boolean isAddToWorldEvent) {
+		final int chunkEntityCount = chunk.getEntities().length;
 		final int chunkEntityCountLimit = 50;
 
-		final int worldDragonCount = location.getWorld().getEntitiesByClass(EnderDragon.class).size();
+		final int worldDragonCount = world.getEntitiesByClass(EnderDragon.class).size();
 		final int worldDragonCountLimit = 24;
 
 		if ((entityType != EntityType.PLAYER &&
-			isEntityLimitReached(location, chunkEntityCount, chunkEntityCountLimit, isAddToWorldEvent)) ||
+			isEntityLimitReached(chunkEntityCount, chunkEntityCountLimit, isAddToWorldEvent)) ||
 			
 			(entityType == EntityType.ENDER_DRAGON &&
-			isEntityLimitReached(location, worldDragonCount, worldDragonCountLimit, isAddToWorldEvent))) {
+			isEntityLimitReached(worldDragonCount, worldDragonCountLimit, isAddToWorldEvent))) {
 			return true;
 		}
 		return false;
@@ -138,10 +140,9 @@ class EntitySpawn implements Listener {
 	}
 
 	private boolean checkShouldRemoveEntities(World world) {
-		final int entityCount = 0;//world.getEntities().size();
-		final int tntCount = world.getEntitiesByClass(TNTPrimed.class).size();
+		final int worldEntityCount = world.getEntities().size();
 
-		if (entityCount > 1024) {
+		if (worldEntityCount > 1024) {
 			for (Entity entity : world.getEntities()) {
 				if (entity.getType() != EntityType.PLAYER) {
 					entity.remove();
@@ -152,7 +153,7 @@ class EntitySpawn implements Listener {
 		return false;
 	}
 
-	private boolean isEntityLimitReached(Location location, int count, int countLimit, boolean isAddToWorldEvent) {
+	private boolean isEntityLimitReached(int count, int countLimit, boolean isAddToWorldEvent) {
 		/*
 			Add 1 if EntitySpawnEvent triggered the method, due to the entity count being
 			one larger in EntityAddToWorldEvent compared to EntitySpawnEvent
@@ -258,27 +259,34 @@ class EntitySpawn implements Listener {
 	void onEntityAddToWorld(EntityAddToWorldEvent event) {
 		final Entity entity = event.getEntity();
 		final World world = entity.getWorld();
-		final EntityType entityType = entity.getType();
-		final Location location = entity.getLocation();
-		final boolean isAddToWorldEvent = true;
+		final Chunk chunk = entity.getChunk();
 		
-		if (checkEntityLimits(entityType, location, isAddToWorldEvent)) {
-			entity.remove();
-			return;
+		if (chunk.isLoaded()) {
+			final EntityType entityType = entity.getType();
+			final boolean isAddToWorldEvent = true;
+			
+			if (checkEntityLimits(entityType, chunk, world, isAddToWorldEvent)) {
+				entity.remove();
+				return;
+			}
 		}
 		
 		applyEntityChanges(entity);
-		checkShouldRemoveEntities(world);
+		
+		if (chunk.isLoaded()) {
+			checkShouldRemoveEntities(world);
+		}
 	}
 
 	@EventHandler
 	void onEntitySpawn(EntitySpawnEvent event) {
 		final Entity entity = event.getEntity();
 		final EntityType entityType = entity.getType();
-		final Location location = event.getLocation();
+		final Chunk chunk = entity.getChunk();
+		final World world = entity.getWorld();
 		final boolean isAddToWorldEvent = false;
 		
-		if (checkEntityLimits(entityType, location, isAddToWorldEvent)) {
+		if (checkEntityLimits(entityType, chunk, world, isAddToWorldEvent)) {
 			event.setCancelled(true);
 			return;
 		}
@@ -309,10 +317,11 @@ class EntitySpawn implements Listener {
 	@EventHandler
 	void onPreCreatureSpawn(PreCreatureSpawnEvent event) {
 		final EntityType mobType = event.getType();
-		final Location location = event.getSpawnLocation();
+		final Chunk chunk = event.getSpawnLocation().getChunk();
+		final World world = event.getSpawnLocation().getWorld();
 		final boolean isAddToWorldEvent = false;
 
-		if (checkEntityLimits(mobType, location, isAddToWorldEvent)) {
+		if (checkEntityLimits(mobType, chunk, world, isAddToWorldEvent)) {
 			event.setCancelled(true);
 		}
 	}
