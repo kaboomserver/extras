@@ -14,10 +14,9 @@ class EntityExplosion implements Listener {
 			event.setRadius(20);
 		}
 		
-		if (event.getEntity().getWorld().getEntitiesByClass(Fireball.class).size() > 40) {
-			if (event.getRadius() > 1) {
-				event.setRadius(1);
-			}	
+		if (event.getEntity().getWorld().getEntitiesByClass(Fireball.class).size() > 30 &&
+			event.getRadius() > 1) {
+			event.setRadius(1);	
 		}
 	}
 }

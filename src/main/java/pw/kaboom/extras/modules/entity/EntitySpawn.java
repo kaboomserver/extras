@@ -67,7 +67,7 @@ class EntitySpawn implements Listener {
 		if (entity instanceof LivingEntity) {
 			final LivingEntity mob = (LivingEntity) entity;
 
-			checkIllegalEquipment(mob);
+			//checkIllegalEquipment(mob);
 			limitFollowAttribute(mob);
 		}
 
@@ -102,7 +102,7 @@ class EntitySpawn implements Listener {
 		return false;
 	}
 
-	private void checkIllegalEquipment(LivingEntity mob) {
+	/*private void checkIllegalEquipment(LivingEntity mob) {
 		try {
 			for (ItemStack item : mob.getEquipment().getArmorContents()) {
 				if (isIllegalItem(item)) {
@@ -136,7 +136,7 @@ class EntitySpawn implements Listener {
 		} catch (Exception exception) {
 			mob.getEquipment().setItemInOffHand(null);
 		}
-	}
+	}*/
 
 	private boolean checkShouldRemoveEntities(World world) {
 		final int worldEntityCount = world.getEntities().size();
@@ -169,7 +169,7 @@ class EntitySpawn implements Listener {
 		return false;
 	}
 
-	public static boolean isIllegalItem(ItemStack item) {
+	/*public static boolean isIllegalItem(ItemStack item) {
 		try {
 			if (item != null &&
 				item.hasItemMeta()) {
@@ -188,7 +188,7 @@ class EntitySpawn implements Listener {
 			return true;
 		}
 		return false;
-	}
+	}*/
 
 	private void limitAreaEffectCloudRadius(AreaEffectCloud cloud) {
 		if (cloud.getRadius() > 40) {
@@ -244,7 +244,7 @@ class EntitySpawn implements Listener {
 		limitAreaEffectCloudRadius(event.getEntity());
 	}
 
-	@EventHandler
+	/*@EventHandler
 	void onBlockDispense(BlockDispenseEvent event) {
 		try {
 			event.getBlock().getState();
@@ -252,7 +252,7 @@ class EntitySpawn implements Listener {
 		} catch (Exception exception) {
 			event.setCancelled(true);
 		}
-	}
+	}*/
 
 	@EventHandler
 	void onEntityAddToWorld(EntityAddToWorldEvent event) {
@@ -293,16 +293,16 @@ class EntitySpawn implements Listener {
 		applyEntityChanges(entity);
 	}
 
-	@EventHandler
+	/*@EventHandler
 	void onItemSpawn(ItemSpawnEvent event) {
 		final ItemStack item = event.getEntity().getItemStack();
 
 		if (isIllegalItem(item)) {
 			event.setCancelled(true);
 		}
-	}
+	}*/
 
-	@EventHandler
+	/*@EventHandler
 	void onPlayerDropItem(PlayerDropItemEvent event) {
 		final Inventory inventory = event.getPlayer().getInventory();
 
@@ -311,7 +311,7 @@ class EntitySpawn implements Listener {
 				inventory.clear();
 			}
 		}
-	}
+	}*/
 
 	@EventHandler
 	void onPreCreatureSpawn(PreCreatureSpawnEvent event) {

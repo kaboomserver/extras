@@ -40,14 +40,14 @@ class PlayerConnection implements Listener {
 		}
 	}
 
-	@EventHandler
+	/*@EventHandler
 	void onInventoryClose(InventoryCloseEvent event) {
 		for (ItemStack item : event.getInventory().getContents()) {
 			if (EntitySpawn.isIllegalItem(item)) {
 				event.getInventory().clear();
 			}
 		}
-	}
+	}*/
 
 	@EventHandler
 	void onPlayerJoin(PlayerJoinEvent event) {
