@@ -1,11 +1,9 @@
-# Player connection
+# Configuration for Extras plugin
 allowJoinOnFullServer: true
 enableKick: false
 enableJoinRestrictions: false
 opOnJoin: true
 playerJoinTitle: "§7Welcome to Kaboom!"
 playerJoinSubtitle: "Free OP • Anarchy • Creative"
-
-# Chat
 opTag: "§4§l[§c§lOP§4§l] §c"
 deOpTag: "§8§l[§7§lDeOP§8§l] §7"

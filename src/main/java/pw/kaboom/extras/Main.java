@@ -381,8 +381,10 @@ public class Main extends JavaPlugin {
 			BlockFace.EAST,
 			BlockFace.UP
 		);
-		
-		saveResource("config.yml", false);
+
+		/* Load missing config.yml defaults */
+		getConfig().options().copyDefaults(true);
+		saveConfig();
 	}
 
 	public void onEnable() {
