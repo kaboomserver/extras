@@ -51,7 +51,6 @@ import com.destroystokyo.paper.event.block.TNTPrimeEvent;
 import com.destroystokyo.paper.event.block.TNTPrimeEvent.PrimeReason;
 
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
-import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import com.destroystokyo.paper.event.entity.PreSpawnerSpawnEvent;
 
