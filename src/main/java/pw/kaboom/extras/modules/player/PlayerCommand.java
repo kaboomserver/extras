@@ -43,11 +43,11 @@ class PlayerCommand implements Listener {
 		final String command = event.getMessage();
 		final boolean isConsoleCommand = false;
 		final String checkedCommand = ServerCommand.checkCommand(sender, command, isConsoleCommand);
-		
-		if (checkedCommand != null) {
-			event.setMessage(checkedCommand);
-		} else {
+
+		if (checkedCommand.equals("cancel")) {
 			event.setCancelled(true);
+		} else if (checkedCommand != null) {
+			event.setMessage(checkedCommand);
 		}
 	}
 }

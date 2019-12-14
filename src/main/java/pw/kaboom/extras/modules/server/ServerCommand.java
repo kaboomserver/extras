@@ -38,6 +38,7 @@ class ServerCommand implements Listener {
 									"save-off".equalsIgnoreCase(arr[i+1]) ||
 									"stop".equalsIgnoreCase(arr[i+1])) {
 									Command.broadcastCommandMessage(sender, "Forbidden execute command detected");
+									return "cancel";
 								} else if (i+3 < arr.length &&
 									"gamerule".equalsIgnoreCase(arr[i+1])) {
 									if ("randomTickSpeed".equalsIgnoreCase(arr[i+2]) &&
@@ -75,6 +76,7 @@ class ServerCommand implements Listener {
 					
 					if (asAtCount >= 2) {
 						Command.broadcastCommandMessage(sender, "Forbidden execute pattern detected");
+						return "cancel";
 					}
 				}
 				break;
@@ -118,17 +120,20 @@ class ServerCommand implements Listener {
 					Command.broadcastCommandMessage(sender, ChatColor.RED + "Please note that this command is not supported and may cause issues when using some plugins.");
 					Command.broadcastCommandMessage(sender, ChatColor.RED + "If you encounter any issues please use the /stop command to restart your server.");
 					Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Reload complete.");
+					return "cancel";
 				}
 				break;
 			case "/spigot:restart":
 			case "/restart":
 				if (sender.hasPermission("bukkit.command.restart")) {
+					return "cancel";
 				}
 				break;
 			case "/minecraft:save-off":
 			case "/save-off":
 				if (sender.hasPermission("minecraft.command.save.disable")) {
 					Command.broadcastCommandMessage(sender, "Automatic saving is now disabled");
+					return "cancel";
 				}
 				break;
 			case "/minecraft:spreadplayers":
@@ -152,6 +157,7 @@ class ServerCommand implements Listener {
 			case "/stop":
 				if (sender.hasPermission("minecraft.command.stop")) {
 					Command.broadcastCommandMessage(sender, "Stopping the server");
+					return "cancel";
 				}
 		}
 		return null;
@@ -172,10 +178,10 @@ class ServerCommand implements Listener {
 		final boolean isConsoleCommand = true;
 		final String checkedCommand = checkCommand(sender, command, isConsoleCommand);
 		
-		if (checkedCommand != null) {
-			event.setCommand(checkedCommand);
-		} else {
+		if (checkedCommand.equals("cancel")) {
 			event.setCancelled(true);
+		} else if (checkedCommand != null) {
+			event.setCommand(checkedCommand);
 		}
 	}
 }
