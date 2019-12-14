@@ -178,10 +178,12 @@ class ServerCommand implements Listener {
 		final boolean isConsoleCommand = true;
 		final String checkedCommand = checkCommand(sender, command, isConsoleCommand);
 		
-		if (checkedCommand.equals("cancel")) {
-			event.setCancelled(true);
-		} else if (checkedCommand != null) {
-			event.setCommand(checkedCommand);
+		if (checkedCommand != null) {
+			if (checkedCommand.equals("cancel")) {
+				event.setCancelled(true);
+			} else {
+				event.setCommand(checkedCommand);
+			}
 		}
 	}
 }
