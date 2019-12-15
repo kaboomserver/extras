@@ -28,6 +28,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.MagmaCube;
 import org.bukkit.entity.Slime;
 import org.bukkit.entity.TNTPrimed;
+import org.bukkit.entity.Vehicle;
 
 import org.bukkit.event.block.BlockDispenseEvent;
 
@@ -38,6 +39,8 @@ import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.SpawnerSpawnEvent;
 
 import org.bukkit.event.player.PlayerDropItemEvent;
+
+import org.bukkit.event.vehicle.VehicleCreateEvent;
 
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -67,7 +70,6 @@ class EntitySpawn implements Listener {
 		if (entity instanceof LivingEntity) {
 			final LivingEntity mob = (LivingEntity) entity;
 
-			//checkIllegalEquipment(mob);
 			limitFollowAttribute(mob);
 		}
 
@@ -102,42 +104,6 @@ class EntitySpawn implements Listener {
 		return false;
 	}
 
-	/*private void checkIllegalEquipment(LivingEntity mob) {
-		try {
-			for (ItemStack item : mob.getEquipment().getArmorContents()) {
-				if (isIllegalItem(item)) {
-					mob.getEquipment().setArmorContents(
-						new ItemStack[] {null, null, null, null}
-					);
-				}
-			}
-		} catch (Exception exception) {
-			mob.getEquipment().setArmorContents(
-				new ItemStack[] {null, null, null, null}
-			);
-		}
-
-		try {
-			ItemStack item = mob.getEquipment().getItemInMainHand();
-	
-			if (isIllegalItem(item)) {
-				mob.getEquipment().setItemInMainHand(null);
-			}
-		} catch (Exception exception) {
-			mob.getEquipment().setItemInMainHand(null);
-		}
-
-		try {
-			ItemStack item = mob.getEquipment().getItemInOffHand();
-	
-			if (isIllegalItem(item)) {
-				mob.getEquipment().setItemInOffHand(null);
-			}
-		} catch (Exception exception) {
-			mob.getEquipment().setItemInOffHand(null);
-		}
-	}*/
-
 	private boolean checkShouldRemoveEntities(World world) {
 		final int worldEntityCount = world.getEntities().size();
 
@@ -170,38 +136,19 @@ class EntitySpawn implements Listener {
 	}
 	
 	private boolean isOutsideBoundaries(double X, double Y, double Z) {
-		int roundedX = (int) Math.round(X);
-		int roundedY = (int) Math.round(Y);
-		int roundedZ = (int) Math.round(Z);
+		int maxValue = 30000000;
+		int minValue = -30000000;
 
-		if (X != roundedX ||
-			Y != roundedY ||
-			Z != roundedZ) {
+		if (X > maxValue ||
+			X < minValue ||
+			Y > maxValue ||
+			Y < minValue ||
+			Z > maxValue ||
+			Z < minValue) {
 			return true;
 		}
 		return false;
 	}
-
-	/*public static boolean isIllegalItem(ItemStack item) {
-		try {
-			if (item != null &&
-				item.hasItemMeta()) {
-				if (item.getItemMeta() instanceof BannerMeta) {
-					final BannerMeta banner = (BannerMeta) item.getItemMeta();
-
-					for (Pattern pattern : banner.getPatterns()) {
-						if (pattern.getPattern() == null ||
-							pattern.getColor() == null) {
-							return true;
-						}
-					}
-				}
-			}
-		} catch (Exception | StackOverflowError exception) {
-			return true;
-		}
-		return false;
-	}*/
 
 	private void limitAreaEffectCloudRadius(AreaEffectCloud cloud) {
 		if (cloud.getRadius() > 40) {
@@ -224,6 +171,34 @@ class EntitySpawn implements Listener {
 			followAttribute.getBaseValue() > 40) {
 			followAttribute.setBaseValue(40);
 		}
+	}
+
+	public static Location limitLocation(Location location) {
+		double X = location.getX();
+		double Y = location.getY();
+		double Z = location.getZ();
+
+		int maxValue = 30000000;
+		int minValue = -30000000;
+
+		if (X > maxValue)
+			X = maxValue;
+		if (X < minValue)
+			X = minValue;
+		if (Y > maxValue)
+			Y = maxValue;
+		if (Y < minValue)
+			Y = minValue;
+		if (Z > maxValue)
+			Z = maxValue;
+		if (Z < minValue)
+			Z = minValue;
+		
+		System.out.println(X);
+		System.out.println(Y);
+		System.out.println(Z);
+		
+		return new Location(location.getWorld(), X, Y, Z);
 	}
 	
 	private void limitSlimeSize(Slime slime) {
@@ -257,22 +232,12 @@ class EntitySpawn implements Listener {
 		limitAreaEffectCloudRadius(event.getEntity());
 	}
 
-	/*@EventHandler
-	void onBlockDispense(BlockDispenseEvent event) {
-		try {
-			event.getBlock().getState();
-			event.getItem().getItemMeta();
-		} catch (Exception exception) {
-			event.setCancelled(true);
-		}
-	}*/
-
 	@EventHandler
 	void onEntityAddToWorld(EntityAddToWorldEvent event) {
 		final Entity entity = event.getEntity();
-		double X = entity.getLocation().getX();
-		double Y = entity.getLocation().getY();
-		double Z = entity.getLocation().getZ();
+		final double X = entity.getLocation().getX();
+		final double Y = entity.getLocation().getY();
+		final double Z = entity.getLocation().getZ();
 
 		if (isOutsideBoundaries(X, Y, Z)) {
 			entity.remove();
@@ -298,30 +263,12 @@ class EntitySpawn implements Listener {
 			checkShouldRemoveEntities(world);
 		}
 	}
-	
-	/*@EventHandler
-	void onEntityAirChangeEvent(EntityAirChangeEvent event) {
-		final Entity entity = event.getEntity();
-		double X = entity.getLocation().getX();
-		double Y = entity.getLocation().getY();
-		double Z = entity.getLocation().getZ();
-		
-		System.out.println(X);
-		System.out.println(Y);
-		System.out.println(Z);
-		System.out.println(entity.getChunk().getX());
-		System.out.println(entity.getChunk().getZ());
-
-		if (isOutsideBoundaries(X, Y, Z)) {
-			entity.remove();
-		}
-	}*/
 
 	@EventHandler
 	void onEntitySpawn(EntitySpawnEvent event) {
-		double X = event.getLocation().getX();
-		double Y = event.getLocation().getY();
-		double Z = event.getLocation().getZ();
+		final double X = event.getLocation().getX();
+		final double Y = event.getLocation().getY();
+		final double Z = event.getLocation().getZ();
 
 		if (isOutsideBoundaries(X, Y, Z)) {
 			event.setCancelled(true);
@@ -341,26 +288,6 @@ class EntitySpawn implements Listener {
 
 		applyEntityChanges(entity);
 	}
-
-	/*@EventHandler
-	void onItemSpawn(ItemSpawnEvent event) {
-		final ItemStack item = event.getEntity().getItemStack();
-
-		if (isIllegalItem(item)) {
-			event.setCancelled(true);
-		}
-	}*/
-
-	/*@EventHandler
-	void onPlayerDropItem(PlayerDropItemEvent event) {
-		final Inventory inventory = event.getPlayer().getInventory();
-
-		for (ItemStack item : inventory.getContents()) {
-			if (isIllegalItem(item)) {
-				inventory.clear();
-			}
-		}
-	}*/
 
 	@EventHandler
 	void onPreCreatureSpawn(PreCreatureSpawnEvent event) {
@@ -407,6 +334,29 @@ class EntitySpawn implements Listener {
 			if (event.getReason() == PrimeReason.EXPLOSION) {
 				event.setCancelled(true);
 			}
+		}
+	}
+
+	@EventHandler
+	void onVehicleCreate(VehicleCreateEvent event) {
+		final Vehicle vehicle = event.getVehicle();
+		final double X = vehicle.getLocation().getX();
+		final double Y = vehicle.getLocation().getY();
+		final double Z = vehicle.getLocation().getZ();
+
+		if (isOutsideBoundaries(X, Y, Z)) {
+			event.setCancelled(true);
+			return;
+		}
+
+		final EntityType entityType = vehicle.getType();
+		final Chunk chunk = vehicle.getChunk();
+		final World world = vehicle.getWorld();
+		final boolean isAddToWorldEvent = false;
+		
+		if (checkEntityLimits(entityType, chunk, world, isAddToWorldEvent)) {
+			event.setCancelled(true);
+			return;
 		}
 	}
 }
