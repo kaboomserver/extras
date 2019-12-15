@@ -168,6 +168,19 @@ class EntitySpawn implements Listener {
 		}
 		return false;
 	}
+	
+	private boolean isOutsideBoundaries(double X, double Y, double Z) {
+		int roundedX = (int) Math.round(X);
+		int roundedY = (int) Math.round(Y);
+		int roundedZ = (int) Math.round(Z);
+
+		if (X != roundedX ||
+			Y != roundedY ||
+			Z != roundedZ) {
+			return true;
+		}
+		return false;
+	}
 
 	/*public static boolean isIllegalItem(ItemStack item) {
 		try {
@@ -257,6 +270,15 @@ class EntitySpawn implements Listener {
 	@EventHandler
 	void onEntityAddToWorld(EntityAddToWorldEvent event) {
 		final Entity entity = event.getEntity();
+		double X = entity.getLocation().getX();
+		double Y = entity.getLocation().getY();
+		double Z = entity.getLocation().getZ();
+
+		if (isOutsideBoundaries(X, Y, Z)) {
+			entity.remove();
+			return;
+		}
+
 		final World world = entity.getWorld();
 		final Chunk chunk = entity.getChunk();
 		
@@ -276,9 +298,36 @@ class EntitySpawn implements Listener {
 			checkShouldRemoveEntities(world);
 		}
 	}
+	
+	/*@EventHandler
+	void onEntityAirChangeEvent(EntityAirChangeEvent event) {
+		final Entity entity = event.getEntity();
+		double X = entity.getLocation().getX();
+		double Y = entity.getLocation().getY();
+		double Z = entity.getLocation().getZ();
+		
+		System.out.println(X);
+		System.out.println(Y);
+		System.out.println(Z);
+		System.out.println(entity.getChunk().getX());
+		System.out.println(entity.getChunk().getZ());
+
+		if (isOutsideBoundaries(X, Y, Z)) {
+			entity.remove();
+		}
+	}*/
 
 	@EventHandler
 	void onEntitySpawn(EntitySpawnEvent event) {
+		double X = event.getLocation().getX();
+		double Y = event.getLocation().getY();
+		double Z = event.getLocation().getZ();
+
+		if (isOutsideBoundaries(X, Y, Z)) {
+			event.setCancelled(true);
+			return;
+		}
+
 		final Entity entity = event.getEntity();
 		final EntityType entityType = entity.getType();
 		final Chunk chunk = entity.getChunk();

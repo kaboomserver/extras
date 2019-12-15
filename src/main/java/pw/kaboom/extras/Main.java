@@ -412,6 +412,7 @@ public class Main extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(new EntityExplosion(), this);
 		this.getServer().getPluginManager().registerEvents(new EntityKnockback(), this);
 		this.getServer().getPluginManager().registerEvents(new EntitySpawn(), this);
+		this.getServer().getPluginManager().registerEvents(new EntityTeleport(), this);
 
 		/* Player-related modules */
 		this.getServer().getPluginManager().registerEvents(new PlayerChat(), this);
@@ -419,6 +420,7 @@ public class Main extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(new PlayerConnection(), this);
 		this.getServer().getPluginManager().registerEvents(new PlayerDamage(), this);
 		this.getServer().getPluginManager().registerEvents(new PlayerInteract(), this);
+		this.getServer().getPluginManager().registerEvents(new PlayerTeleport(), this);
 
 		/* Server-related modules */
 		this.getServer().getPluginManager().registerEvents(new ServerCommand(), this);
