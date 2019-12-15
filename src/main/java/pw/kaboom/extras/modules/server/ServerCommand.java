@@ -24,141 +24,129 @@ class ServerCommand implements Listener {
 			commandName = "/" + arr[0].toLowerCase();
 		}
 		
-		switch (commandName) {
-			case "/minecraft:execute":
-			case "/execute":
-				if (arr.length >= 2) {
-					int asAtCount = 0;
-		
-					for (int i = 1; i < arr.length; i++) {
-						if ("run".equalsIgnoreCase(arr[i])) {
-							if (i+1 < arr.length) {
-								if ("execute".equalsIgnoreCase(arr[i+1]) ||
-									"particle".equalsIgnoreCase(arr[i+1]) ||
-									"save-off".equalsIgnoreCase(arr[i+1]) ||
-									"stop".equalsIgnoreCase(arr[i+1])) {
-									Command.broadcastCommandMessage(sender, "Forbidden execute command detected");
-									return "cancel";
-								} else if (i+3 < arr.length &&
-									"gamerule".equalsIgnoreCase(arr[i+1])) {
-									if ("randomTickSpeed".equalsIgnoreCase(arr[i+2]) &&
-										Double.parseDouble(arr[i+3]) > 6) {
-										return command.replaceFirst("(?i)" + "randomTickSpeed " + arr[i+3], "randomTickSpeed 6");
-									} else if ("spawnRadius".equalsIgnoreCase(arr[i+2]) &&
-										Double.parseDouble(arr[i+3]) > 100) {
-										return command.replaceFirst("(?i)" + "spawnRadius " + arr[i+3], "spawnRadius 100");
-									}
-								} else if (i+5 < arr.length &&
-									"spreadplayers".equalsIgnoreCase(arr[i+1])) {
-									if (Double.parseDouble(arr[i+5]) > 75) {
-										final StringBuilder stringBuilder = new StringBuilder();
-						
-										for (int i2 = 0; i2 < i+5; i2++) {
-											stringBuilder.append(arr[i2]).append(" ");
+		try {
+			switch (commandName) {
+				case "/minecraft:execute":
+				case "/execute":
+					if (arr.length >= 2) {
+						int asAtCount = 0;
+			
+						for (int i = 1; i < arr.length; i++) {
+							if ("run".equalsIgnoreCase(arr[i])) {
+								if (i+1 < arr.length) {
+									if ("execute".equalsIgnoreCase(arr[i+1]) ||
+										"particle".equalsIgnoreCase(arr[i+1]) ||
+										"save-off".equalsIgnoreCase(arr[i+1]) ||
+										"spreadplayers".equalsIgnoreCase(arr[i+1]) ||
+										"stop".equalsIgnoreCase(arr[i+1])) {
+										Command.broadcastCommandMessage(sender, "Forbidden execute command detected");
+										return "cancel";
+									} else if (i+3 < arr.length &&
+										"gamerule".equalsIgnoreCase(arr[i+1])) {
+										if ("randomTickSpeed".equalsIgnoreCase(arr[i+2]) &&
+											Double.parseDouble(arr[i+3]) > 6) {
+											return command.replaceFirst("(?i)" + "randomTickSpeed " + arr[i+3], "randomTickSpeed 6");
+										} else if ("spawnRadius".equalsIgnoreCase(arr[i+2]) &&
+											Double.parseDouble(arr[i+3]) > 100) {
+											return command.replaceFirst("(?i)" + "spawnRadius " + arr[i+3], "spawnRadius 100");
 										}
-										stringBuilder.append("75 ");
-										for (int i2 = i+6; i2 < arr.length; i2++) {
-											stringBuilder.append(arr[i2]).append(" ");
+									} else if ("give".equalsIgnoreCase(arr[i+1])) {
+										if (Double.parseDouble(arr[arr.length-1]) > 1024) {
+											arr[arr.length-1] = "1024";
+											return String.join(" ", arr);
 										}
-						
-										return stringBuilder.toString();
 									}
 								}
+								break;
 							}
-							break;
+			
+							if ("as".equalsIgnoreCase(arr[i]) ||
+								"at".equalsIgnoreCase(arr[i])) {
+								asAtCount++;
+							}
 						}
-		
-						if ("as".equalsIgnoreCase(arr[i]) ||
-							"at".equalsIgnoreCase(arr[i])) {
-							asAtCount++;
+						
+						if (asAtCount >= 2) {
+							Command.broadcastCommandMessage(sender, "Forbidden execute pattern detected");
+							return "cancel";
 						}
 					}
-					
-					if (asAtCount >= 2) {
-						Command.broadcastCommandMessage(sender, "Forbidden execute pattern detected");
+					break;
+				case "/minecraft:gamerule":
+				case "/gamerule":
+					if (arr.length >= 3) {
+						if ("randomTickSpeed".equalsIgnoreCase(arr[1]) &&
+							Double.parseDouble(arr[2]) > 6) {
+							return command.replaceFirst(arr[2], "6");
+						} else if ("spawnRadius".equalsIgnoreCase(arr[1]) &&
+							Double.parseDouble(arr[2]) > 100) {
+							return command.replaceFirst(arr[2], "100");
+						}
+					}
+					break;
+				case "/minecraft:give":
+				case "/give":
+					if (Double.parseDouble(arr[arr.length-1]) > 1024) {
+						arr[arr.length-1] = "1024";
+						return String.join(" ", arr);
+					}
+					break;
+				case "/minecraft:particle":
+				case "/particle":
+					if (arr.length >= 10 &&
+						Double.parseDouble(arr[9]) > 10) {
+						arr[9] = "10";
+						return String.join(" ", arr);
+					}
+					break;
+				case "/bukkit:reload":
+				case "/bukkit:rl":
+				case "/reload":
+				case "/rl":
+					if (sender.hasPermission("bukkit.command.reload") &&
+						arr.length >= 2 &&
+						"confirm".equalsIgnoreCase(arr[1])) {
+						Command.broadcastCommandMessage(sender, ChatColor.RED + "Please note that this command is not supported and may cause issues when using some plugins.");
+						Command.broadcastCommandMessage(sender, ChatColor.RED + "If you encounter any issues please use the /stop command to restart your server.");
+						Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Reload complete.");
 						return "cancel";
 					}
-				}
-				break;
-			case "/minecraft:gamerule":
-			case "/gamerule":
-				if (arr.length >= 3) {
-					if ("randomTickSpeed".equalsIgnoreCase(arr[1]) &&
-						Double.parseDouble(arr[2]) > 6) {
-						return command.replaceFirst(arr[2], "6");
-					} else if ("spawnRadius".equalsIgnoreCase(arr[1]) &&
-						Double.parseDouble(arr[2]) > 100) {
-						return command.replaceFirst(arr[2], "100");
+					break;
+				case "/spigot:restart":
+				case "/restart":
+					if (sender.hasPermission("bukkit.command.restart")) {
+						return "cancel";
 					}
-				}
-				break;
-			case "/minecraft:particle":
-			case "/particle":
-				if (arr.length >= 10) {
-					if (Double.parseDouble(arr[9]) > 10) {
-						final StringBuilder stringBuilder = new StringBuilder();
-		
-						for (int i = 0; i < 9; i++) {
-							stringBuilder.append(arr[i]).append(" ");
-						}
-						stringBuilder.append("10 ");
-						for (int i = 10; i < arr.length; i++) {
-							stringBuilder.append(arr[i]).append(" ");
-						}
-		
-						return stringBuilder.toString();
+					break;
+				case "/minecraft:save-off":
+				case "/save-off":
+					if (sender.hasPermission("minecraft.command.save.disable")) {
+						Command.broadcastCommandMessage(sender, "Automatic saving is now disabled");
+						return "cancel";
 					}
-				}
-				break;
-			case "/bukkit:reload":
-			case "/bukkit:rl":
-			case "/reload":
-			case "/rl":
-				if (sender.hasPermission("bukkit.command.reload") &&
-					arr.length >= 2 &&
-					"confirm".equalsIgnoreCase(arr[1])) {
-					Command.broadcastCommandMessage(sender, ChatColor.RED + "Please note that this command is not supported and may cause issues when using some plugins.");
-					Command.broadcastCommandMessage(sender, ChatColor.RED + "If you encounter any issues please use the /stop command to restart your server.");
-					Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Reload complete.");
-					return "cancel";
-				}
-				break;
-			case "/spigot:restart":
-			case "/restart":
-				if (sender.hasPermission("bukkit.command.restart")) {
-					return "cancel";
-				}
-				break;
-			case "/minecraft:save-off":
-			case "/save-off":
-				if (sender.hasPermission("minecraft.command.save.disable")) {
-					Command.broadcastCommandMessage(sender, "Automatic saving is now disabled");
-					return "cancel";
-				}
-				break;
-			case "/minecraft:spreadplayers":
-			case "/spreadplayers":
-				if (arr.length >= 5 &&
-					Double.parseDouble(arr[4]) > 75) {
-					final StringBuilder stringBuilder = new StringBuilder();
-	
-					for (int i = 0; i < 4; i++) {
-						stringBuilder.append(arr[i]).append(" ");
+					break;
+				case "/minecraft:spreadplayers":
+				case "/spreadplayers":
+					if (arr.length >= 5) {
+						if (Double.parseDouble(arr[3]) > 0)
+							arr[3] = "0";
+						if (Double.parseDouble(arr[4]) < 8)
+							arr[4] = "8";
+						if (Double.parseDouble(arr[4]) > 50)
+							arr[4] = "50";
+
+						return String.join(" ", arr);
 					}
-					stringBuilder.append("75 ");
-					for (int i = 5; i < arr.length; i++) {
-						stringBuilder.append(arr[i]).append(" ");
+					break;
+				case "/minecraft:stop":
+				case "/stop":
+					if (sender.hasPermission("minecraft.command.stop")) {
+						Command.broadcastCommandMessage(sender, "Stopping the server");
+						return "cancel";
 					}
-	
-					return stringBuilder.toString();
-				}
-				break;
-			case "/minecraft:stop":
-			case "/stop":
-				if (sender.hasPermission("minecraft.command.stop")) {
-					Command.broadcastCommandMessage(sender, "Stopping the server");
-					return "cancel";
-				}
+			}
+		} catch (NumberFormatException exception) {
+			// Do nothing
 		}
 		return null;
 	}

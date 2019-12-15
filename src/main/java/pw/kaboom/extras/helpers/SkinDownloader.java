@@ -45,12 +45,16 @@ class SkinDownloader {
 
 				new BukkitRunnable() {
 					public void run() {
-						if (player.isOnline()) {
-							player.setPlayerProfile(profile);
-
-							if (shouldChangeName && shouldSendMessage) {
-								player.sendMessage("Successfully set your username to \"" + name + "\"");
+						try {
+							if (player.isOnline()) {
+								player.setPlayerProfile(profile);
+	
+								if (shouldChangeName && shouldSendMessage) {
+									player.sendMessage("Successfully set your username to \"" + name + "\"");
+								}
 							}
+						} catch (Exception exception) {
+							// Do nothing
 						}
 						Main.skinInProgress.remove(player.getUniqueId());
 					}

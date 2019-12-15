@@ -38,8 +38,6 @@ import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.SpawnerSpawnEvent;
 
-import org.bukkit.event.player.PlayerDropItemEvent;
-
 import org.bukkit.event.vehicle.VehicleCreateEvent;
 
 import org.bukkit.inventory.Inventory;
@@ -193,10 +191,6 @@ class EntitySpawn implements Listener {
 			Z = maxValue;
 		if (Z < minValue)
 			Z = minValue;
-		
-		System.out.println(X);
-		System.out.println(Y);
-		System.out.println(Z);
 		
 		return new Location(location.getWorld(), X, Y, Z);
 	}
