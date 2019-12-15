@@ -202,12 +202,13 @@ class EntitySpawn implements Listener {
 	}
 
 	private void limitSpawner(CreatureSpawner spawner) {
-		if (spawner.getSpawnedType() == EntityType.FALLING_BLOCK) {
-			if (spawner.getDelay() > 100) {
-				spawner.setMaxSpawnDelay(100);
-				spawner.setDelay(100);
-				spawner.update();
-			}
+		if (spawner.getSpawnedType() == EntityType.MINECART_MOB_SPAWNER) {
+			spawner.setSpawnedType(EntityType.MINECART);
+		} else if (spawner.getSpawnedType() == EntityType.FALLING_BLOCK &&
+			spawner.getDelay() > 100) {
+			spawner.setMaxSpawnDelay(100);
+			spawner.setDelay(100);
+			spawner.update();
 		}
 
 		if (spawner.getSpawnCount() > 200) {
@@ -298,14 +299,7 @@ class EntitySpawn implements Listener {
 	@EventHandler
 	void onPreSpawnerSpawn(PreSpawnerSpawnEvent event) {
 		try {
-			final CreatureSpawner spawner = (CreatureSpawner) event.getSpawnerLocation().getBlock().getState();
-
-			if (spawner.getSpawnedType() == EntityType.MINECART_MOB_SPAWNER) {
-				event.setCancelled(true);
-				return;
-			}
-			
-			limitSpawner(spawner);
+			limitSpawner((CreatureSpawner) event.getSpawnerLocation().getBlock().getState());
 		} catch (Exception exception) {
 			event.setCancelled(true);
 		}
@@ -313,11 +307,10 @@ class EntitySpawn implements Listener {
 
 	@EventHandler
 	void onSpawnerSpawn(SpawnerSpawnEvent event) {
-		if (event.getEntity().getType() == EntityType.FALLING_BLOCK) {
-			final FallingBlock block = (FallingBlock) event.getEntity();
-
-			if (block.getBlockData().getMaterial() == Material.SPAWNER) {
+		if (event.getEntityType() == EntityType.FALLING_BLOCK) {
+			if (((FallingBlock) event.getEntity()).getBlockData().getMaterial() == Material.SPAWNER) {
 				event.setCancelled(true);
+				event.getSpawner().setSpawnedType(EntityType.FALLING_BLOCK);
 			}
 		}
 	}
