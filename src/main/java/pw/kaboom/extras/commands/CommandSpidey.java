@@ -2,6 +2,7 @@ package pw.kaboom.extras;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,12 +20,19 @@ class CommandSpidey implements CommandExecutor {
 			sender.sendMessage("Command has to be run by a player");
 		} else {
 			final Player player = (Player) sender;
-			final Location eyePos = player.getEyeLocation();
-			final Vector playerPos = new Vector(eyePos.getX(), eyePos.getY(), eyePos.getZ());
-			final Vector direction = eyePos.getDirection();
+			final World world = player.getWorld();
+			final Vector start = player.getEyeLocation().toVector();
+			final Vector direction = player.getEyeLocation().getDirection();
+			final int yOffset = 0;
 			final int distance = 50;
 	
-			final BlockIterator blockIterator = new BlockIterator(player.getWorld(), playerPos, direction, 0, distance);
+			final BlockIterator blockIterator = new BlockIterator(
+				world,
+				start,
+				direction,
+				yOffset,
+				distance
+			);
 	
 			while (blockIterator.hasNext() &&
 				(blockIterator.next().getType() == Material.AIR ||
