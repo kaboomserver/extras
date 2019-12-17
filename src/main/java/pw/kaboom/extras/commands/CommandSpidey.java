@@ -1,6 +1,5 @@
-package pw.kaboom.extras;
+package pw.kaboom.extras.commands;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 
@@ -14,7 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
-class CommandSpidey implements CommandExecutor {
+public class CommandSpidey implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof ConsoleCommandSender) {
 			sender.sendMessage("Command has to be run by a player");

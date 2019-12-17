@@ -7,13 +7,17 @@ import java.util.UUID;
 import org.bukkit.block.BlockFace;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.destroystokyo.paper.profile.PlayerProfile;
+import pw.kaboom.extras.commands.*;
+import pw.kaboom.extras.modules.block.*;
+import pw.kaboom.extras.modules.entity.*;
+import pw.kaboom.extras.modules.player.*;
+import pw.kaboom.extras.modules.server.*;
 
 public class Main extends JavaPlugin {
-	static HashSet<UUID> skinInProgress = new HashSet<>();
+	public static HashSet<UUID> skinInProgress = new HashSet<>();
 
-	static HashSet<String> consoleCommandBlacklist = new HashSet<>();
-	static HashSet<BlockFace> faces = new HashSet<>();
+	public static HashSet<String> consoleCommandBlacklist = new HashSet<>();
+	public static HashSet<BlockFace> faces = new HashSet<>();
 
 	public void onLoad() {
 		/* Fill lists */

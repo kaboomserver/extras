@@ -1,4 +1,4 @@
-package pw.kaboom.extras;
+package pw.kaboom.extras.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -11,7 +11,7 @@ import org.bukkit.command.CommandSender;
 
 import org.bukkit.entity.Player;
 
-class CommandJumpscare implements CommandExecutor {
+public class CommandJumpscare implements CommandExecutor {
 	private void createJumpscare(Player player) {
 		player.spawnParticle(Particle.MOB_APPEARANCE, player.getLocation(), 4);
 		for (int i = 0; i < 10; i++) {

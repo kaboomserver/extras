@@ -1,11 +1,11 @@
-package pw.kaboom.extras;
+package pw.kaboom.extras.modules.entity;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import com.destroystokyo.paper.event.entity.EntityKnockbackByEntityEvent;
 
-class EntityKnockback implements Listener {
+public class EntityKnockback implements Listener {
 	@EventHandler
 	void onEntityKnockbackByEntity(EntityKnockbackByEntityEvent event) {
 		final int knockbackLimit = 60;

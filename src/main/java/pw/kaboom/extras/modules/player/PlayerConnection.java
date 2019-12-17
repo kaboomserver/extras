@@ -1,22 +1,13 @@
-package pw.kaboom.extras;
+package pw.kaboom.extras.modules.player;
 
-import java.util.UUID;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 
 import org.bukkit.block.BlockState;
-import org.bukkit.block.banner.Pattern;
-
 import org.bukkit.entity.Player;
 
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-
-import org.bukkit.event.inventory.InventoryCloseEvent;
 
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -25,13 +16,12 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BannerMeta;
-
 import org.bukkit.plugin.java.JavaPlugin;
 
-class PlayerConnection implements Listener {
+import pw.kaboom.extras.Main;
+import pw.kaboom.extras.helpers.SkinDownloader;
+
+public class PlayerConnection implements Listener {
 	@EventHandler
 	void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent event) {
 		if (event.getName().length() > 16) {
@@ -107,6 +97,7 @@ class PlayerConnection implements Listener {
 		skinDownloader.applySkin(player, player.getName(), shouldChangeUsername, shouldSendMessage);
 	}
 
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	void onPlayerQuit(PlayerQuitEvent event) {
 		PlayerCommand.commandMillisList.remove(event.getPlayer().getUniqueId());

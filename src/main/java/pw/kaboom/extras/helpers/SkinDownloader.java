@@ -1,4 +1,4 @@
-package pw.kaboom.extras;
+package pw.kaboom.extras.helpers;
 
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -16,7 +16,9 @@ import com.destroystokyo.paper.profile.ProfileProperty;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-class SkinDownloader {
+import pw.kaboom.extras.Main;
+
+public class SkinDownloader {
 	private String texture;
 	private String signature;
 

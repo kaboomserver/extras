@@ -1,4 +1,4 @@
-package pw.kaboom.extras;
+package pw.kaboom.extras.commands;
 
 import org.bukkit.ChatColor;
 
@@ -9,7 +9,10 @@ import org.bukkit.command.ConsoleCommandSender;
 
 import org.bukkit.entity.Player;
 
-class CommandUsername implements CommandExecutor {
+import pw.kaboom.extras.Main;
+import pw.kaboom.extras.helpers.SkinDownloader;
+
+public class CommandUsername implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, final String[] args) {
 		if (sender instanceof ConsoleCommandSender) {
 			sender.sendMessage("Command has to be run by a player");

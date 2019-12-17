@@ -1,4 +1,4 @@
-package pw.kaboom.extras;
+package pw.kaboom.extras.modules.player;
 
 import java.io.File;
 import java.util.UUID;
@@ -17,7 +17,9 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-class PlayerChat implements Listener {
+import pw.kaboom.extras.Main;
+
+public class PlayerChat implements Listener {
 	@EventHandler
 	void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
 		final Player player = event.getPlayer();

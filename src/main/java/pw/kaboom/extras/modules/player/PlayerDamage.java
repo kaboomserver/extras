@@ -1,4 +1,4 @@
-package pw.kaboom.extras;
+package pw.kaboom.extras.modules.player;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -21,12 +21,9 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-import org.bukkit.event.entity.EntityTeleportEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
-
 import org.bukkit.inventory.ItemStack;
 
-class PlayerDamage implements Listener {
+public class PlayerDamage implements Listener {
 	@EventHandler
 	void onEntityDamage(EntityDamageEvent event) {
 		if (event.getEntityType() == EntityType.PLAYER) {

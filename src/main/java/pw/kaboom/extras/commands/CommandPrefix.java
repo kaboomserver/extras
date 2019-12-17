@@ -1,4 +1,4 @@
-package pw.kaboom.extras;
+package pw.kaboom.extras.commands;
 
 import java.io.File;
 
@@ -16,7 +16,9 @@ import org.bukkit.entity.Player;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-class CommandPrefix implements CommandExecutor {
+import pw.kaboom.extras.Main;
+
+public class CommandPrefix implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (sender instanceof ConsoleCommandSender) {
 			sender.sendMessage("Command has to be run by a player");

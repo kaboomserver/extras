@@ -1,4 +1,4 @@
-package pw.kaboom.extras;
+package pw.kaboom.extras.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 
 import org.bukkit.inventory.ItemStack;
 
-class CommandPumpkin implements CommandExecutor {
+public class CommandPumpkin implements CommandExecutor {
 	private void placePumpkin(Player player) {
 		player.getInventory().setHelmet(new ItemStack(Material.CARVED_PUMPKIN));
 	}

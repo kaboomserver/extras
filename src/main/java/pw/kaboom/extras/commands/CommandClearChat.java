@@ -1,4 +1,4 @@
-package pw.kaboom.extras;
+package pw.kaboom.extras.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender;
 
 import org.bukkit.entity.Player;
 
-class CommandClearChat implements CommandExecutor {
+public class CommandClearChat implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
 			for (int i = 0; i < 100; ++i) {

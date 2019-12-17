@@ -1,11 +1,9 @@
-package pw.kaboom.extras;
+package pw.kaboom.extras.commands;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryPoolMXBean;
-
 import java.net.InetAddress;
 
 import org.bukkit.ChatColor;
@@ -14,7 +12,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-class CommandServerInfo implements CommandExecutor {
+public class CommandServerInfo implements CommandExecutor {
 	private void sendInfoMessage(CommandSender target, String description, String value) {
 		target.sendMessage(
 			ChatColor.GRAY + description + ": " +

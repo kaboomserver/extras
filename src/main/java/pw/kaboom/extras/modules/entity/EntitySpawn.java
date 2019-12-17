@@ -1,9 +1,6 @@
-package pw.kaboom.extras;
+package pw.kaboom.extras.modules.entity;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
-import org.bukkit.DyeColor;
-import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -11,10 +8,7 @@ import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 
-import org.bukkit.block.BlockState;
 import org.bukkit.block.CreatureSpawner;
-import org.bukkit.block.ShulkerBox;
-
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -23,30 +17,16 @@ import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
-import org.bukkit.entity.Firework;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.MagmaCube;
 import org.bukkit.entity.Slime;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.entity.Vehicle;
 
-import org.bukkit.event.block.BlockDispenseEvent;
-
 import org.bukkit.event.entity.AreaEffectCloudApplyEvent;
-import org.bukkit.event.entity.EntityAirChangeEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
-import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.SpawnerSpawnEvent;
 
 import org.bukkit.event.vehicle.VehicleCreateEvent;
-
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BannerMeta;
-import org.bukkit.inventory.meta.BlockStateMeta;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.PotionMeta;
 
 import com.destroystokyo.paper.event.block.TNTPrimeEvent;
 import com.destroystokyo.paper.event.block.TNTPrimeEvent.PrimeReason;
@@ -55,16 +35,8 @@ import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import com.destroystokyo.paper.event.entity.PreSpawnerSpawnEvent;
 
-import org.bukkit.block.banner.Pattern;
-
-import org.bukkit.plugin.java.JavaPlugin;
-
-import org.bukkit.scheduler.BukkitRunnable;
-
-class EntitySpawn implements Listener {
+public class EntitySpawn implements Listener {
 	private void applyEntityChanges(Entity entity) {
-		final World world = entity.getWorld();
-		
 		if (entity instanceof LivingEntity) {
 			final LivingEntity mob = (LivingEntity) entity;
 
@@ -82,6 +54,8 @@ class EntitySpawn implements Listener {
 				final Slime slime = (Slime) entity;
 
 				limitSlimeSize(slime);
+		default:
+			break;
 		}
 	}
 

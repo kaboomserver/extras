@@ -1,4 +1,4 @@
-package pw.kaboom.extras;
+package pw.kaboom.extras.modules.entity;
 
 import org.bukkit.entity.Fireball;
 
@@ -7,7 +7,7 @@ import org.bukkit.event.Listener;
 
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 
-class EntityExplosion implements Listener {
+public class EntityExplosion implements Listener {
 	@EventHandler
 	void onExplosionPrime(ExplosionPrimeEvent event) {
 		if (event.getRadius() > 20) {

@@ -1,4 +1,4 @@
-package pw.kaboom.extras;
+package pw.kaboom.extras.modules.server;
 
 import org.bukkit.ChatColor;
 
@@ -6,16 +6,14 @@ import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-import org.bukkit.block.Block;
-import org.bukkit.block.CommandBlock;
-
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import org.bukkit.event.server.RemoteServerCommandEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 
-class ServerCommand implements Listener {
+import pw.kaboom.extras.Main;
+
+public class ServerCommand implements Listener {
 	public static String checkCommand(CommandSender sender, String command, boolean isConsoleCommand) {
 		final String[] arr = command.split(" ");
 		String commandName = arr[0].toLowerCase();
@@ -51,8 +49,8 @@ class ServerCommand implements Listener {
 											return command.replaceFirst("(?i)" + "spawnRadius " + arr[i+3], "spawnRadius 100");
 										}
 									} else if ("give".equalsIgnoreCase(arr[i+1])) {
-										if (Double.parseDouble(arr[arr.length-1]) > 1024) {
-											arr[arr.length-1] = "1024";
+										if (Double.parseDouble(arr[arr.length-1]) > 64) {
+											arr[arr.length-1] = "64";
 											return String.join(" ", arr);
 										}
 									}
@@ -86,8 +84,8 @@ class ServerCommand implements Listener {
 					break;
 				case "/minecraft:give":
 				case "/give":
-					if (Double.parseDouble(arr[arr.length-1]) > 1024) {
-						arr[arr.length-1] = "1024";
+					if (Double.parseDouble(arr[arr.length-1]) > 64) {
+						arr[arr.length-1] = "64";
 						return String.join(" ", arr);
 					}
 					break;

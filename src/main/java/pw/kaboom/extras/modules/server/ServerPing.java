@@ -1,11 +1,11 @@
-package pw.kaboom.extras;
+package pw.kaboom.extras.modules.server;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import com.destroystokyo.paper.event.server.PaperServerListPingEvent;
 
-class ServerPing implements Listener {
+public class ServerPing implements Listener {
 	@EventHandler
 	void onServerListPing(PaperServerListPingEvent event) {
 		if (event.getClient().getProtocolVersion() == -1) {
