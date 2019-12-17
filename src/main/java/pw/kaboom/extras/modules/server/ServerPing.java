@@ -13,6 +13,6 @@ public class ServerPing implements Listener {
 		} else {
 			event.setProtocolVersion(event.getClient().getProtocolVersion());
 		}
-		event.setVersion("1.15");
+		event.setVersion("1.15.1");
 	}
 }

@@ -7,22 +7,43 @@ import java.util.UUID;
 import org.bukkit.block.BlockFace;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import pw.kaboom.extras.commands.*;
-import pw.kaboom.extras.modules.block.*;
-import pw.kaboom.extras.modules.entity.*;
-import pw.kaboom.extras.modules.player.*;
-import pw.kaboom.extras.modules.server.*;
+import pw.kaboom.extras.commands.CommandClearChat;
+import pw.kaboom.extras.commands.CommandConsole;
+import pw.kaboom.extras.commands.CommandDestroyEntities;
+import pw.kaboom.extras.commands.CommandEnchantAll;
+import pw.kaboom.extras.commands.CommandJumpscare;
+import pw.kaboom.extras.commands.CommandPrefix;
+import pw.kaboom.extras.commands.CommandPumpkin;
+import pw.kaboom.extras.commands.CommandServerInfo;
+import pw.kaboom.extras.commands.CommandSkin;
+import pw.kaboom.extras.commands.CommandSpawn;
+import pw.kaboom.extras.commands.CommandSpidey;
+import pw.kaboom.extras.commands.CommandTellraw;
+import pw.kaboom.extras.commands.CommandUnloadChunks;
+import pw.kaboom.extras.commands.CommandUsername;
+import pw.kaboom.extras.modules.block.BlockCheck;
+import pw.kaboom.extras.modules.block.BlockPhysics;
+import pw.kaboom.extras.modules.entity.EntityExplosion;
+import pw.kaboom.extras.modules.entity.EntityKnockback;
+import pw.kaboom.extras.modules.entity.EntitySpawn;
+import pw.kaboom.extras.modules.entity.EntityTeleport;
+import pw.kaboom.extras.modules.player.PlayerChat;
+import pw.kaboom.extras.modules.player.PlayerCommand;
+import pw.kaboom.extras.modules.player.PlayerConnection;
+import pw.kaboom.extras.modules.player.PlayerDamage;
+import pw.kaboom.extras.modules.player.PlayerInteract;
+import pw.kaboom.extras.modules.player.PlayerTeleport;
+import pw.kaboom.extras.modules.server.ServerCommand;
+import pw.kaboom.extras.modules.server.ServerPing;
 
 public class Main extends JavaPlugin {
-	public static HashSet<UUID> skinInProgress = new HashSet<>();
+	public static HashSet<UUID> skinInProgress = new HashSet<UUID>();
 
-	public static HashSet<String> consoleCommandBlacklist = new HashSet<>();
-	public static HashSet<BlockFace> faces = new HashSet<>();
-
+	@Override
 	public void onLoad() {
 		/* Fill lists */
 		Collections.addAll(
-			consoleCommandBlacklist,
+			ServerCommand.consoleCommandBlacklist,
 			"bukkit:about",
 			"bukkit:ver",
 			"bukkit:version",
@@ -388,7 +409,7 @@ public class Main extends JavaPlugin {
 		);
 
 		Collections.addAll(
-			faces,
+			BlockPhysics.blockFaces,
 			BlockFace.NORTH,
 			BlockFace.SOUTH,
 			BlockFace.WEST,
@@ -401,6 +422,7 @@ public class Main extends JavaPlugin {
 		saveConfig();
 	}
 
+	@Override
 	public void onEnable() {
 		/* Commands */
 		this.getCommand("clearchat").setExecutor(new CommandClearChat());

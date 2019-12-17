@@ -2,17 +2,15 @@ package pw.kaboom.extras.helpers;
 
 import java.io.InputStreamReader;
 import java.net.URL;
+
 import javax.net.ssl.HttpsURLConnection;
 
 import org.bukkit.entity.Player;
-
 import org.bukkit.plugin.java.JavaPlugin;
-
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
-
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -26,9 +24,10 @@ public class SkinDownloader {
 		Main.skinInProgress.add(player.getUniqueId());
 
 		new BukkitRunnable() {
+			@Override
 			public void run() {
 				final PlayerProfile profile = player.getPlayerProfile();
-				
+
 				if (shouldChangeName && shouldSendMessage) {
 					profile.setName(name);
 					player.sendMessage("Changing your username. Please wait...");
@@ -46,11 +45,12 @@ public class SkinDownloader {
 				}
 
 				new BukkitRunnable() {
+					@Override
 					public void run() {
 						try {
 							if (player.isOnline()) {
 								player.setPlayerProfile(profile);
-	
+
 								if (shouldChangeName && shouldSendMessage) {
 									player.sendMessage("Successfully set your username to \"" + name + "\"");
 								}

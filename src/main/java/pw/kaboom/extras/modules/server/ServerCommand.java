@@ -1,34 +1,33 @@
 package pw.kaboom.extras.modules.server;
 
-import org.bukkit.ChatColor;
+import java.util.HashSet;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-
 import org.bukkit.event.server.ServerCommandEvent;
 
-import pw.kaboom.extras.Main;
-
 public class ServerCommand implements Listener {
+	public static HashSet<String> consoleCommandBlacklist = new HashSet<String>();
+
 	public static String checkCommand(CommandSender sender, String command, boolean isConsoleCommand) {
 		final String[] arr = command.split(" ");
 		String commandName = arr[0].toLowerCase();
-		
+
 		if (isConsoleCommand) {
 			commandName = "/" + arr[0].toLowerCase();
 		}
-		
+
 		try {
 			switch (commandName) {
 				case "/minecraft:execute":
 				case "/execute":
 					if (arr.length >= 2) {
 						int asAtCount = 0;
-			
+
 						for (int i = 1; i < arr.length; i++) {
 							if ("run".equalsIgnoreCase(arr[i])) {
 								if (i+1 < arr.length) {
@@ -57,13 +56,13 @@ public class ServerCommand implements Listener {
 								}
 								break;
 							}
-			
+
 							if ("as".equalsIgnoreCase(arr[i]) ||
 								"at".equalsIgnoreCase(arr[i])) {
 								asAtCount++;
 							}
 						}
-						
+
 						if (asAtCount >= 2) {
 							Command.broadcastCommandMessage(sender, "Forbidden execute pattern detected");
 							return "cancel";
@@ -155,7 +154,7 @@ public class ServerCommand implements Listener {
 		final String[] arr = event.getCommand().split(" ");
 
 		if (sender instanceof BlockCommandSender) {
-			if (Main.consoleCommandBlacklist.contains(arr[0].toLowerCase())) {
+			if (consoleCommandBlacklist.contains(arr[0].toLowerCase())) {
 				event.setCancelled(true);
 			}
 		}
@@ -163,7 +162,7 @@ public class ServerCommand implements Listener {
 		final String command = event.getCommand();
 		final boolean isConsoleCommand = true;
 		final String checkedCommand = checkCommand(sender, command, isConsoleCommand);
-		
+
 		if (checkedCommand != null) {
 			if (checkedCommand.equals("cancel")) {
 				event.setCancelled(true);
