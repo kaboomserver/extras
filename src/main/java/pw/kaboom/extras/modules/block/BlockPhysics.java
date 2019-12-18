@@ -69,13 +69,32 @@ public class BlockPhysics implements Listener {
 
 	@EventHandler
 	void onBlockPhysics(BlockPhysicsEvent event) {
-		if (event.getChangedType() == Material.REDSTONE_WIRE) {
-			for (BlockFace face : blockFaces) {
+		switch (event.getChangedType()) {
+		case COMPARATOR:
+		case REDSTONE_TORCH:
+		case REDSTONE_WIRE:
+		case REPEATER:
+			/*for (BlockFace face : blockFaces) {
 				if (event.getBlock().getRelative(face).getType() != event.getChangedType()) {
 					return;
 				}
 				event.setCancelled(true);
+			}*/
+			event.setCancelled(true);
+			break;
+		case ACTIVATOR_RAIL:
+		case DETECTOR_RAIL:
+		case POWERED_RAIL:
+		case RAIL:
+			for (BlockFace face : blockFaces) {
+				if (event.getBlock().getRelative(face).getType() != event.getChangedType()) {
+					return;
+				}
+				event.getBlock().setType(Material.AIR, false);
+				event.setCancelled(true);
 			}
+		default:
+			break;
 		}
 	}
 
