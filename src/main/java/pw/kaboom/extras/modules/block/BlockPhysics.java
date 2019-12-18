@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.block.BlockFromToEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 
@@ -61,6 +62,18 @@ public class BlockPhysics implements Listener {
 					return;
 				}
 				event.getBlock().setType(Material.AIR, false);
+				event.setCancelled(true);
+			}
+		}
+	}
+
+	@EventHandler
+	void onBlockPhysics(BlockPhysicsEvent event) {
+		if (event.getChangedType() == Material.REDSTONE_WIRE) {
+			for (BlockFace face : blockFaces) {
+				if (event.getBlock().getRelative(face).getType() != event.getChangedType()) {
+					return;
+				}
 				event.setCancelled(true);
 			}
 		}

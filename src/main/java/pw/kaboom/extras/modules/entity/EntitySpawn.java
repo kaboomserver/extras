@@ -4,14 +4,9 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
-
 import org.bukkit.block.CreatureSpawner;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-
 import org.bukkit.entity.AreaEffectCloud;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
@@ -21,16 +16,15 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Slime;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.entity.Vehicle;
-
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.AreaEffectCloudApplyEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.SpawnerSpawnEvent;
-
 import org.bukkit.event.vehicle.VehicleCreateEvent;
 
 import com.destroystokyo.paper.event.block.TNTPrimeEvent;
 import com.destroystokyo.paper.event.block.TNTPrimeEvent.PrimeReason;
-
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import com.destroystokyo.paper.event.entity.PreSpawnerSpawnEvent;
@@ -46,7 +40,7 @@ public class EntitySpawn implements Listener {
 		switch (entity.getType()) {
 			case AREA_EFFECT_CLOUD:
 				final AreaEffectCloud cloud = (AreaEffectCloud) entity;
-				
+
 				limitAreaEffectCloudRadius(cloud);
 				break;
 			case MAGMA_CUBE:
@@ -68,7 +62,7 @@ public class EntitySpawn implements Listener {
 
 		if ((entityType != EntityType.PLAYER &&
 			isEntityLimitReached(chunkEntityCount, chunkEntityCountLimit, isAddToWorldEvent)) ||
-			
+
 			(entityType == EntityType.ENDER_DRAGON &&
 			isEntityLimitReached(worldDragonCount, worldDragonCountLimit, isAddToWorldEvent))) {
 			return true;
@@ -86,7 +80,7 @@ public class EntitySpawn implements Listener {
 				}
 			}
 			return true;
-		}	
+		}
 		return false;
 	}
 
@@ -106,7 +100,7 @@ public class EntitySpawn implements Listener {
 		}
 		return false;
 	}
-	
+
 	private boolean isOutsideBoundaries(double X, double Y, double Z) {
 		int maxValue = 30000000;
 		int minValue = -30000000;
@@ -126,16 +120,16 @@ public class EntitySpawn implements Listener {
 		if (cloud.getRadius() > 40) {
 			cloud.setRadius(40);
 		}
-		
+
 		if (cloud.getRadiusOnUse() > 0.01f) {
 			cloud.setRadiusOnUse(0.1f);
 		}
-		
+
 		if (cloud.getRadiusPerTick() > 0) {
 			cloud.setRadiusPerTick(0);
 		}
 	}
-	
+
 	private void limitFollowAttribute(LivingEntity mob) {
 		final AttributeInstance followAttribute = mob.getAttribute(Attribute.GENERIC_FOLLOW_RANGE);
 
@@ -165,10 +159,10 @@ public class EntitySpawn implements Listener {
 			Z = maxValue;
 		if (Z < minValue)
 			Z = minValue;
-		
+
 		return new Location(location.getWorld(), X, Y, Z);
 	}
-	
+
 	private void limitSlimeSize(Slime slime) {
 		if (slime.getSize() > 50) {
 			slime.setSize(50);
@@ -215,19 +209,19 @@ public class EntitySpawn implements Listener {
 
 		final World world = entity.getWorld();
 		final Chunk chunk = entity.getChunk();
-		
+
 		if (chunk.isLoaded()) {
 			final EntityType entityType = entity.getType();
 			final boolean isAddToWorldEvent = true;
-			
+
 			if (checkEntityLimits(entityType, chunk, world, isAddToWorldEvent)) {
 				entity.remove();
 				return;
 			}
 		}
-		
+
 		applyEntityChanges(entity);
-		
+
 		if (chunk.isLoaded()) {
 			checkShouldRemoveEntities(world);
 		}
@@ -249,7 +243,7 @@ public class EntitySpawn implements Listener {
 		final Chunk chunk = entity.getChunk();
 		final World world = entity.getWorld();
 		final boolean isAddToWorldEvent = false;
-		
+
 		if (checkEntityLimits(entityType, chunk, world, isAddToWorldEvent)) {
 			event.setCancelled(true);
 			return;
@@ -314,7 +308,7 @@ public class EntitySpawn implements Listener {
 		final Chunk chunk = vehicle.getChunk();
 		final World world = vehicle.getWorld();
 		final boolean isAddToWorldEvent = false;
-		
+
 		if (checkEntityLimits(entityType, chunk, world, isAddToWorldEvent)) {
 			event.setCancelled(true);
 			return;
