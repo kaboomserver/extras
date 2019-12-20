@@ -56,7 +56,10 @@ public class SkinDownloader {
 					}
 
 					Main.skinInProgress.remove(player.getUniqueId());
-					return;
+
+					if (!shouldChangeName) {
+						return;
+					}
 				}
 
 				new BukkitRunnable() {
