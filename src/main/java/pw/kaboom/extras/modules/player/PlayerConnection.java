@@ -2,20 +2,16 @@ package pw.kaboom.extras.modules.player;
 
 import org.bukkit.Chunk;
 import org.bukkit.World;
-
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
-
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerQuitEvent;
-
 import org.bukkit.plugin.java.JavaPlugin;
 
 import pw.kaboom.extras.Main;
@@ -29,15 +25,6 @@ public class PlayerConnection implements Listener {
 			return;
 		}
 	}
-
-	/*@EventHandler
-	void onInventoryClose(InventoryCloseEvent event) {
-		for (ItemStack item : event.getInventory().getContents()) {
-			if (EntitySpawn.isIllegalItem(item)) {
-				event.getInventory().clear();
-			}
-		}
-	}*/
 
 	@EventHandler
 	void onPlayerJoin(PlayerJoinEvent event) {
@@ -80,12 +67,12 @@ public class PlayerConnection implements Listener {
 		if (!JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("enableJoinRestrictions")) {
 			event.allow();
 		}
-		
+
 		if (event.getResult() == Result.KICK_FULL &&
 			JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("allowJoinOnFullServer")) {
 			event.allow();
 		}
-		
+
 		if (JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("opOnJoin")) {
 			player.setOp(true);
 		}
