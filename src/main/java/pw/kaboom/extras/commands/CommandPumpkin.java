@@ -32,7 +32,7 @@ public final class CommandPumpkin implements CommandExecutor {
 					placePumpkin(target);
 					sender.sendMessage("Player \"" + target.getName() + "\" is now a pumpkin");
 				} else {
-					sender.sendMessage("Player \"" + target.getName() + "\" not found");
+					sender.sendMessage("Player \"" + args[0] + "\" not found");
 				}
 			}
 		}

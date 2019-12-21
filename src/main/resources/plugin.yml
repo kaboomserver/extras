@@ -27,6 +27,9 @@ commands:
       aliases: scare
       description: Scares a player
       permission: extras.jumpscare
+   kaboom:
+      description: I wonder...
+      permission: extras.kaboom
    prefix:
       aliases: [rank, tag]
       description: Changes your tag

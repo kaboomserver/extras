@@ -7,7 +7,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-import pw.kaboom.extras.Main;
 import pw.kaboom.extras.helpers.SkinDownloader;
 
 public final class CommandSkin implements CommandExecutor {
@@ -20,7 +19,7 @@ public final class CommandSkin implements CommandExecutor {
 
 			if (args.length == 0) {
 				player.sendMessage(ChatColor.RED + "Usage: /" + label + " <username>");
-			} else if (!Main.skinInProgress.contains(player.getUniqueId())) {
+			} else if (!SkinDownloader.skinInProgress.contains(player.getUniqueId())) {
 				final String name = args[0];
 				final boolean shouldChangeUsername = false;
 				final boolean shouldSendMessage = true;
