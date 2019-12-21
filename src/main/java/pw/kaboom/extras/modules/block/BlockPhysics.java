@@ -16,16 +16,16 @@ import org.bukkit.event.entity.EntityChangeBlockEvent;
 
 import com.destroystokyo.paper.event.block.BlockDestroyEvent;
 
-public class BlockPhysics implements Listener {
+public final class BlockPhysics implements Listener {
 	public static HashSet<BlockFace> blockFaces = new HashSet<BlockFace>();
 
 	@EventHandler
-	void onBlockForm(BlockFormEvent event) {
-		if (event.getBlock().getType() == Material.LAVA ||
-			event.getBlock().getType() == Material.WATER) {
+	void onBlockForm(final BlockFormEvent event) {
+		if (event.getBlock().getType() == Material.LAVA
+				|| event.getBlock().getType() == Material.WATER) {
 			for (BlockFace face : blockFaces) {
-				if (event.getBlock().getRelative(face).getType() != Material.LAVA &&
-					event.getBlock().getRelative(face).getType() != Material.WATER) {
+				if (event.getBlock().getRelative(face).getType() != Material.LAVA
+						&& event.getBlock().getRelative(face).getType() != Material.WATER) {
 					return;
 				}
 				event.setCancelled(true);
@@ -34,9 +34,9 @@ public class BlockPhysics implements Listener {
 	}
 
 	@EventHandler
-	void onBlockFromTo(BlockFromToEvent event) {
-		if (event.getBlock().getType() == Material.LAVA ||
-			event.getBlock().getType() == Material.WATER) {
+	void onBlockFromTo(final BlockFromToEvent event) {
+		if (event.getBlock().getType() == Material.LAVA
+				|| event.getBlock().getType() == Material.WATER) {
 			boolean lavaFound = false;
 			boolean waterFound = false;
 
@@ -55,7 +55,7 @@ public class BlockPhysics implements Listener {
 	}
 
 	@EventHandler
-	void onBlockDestroy(BlockDestroyEvent event) {
+	void onBlockDestroy(final BlockDestroyEvent event) {
 		if (!event.getBlock().getType().isSolid()) {
 			for (BlockFace face : blockFaces) {
 				if (event.getBlock().getRelative(face).getType() != event.getBlock().getType()) {
@@ -68,7 +68,7 @@ public class BlockPhysics implements Listener {
 	}
 
 	@EventHandler
-	void onBlockPhysics(BlockPhysicsEvent event) {
+	void onBlockPhysics(final BlockPhysicsEvent event) {
 		switch (event.getChangedType()) {
 		case COMPARATOR:
 		case REDSTONE_TORCH:
@@ -99,23 +99,26 @@ public class BlockPhysics implements Listener {
 	}
 
 	@EventHandler
-	void onBlockRedstone(BlockRedstoneEvent event) {
+	void onBlockRedstone(final BlockRedstoneEvent event) {
 		final double tps = Bukkit.getServer().getTPS()[0];
+		final int maxTps = 10;
 
-		if (tps < 10) {
+		if (tps < maxTps) {
 			event.setNewCurrent(0);
 		}
 	}
 
-	int fallingBlockCount;
+	private int fallingBlockCount;
 
 	@EventHandler
-	void onEntityChangeBlock(EntityChangeBlockEvent event) {
-		if (event.getEntityType() == EntityType.FALLING_BLOCK &&
-			event.getTo() == Material.AIR) {
+	void onEntityChangeBlock(final EntityChangeBlockEvent event) {
+		if (event.getEntityType() == EntityType.FALLING_BLOCK
+				&& event.getTo() == Material.AIR) {
 			fallingBlockCount++;
 
-			if (fallingBlockCount == 10) {
+			final int maxFallingBlockCount = 10;
+
+			if (fallingBlockCount == maxFallingBlockCount) {
 				event.setCancelled(true);
 				fallingBlockCount = 0;
 			}

@@ -5,11 +5,12 @@ import org.bukkit.event.Listener;
 
 import com.destroystokyo.paper.event.server.PaperServerListPingEvent;
 
-public class ServerPing implements Listener {
+public final class ServerPing implements Listener {
 	@EventHandler
-	void onServerListPing(PaperServerListPingEvent event) {
+	void onServerListPing(final PaperServerListPingEvent event) {
 		if (event.getClient().getProtocolVersion() == -1) {
-			event.setProtocolVersion(573);
+			final int protocol = 573;
+			event.setProtocolVersion(protocol);
 		} else {
 			event.setProtocolVersion(event.getClient().getProtocolVersion());
 		}

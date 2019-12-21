@@ -5,9 +5,9 @@ import org.bukkit.event.Listener;
 
 import com.destroystokyo.paper.event.entity.EntityKnockbackByEntityEvent;
 
-public class EntityKnockback implements Listener {
+public final class EntityKnockback implements Listener {
 	@EventHandler
-	void onEntityKnockbackByEntity(EntityKnockbackByEntityEvent event) {
+	void onEntityKnockbackByEntity(final EntityKnockbackByEntityEvent event) {
 		final int knockbackLimit = 60;
 
 		if (event.getKnockbackStrength() > knockbackLimit) {

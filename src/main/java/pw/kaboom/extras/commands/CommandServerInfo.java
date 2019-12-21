@@ -45,8 +45,8 @@ public final class CommandServerInfo implements CommandExecutor {
 		);
 		sendInfoMessage(sender, "Java version",
 			ManagementFactory.getRuntimeMXBean().getSpecVersion()
-					+ " " +
-					ManagementFactory.getRuntimeMXBean().getVmVersion()
+					+ " "
+					+ ManagementFactory.getRuntimeMXBean().getVmVersion()
 		);
 
 		try {
@@ -103,8 +103,8 @@ public final class CommandServerInfo implements CommandExecutor {
 		final long seconds = (ManagementFactory.getRuntimeMXBean().getUptime() / 1000) % 60;
 
 		sendInfoMessage(sender, "Server uptime",
-			minutes + " minute(s) " +
-			seconds + " second(s)"
+			minutes + " minute(s) "
+					+ seconds + " second(s)"
 		);
 		return true;
 	}

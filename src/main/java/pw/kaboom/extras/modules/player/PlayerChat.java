@@ -19,26 +19,26 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import pw.kaboom.extras.Main;
 
-public class PlayerChat implements Listener {
+public final class PlayerChat implements Listener {
 	@EventHandler
-	void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
+	void onAsyncPlayerChat(final AsyncPlayerChatEvent event) {
 		final Player player = event.getPlayer();
 		final UUID playerUuid = event.getPlayer().getUniqueId();
-		
+
 		if (PlayerCommand.commandMillisList.get(playerUuid) != null) {
 			final long millisDifference = System.currentTimeMillis() - PlayerCommand.commandMillisList.get(playerUuid);
-	
+
 			if (millisDifference < 5) {
 				event.setCancelled(true);
 			}
 		}
-		
+
 		PlayerCommand.commandMillisList.put(playerUuid, System.currentTimeMillis());
-		
+
 		if (event.isCancelled()) {
 			return;
 		}
-		
+
 		final File configFile = new File(JavaPlugin.getPlugin(Main.class).getDataFolder(), "prefixes.yml");
 		final FileConfiguration prefixConfig = YamlConfiguration.loadConfiguration(configFile);
 		final String prefix;

@@ -1,7 +1,5 @@
 package pw.kaboom.extras.modules.player;
 
-import java.io.IOException;
-
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
@@ -19,17 +17,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 import pw.kaboom.extras.Main;
 import pw.kaboom.extras.helpers.SkinDownloader;
 
-public class PlayerConnection implements Listener {
+public final class PlayerConnection implements Listener {
 	@EventHandler
-	void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent event) throws IOException {
+	void onAsyncPlayerPreLogin(final AsyncPlayerPreLoginEvent event) {
 		if (event.getName().length() > 16) {
 			event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "Your username can't be longer than 16 characters");
-			return;
 		}
 	}
 
 	@EventHandler
-	void onPlayerJoin(PlayerJoinEvent event) {
+	void onPlayerJoin(final PlayerJoinEvent event) {
 		final Player player = event.getPlayer();
 		final String title = JavaPlugin.getPlugin(Main.class).getConfig().getString("playerJoinTitle");
 		final String subtitle = JavaPlugin.getPlugin(Main.class).getConfig().getString("playerJoinSubtitle");
@@ -37,8 +34,8 @@ public class PlayerConnection implements Listener {
 		final int stay = 160;
 		final int fadeOut = 5;
 
-		if (title != null ||
-			subtitle != null) {
+		if (title != null
+				|| subtitle != null) {
 				player.sendTitle(
 				title,
 				subtitle,
@@ -50,16 +47,16 @@ public class PlayerConnection implements Listener {
 	}
 
 	@EventHandler
-	void onPlayerKick(PlayerKickEvent event) {
+	void onPlayerKick(final PlayerKickEvent event) {
 		if (!JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("enableKick")) {
 			event.setCancelled(true);
 		}
 	}
 
 	@EventHandler
-	void onPlayerLogin(PlayerLoginEvent event) {
-		if (event.getHostname().startsWith("play.flame.ga") &&
-			event.getHostname().endsWith(":25565")) {
+	void onPlayerLogin(final PlayerLoginEvent event) {
+		if (event.getHostname().startsWith("play.flame.ga")
+				&& event.getHostname().endsWith(":25565")) {
 			event.disallow(Result.KICK_OTHER, "You connected to the server using an outdated server address/IP.\nPlease use the following address/IP:\n\nkaboom.pw");
 			return;
 		}
@@ -70,8 +67,8 @@ public class PlayerConnection implements Listener {
 			event.allow();
 		}
 
-		if (event.getResult() == Result.KICK_FULL &&
-			JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("allowJoinOnFullServer")) {
+		if (event.getResult() == Result.KICK_FULL
+				&& JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("allowJoinOnFullServer")) {
 			event.allow();
 		}
 
@@ -92,7 +89,7 @@ public class PlayerConnection implements Listener {
 	void onPlayerQuit(PlayerQuitEvent event) {
 		PlayerCommand.commandMillisList.remove(event.getPlayer().getUniqueId());
 		PlayerInteract.interactMillisList.remove(event.getPlayer().getUniqueId());
-		Main.skinInProgress.remove(event.getPlayer().getUniqueId());
+		SkinDownloader.skinInProgress.remove(event.getPlayer().getUniqueId());
 
 		final World world = event.getPlayer().getWorld();
 

@@ -3,6 +3,8 @@ package pw.kaboom.extras.helpers;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.HashSet;
+import java.util.UUID;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -18,6 +20,8 @@ import com.google.gson.JsonParser;
 import pw.kaboom.extras.Main;
 
 public final class SkinDownloader {
+	public static HashSet<UUID> skinInProgress = new HashSet<UUID>();
+
 	private HttpsURLConnection skinConnection;
 	private InputStreamReader skinStream;
 
@@ -28,7 +32,7 @@ public final class SkinDownloader {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				Main.skinInProgress.add(player.getUniqueId());
+				skinInProgress.add(player.getUniqueId());
 
 				final PlayerProfile profile = player.getPlayerProfile();
 
@@ -48,14 +52,14 @@ public final class SkinDownloader {
 					try {
 						skinStream.close();
 						skinConnection.disconnect();
-					} catch (Exception e) {
+					} catch (Exception ignored) {
 					}
 
 					if (!shouldChangeName && shouldSendMessage) {
 						player.sendMessage("A player with that username doesn't exist");
 					}
 
-					Main.skinInProgress.remove(player.getUniqueId());
+					skinInProgress.remove(player.getUniqueId());
 
 					if (!shouldChangeName) {
 						return;
@@ -75,7 +79,7 @@ public final class SkinDownloader {
 							// Do nothing
 						}
 
-						Main.skinInProgress.remove(player.getUniqueId());
+						skinInProgress.remove(player.getUniqueId());
 					}
 				}.runTask(JavaPlugin.getPlugin(Main.class));
 			}

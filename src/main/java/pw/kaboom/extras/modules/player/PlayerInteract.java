@@ -7,11 +7,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-public class PlayerInteract implements Listener {
+public final class PlayerInteract implements Listener {
 	static HashMap<UUID, Long> interactMillisList = new HashMap<UUID, Long>();
 
 	@EventHandler
-	void onPlayerInteract(PlayerInteractEvent event) {
+	void onPlayerInteract(final PlayerInteractEvent event) {
 		final UUID playerUuid = event.getPlayer().getUniqueId();
 
 		if (interactMillisList.get(playerUuid) != null) {

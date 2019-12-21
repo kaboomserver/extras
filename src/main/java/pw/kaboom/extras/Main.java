@@ -1,8 +1,6 @@
 package pw.kaboom.extras;
 
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.UUID;
 
 import org.bukkit.block.BlockFace;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -36,9 +34,7 @@ import pw.kaboom.extras.modules.player.PlayerTeleport;
 import pw.kaboom.extras.modules.server.ServerCommand;
 import pw.kaboom.extras.modules.server.ServerPing;
 
-public class Main extends JavaPlugin {
-	public static HashSet<UUID> skinInProgress = new HashSet<UUID>();
-
+public final class Main extends JavaPlugin {
 	@Override
 	public void onLoad() {
 		/* Fill lists */

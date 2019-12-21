@@ -23,19 +23,19 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 
 import org.bukkit.inventory.ItemStack;
 
-public class PlayerDamage implements Listener {
+public final class PlayerDamage implements Listener {
 	@EventHandler
-	void onEntityDamage(EntityDamageEvent event) {
+	void onEntityDamage(final EntityDamageEvent event) {
 		if (event.getEntityType() == EntityType.PLAYER) {
-			if (event.getCause() == DamageCause.VOID &&
-				event.getDamage() == Float.MAX_VALUE) {
+			if (event.getCause() == DamageCause.VOID
+					&& event.getDamage() == Float.MAX_VALUE) {
 				event.setCancelled(true);
 			}
 		}
 	}
 
 	@EventHandler
-	void onPlayerDeath(PlayerDeathEvent event) {
+	void onPlayerDeath(final PlayerDeathEvent event) {
 		final Player player = event.getEntity();
 		final AttributeInstance maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
 
@@ -45,7 +45,7 @@ public class PlayerDamage implements Listener {
 
 		if (!event.getKeepInventory()) {
 			player.getInventory().clear();
-			
+
 			for (ItemStack item : event.getDrops()) {
 				player.getWorld().dropItemNaturally(player.getLocation(), item);
 			}
@@ -65,13 +65,13 @@ public class PlayerDamage implements Listener {
 			} else {
 				final World world = Bukkit.getWorld("world");
 				final Location spawnLocation = world.getSpawnLocation();
-	
+
 				for (double y = spawnLocation.getY(); y <= 256; y++) {
 					final Location yLocation = new Location(world, spawnLocation.getX(), y, spawnLocation.getZ());
 					final Block coordBlock = world.getBlockAt(yLocation);
-	
-					if (!coordBlock.getType().isSolid() &&
-						!coordBlock.getRelative(BlockFace.UP).getType().isSolid()) {
+
+					if (!coordBlock.getType().isSolid()
+							&& !coordBlock.getRelative(BlockFace.UP).getType().isSolid()) {
 						player.teleportAsync(yLocation);
 						break;
 					}

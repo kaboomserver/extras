@@ -10,10 +10,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerCommandEvent;
 
-public class ServerCommand implements Listener {
+public final class ServerCommand implements Listener {
 	public static HashSet<String> consoleCommandBlacklist = new HashSet<String>();
 
-	public static String checkCommand(CommandSender sender, String command, boolean isConsoleCommand) {
+	public static String checkCommand(final CommandSender sender, final String command, final boolean isConsoleCommand) {
 		final String[] arr = command.split(" ");
 		String commandName = arr[0].toLowerCase();
 
@@ -30,26 +30,26 @@ public class ServerCommand implements Listener {
 
 						for (int i = 1; i < arr.length; i++) {
 							if ("run".equalsIgnoreCase(arr[i])) {
-								if (i+1 < arr.length) {
-									if ("execute".equalsIgnoreCase(arr[i+1]) ||
-										"particle".equalsIgnoreCase(arr[i+1]) ||
-										"save-off".equalsIgnoreCase(arr[i+1]) ||
-										"spreadplayers".equalsIgnoreCase(arr[i+1]) ||
-										"stop".equalsIgnoreCase(arr[i+1])) {
+								if (i + 1 < arr.length) {
+									if ("execute".equalsIgnoreCase(arr[i + 1])
+											|| "particle".equalsIgnoreCase(arr[i + 1])
+											|| "save-off".equalsIgnoreCase(arr[i + 1])
+											|| "spreadplayers".equalsIgnoreCase(arr[i + 1])
+											|| "stop".equalsIgnoreCase(arr[i + 1])) {
 										Command.broadcastCommandMessage(sender, "Forbidden execute command detected");
 										return "cancel";
-									} else if (i+3 < arr.length &&
-										"gamerule".equalsIgnoreCase(arr[i+1])) {
-										if ("randomTickSpeed".equalsIgnoreCase(arr[i+2]) &&
-											Double.parseDouble(arr[i+3]) > 6) {
-											return command.replaceFirst("(?i)" + "randomTickSpeed " + arr[i+3], "randomTickSpeed 6");
-										} else if ("spawnRadius".equalsIgnoreCase(arr[i+2]) &&
-											Double.parseDouble(arr[i+3]) > 100) {
-											return command.replaceFirst("(?i)" + "spawnRadius " + arr[i+3], "spawnRadius 100");
+									} else if (i + 3 < arr.length
+											&& "gamerule".equalsIgnoreCase(arr[i + 1])) {
+										if ("randomTickSpeed".equalsIgnoreCase(arr[i + 2])
+												&& Double.parseDouble(arr[i + 3]) > 6) {
+											return command.replaceFirst("(?i)" + "randomTickSpeed " + arr[i + 3], "randomTickSpeed 6");
+										} else if ("spawnRadius".equalsIgnoreCase(arr[i + 2])
+												&& Double.parseDouble(arr[i + 3]) > 100) {
+											return command.replaceFirst("(?i)" + "spawnRadius " + arr[i + 3], "spawnRadius 100");
 										}
-									} else if ("give".equalsIgnoreCase(arr[i+1])) {
-										if (Double.parseDouble(arr[arr.length-1]) > 64) {
-											arr[arr.length-1] = "64";
+									} else if ("give".equalsIgnoreCase(arr[i + 1])) {
+										if (Double.parseDouble(arr[arr.length - 1]) > 64) {
+											arr[arr.length - 1] = "64";
 											return String.join(" ", arr);
 										}
 									}
@@ -57,8 +57,8 @@ public class ServerCommand implements Listener {
 								break;
 							}
 
-							if ("as".equalsIgnoreCase(arr[i]) ||
-								"at".equalsIgnoreCase(arr[i])) {
+							if ("as".equalsIgnoreCase(arr[i])
+									|| "at".equalsIgnoreCase(arr[i])) {
 								asAtCount++;
 							}
 						}
@@ -72,26 +72,26 @@ public class ServerCommand implements Listener {
 				case "/minecraft:gamerule":
 				case "/gamerule":
 					if (arr.length >= 3) {
-						if ("randomTickSpeed".equalsIgnoreCase(arr[1]) &&
-							Double.parseDouble(arr[2]) > 6) {
+						if ("randomTickSpeed".equalsIgnoreCase(arr[1])
+								&& Double.parseDouble(arr[2]) > 6) {
 							return command.replaceFirst(arr[2], "6");
-						} else if ("spawnRadius".equalsIgnoreCase(arr[1]) &&
-							Double.parseDouble(arr[2]) > 100) {
+						} else if ("spawnRadius".equalsIgnoreCase(arr[1])
+								&& Double.parseDouble(arr[2]) > 100) {
 							return command.replaceFirst(arr[2], "100");
 						}
 					}
 					break;
 				case "/minecraft:give":
 				case "/give":
-					if (Double.parseDouble(arr[arr.length-1]) > 64) {
-						arr[arr.length-1] = "64";
+					if (Double.parseDouble(arr[arr.length - 1]) > 64) {
+						arr[arr.length - 1] = "64";
 						return String.join(" ", arr);
 					}
 					break;
 				case "/minecraft:particle":
 				case "/particle":
-					if (arr.length >= 10 &&
-						Double.parseDouble(arr[9]) > 10) {
+					if (arr.length >= 10
+							&& Double.parseDouble(arr[9]) > 10) {
 						arr[9] = "10";
 						return String.join(" ", arr);
 					}
@@ -100,9 +100,9 @@ public class ServerCommand implements Listener {
 				case "/bukkit:rl":
 				case "/reload":
 				case "/rl":
-					if (sender.hasPermission("bukkit.command.reload") &&
-						arr.length >= 2 &&
-						"confirm".equalsIgnoreCase(arr[1])) {
+					if (sender.hasPermission("bukkit.command.reload")
+							&& arr.length >= 2
+							&& "confirm".equalsIgnoreCase(arr[1])) {
 						Command.broadcastCommandMessage(sender, ChatColor.RED + "Please note that this command is not supported and may cause issues when using some plugins.");
 						Command.broadcastCommandMessage(sender, ChatColor.RED + "If you encounter any issues please use the /stop command to restart your server.");
 						Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Reload complete.");
@@ -125,12 +125,15 @@ public class ServerCommand implements Listener {
 				case "/minecraft:spreadplayers":
 				case "/spreadplayers":
 					if (arr.length >= 5) {
-						if (Double.parseDouble(arr[3]) > 0)
+						if (Double.parseDouble(arr[3]) > 0) {
 							arr[3] = "0";
-						if (Double.parseDouble(arr[4]) < 8)
+						}
+						if (Double.parseDouble(arr[4]) < 8) {
 							arr[4] = "8";
-						if (Double.parseDouble(arr[4]) > 50)
+						}
+						if (Double.parseDouble(arr[4]) > 50) {
 							arr[4] = "50";
+						}
 
 						return String.join(" ", arr);
 					}
@@ -141,6 +144,8 @@ public class ServerCommand implements Listener {
 						Command.broadcastCommandMessage(sender, "Stopping the server");
 						return "cancel";
 					}
+				default:
+					break;
 			}
 		} catch (NumberFormatException exception) {
 			// Do nothing
@@ -149,7 +154,7 @@ public class ServerCommand implements Listener {
 	}
 
 	@EventHandler
-	void onServerCommand(ServerCommandEvent event) {
+	void onServerCommand(final ServerCommandEvent event) {
 		final CommandSender sender = event.getSender();
 		final String[] arr = event.getCommand().split(" ");
 

@@ -6,10 +6,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 
-public class BlockCheck implements Listener {
+public final class BlockCheck implements Listener {
 	@EventHandler
-	void onBlockPlace(BlockPlaceEvent event) {
-		if (event.getItemInHand().toString().length() > 3019) {
+	void onBlockPlace(final BlockPlaceEvent event) {
+		final int maxItemStringLength = 3019;
+
+		if (event.getItemInHand().toString().length() > maxItemStringLength) {
 			event.setCancelled(true);
 		}
 
@@ -21,7 +23,7 @@ public class BlockCheck implements Listener {
 	}
 
 	@EventHandler
-	void onSignChange(SignChangeEvent event) {
+	void onSignChange(final SignChangeEvent event) {
 		try {
 			event.getLines();
 		} catch (Exception exception) {

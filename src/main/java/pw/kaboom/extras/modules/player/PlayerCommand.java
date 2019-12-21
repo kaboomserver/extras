@@ -10,11 +10,11 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import pw.kaboom.extras.modules.server.ServerCommand;
 
-public class PlayerCommand implements Listener {
+public final class PlayerCommand implements Listener {
 	static HashMap<UUID, Long> commandMillisList = new HashMap<UUID, Long>();
 
 	@EventHandler
-	void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
+	void onPlayerCommandPreprocess(final PlayerCommandPreprocessEvent event) {
 		final UUID playerUuid = event.getPlayer().getUniqueId();
 
 		if (commandMillisList.get(playerUuid) != null) {

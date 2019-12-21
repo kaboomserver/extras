@@ -5,9 +5,9 @@ import org.bukkit.event.Listener;
 
 import org.bukkit.event.entity.EntityTeleportEvent;
 
-public class EntityTeleport implements Listener {
+public final class EntityTeleport implements Listener {
 	@EventHandler
-	void onEntityTeleport(EntityTeleportEvent event) {
+	void onEntityTeleport(final EntityTeleportEvent event) {
 		event.setTo(EntitySpawn.limitLocation(event.getTo()));
 	}
 }

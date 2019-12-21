@@ -7,16 +7,20 @@ import org.bukkit.event.Listener;
 
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 
-public class EntityExplosion implements Listener {
+public final class EntityExplosion implements Listener {
 	@EventHandler
-	void onExplosionPrime(ExplosionPrimeEvent event) {
-		if (event.getRadius() > 20) {
-			event.setRadius(20);
+	void onExplosionPrime(final ExplosionPrimeEvent event) {
+		final int maxRadius = 20;
+
+		if (event.getRadius() > maxRadius) {
+			event.setRadius(maxRadius);
 		}
-		
-		if (event.getEntity().getWorld().getEntitiesByClass(Fireball.class).size() > 30 &&
-			event.getRadius() > 1) {
-			event.setRadius(1);	
+
+		final int maxFireballCount = 30;
+
+		if (event.getEntity().getWorld().getEntitiesByClass(Fireball.class).size() > maxFireballCount
+				&& event.getRadius() > 1) {
+			event.setRadius(1);
 		}
 	}
 }
