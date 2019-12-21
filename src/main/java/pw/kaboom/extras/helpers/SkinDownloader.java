@@ -17,14 +17,14 @@ import com.google.gson.JsonParser;
 
 import pw.kaboom.extras.Main;
 
-public class SkinDownloader {
+public final class SkinDownloader {
 	private HttpsURLConnection skinConnection;
 	private InputStreamReader skinStream;
 
 	private String texture;
 	private String signature;
 
-	public void applySkin(Player player, String name, boolean shouldChangeName, boolean shouldSendMessage) {
+	public void applySkin(final Player player, final String name, final boolean shouldChangeName, final boolean shouldSendMessage) {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -66,16 +66,15 @@ public class SkinDownloader {
 					@Override
 					public void run() {
 						try {
-							if (player.isOnline()) {
-								player.setPlayerProfile(profile);
+							player.setPlayerProfile(profile);
 
-								if (shouldChangeName && shouldSendMessage) {
-									player.sendMessage("Successfully set your username to \"" + name + "\"");
-								}
+							if (shouldChangeName && shouldSendMessage) {
+								player.sendMessage("Successfully set your username to \"" + name + "\"");
 							}
 						} catch (Exception exception) {
 							// Do nothing
 						}
+
 						Main.skinInProgress.remove(player.getUniqueId());
 					}
 				}.runTask(JavaPlugin.getPlugin(Main.class));
@@ -83,7 +82,7 @@ public class SkinDownloader {
 		}.runTaskAsynchronously(JavaPlugin.getPlugin(Main.class));
 	}
 
-	private void fetchSkinData(String playerName) throws IOException {
+	private void fetchSkinData(final String playerName) throws IOException {
 		final URL skinUrl = new URL("https://api.ashcon.app/mojang/v2/user/" + playerName);
 		skinConnection = (HttpsURLConnection) skinUrl.openConnection();
 		skinConnection.setConnectTimeout(0);

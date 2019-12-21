@@ -13,8 +13,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
-public class CommandSpidey implements CommandExecutor {
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+public final class CommandSpidey implements CommandExecutor {
+	public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
 		if (sender instanceof ConsoleCommandSender) {
 			sender.sendMessage("Command has to be run by a player");
 		} else {
@@ -24,7 +24,7 @@ public class CommandSpidey implements CommandExecutor {
 			final Vector direction = player.getEyeLocation().getDirection();
 			final int yOffset = 0;
 			final int distance = 50;
-	
+
 			final BlockIterator blockIterator = new BlockIterator(
 				world,
 				start,
@@ -32,10 +32,10 @@ public class CommandSpidey implements CommandExecutor {
 				yOffset,
 				distance
 			);
-	
-			while (blockIterator.hasNext() &&
-				(blockIterator.next().getType() == Material.AIR ||
-				blockIterator.next().getType() == Material.CAVE_AIR)) {
+
+			while (blockIterator.hasNext()
+					&& (blockIterator.next().getType() == Material.AIR
+					|| blockIterator.next().getType() == Material.CAVE_AIR)) {
 				blockIterator.next().setType(Material.COBWEB);
 			}
 		}

@@ -12,12 +12,12 @@ import org.bukkit.entity.Player;
 
 import org.bukkit.inventory.ItemStack;
 
-public class CommandPumpkin implements CommandExecutor {
-	private void placePumpkin(Player player) {
+public final class CommandPumpkin implements CommandExecutor {
+	private void placePumpkin(final Player player) {
 		player.getInventory().setHelmet(new ItemStack(Material.CARVED_PUMPKIN));
 	}
 
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+	public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
 		if (args.length == 0) {
 			sender.sendMessage(ChatColor.RED + "Usage: /" + label + " <player>");
 		} else {
@@ -34,7 +34,7 @@ public class CommandPumpkin implements CommandExecutor {
 				} else {
 					sender.sendMessage("Player \"" + target.getName() + "\" not found");
 				}
-			}	
+			}
 		}
 		return true;
 	}

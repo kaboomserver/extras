@@ -1,5 +1,7 @@
 package pw.kaboom.extras.modules.player;
 
+import java.io.IOException;
+
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
@@ -19,7 +21,7 @@ import pw.kaboom.extras.helpers.SkinDownloader;
 
 public class PlayerConnection implements Listener {
 	@EventHandler
-	void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent event) {
+	void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent event) throws IOException {
 		if (event.getName().length() > 16) {
 			event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "Your username can't be longer than 16 characters");
 			return;
@@ -77,11 +79,12 @@ public class PlayerConnection implements Listener {
 			player.setOp(true);
 		}
 
+		final String name = player.getName();
 		final boolean shouldChangeUsername = false;
 		final boolean shouldSendMessage = false;
 
 		SkinDownloader skinDownloader = new SkinDownloader();
-		skinDownloader.applySkin(player, player.getName(), shouldChangeUsername, shouldSendMessage);
+		skinDownloader.applySkin(player, name, shouldChangeUsername, shouldSendMessage);
 	}
 
 	@SuppressWarnings("deprecation")

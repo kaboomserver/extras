@@ -9,10 +9,12 @@ import org.bukkit.command.CommandSender;
 
 import org.bukkit.entity.Player;
 
-public class CommandClearChat implements CommandExecutor {
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+public final class CommandClearChat implements CommandExecutor {
+	public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
+		final int maxMessages = 100;
+
 		for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-			for (int i = 0; i < 100; ++i) {
+			for (int i = 0; i < maxMessages; ++i) {
 				onlinePlayer.sendMessage("");
 			}
 			onlinePlayer.sendMessage(ChatColor.DARK_GREEN + "The chat has been cleared");

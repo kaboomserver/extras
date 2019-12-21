@@ -8,8 +8,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-public class CommandUnloadChunks implements CommandExecutor {
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+public final class CommandUnloadChunks implements CommandExecutor {
+	public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
 		int chunkCount = 0;
 
 		for (World world : Bukkit.getServer().getWorlds()) {

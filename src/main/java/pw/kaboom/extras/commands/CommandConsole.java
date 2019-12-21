@@ -7,8 +7,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-public class CommandConsole implements CommandExecutor {
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+public final class CommandConsole implements CommandExecutor {
+	public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
 		if (args.length == 0) {
 			sender.sendMessage(ChatColor.RED + "Usage: /" + label + " <message ..>");
 		} else {

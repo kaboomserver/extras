@@ -10,8 +10,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
-public class CommandDestroyEntities implements CommandExecutor {
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+public final class CommandDestroyEntities implements CommandExecutor {
+	public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
 		int entityCount = 0;
 		int worldCount = 0;
 
