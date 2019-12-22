@@ -1,5 +1,6 @@
 package pw.kaboom.extras.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -7,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import pw.kaboom.extras.Main;
 import pw.kaboom.extras.helpers.SkinDownloader;
 
@@ -23,6 +25,14 @@ public final class CommandUsername implements CommandExecutor {
 			} else if (!SkinDownloader.skinInProgress.contains(player.getUniqueId())) {
 				final String nameColor = ChatColor.translateAlternateColorCodes('&', String.join(" ", args));
 				final String name = nameColor.substring(0, Math.min(16, nameColor.length()));
+
+				for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+					if (onlinePlayer.getName().equals(name)) {
+						player.sendMessage("A player with that username is already logged in");
+						return true;
+					}
+				}
+
 				final boolean shouldChangeUsername = true;
 				final boolean shouldSendMessage = true;
 

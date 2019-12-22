@@ -1,5 +1,6 @@
 package pw.kaboom.extras.modules.player;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
@@ -22,6 +23,12 @@ public final class PlayerConnection implements Listener {
 	void onAsyncPlayerPreLogin(final AsyncPlayerPreLoginEvent event) {
 		if (event.getName().length() > 16) {
 			event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "Your username can't be longer than 16 characters");
+		} else {
+			for (Player player : Bukkit.getOnlinePlayers()) {
+				if (player.getName().equals(event.getName())) {
+					event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "A player with that username is already logged in");
+				}
+			}
 		}
 	}
 
