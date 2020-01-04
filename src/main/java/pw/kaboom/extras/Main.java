@@ -2,6 +2,11 @@ package pw.kaboom.extras;
 
 import java.util.Collections;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.ListenerPriority;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketEvent;
 import org.bukkit.block.BlockFace;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -423,6 +428,17 @@ public final class Main extends JavaPlugin {
 		this.getCommand("tellraw").setExecutor(new CommandTellraw());
 		this.getCommand("unloadchunks").setExecutor(new CommandUnloadChunks());
 		this.getCommand("username").setExecutor(new CommandUsername());
+
+		ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Client.WINDOW_CLICK) {
+			@Override
+			public void onPacketReceiving(PacketEvent event) {
+				final int maxInventorySize = 46;
+				if (event.getPacket().getIntegers().read(1) > maxInventorySize ||
+						event.getPacket().getIntegers().read(1) < 0) {
+					event.setCancelled(true);
+				}
+			}
+		});
 
 		/* Block-related modules */
 		this.getServer().getPluginManager().registerEvents(new BlockCheck(), this);

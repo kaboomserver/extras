@@ -5,10 +5,20 @@ import java.util.UUID;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public final class PlayerInteract implements Listener {
 	static HashMap<UUID, Long> interactMillisList = new HashMap<UUID, Long>();
+
+	@EventHandler
+	void onInventoryClick(final InventoryClickEvent event) {
+		try {
+			event.getSlot();
+		} catch (Exception exception) {
+			event.setCancelled(true);
+		}
+	}
 
 	@EventHandler
 	void onPlayerInteract(final PlayerInteractEvent event) {

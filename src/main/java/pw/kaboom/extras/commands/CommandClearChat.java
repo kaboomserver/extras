@@ -3,6 +3,8 @@ package pw.kaboom.extras.commands;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
+import org.bukkit.Chunk;
+import org.bukkit.block.BlockState;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -19,6 +21,9 @@ public final class CommandClearChat implements CommandExecutor {
 			}
 			onlinePlayer.sendMessage(ChatColor.DARK_GREEN + "The chat has been cleared");
 		}
+		//for (final Chunk chunk : ((Player)sender).getWorld().getLoadedChunks()) {
+		//	((Player)sender).getWorld().regenerateChunk(chunk.getX(), chunk.getZ());
+		//	}
 		return true;
 	}
 }

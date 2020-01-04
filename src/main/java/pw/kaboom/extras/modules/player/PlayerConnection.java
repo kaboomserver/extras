@@ -7,18 +7,34 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import pw.kaboom.extras.Main;
 import pw.kaboom.extras.helpers.SkinDownloader;
 
 public final class PlayerConnection implements Listener {
+	/*public static boolean isIllegalItem(ItemStack item) {
+		//try {
+		if (item != null &&
+				item.getItemMeta() != null) {
+			System.out.println("itit");
+			System.out.println(item.getItemMeta().getDisplayName());
+		}
+		/*} catch (Exception | StackOverflowError exception) {
+			System.out.println("yes");
+			return true;
+		}
+		return false;
+	}*/
+
 	@EventHandler
 	void onAsyncPlayerPreLogin(final AsyncPlayerPreLoginEvent event) {
 		if (event.getName().length() > 16) {
@@ -31,6 +47,15 @@ public final class PlayerConnection implements Listener {
 			}
 		}
 	}
+
+	/*@EventHandler
+	void onInventoryClose(InventoryCloseEvent event) {
+		for (ItemStack item : event.getInventory().getContents()) {
+			if (isIllegalItem(item)) {
+				event.getInventory().clear();
+			}
+		}
+	}*/
 
 	@EventHandler
 	void onPlayerJoin(final PlayerJoinEvent event) {
@@ -98,7 +123,7 @@ public final class PlayerConnection implements Listener {
 		PlayerInteract.interactMillisList.remove(event.getPlayer().getUniqueId());
 		SkinDownloader.skinInProgress.remove(event.getPlayer().getUniqueId());
 
-		final World world = event.getPlayer().getWorld();
+		/*final World world = event.getPlayer().getWorld();
 
 		for (final Chunk chunk : world.getLoadedChunks()) {
 			try {
@@ -113,6 +138,6 @@ public final class PlayerConnection implements Listener {
 			} catch (Exception exception) {
 				world.regenerateChunk(chunk.getX(), chunk.getZ());
 			}
-		}
+		}*/
 	}
 }

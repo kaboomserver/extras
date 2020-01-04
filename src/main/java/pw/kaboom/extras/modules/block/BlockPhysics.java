@@ -5,6 +5,7 @@ import java.util.HashSet;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -93,6 +94,16 @@ public final class BlockPhysics implements Listener {
 				event.getBlock().setType(Material.AIR, false);
 				event.setCancelled(true);
 			}
+			break;
+		case SIGN:
+		case WALL_SIGN:
+			/*try {
+				event.getBlock().getState();
+				event.getSourceBlock().getState();
+			} catch (Exception exception) {
+				event.getBlock().setType(Material.AIR, false);
+				event.setCancelled(true);
+			}*/
 			break;
 		case TNT:
 			for (BlockFace face : blockFaces) {
