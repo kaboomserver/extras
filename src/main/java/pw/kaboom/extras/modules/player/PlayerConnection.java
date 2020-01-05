@@ -1,7 +1,9 @@
 package pw.kaboom.extras.modules.player;
 
+import com.destroystokyo.paper.event.profile.PreLookupProfileEvent;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
+import com.google.common.base.Charsets;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.bukkit.Bukkit;
@@ -27,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.UUID;
 
 public final class PlayerConnection implements Listener {
 	private PlayerProfile profile;
@@ -83,6 +86,12 @@ public final class PlayerConnection implements Listener {
 		if (event.getPlayer().isOnline()) {
 			event.getCommands().clear();
 		}
+	}
+
+	@EventHandler
+	void onPlayerCommandSend2(final PreLookupProfileEvent event) {
+		UUID offlineUUID = UUID.nameUUIDFromBytes(("OfflinePlayer:" + event.getName()).getBytes(Charsets.UTF_8));
+		event.setUUID(offlineUUID);
 	}
 
 	@EventHandler
