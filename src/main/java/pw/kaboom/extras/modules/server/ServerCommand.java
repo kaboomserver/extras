@@ -36,8 +36,10 @@ public final class ServerCommand implements Listener {
 											|| "fill".equalsIgnoreCase(arr[i + 1])
 											|| "particle".equalsIgnoreCase(arr[i + 1])
 											|| "save-off".equalsIgnoreCase(arr[i + 1])
+											|| "say".equalsIgnoreCase(arr[i + 1])
 											|| "spreadplayers".equalsIgnoreCase(arr[i + 1])
-											|| "stop".equalsIgnoreCase(arr[i + 1])) {
+											|| "stop".equalsIgnoreCase(arr[i + 1])
+											|| "tellraw".equalsIgnoreCase(arr[i + 1])) {
 										Command.broadcastCommandMessage(sender, "Forbidden execute command detected");
 										return "cancel";
 									} else if (i + 3 < arr.length

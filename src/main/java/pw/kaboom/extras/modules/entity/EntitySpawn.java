@@ -55,7 +55,7 @@ public class EntitySpawn implements Listener {
 
 	private boolean checkEntityLimits(EntityType entityType, Chunk chunk, World world, boolean isAddToWorldEvent) {
 		final int chunkEntityCount = chunk.getEntities().length;
-		final int chunkEntityCountLimit = 50;
+		final int chunkEntityCountLimit = 30;
 
 		final int worldDragonCount = world.getEntitiesByClass(EnderDragon.class).size();
 		final int worldDragonCountLimit = 24;
@@ -214,7 +214,8 @@ public class EntitySpawn implements Listener {
 			final EntityType entityType = entity.getType();
 			final boolean isAddToWorldEvent = true;
 
-			if (checkEntityLimits(entityType, chunk, world, isAddToWorldEvent)) {
+			if (checkEntityLimits(entityType, chunk, world, isAddToWorldEvent)
+					&& entity.getType() != EntityType.PLAYER) {
 				entity.remove();
 				return;
 			}

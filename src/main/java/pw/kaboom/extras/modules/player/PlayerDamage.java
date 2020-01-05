@@ -12,6 +12,7 @@ import org.bukkit.block.BlockFace;
 
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
 import org.bukkit.event.EventHandler;
@@ -19,6 +20,8 @@ import org.bukkit.event.Listener;
 
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import org.bukkit.inventory.ItemStack;
@@ -35,6 +38,24 @@ public final class PlayerDamage implements Listener {
 	}
 
 	@EventHandler
+	void onEntityRegainHealth(final EntityRegainHealthEvent event) {
+		if (event.getAmount() < 0) {
+			event.setCancelled(true);
+		}
+	}
+
+	@EventHandler
+	void onFoodLevelChange(final FoodLevelChangeEvent event) {
+		final HumanEntity player = event.getEntity();
+
+		if (player.getMaxHealth() <= 0) {
+			player.setMaxHealth(Double.POSITIVE_INFINITY);
+			player.setHealth(20);
+			player.setMaxHealth(20);
+		}
+	}
+
+	@EventHandler
 	void onPlayerDeath(final PlayerDeathEvent event) {
 		final Player player = event.getEntity();
 		final AttributeInstance maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
@@ -43,20 +64,20 @@ public final class PlayerDamage implements Listener {
 			onlinePlayer.sendMessage(event.getDeathMessage());
 		}
 
-		if (!event.getKeepInventory()) {
-			player.getInventory().clear();
-
-			for (ItemStack item : event.getDrops()) {
-				player.getWorld().dropItemNaturally(player.getLocation(), item);
-			}
-		}
-
-		if (event.getDroppedExp() > 0) {
-			ExperienceOrb xp = player.getWorld().spawn(player.getLocation(), ExperienceOrb.class);
-			xp.setExperience(event.getDroppedExp());
-		}
-
 		try {
+			if (!event.getKeepInventory()) {
+				player.getInventory().clear();
+
+				for (ItemStack item : event.getDrops()) {
+					player.getWorld().dropItemNaturally(player.getLocation(), item);
+				}
+			}
+
+			if (event.getDroppedExp() > 0) {
+				ExperienceOrb xp = player.getWorld().spawn(player.getLocation(), ExperienceOrb.class);
+				xp.setExperience(event.getDroppedExp());
+			}
+
 			maxHealth.setBaseValue(20);
 			player.setHealth(20);
 

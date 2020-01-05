@@ -1,5 +1,9 @@
 package pw.kaboom.extras.modules.player;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
@@ -8,19 +12,27 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import org.bukkit.scheduler.BukkitRunnable;
 import pw.kaboom.extras.Main;
 import pw.kaboom.extras.helpers.SkinDownloader;
 
+import javax.net.ssl.HttpsURLConnection;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+
 public final class PlayerConnection implements Listener {
+	private PlayerProfile profile;
+	private String texture;
+	private String signature;
+
 	/*public static boolean isIllegalItem(ItemStack item) {
 		//try {
 		if (item != null &&
@@ -45,6 +57,15 @@ public final class PlayerConnection implements Listener {
 					event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "A player with that username is already logged in");
 				}
 			}
+
+			try {
+				profile = event.getPlayerProfile();
+				profile.clearProperties();
+
+				fetchSkinData(event.getName());
+				profile.setProperty(new ProfileProperty("textures", texture, signature));
+			} catch (Exception ignored) {
+			}
 		}
 	}
 
@@ -56,6 +77,13 @@ public final class PlayerConnection implements Listener {
 			}
 		}
 	}*/
+
+	@EventHandler
+	void onPlayerCommandSend(final PlayerCommandSendEvent event) {
+		if (event.getPlayer().isOnline()) {
+			event.getCommands().clear();
+		}
+	}
 
 	@EventHandler
 	void onPlayerJoin(final PlayerJoinEvent event) {
@@ -93,8 +121,6 @@ public final class PlayerConnection implements Listener {
 			return;
 		}
 
-		final Player player = event.getPlayer();
-
 		if (!JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("enableJoinRestrictions")) {
 			event.allow();
 		}
@@ -104,16 +130,18 @@ public final class PlayerConnection implements Listener {
 			event.allow();
 		}
 
-		if (JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("opOnJoin")) {
-			player.setOp(true);
+		final Player player = event.getPlayer();
+
+		try {
+			player.setPlayerProfile(profile);
+			profile = null;
+		} catch (Exception ignored) {
 		}
 
-		final String name = player.getName();
-		final boolean shouldChangeUsername = false;
-		final boolean shouldSendMessage = false;
-
-		SkinDownloader skinDownloader = new SkinDownloader();
-		skinDownloader.applySkin(player, name, shouldChangeUsername, shouldSendMessage);
+		if (JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("opOnJoin")
+				&& !player.isOp()) {
+			player.setOp(true);
+		}
 	}
 
 	@SuppressWarnings("deprecation")
@@ -139,5 +167,20 @@ public final class PlayerConnection implements Listener {
 				world.regenerateChunk(chunk.getX(), chunk.getZ());
 			}
 		}*/
+	}
+
+	private void fetchSkinData(final String playerName) throws IOException {
+		final URL skinUrl = new URL("https://api.ashcon.app/mojang/v2/user/" + playerName);
+		HttpsURLConnection skinConnection = (HttpsURLConnection) skinUrl.openConnection();
+		skinConnection.setConnectTimeout(0);
+
+		InputStreamReader skinStream = new InputStreamReader(skinConnection.getInputStream());
+		final JsonObject responseJson = new JsonParser().parse(skinStream).getAsJsonObject();
+		final JsonObject rawSkin = responseJson.getAsJsonObject("textures").getAsJsonObject("raw");
+		texture = rawSkin.get("value").getAsString();
+		signature = rawSkin.get("signature").getAsString();
+
+		skinStream.close();
+		skinConnection.disconnect();
 	}
 }
