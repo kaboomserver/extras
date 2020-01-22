@@ -3,12 +3,12 @@ package pw.kaboom.extras.helpers;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -22,6 +22,7 @@ import pw.kaboom.extras.Main;
 
 public final class SkinDownloader {
 	public static HashSet<UUID> skinInProgress = new HashSet<UUID>();
+	public static HashMap<UUID, PlayerProfile> skinProfiles = new HashMap<UUID, PlayerProfile>();
 
 	private HttpsURLConnection skinConnection;
 	private InputStreamReader skinStream;
@@ -87,6 +88,20 @@ public final class SkinDownloader {
 		}.runTaskAsynchronously(JavaPlugin.getPlugin(Main.class));
 	}
 
+	public void fillJoinProfile(final PlayerProfile profile, final String name, final UUID uuid) {
+		try {
+			fetchSkinData(name);
+			profile.setProperty(new ProfileProperty("textures", texture, signature));
+			skinProfiles.put(uuid, profile);
+		} catch (Exception exception) {
+			try {
+				skinStream.close();
+				skinConnection.disconnect();
+			} catch (Exception ignored) {
+			}
+		}
+	}
+
 	private void fetchSkinData(final String playerName) throws IOException {
 		final URL skinUrl = new URL("https://api.ashcon.app/mojang/v2/user/" + playerName);
 		skinConnection = (HttpsURLConnection) skinUrl.openConnection();
@@ -100,5 +115,13 @@ public final class SkinDownloader {
 
 		skinStream.close();
 		skinConnection.disconnect();
+	}
+
+	public static PlayerProfile getProfile(final UUID uuid) {
+		return skinProfiles.get(uuid);
+	}
+
+	public static void removeProfile(final UUID uuid) {
+		skinProfiles.remove(uuid);
 	}
 }

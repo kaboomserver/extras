@@ -44,6 +44,7 @@ public final class PlayerDamage implements Listener {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	void onFoodLevelChange(final FoodLevelChangeEvent event) {
 		final HumanEntity player = event.getEntity();

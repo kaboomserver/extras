@@ -7,15 +7,7 @@ import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.CreatureSpawner;
-import org.bukkit.entity.AreaEffectCloud;
-import org.bukkit.entity.EnderDragon;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.FallingBlock;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Slime;
-import org.bukkit.entity.TNTPrimed;
-import org.bukkit.entity.Vehicle;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.AreaEffectCloudApplyEvent;
@@ -28,6 +20,7 @@ import com.destroystokyo.paper.event.block.TNTPrimeEvent.PrimeReason;
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import com.destroystokyo.paper.event.entity.PreSpawnerSpawnEvent;
+import org.bukkit.event.weather.LightningStrikeEvent;
 
 public class EntitySpawn implements Listener {
 	private void applyEntityChanges(Entity entity) {
@@ -172,8 +165,13 @@ public class EntitySpawn implements Listener {
 	private void limitSpawner(CreatureSpawner spawner) {
 		if (spawner.getSpawnedType() == EntityType.MINECART_MOB_SPAWNER) {
 			spawner.setSpawnedType(EntityType.MINECART);
-		} else if (spawner.getSpawnedType() == EntityType.FALLING_BLOCK &&
-			spawner.getDelay() > 100) {
+		}
+
+		System.out.println(spawner.getDelay());
+		System.out.println(spawner.getSpawnCount());
+		System.out.println(spawner.getSpawnRange());
+
+		if (spawner.getDelay() > 100) {
 			spawner.setMaxSpawnDelay(100);
 			spawner.setDelay(100);
 			spawner.update();
@@ -251,6 +249,28 @@ public class EntitySpawn implements Listener {
 		}
 
 		applyEntityChanges(entity);
+	}
+
+	@EventHandler
+	void onLightningStrike(LightningStrikeEvent event) {
+		final LightningStrike lightning = event.getLightning();
+		final double X = lightning.getLocation().getX();
+		final double Y = lightning.getLocation().getY();
+		final double Z = lightning.getLocation().getZ();
+
+		if (isOutsideBoundaries(X, Y, Z)) {
+			event.setCancelled(true);
+			return;
+		}
+
+		final EntityType entityType = lightning.getType();
+		final Chunk chunk = lightning.getChunk();
+		final World world = lightning.getWorld();
+		final boolean isAddToWorldEvent = false;
+
+		if (checkEntityLimits(entityType, chunk, world, isAddToWorldEvent)) {
+			event.setCancelled(true);
+		}
 	}
 
 	@EventHandler

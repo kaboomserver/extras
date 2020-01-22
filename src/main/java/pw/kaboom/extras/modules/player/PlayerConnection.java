@@ -2,39 +2,31 @@ package pw.kaboom.extras.modules.player;
 
 import com.destroystokyo.paper.event.profile.PreLookupProfileEvent;
 import com.destroystokyo.paper.profile.PlayerProfile;
-import com.destroystokyo.paper.profile.ProfileProperty;
 import com.google.common.base.Charsets;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.World;
-import org.bukkit.block.BlockState;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import org.bukkit.scheduler.BukkitRunnable;
 import pw.kaboom.extras.Main;
 import pw.kaboom.extras.helpers.SkinDownloader;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.UUID;
 
 public final class PlayerConnection implements Listener {
-	private PlayerProfile profile;
-	private String texture;
-	private String signature;
+	private long connectionMillis;
+
+	private final File configFile = new File("spigot.yml");
+	private final FileConfiguration spigotConfig = YamlConfiguration.loadConfiguration(configFile);
+	private final ConfigurationSection configSection = spigotConfig.getConfigurationSection("commands");
 
 	/*public static boolean isIllegalItem(ItemStack item) {
 		//try {
@@ -62,11 +54,10 @@ public final class PlayerConnection implements Listener {
 			}
 
 			try {
-				profile = event.getPlayerProfile();
-				profile.clearProperties();
+				final PlayerProfile profile = event.getPlayerProfile();
 
-				fetchSkinData(event.getName());
-				profile.setProperty(new ProfileProperty("textures", texture, signature));
+				SkinDownloader skinDownloader = new SkinDownloader();
+				skinDownloader.fillJoinProfile(profile, event.getName(), event.getUniqueId());
 			} catch (Exception ignored) {
 			}
 		}
@@ -81,17 +72,18 @@ public final class PlayerConnection implements Listener {
 		}
 	}*/
 
-	@EventHandler
+	/*@EventHandler
 	void onPlayerCommandSend(final PlayerCommandSendEvent event) {
 		if (event.getPlayer().isOnline()) {
 			event.getCommands().clear();
 		}
-	}
+	}*/
 
 	@EventHandler
-	void onPlayerCommandSend2(final PreLookupProfileEvent event) {
-		UUID offlineUUID = UUID.nameUUIDFromBytes(("OfflinePlayer:" + event.getName()).getBytes(Charsets.UTF_8));
-		event.setUUID(offlineUUID);
+	void onPlayerCommandSend2(final PlayerStatisticIncrementEvent event) {
+		//if (event.getPlayer().isOnline()) {
+		event.setCancelled(true);
+		//}
 	}
 
 	@EventHandler
@@ -128,7 +120,27 @@ public final class PlayerConnection implements Listener {
 				&& event.getHostname().endsWith(":25565")) {
 			event.disallow(Result.KICK_OTHER, "You connected to the server using an outdated server address/IP.\nPlease use the following address/IP:\n\nkaboom.pw");
 			return;
+		} else if (System.currentTimeMillis() - connectionMillis < 2000) {
+			if (!configSection.getString("tab-complete").equals("-1")) {
+				configSection.set("tab-complete", -1);
+				try {
+					spigotConfig.save(configFile);
+
+					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "spigot reload");
+				} catch (IOException ignored) {
+				}
+			}
+		} else if (configSection.getString("tab-complete").equals("-1")) {
+			configSection.set("tab-complete", 0);
+			try {
+				spigotConfig.save(configFile);
+
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "spigot reload");
+			} catch (IOException ignored) {
+			}
 		}
+
+		connectionMillis = System.currentTimeMillis();
 
 		if (!JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("enableJoinRestrictions")) {
 			event.allow();
@@ -142,8 +154,8 @@ public final class PlayerConnection implements Listener {
 		final Player player = event.getPlayer();
 
 		try {
-			player.setPlayerProfile(profile);
-			profile = null;
+			player.setPlayerProfile(SkinDownloader.getProfile(player.getUniqueId()));
+			SkinDownloader.removeProfile(player.getUniqueId());
 		} catch (Exception ignored) {
 		}
 
@@ -153,7 +165,6 @@ public final class PlayerConnection implements Listener {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@EventHandler
 	void onPlayerQuit(PlayerQuitEvent event) {
 		PlayerCommand.commandMillisList.remove(event.getPlayer().getUniqueId());
@@ -178,18 +189,9 @@ public final class PlayerConnection implements Listener {
 		}*/
 	}
 
-	private void fetchSkinData(final String playerName) throws IOException {
-		final URL skinUrl = new URL("https://api.ashcon.app/mojang/v2/user/" + playerName);
-		HttpsURLConnection skinConnection = (HttpsURLConnection) skinUrl.openConnection();
-		skinConnection.setConnectTimeout(0);
-
-		InputStreamReader skinStream = new InputStreamReader(skinConnection.getInputStream());
-		final JsonObject responseJson = new JsonParser().parse(skinStream).getAsJsonObject();
-		final JsonObject rawSkin = responseJson.getAsJsonObject("textures").getAsJsonObject("raw");
-		texture = rawSkin.get("value").getAsString();
-		signature = rawSkin.get("signature").getAsString();
-
-		skinStream.close();
-		skinConnection.disconnect();
+	@EventHandler
+	void onPreLookupProfile(final PreLookupProfileEvent event) {
+		UUID offlineUUID = UUID.nameUUIDFromBytes(("OfflinePlayer:" + event.getName()).getBytes(Charsets.UTF_8));
+		event.setUUID(offlineUUID);
 	}
 }

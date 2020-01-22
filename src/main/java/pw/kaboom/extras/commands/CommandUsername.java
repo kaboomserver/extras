@@ -8,8 +8,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
-import pw.kaboom.extras.Main;
 import pw.kaboom.extras.helpers.SkinDownloader;
 
 public final class CommandUsername implements CommandExecutor {
