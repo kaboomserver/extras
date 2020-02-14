@@ -17,7 +17,7 @@ public final class CommandDestroyEntities implements CommandExecutor {
 
 		for (World world : Bukkit.getWorlds()) {
 			for (Entity entity : world.getEntities()) {
-				if (entity.getType() != EntityType.PLAYER) {
+				if (!EntityType.PLAYER.equals(entity.getType())) {
 					entity.remove();
 					entityCount++;
 				}

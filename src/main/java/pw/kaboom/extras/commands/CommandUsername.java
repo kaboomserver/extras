@@ -25,7 +25,7 @@ public final class CommandUsername implements CommandExecutor {
 				final String name = nameColor.substring(0, Math.min(16, nameColor.length()));
 
 				for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-					if (onlinePlayer.getName().equals(name)) {
+					if (name.equals(onlinePlayer.getName())) {
 						player.sendMessage("A player with that username is already logged in");
 						return true;
 					}

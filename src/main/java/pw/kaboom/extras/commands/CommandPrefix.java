@@ -30,7 +30,7 @@ public final class CommandPrefix implements CommandExecutor {
 			try {
 				if (args.length == 0) {
 					player.sendMessage(ChatColor.RED + "Usage: /" + label + " <prefix|off>");
-				} else if (args[0].equalsIgnoreCase("off")) {
+				} else if ("off".equalsIgnoreCase(args[0])) {
 					prefixConfig.set(player.getUniqueId().toString(), null);
 					prefixConfig.save(configFile);
 					player.sendMessage("You no longer have a tag");

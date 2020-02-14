@@ -19,9 +19,6 @@ public final class CommandClearChat implements CommandExecutor {
 			}
 			onlinePlayer.sendMessage(ChatColor.DARK_GREEN + "The chat has been cleared");
 		}
-		//for (final Chunk chunk : ((Player)sender).getWorld().getLoadedChunks()) {
-		//	((Player)sender).getWorld().regenerateChunk(chunk.getX(), chunk.getZ());
-		//	}
 		return true;
 	}
 }

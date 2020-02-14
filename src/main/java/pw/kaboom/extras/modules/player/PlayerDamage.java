@@ -29,8 +29,8 @@ import org.bukkit.inventory.ItemStack;
 public final class PlayerDamage implements Listener {
 	@EventHandler
 	void onEntityDamage(final EntityDamageEvent event) {
-		if (event.getEntityType() == EntityType.PLAYER) {
-			if (event.getCause() == DamageCause.VOID
+		if (EntityType.PLAYER.equals(event.getEntityType())) {
+			if (DamageCause.VOID.equals(event.getCause())
 					&& event.getDamage() == Float.MAX_VALUE) {
 				event.setCancelled(true);
 			}

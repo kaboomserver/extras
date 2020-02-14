@@ -48,7 +48,7 @@ public final class PlayerConnection implements Listener {
 			event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "Your username can't be longer than 16 characters");
 		} else {
 			for (Player player : Bukkit.getOnlinePlayers()) {
-				if (player.getName().equals(event.getName())) {
+				if (event.getName().equals(player.getName())) {
 					event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "A player with that username is already logged in");
 				}
 			}
@@ -146,7 +146,7 @@ public final class PlayerConnection implements Listener {
 			event.allow();
 		}
 
-		if (event.getResult() == Result.KICK_FULL
+		if (Result.KICK_FULL.equals(event.getResult())
 				&& JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("allowJoinOnFullServer")) {
 			event.allow();
 		}

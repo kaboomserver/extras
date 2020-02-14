@@ -21,7 +21,7 @@ public final class CommandEnchantAll implements CommandExecutor {
 			final Player player = (Player) sender;
 			final ItemStack item = player.getInventory().getItemInMainHand();
 
-			if (item.getType() == Material.AIR) {
+			if (Material.AIR.equals(item.getType())) {
 				player.sendMessage("Please hold an item in your hand to enchant it");
 			} else {
 				for (Enchantment enchantment : Enchantment.values()) {

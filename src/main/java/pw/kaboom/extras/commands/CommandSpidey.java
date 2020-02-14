@@ -34,8 +34,8 @@ public final class CommandSpidey implements CommandExecutor {
 			);
 
 			while (blockIterator.hasNext()
-					&& (blockIterator.next().getType() == Material.AIR
-					|| blockIterator.next().getType() == Material.CAVE_AIR)) {
+					&& (Material.AIR.equals(blockIterator.next().getType())
+					|| Material.CAVE_AIR.equals(blockIterator.next().getType()))) {
 				blockIterator.next().setType(Material.COBWEB);
 			}
 		}
