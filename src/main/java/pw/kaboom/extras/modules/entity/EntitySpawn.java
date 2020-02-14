@@ -53,10 +53,10 @@ public class EntitySpawn implements Listener {
 		final int worldDragonCount = world.getEntitiesByClass(EnderDragon.class).size();
 		final int worldDragonCountLimit = 24;
 
-		if ((entityType != EntityType.PLAYER &&
+		if ((!entityType.equals(EntityType.PLAYER) &&
 			isEntityLimitReached(chunkEntityCount, chunkEntityCountLimit, isAddToWorldEvent)) ||
 
-			(entityType == EntityType.ENDER_DRAGON &&
+			(entityType.equals(EntityType.ENDER_DRAGON) &&
 			isEntityLimitReached(worldDragonCount, worldDragonCountLimit, isAddToWorldEvent))) {
 			return true;
 		}
@@ -68,7 +68,7 @@ public class EntitySpawn implements Listener {
 
 		if (worldEntityCount > 1024) {
 			for (Entity entity : world.getEntities()) {
-				if (entity.getType() != EntityType.PLAYER) {
+				if (!entity.getType().equals(EntityType.PLAYER)) {
 					entity.remove();
 				}
 			}
@@ -163,13 +163,9 @@ public class EntitySpawn implements Listener {
 	}
 
 	private void limitSpawner(CreatureSpawner spawner) {
-		if (spawner.getSpawnedType() == EntityType.MINECART_MOB_SPAWNER) {
+		if (spawner.getSpawnedType().equals(EntityType.MINECART_MOB_SPAWNER)) {
 			spawner.setSpawnedType(EntityType.MINECART);
 		}
-
-		System.out.println(spawner.getDelay());
-		System.out.println(spawner.getSpawnCount());
-		System.out.println(spawner.getSpawnRange());
 
 		if (spawner.getDelay() > 100) {
 			spawner.setMaxSpawnDelay(100);
@@ -213,7 +209,7 @@ public class EntitySpawn implements Listener {
 			final boolean isAddToWorldEvent = true;
 
 			if (checkEntityLimits(entityType, chunk, world, isAddToWorldEvent)
-					&& entity.getType() != EntityType.PLAYER) {
+					&& !entity.getType().equals(EntityType.PLAYER)) {
 				entity.remove();
 				return;
 			}
@@ -228,6 +224,7 @@ public class EntitySpawn implements Listener {
 
 	@EventHandler
 	void onEntitySpawn(EntitySpawnEvent event) {
+		System.out.println(event.getEntityType());
 		final double X = event.getLocation().getX();
 		final double Y = event.getLocation().getY();
 		final double Z = event.getLocation().getZ();
@@ -296,8 +293,8 @@ public class EntitySpawn implements Listener {
 
 	@EventHandler
 	void onSpawnerSpawn(SpawnerSpawnEvent event) {
-		if (event.getEntityType() == EntityType.FALLING_BLOCK) {
-			if (((FallingBlock) event.getEntity()).getBlockData().getMaterial() == Material.SPAWNER) {
+		if (event.getEntityType().equals(EntityType.FALLING_BLOCK)) {
+			if (((FallingBlock) event.getEntity()).getBlockData().getMaterial().equals(Material.SPAWNER)) {
 				event.setCancelled(true);
 				event.getSpawner().setSpawnedType(EntityType.FALLING_BLOCK);
 			}
@@ -307,7 +304,7 @@ public class EntitySpawn implements Listener {
 	@EventHandler
 	void onTNTPrime(TNTPrimeEvent event) {
 		if (event.getBlock().getWorld().getEntitiesByClass(TNTPrimed.class).size() > 120) {
-			if (event.getReason() == PrimeReason.EXPLOSION) {
+			if (event.getReason().equals(PrimeReason.EXPLOSION)) {
 				event.setCancelled(true);
 			}
 		}
