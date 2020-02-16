@@ -1,5 +1,6 @@
 package pw.kaboom.extras.modules.player;
 
+import com.destroystokyo.paper.event.player.PlayerHandshakeEvent;
 import com.destroystokyo.paper.event.profile.PreLookupProfileEvent;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.google.common.base.Charsets;
@@ -44,6 +45,8 @@ public final class PlayerConnection implements Listener {
 
 	@EventHandler
 	void onAsyncPlayerPreLogin(final AsyncPlayerPreLoginEvent event) {
+		System.out.println("prelogin");
+		
 		if (event.getName().length() > 16) {
 			event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "Your username can't be longer than 16 characters");
 		} else {
@@ -120,6 +123,8 @@ public final class PlayerConnection implements Listener {
 
 	@EventHandler
 	void onPlayerLogin(final PlayerLoginEvent event) {
+		System.out.println("login");
+		
 		if (event.getHostname().startsWith("play.flame.ga")
 				&& event.getHostname().endsWith(":25565")) {
 			event.disallow(Result.KICK_OTHER, "You connected to the server using an outdated server address/IP.\nPlease use the following address/IP:\n\nkaboom.pw");

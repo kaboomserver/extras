@@ -1,8 +1,5 @@
 package pw.kaboom.extras.commands;
 
-import java.util.HashSet;
-import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -14,14 +11,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
-import com.destroystokyo.paper.profile.ProfileProperty;
-import com.google.common.base.Charsets;
 
 import pw.kaboom.extras.Main;
-import pw.kaboom.extras.helpers.SkinDownloader;
 
 public final class CommandUsername implements CommandExecutor {
-	public static HashSet<String> busyNames = new HashSet<String>();
+	public static boolean nameInProgress = false;
 	
 	@Override
 	public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
@@ -35,42 +29,37 @@ public final class CommandUsername implements CommandExecutor {
 
 			if (args.length == 0) {
 				player.sendMessage(ChatColor.RED + "Usage: /" + label + " <username>");
-			} else if (!busyNames.contains(name)) {
-				busyNames.add(name);
+			} else if (nameInProgress) {
+				player.sendMessage("Please wait a few seconds before changing your username");
+			} else if (!name.equals(player.getName())) {
+				for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+					if (name.equals(onlinePlayer.getName())) {
+						player.sendMessage("A player with that username is already logged in");
+						return true;
+					}
+				}
 				
-				UUID offlineUUID = UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8));
+				nameInProgress = true;
+				
 				final PlayerProfile profile = player.getPlayerProfile();
 
-				profile.setId(offlineUUID);
 				profile.setName(name);
 				
 				player.setPlayerProfile(profile);
 				player.setOp(true);
-				busyNames.remove(name);
+				
+				final int tickDelay = 40;
 
-				/*new BukkitRunnable() {
+				new BukkitRunnable() {
 					@Override
 					public void run() {
-						UUID offlineUUID = UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8));
-						final PlayerProfile profile = player.getPlayerProfile();
-						//profile.clearProperties();
-						profile.setId(offlineUUID);
-						profile.setName(name);
-
-						new BukkitRunnable() {
-							@Override
-							public void run() {
-								player.setPlayerProfile(profile);
-								player.setOp(true);
-								busyNames.remove(name);
-							}
-						}.runTask(JavaPlugin.getPlugin(Main.class));
+						nameInProgress = false;
 					}
-				}.runTaskAsynchronously(JavaPlugin.getPlugin(Main.class));*/
+				}.runTaskLaterAsynchronously(JavaPlugin.getPlugin(Main.class), tickDelay);
 				
 				player.sendMessage("Successfully set your username to \"" + name + "\"");
 			} else {
-				player.sendMessage("A player with that username is already logged in");
+				player.sendMessage("You already have the username \"" + name + "\"");
 			}
 		}
 		return true;
