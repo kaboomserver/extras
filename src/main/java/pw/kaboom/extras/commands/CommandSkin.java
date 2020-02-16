@@ -21,11 +21,10 @@ public final class CommandSkin implements CommandExecutor {
 				player.sendMessage(ChatColor.RED + "Usage: /" + label + " <username>");
 			} else if (!SkinDownloader.skinInProgress.contains(player.getUniqueId())) {
 				final String name = args[0];
-				final boolean shouldChangeUsername = false;
 				final boolean shouldSendMessage = true;
 
 				SkinDownloader skinDownloader = new SkinDownloader();
-				skinDownloader.applySkin(player, name, shouldChangeUsername, shouldSendMessage);
+				skinDownloader.applySkin(player, name, shouldSendMessage);
 			} else {
 				player.sendMessage("You are already applying a skin. Please wait a few seconds.");
 			}

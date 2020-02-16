@@ -15,6 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
+import com.google.common.base.Charsets;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -30,7 +31,7 @@ public final class SkinDownloader {
 	private String texture;
 	private String signature;
 
-	public void applySkin(final Player player, final String name, final boolean shouldChangeName, final boolean shouldSendMessage) {
+	public void applySkin(final Player player, final String name, final boolean shouldSendMessage) {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -38,16 +39,11 @@ public final class SkinDownloader {
 
 				final PlayerProfile profile = player.getPlayerProfile();
 
-				if (shouldChangeName && shouldSendMessage) {
-					profile.setName(name);
-					player.sendMessage("Changing your username. Please wait...");
-				}
-
 				try {
 					fetchSkinData(name);
 					profile.setProperty(new ProfileProperty("textures", texture, signature));
 
-					if (!shouldChangeName && shouldSendMessage) {
+					if (shouldSendMessage) {
 						player.sendMessage("Successfully set your skin to " + name + "'s");
 					}
 				} catch (Exception exception) {
@@ -57,15 +53,12 @@ public final class SkinDownloader {
 					} catch (Exception ignored) {
 					}
 
-					if (!shouldChangeName && shouldSendMessage) {
+					if (shouldSendMessage) {
 						player.sendMessage("A player with that username doesn't exist");
 					}
 
 					skinInProgress.remove(player.getUniqueId());
-
-					if (!shouldChangeName) {
-						return;
-					}
+					return;
 				}
 
 				new BukkitRunnable() {
@@ -73,12 +66,7 @@ public final class SkinDownloader {
 					public void run() {
 						try {
 							player.setPlayerProfile(profile);
-
-							if (shouldChangeName && shouldSendMessage) {
-								player.sendMessage("Successfully set your username to \"" + name + "\"");
-							}
-						} catch (Exception exception) {
-							// Do nothing
+						} catch (Exception ignored) {
 						}
 
 						skinInProgress.remove(player.getUniqueId());

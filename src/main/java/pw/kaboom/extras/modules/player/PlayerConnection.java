@@ -55,6 +55,10 @@ public final class PlayerConnection implements Listener {
 
 			try {
 				final PlayerProfile profile = event.getPlayerProfile();
+				
+				UUID offlineUUID = UUID.nameUUIDFromBytes(("OfflinePlayer:" + event.getName()).getBytes(Charsets.UTF_8));
+				
+				profile.setId(offlineUUID);
 
 				SkinDownloader skinDownloader = new SkinDownloader();
 				skinDownloader.fillJoinProfile(profile, event.getName(), event.getUniqueId());
