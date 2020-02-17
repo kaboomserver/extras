@@ -10,6 +10,8 @@ import org.bukkit.entity.Player;
 import pw.kaboom.extras.helpers.SkinDownloader;
 
 public final class CommandSkin implements CommandExecutor {
+	public static long millis;
+	
 	@Override
 	public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
 		if (sender instanceof ConsoleCommandSender) {
@@ -17,16 +19,20 @@ public final class CommandSkin implements CommandExecutor {
 		} else {
 			final Player player = (Player) sender;
 
+			final long millisDifference = System.currentTimeMillis() - millis;
+
 			if (args.length == 0) {
 				player.sendMessage(ChatColor.RED + "Usage: /" + label + " <username>");
-			} else if (!SkinDownloader.skinInProgress.contains(player.getUniqueId())) {
+			} else if (millisDifference <= 2000) {
+				player.sendMessage("Please wait a few seconds before changing your skin");
+			} else {
 				final String name = args[0];
 				final boolean shouldSendMessage = true;
 
 				SkinDownloader skinDownloader = new SkinDownloader();
 				skinDownloader.applySkin(player, name, shouldSendMessage);
-			} else {
-				player.sendMessage("You are already applying a skin. Please wait a few seconds.");
+				
+				millis = System.currentTimeMillis();
 			}
 		}
 		return true;

@@ -22,7 +22,6 @@ import com.google.gson.JsonParser;
 import pw.kaboom.extras.Main;
 
 public final class SkinDownloader {
-	public static HashSet<UUID> skinInProgress = new HashSet<UUID>();
 	public static HashMap<UUID, PlayerProfile> skinProfiles = new HashMap<UUID, PlayerProfile>();
 
 	private HttpsURLConnection skinConnection;
@@ -35,8 +34,6 @@ public final class SkinDownloader {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				skinInProgress.add(player.getUniqueId());
-
 				final PlayerProfile profile = player.getPlayerProfile();
 
 				try {
@@ -57,7 +54,6 @@ public final class SkinDownloader {
 						player.sendMessage("A player with that username doesn't exist");
 					}
 
-					skinInProgress.remove(player.getUniqueId());
 					return;
 				}
 
@@ -68,8 +64,6 @@ public final class SkinDownloader {
 							player.setPlayerProfile(profile);
 						} catch (Exception ignored) {
 						}
-
-						skinInProgress.remove(player.getUniqueId());
 					}
 				}.runTask(JavaPlugin.getPlugin(Main.class));
 			}

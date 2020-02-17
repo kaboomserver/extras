@@ -45,8 +45,6 @@ public final class PlayerConnection implements Listener {
 
 	@EventHandler
 	void onAsyncPlayerPreLogin(final AsyncPlayerPreLoginEvent event) {
-		System.out.println("prelogin");
-		
 		if (event.getName().length() > 16) {
 			event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "Your username can't be longer than 16 characters");
 		} else {
@@ -123,8 +121,6 @@ public final class PlayerConnection implements Listener {
 
 	@EventHandler
 	void onPlayerLogin(final PlayerLoginEvent event) {
-		System.out.println("login");
-		
 		if (event.getHostname().startsWith("play.flame.ga")
 				&& event.getHostname().endsWith(":25565")) {
 			event.disallow(Result.KICK_OTHER, "You connected to the server using an outdated server address/IP.\nPlease use the following address/IP:\n\nkaboom.pw");
@@ -178,7 +174,7 @@ public final class PlayerConnection implements Listener {
 	void onPlayerQuit(PlayerQuitEvent event) {
 		PlayerCommand.commandMillisList.remove(event.getPlayer().getUniqueId());
 		PlayerInteract.interactMillisList.remove(event.getPlayer().getUniqueId());
-		SkinDownloader.skinInProgress.remove(event.getPlayer().getUniqueId());
+		//SkinDownloader.skinInProgress.remove(event.getPlayer().getUniqueId());
 
 		/*final World world = event.getPlayer().getWorld();
 

@@ -7,15 +7,11 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 
-import pw.kaboom.extras.Main;
-
 public final class CommandUsername implements CommandExecutor {
-	public static boolean nameInProgress = false;
+	public static long millis;
 	
 	@Override
 	public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
@@ -26,20 +22,22 @@ public final class CommandUsername implements CommandExecutor {
 			
 			final String nameColor = ChatColor.translateAlternateColorCodes('&', String.join(" ", args));
 			final String name = nameColor.substring(0, Math.min(16, nameColor.length()));
+			
+			final long millisDifference = System.currentTimeMillis() - millis;
 
 			if (args.length == 0) {
 				player.sendMessage(ChatColor.RED + "Usage: /" + label + " <username>");
-			} else if (nameInProgress) {
+			} else if (name.equals(player.getName())) {
+				player.sendMessage("You already have the username \"" + name + "\"");
+			} else if (millisDifference <= 2000) {
 				player.sendMessage("Please wait a few seconds before changing your username");
-			} else if (!name.equals(player.getName())) {
+			} else {
 				for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
 					if (name.equals(onlinePlayer.getName())) {
 						player.sendMessage("A player with that username is already logged in");
 						return true;
 					}
 				}
-				
-				nameInProgress = true;
 				
 				final PlayerProfile profile = player.getPlayerProfile();
 
@@ -48,18 +46,9 @@ public final class CommandUsername implements CommandExecutor {
 				player.setPlayerProfile(profile);
 				player.setOp(true);
 				
-				final int tickDelay = 40;
-
-				new BukkitRunnable() {
-					@Override
-					public void run() {
-						nameInProgress = false;
-					}
-				}.runTaskLaterAsynchronously(JavaPlugin.getPlugin(Main.class), tickDelay);
+				millis = System.currentTimeMillis();
 				
 				player.sendMessage("Successfully set your username to \"" + name + "\"");
-			} else {
-				player.sendMessage("You already have the username \"" + name + "\"");
 			}
 		}
 		return true;
