@@ -1,6 +1,5 @@
 package pw.kaboom.extras.modules.player;
 
-import com.destroystokyo.paper.event.player.PlayerHandshakeEvent;
 import com.destroystokyo.paper.event.profile.PreLookupProfileEvent;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.google.common.base.Charsets;
@@ -174,24 +173,6 @@ public final class PlayerConnection implements Listener {
 	void onPlayerQuit(PlayerQuitEvent event) {
 		PlayerCommand.commandMillisList.remove(event.getPlayer().getUniqueId());
 		PlayerInteract.interactMillisList.remove(event.getPlayer().getUniqueId());
-		//SkinDownloader.skinInProgress.remove(event.getPlayer().getUniqueId());
-
-		/*final World world = event.getPlayer().getWorld();
-
-		for (final Chunk chunk : world.getLoadedChunks()) {
-			try {
-				int data = 0;
-				for (BlockState block : chunk.getTileEntities()) {
-					data = data + block.getBlockData().getAsString().length();
-				}
-
-				if (data > 1285579) {
-					world.regenerateChunk(chunk.getX(), chunk.getZ());
-				}
-			} catch (Exception exception) {
-				world.regenerateChunk(chunk.getX(), chunk.getZ());
-			}
-		}*/
 	}
 
 	@EventHandler

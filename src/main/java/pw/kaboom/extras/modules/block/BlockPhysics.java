@@ -8,6 +8,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
@@ -17,7 +18,43 @@ import org.bukkit.event.entity.EntityChangeBlockEvent;
 import com.destroystokyo.paper.event.block.BlockDestroyEvent;
 
 public final class BlockPhysics implements Listener {
+	
+	// This class contains code to prevent large areas of non-solid blocks
+	// from crashing the server
+	
 	public static HashSet<BlockFace> blockFaces = new HashSet<BlockFace>();
+
+	@EventHandler
+	void onBlockDestroy(final BlockDestroyEvent event) {
+		try {
+			if (!event.getBlock().getType().isSolid()) {
+				for (BlockFace face : blockFaces) {
+					if (event.getBlock().getRelative(face).getType() != event.getBlock().getType()) {
+						return;
+					}
+					event.getBlock().setType(Material.AIR, false);
+					event.setCancelled(true);
+				}
+			}
+		} catch (Exception e) {
+			event.setCancelled(true);
+		}
+	}
+	
+	/*@EventHandler
+	void onBlockFade(final BlockFadeEvent event) {
+		try {
+			for (BlockFace face : blockFaces) {
+				if (event.getBlock().getRelative(face).getType() != event.getBlock().getType()) {
+					return;
+				}
+				event.getBlock().setType(Material.AIR, false);
+				event.setCancelled(true);
+			}
+		} catch (Exception e) {
+			event.setCancelled(true);
+		}
+	}*/
 
 	@EventHandler
 	void onBlockForm(final BlockFormEvent event) {
@@ -55,66 +92,36 @@ public final class BlockPhysics implements Listener {
 	}
 
 	@EventHandler
-	void onBlockDestroy(final BlockDestroyEvent event) {
-		if (!event.getBlock().getType().isSolid()) {
-			for (BlockFace face : blockFaces) {
-				if (event.getBlock().getRelative(face).getType() != event.getBlock().getType()) {
-					return;
-				}
-				event.getBlock().setType(Material.AIR, false);
-				event.setCancelled(true);
-			}
-		}
-	}
-
-	@EventHandler
 	void onBlockPhysics(final BlockPhysicsEvent event) {
-		switch (event.getChangedType()) {
-		case COMPARATOR:
-		case REDSTONE_TORCH:
-		case REDSTONE_WIRE:
-		case REPEATER:
-			/*for (BlockFace face : blockFaces) {
-				if (event.getBlock().getRelative(face).getType() != event.getChangedType()) {
-					return;
-				}
+		try {
+			switch (event.getChangedType()) {
+			case COMPARATOR:
+			case REDSTONE_TORCH:
+			case REDSTONE_WIRE:
+			case REPEATER:
+				/*for (BlockFace face : blockFaces) {
+					if (event.getBlock().getRelative(face).getType() != event.getChangedType()) {
+						return;
+					}
+					event.setCancelled(true);
+				}*/
 				event.setCancelled(true);
-			}*/
+				return;
+			default:
+				break;
+			}
+			
+			if (!event.getBlock().getType().isSolid()) {
+				for (BlockFace face : blockFaces) {
+					if (event.getBlock().getRelative(face).getType() != event.getBlock().getType()) {
+						return;
+					}
+					event.getBlock().setType(Material.AIR, false);
+					event.setCancelled(true);
+				}
+			}
+		} catch (Exception e) {
 			event.setCancelled(true);
-			break;
-		case ACTIVATOR_RAIL:
-		case DETECTOR_RAIL:
-		case POWERED_RAIL:
-		case RAIL:
-			for (BlockFace face : blockFaces) {
-				if (event.getBlock().getRelative(face).getType() != event.getChangedType()) {
-					return;
-				}
-				event.getBlock().setType(Material.AIR, false);
-				event.setCancelled(true);
-			}
-			break;
-		case SIGN:
-		case WALL_SIGN:
-			/*try {
-				event.getBlock().getState();
-				event.getSourceBlock().getState();
-			} catch (Exception exception) {
-				event.getBlock().setType(Material.AIR, false);
-				event.setCancelled(true);
-			}*/
-			break;
-		case TNT:
-			for (BlockFace face : blockFaces) {
-				if (event.getBlock().getRelative(face).getType() != Material.REDSTONE_BLOCK
-						&& event.getBlock().getRelative(face).getType() != Material.REDSTONE_TORCH) {
-					return;
-				}
-				event.setCancelled(true);
-			}
-			break;
-		default:
-			break;
 		}
 	}
 
