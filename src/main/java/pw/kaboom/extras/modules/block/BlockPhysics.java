@@ -32,8 +32,12 @@ public final class BlockPhysics implements Listener {
 					if (event.getBlock().getRelative(face).getType() != event.getBlock().getType()) {
 						return;
 					}
-					event.getBlock().setType(Material.AIR, false);
-					event.setCancelled(true);
+					if (!event.getBlock().getType().equals(Material.AIR)) {
+						event.getBlock().setType(Material.AIR, false);
+					}
+					if (!event.isCancelled()) {
+						event.setCancelled(true);
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -41,20 +45,17 @@ public final class BlockPhysics implements Listener {
 		}
 	}
 	
-	/*@EventHandler
+	@EventHandler
 	void onBlockFade(final BlockFadeEvent event) {
 		try {
-			for (BlockFace face : blockFaces) {
-				if (event.getBlock().getRelative(face).getType() != event.getBlock().getType()) {
-					return;
-				}
+			if (event.getBlock().getType() == Material.FIRE) {
 				event.getBlock().setType(Material.AIR, false);
 				event.setCancelled(true);
 			}
 		} catch (Exception e) {
 			event.setCancelled(true);
 		}
-	}*/
+	}
 
 	@EventHandler
 	void onBlockForm(final BlockFormEvent event) {
@@ -78,14 +79,15 @@ public final class BlockPhysics implements Listener {
 			boolean waterFound = false;
 
 			for (BlockFace face : blockFaces) {
-				if (event.getBlock().getRelative(face).getType() == Material.LAVA) {
+				if (event.getBlock().getRelative(face).getType() == Material.LAVA && !lavaFound) {
 					lavaFound = true;
-				} else if (event.getBlock().getRelative(face).getType() == Material.WATER) {
+				} else if (event.getBlock().getRelative(face).getType() == Material.WATER && !waterFound) {
 					waterFound = true;
 				}
-
+				
 				if (lavaFound && waterFound) {
 					event.setCancelled(true);
+					return;
 				}
 			}
 		}
@@ -113,11 +115,7 @@ public final class BlockPhysics implements Listener {
 			
 			if (!event.getBlock().getType().isSolid()) {
 				for (BlockFace face : blockFaces) {
-					if (event.getBlock().getRelative(face).getType() != event.getBlock().getType()) {
-						return;
-					}
-					event.getBlock().setType(Material.AIR, false);
-					event.setCancelled(true);
+					event.getBlock().getRelative(face).getType();
 				}
 			}
 		} catch (Exception e) {
