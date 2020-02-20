@@ -109,6 +109,25 @@ public final class BlockPhysics implements Listener {
 				}*/
 				event.setCancelled(true);
 				return;
+			case ACTIVATOR_RAIL:
+			case DETECTOR_RAIL:
+			case POWERED_RAIL:
+			case RAIL:
+				for (BlockFace face : blockFaces) {
+					if (event.getBlock().getRelative(face).getType() != event.getChangedType()) {
+						return;
+					}
+					event.getBlock().setType(Material.AIR, false);
+				}
+				return;
+			case TNT:
+				for (BlockFace face : blockFaces) {
+					if (event.getBlock().getRelative(face).getType() != Material.REDSTONE_BLOCK
+							&& event.getBlock().getRelative(face).getType() != Material.REDSTONE_TORCH) {
+						return;
+					}
+				}
+				return;
 			default:
 				break;
 			}
