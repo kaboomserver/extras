@@ -114,6 +114,7 @@ public final class Main extends JavaPlugin {
 			"essentials:warp",
 			"essentials:warps",
 			"essentials:whisper",
+			"essentials:world",
 			"action",
 			"adventure",
 			"adventuremode",
@@ -181,6 +182,7 @@ public final class Main extends JavaPlugin {
 			"warp",
 			"warps",
 			"whisper",
+			"world",
 
 			"essentials:eaction",
 			"essentials:eadventure",
@@ -257,6 +259,7 @@ public final class Main extends JavaPlugin {
 			"essentials:ewarp",
 			"essentials:ewarps",
 			"essentials:ewhisper",
+			"essentials:eworld",
 			"eaction",
 			"eadventure",
 			"eadventuremode",
@@ -332,6 +335,7 @@ public final class Main extends JavaPlugin {
 			"ewarp",
 			"ewarps",
 			"ewhisper",
+			"eworld",
 
 			"extras:bcraw",
 			"extras:broadcastraw",

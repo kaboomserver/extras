@@ -7,20 +7,31 @@ import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.CreatureSpawner;
-import org.bukkit.entity.*;
+import org.bukkit.entity.AreaEffectCloud;
+import org.bukkit.entity.EnderDragon;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.FallingBlock;
+import org.bukkit.entity.LightningStrike;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Slime;
+import org.bukkit.entity.TNTPrimed;
+import org.bukkit.entity.Vehicle;
+import org.bukkit.entity.minecart.ExplosiveMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.AreaEffectCloudApplyEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.SpawnerSpawnEvent;
 import org.bukkit.event.vehicle.VehicleCreateEvent;
+import org.bukkit.event.weather.LightningStrikeEvent;
 
 import com.destroystokyo.paper.event.block.TNTPrimeEvent;
 import com.destroystokyo.paper.event.block.TNTPrimeEvent.PrimeReason;
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import com.destroystokyo.paper.event.entity.PreSpawnerSpawnEvent;
-import org.bukkit.event.weather.LightningStrikeEvent;
 
 public class EntitySpawn implements Listener {
 	private void applyEntityChanges(Entity entity) {
@@ -219,6 +230,14 @@ public class EntitySpawn implements Listener {
 
 		if (chunk.isLoaded()) {
 			checkShouldRemoveEntities(world);
+		}
+	}
+	
+	@EventHandler
+	void onEntityExplode(EntityExplodeEvent event) {
+		if (EntityType.MINECART_TNT.equals(event.getEntityType()) &&
+				event.getEntity().getWorld().getEntitiesByClass(ExplosiveMinecart.class).size() > 80) {
+			event.setCancelled(true);
 		}
 	}
 
