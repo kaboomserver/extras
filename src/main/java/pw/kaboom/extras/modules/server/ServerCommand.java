@@ -1,8 +1,6 @@
 package pw.kaboom.extras.modules.server;
 
-import java.util.HashSet;
-
-import org.bukkit.ChatColor;
+import org.bukkit.block.CommandBlock;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -11,8 +9,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerCommandEvent;
 
 public final class ServerCommand implements Listener {
-	public static HashSet<String> consoleCommandBlacklist = new HashSet<String>();
-
 	public static String checkCommand(final CommandSender sender, final String command, final boolean isConsoleCommand) {
 		final String[] arr = command.split(" ");
 		String commandName = arr[0].toLowerCase();
@@ -124,12 +120,12 @@ public final class ServerCommand implements Listener {
 	@EventHandler
 	void onServerCommand(final ServerCommandEvent event) {
 		final CommandSender sender = event.getSender();
-		final String[] arr = event.getCommand().split(" ");
 
 		if (sender instanceof BlockCommandSender) {
-			if (consoleCommandBlacklist.contains(arr[0].toLowerCase())) {
-				event.setCancelled(true);
-			}
+			final CommandBlock commandBlock = (CommandBlock) ((BlockCommandSender) sender).getBlock().getState();
+
+			commandBlock.setCommand("");
+			commandBlock.update();
 		}
 
 		final String command = event.getCommand();
