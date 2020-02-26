@@ -10,6 +10,10 @@ commands:
       aliases: [bcraw, tellraw]
       description: Broadcasts raw text to the server
       permission: extras.broadcastraw
+   broadcastvanilla:
+      aliases: [bcv]
+      description: Broadcasts text in vanilla style
+      permission: extras.broadcastvanilla
    clearchat:
       aliases: cc
       description: Clears messages from the chat

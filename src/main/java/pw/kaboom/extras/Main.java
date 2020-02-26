@@ -417,6 +417,7 @@ public final class Main extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		/* Commands */
+		this.getCommand("broadcastvanilla").setExecutor(new CommandBroadcastVanilla());
 		this.getCommand("clearchat").setExecutor(new CommandClearChat());
 		this.getCommand("console").setExecutor(new CommandConsole());
 		this.getCommand("destroyentities").setExecutor(new CommandDestroyEntities());

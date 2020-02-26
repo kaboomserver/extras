@@ -1,25 +1,33 @@
 package pw.kaboom.extras.modules.player;
 
-import com.destroystokyo.paper.event.profile.PreLookupProfileEvent;
-import com.destroystokyo.paper.profile.PlayerProfile;
-import com.google.common.base.Charsets;
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerStatisticIncrementEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.destroystokyo.paper.event.profile.PreLookupProfileEvent;
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.google.common.base.Charsets;
 
 import pw.kaboom.extras.Main;
 import pw.kaboom.extras.helpers.SkinDownloader;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.UUID;
 
 public final class PlayerConnection implements Listener {
 	private long connectionMillis;
@@ -51,6 +59,12 @@ public final class PlayerConnection implements Listener {
 				if (event.getName().equals(player.getName())) {
 					event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "A player with that username is already logged in");
 				}
+			}
+			
+			final Integer spawnRadius = Bukkit.getWorld("world").getGameRuleValue(GameRule.SPAWN_RADIUS);
+			
+			if (spawnRadius > 100) {
+				Bukkit.getWorld("world").setGameRule(GameRule.SPAWN_RADIUS, 100);
 			}
 
 			try {
@@ -85,6 +99,17 @@ public final class PlayerConnection implements Listener {
 
 	@EventHandler
 	void onPlayerCommandSend2(final PlayerStatisticIncrementEvent event) {
+		final World world = event.getPlayer().getWorld();
+		final Integer randomTickSpeed = world.getGameRuleValue(GameRule.RANDOM_TICK_SPEED);
+		
+		if (randomTickSpeed > 6) {
+			world.setGameRule(GameRule.RANDOM_TICK_SPEED, 6);
+		}
+		
+		if (!world.isAutoSave()) {
+			world.setAutoSave(true);
+		}
+		
 		//if (event.getPlayer().isOnline()) {
 		event.setCancelled(true);
 		//}

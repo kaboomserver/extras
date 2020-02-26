@@ -35,7 +35,6 @@ public final class ServerCommand implements Listener {
 											|| "clone".equalsIgnoreCase(arr[i + 1])
 											|| "fill".equalsIgnoreCase(arr[i + 1])
 											|| "particle".equalsIgnoreCase(arr[i + 1])
-											|| "save-off".equalsIgnoreCase(arr[i + 1])
 											|| "say".equalsIgnoreCase(arr[i + 1])
 											|| "spreadplayers".equalsIgnoreCase(arr[i + 1])
 											|| "stop".equalsIgnoreCase(arr[i + 1])
@@ -79,9 +78,6 @@ public final class ServerCommand implements Listener {
 						if ("randomTickSpeed".equalsIgnoreCase(arr[1])
 								&& Double.parseDouble(arr[2]) > 6) {
 							return command.replaceFirst(arr[2], "6");
-						} else if ("spawnRadius".equalsIgnoreCase(arr[1])
-								&& Double.parseDouble(arr[2]) > 100) {
-							return command.replaceFirst(arr[2], "100");
 						}
 					}
 					break;
@@ -100,32 +96,6 @@ public final class ServerCommand implements Listener {
 						return String.join(" ", arr);
 					}
 					break;
-				case "/bukkit:reload":
-				case "/bukkit:rl":
-				case "/reload":
-				case "/rl":
-					if (sender.hasPermission("bukkit.command.reload")
-							&& arr.length >= 2
-							&& "confirm".equalsIgnoreCase(arr[1])) {
-						Command.broadcastCommandMessage(sender, ChatColor.RED + "Please note that this command is not supported and may cause issues when using some plugins.");
-						Command.broadcastCommandMessage(sender, ChatColor.RED + "If you encounter any issues please use the /stop command to restart your server.");
-						Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Reload complete.");
-						return "cancel";
-					}
-					break;
-				case "/spigot:restart":
-				case "/restart":
-					if (sender.hasPermission("bukkit.command.restart")) {
-						return "cancel";
-					}
-					break;
-				case "/minecraft:save-off":
-				case "/save-off":
-					if (sender.hasPermission("minecraft.command.save.disable")) {
-						Command.broadcastCommandMessage(sender, "Automatic saving is now disabled");
-						return "cancel";
-					}
-					break;
 				case "/minecraft:spreadplayers":
 				case "/spreadplayers":
 					if (arr.length >= 5) {
@@ -142,12 +112,6 @@ public final class ServerCommand implements Listener {
 						return String.join(" ", arr);
 					}
 					break;
-				case "/minecraft:stop":
-				case "/stop":
-					if (sender.hasPermission("minecraft.command.stop")) {
-						Command.broadcastCommandMessage(sender, "Stopping the server");
-						return "cancel";
-					}
 				default:
 					break;
 			}

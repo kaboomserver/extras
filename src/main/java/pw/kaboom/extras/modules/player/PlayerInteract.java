@@ -3,10 +3,13 @@ package pw.kaboom.extras.modules.player;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 public final class PlayerInteract implements Listener {
 	static HashMap<UUID, Long> interactMillisList = new HashMap<UUID, Long>();
@@ -33,5 +36,16 @@ public final class PlayerInteract implements Listener {
 		}
 
 		interactMillisList.put(playerUuid, System.currentTimeMillis());
+		
+    	final ItemStack item = event.getItem();
+
+		if (item != null &&
+				Material.TRIDENT.equals(item.getType())) {
+			final int riptideLimit = 20;
+			
+	    	if (item.getEnchantmentLevel(Enchantment.RIPTIDE) > riptideLimit) {
+				item.addUnsafeEnchantment(Enchantment.RIPTIDE, riptideLimit);
+			}
+		}
 	}
 }
