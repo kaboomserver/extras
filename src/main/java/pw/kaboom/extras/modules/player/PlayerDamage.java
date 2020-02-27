@@ -3,27 +3,19 @@ package pw.kaboom.extras.modules.player;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
-
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
-
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-
 import org.bukkit.inventory.ItemStack;
 
 public final class PlayerDamage implements Listener {
@@ -56,10 +48,10 @@ public final class PlayerDamage implements Listener {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	void onPlayerDeath(final PlayerDeathEvent event) {
 		final Player player = event.getEntity();
-		final AttributeInstance maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
 
 		for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
 			onlinePlayer.sendMessage(event.getDeathMessage());
@@ -79,7 +71,7 @@ public final class PlayerDamage implements Listener {
 				xp.setExperience(event.getDroppedExp());
 			}
 
-			maxHealth.setBaseValue(20);
+			player.setMaxHealth(20);
 			player.setHealth(20);
 
 			if (player.getBedSpawnLocation() != null) {
@@ -100,9 +92,9 @@ public final class PlayerDamage implements Listener {
 				}
 			}
 		} catch (Exception exception) {
-			maxHealth.setBaseValue(Double.POSITIVE_INFINITY);
+			player.setMaxHealth(Double.POSITIVE_INFINITY);
 			player.setHealth(20);
-			maxHealth.setBaseValue(20);
+			player.setMaxHealth(20);
 		}
 
 		player.setExp(event.getNewExp());
