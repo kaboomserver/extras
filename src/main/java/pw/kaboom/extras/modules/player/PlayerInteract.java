@@ -25,7 +25,7 @@ public final class PlayerInteract implements Listener {
 
 	@EventHandler
 	void onPlayerInteract(final PlayerInteractEvent event) {
-		final UUID playerUuid = event.getPlayer().getUniqueId();
+		/*final UUID playerUuid = event.getPlayer().getUniqueId();
 
 		if (interactMillisList.get(playerUuid) != null) {
 			final long millisDifference = System.currentTimeMillis() - interactMillisList.get(playerUuid);
@@ -35,7 +35,7 @@ public final class PlayerInteract implements Listener {
 			}
 		}
 
-		interactMillisList.put(playerUuid, System.currentTimeMillis());
+		interactMillisList.put(playerUuid, System.currentTimeMillis());*/
 		
     	final ItemStack item = event.getItem();
 

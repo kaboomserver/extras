@@ -97,27 +97,18 @@ public final class BlockPhysics implements Listener {
 	void onBlockPhysics(final BlockPhysicsEvent event) {
 		try {
 			switch (event.getChangedType()) {
-			case COMPARATOR:
-			case REDSTONE_TORCH:
-			case REDSTONE_WIRE:
-			case REPEATER:
-				/*for (BlockFace face : blockFaces) {
-					if (event.getBlock().getRelative(face).getType() != event.getChangedType()) {
-						return;
-					}
-					event.setCancelled(true);
-				}*/
-				event.setCancelled(true);
-				return;
 			case ACTIVATOR_RAIL:
 			case DETECTOR_RAIL:
 			case POWERED_RAIL:
 			case RAIL:
-				for (BlockFace face : blockFaces) {
-					if (event.getBlock().getRelative(face).getType() != event.getChangedType()) {
-						return;
-					}
-					event.getBlock().setType(Material.AIR, false);
+			case COMPARATOR:
+			case REDSTONE_TORCH:
+			case REDSTONE_WIRE:
+			case REPEATER:
+				if (!event.getBlock().getRelative(BlockFace.DOWN).getType().isSolid()
+						&& !Material.AIR.equals(event.getBlock().getRelative(BlockFace.DOWN).getType())
+								&& !Material.CAVE_AIR.equals(event.getBlock().getRelative(BlockFace.DOWN).getType())) {
+					event.setCancelled(true);
 				}
 				return;
 			case TNT:
@@ -132,11 +123,11 @@ public final class BlockPhysics implements Listener {
 				break;
 			}
 			
-			if (!event.getBlock().getType().isSolid()) {
+			/*if (!event.getBlock().getType().isSolid()) {
 				for (BlockFace face : blockFaces) {
 					event.getBlock().getRelative(face).getType();
 				}
-			}
+			}*/
 		} catch (Exception e) {
 			event.setCancelled(true);
 		}
