@@ -42,9 +42,6 @@ public final class ServerCommand implements Listener {
 										if ("randomTickSpeed".equalsIgnoreCase(arr[i + 2])
 												&& Double.parseDouble(arr[i + 3]) > 6) {
 											return command.replaceFirst("(?i)" + "randomTickSpeed " + arr[i + 3], "randomTickSpeed 6");
-										} else if ("spawnRadius".equalsIgnoreCase(arr[i + 2])
-												&& Double.parseDouble(arr[i + 3]) > 100) {
-											return command.replaceFirst("(?i)" + "spawnRadius " + arr[i + 3], "spawnRadius 100");
 										}
 									} else if ("give".equalsIgnoreCase(arr[i + 1])) {
 										if (Double.parseDouble(arr[arr.length - 1]) > 64) {
