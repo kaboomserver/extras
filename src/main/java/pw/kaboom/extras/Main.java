@@ -2,15 +2,31 @@ package pw.kaboom.extras;
 
 import java.util.Collections;
 
+import org.bukkit.block.BlockFace;
+import org.bukkit.plugin.java.JavaPlugin;
+
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
-import org.bukkit.block.BlockFace;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import pw.kaboom.extras.commands.*;
+import pw.kaboom.extras.commands.CommandBroadcastVanilla;
+import pw.kaboom.extras.commands.CommandClearChat;
+import pw.kaboom.extras.commands.CommandConsole;
+import pw.kaboom.extras.commands.CommandDestroyEntities;
+import pw.kaboom.extras.commands.CommandEnchantAll;
+import pw.kaboom.extras.commands.CommandJumpscare;
+import pw.kaboom.extras.commands.CommandKaboom;
+import pw.kaboom.extras.commands.CommandPrefix;
+import pw.kaboom.extras.commands.CommandPumpkin;
+import pw.kaboom.extras.commands.CommandServerInfo;
+import pw.kaboom.extras.commands.CommandSkin;
+import pw.kaboom.extras.commands.CommandSpawn;
+import pw.kaboom.extras.commands.CommandSpidey;
+import pw.kaboom.extras.commands.CommandTellraw;
+import pw.kaboom.extras.commands.CommandUnloadChunks;
+import pw.kaboom.extras.commands.CommandUsername;
 import pw.kaboom.extras.modules.block.BlockCheck;
 import pw.kaboom.extras.modules.block.BlockPhysics;
 import pw.kaboom.extras.modules.entity.EntityExplosion;
@@ -31,7 +47,7 @@ public final class Main extends JavaPlugin {
 	public void onLoad() {
 		/* Fill lists */
 		Collections.addAll(
-			BlockPhysics.blockFaces,
+			BlockPhysics.getBlockFaces(),
 			BlockFace.NORTH,
 			BlockFace.SOUTH,
 			BlockFace.WEST,
@@ -66,10 +82,10 @@ public final class Main extends JavaPlugin {
 
 		ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Client.WINDOW_CLICK) {
 			@Override
-			public void onPacketReceiving(PacketEvent event) {
+			public void onPacketReceiving(final PacketEvent event) {
 				final int maxInventorySize = 46;
-				if (event.getPacket().getIntegers().read(1) > maxInventorySize ||
-						event.getPacket().getIntegers().read(1) < 0) {
+				if (event.getPacket().getIntegers().read(1) > maxInventorySize
+						|| event.getPacket().getIntegers().read(1) < 0) {
 					event.setCancelled(true);
 				}
 			}

@@ -60,18 +60,18 @@ public final class PlayerConnection implements Listener {
 					event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "A player with that username is already logged in");
 				}
 			}
-			
+
 			final Integer spawnRadius = Bukkit.getWorld("world").getGameRuleValue(GameRule.SPAWN_RADIUS);
-			
+
 			if (spawnRadius > 100) {
 				Bukkit.getWorld("world").setGameRule(GameRule.SPAWN_RADIUS, 100);
 			}
 
 			try {
 				final PlayerProfile profile = event.getPlayerProfile();
-				
+
 				UUID offlineUUID = UUID.nameUUIDFromBytes(("OfflinePlayer:" + event.getName()).getBytes(Charsets.UTF_8));
-				
+
 				profile.setId(offlineUUID);
 
 				SkinDownloader skinDownloader = new SkinDownloader();
@@ -96,24 +96,6 @@ public final class PlayerConnection implements Listener {
 			event.getCommands().clear();
 		}
 	}*/
-
-	@EventHandler
-	void onPlayerCommandSend2(final PlayerStatisticIncrementEvent event) {
-		final World world = event.getPlayer().getWorld();
-		final Integer randomTickSpeed = world.getGameRuleValue(GameRule.RANDOM_TICK_SPEED);
-		
-		if (randomTickSpeed > 6) {
-			world.setGameRule(GameRule.RANDOM_TICK_SPEED, 6);
-		}
-		
-		if (!world.isAutoSave()) {
-			world.setAutoSave(true);
-		}
-		
-		//if (event.getPlayer().isOnline()) {
-		event.setCancelled(true);
-		//}
-	}
 
 	@EventHandler
 	void onPlayerJoin(final PlayerJoinEvent event) {
@@ -195,9 +177,25 @@ public final class PlayerConnection implements Listener {
 	}
 
 	@EventHandler
-	void onPlayerQuit(PlayerQuitEvent event) {
-		PlayerCommand.commandMillisList.remove(event.getPlayer().getUniqueId());
-		PlayerInteract.interactMillisList.remove(event.getPlayer().getUniqueId());
+	void onPlayerQuit(final PlayerQuitEvent event) {
+		PlayerCommand.getCommandMillisList().remove(event.getPlayer().getUniqueId());
+		//PlayerInteract.interactMillisList.remove(event.getPlayer().getUniqueId());
+	}
+
+	@EventHandler
+	void onPlayerStatisticIncrement(final PlayerStatisticIncrementEvent event) {
+		final World world = event.getPlayer().getWorld();
+		final Integer randomTickSpeed = world.getGameRuleValue(GameRule.RANDOM_TICK_SPEED);
+
+		if (randomTickSpeed > 6) {
+			world.setGameRule(GameRule.RANDOM_TICK_SPEED, 6);
+		}
+
+		if (!world.isAutoSave()) {
+			world.setAutoSave(true);
+		}
+
+		event.setCancelled(true);
 	}
 
 	@EventHandler

@@ -33,8 +33,8 @@ import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import com.destroystokyo.paper.event.entity.PreSpawnerSpawnEvent;
 
-public class EntitySpawn implements Listener {
-	private void applyEntityChanges(Entity entity) {
+public final class EntitySpawn implements Listener {
+	private void applyEntityChanges(final Entity entity) {
 		if (entity instanceof LivingEntity) {
 			final LivingEntity mob = (LivingEntity) entity;
 
@@ -57,24 +57,7 @@ public class EntitySpawn implements Listener {
 		}
 	}
 
-	private boolean checkEntityLimits(EntityType entityType, Chunk chunk, World world, boolean isAddToWorldEvent) {
-		final int chunkEntityCount = chunk.getEntities().length;
-		final int chunkEntityCountLimit = 30;
-
-		final int worldDragonCount = world.getEntitiesByClass(EnderDragon.class).size();
-		final int worldDragonCountLimit = 24;
-
-		if ((!EntityType.PLAYER.equals(entityType) &&
-			isEntityLimitReached(chunkEntityCount, chunkEntityCountLimit, isAddToWorldEvent)) ||
-
-			(EntityType.ENDER_DRAGON.equals(entityType) &&
-			isEntityLimitReached(worldDragonCount, worldDragonCountLimit, isAddToWorldEvent))) {
-			return true;
-		}
-		return false;
-	}
-
-	private boolean checkShouldRemoveEntities(World world) {
+	private boolean checkShouldRemoveEntities(final World world) {
 		final int worldEntityCount = world.getEntities().size();
 
 		if (worldEntityCount > 1024) {
@@ -88,39 +71,50 @@ public class EntitySpawn implements Listener {
 		return false;
 	}
 
-	private boolean isEntityLimitReached(int count, int countLimit, boolean isAddToWorldEvent) {
+	private boolean isEntityLimitReached(final EntityType entityType, final Chunk chunk, final World world, final boolean isAddToWorldEvent) {
 		/*
-			Add 1 if EntitySpawnEvent triggered the method, due to the entity count being
-			one larger in EntityAddToWorldEvent compared to EntitySpawnEvent
-			This prevents EntityAddToWorldEvent from triggering an entity removal before
-			EntitySpawnEvent's event cancel
+		Add 1 if EntitySpawnEvent triggered the method, due to the entity count being
+		one larger in EntityAddToWorldEvent compared to EntitySpawnEvent
+		This prevents EntityAddToWorldEvent from triggering an entity removal before
+		EntitySpawnEvent's event cancel
 		*/
-		if (!isAddToWorldEvent) {
-			count += 1;
-		}
 
-		if (count >= countLimit) {
+		final int chunkEntityCount =
+				!isAddToWorldEvent ? chunk.getEntities().length + 1
+				: chunk.getEntities().length;
+		final int chunkEntityCountLimit = 30;
+
+		final int worldDragonCount =
+				!isAddToWorldEvent ? world.getEntitiesByClass(EnderDragon.class).size() + 1
+				: world.getEntitiesByClass(EnderDragon.class).size();
+		final int worldDragonCountLimit = 24;
+
+		if ((!EntityType.PLAYER.equals(entityType)
+				&& chunkEntityCount >= chunkEntityCountLimit)
+
+				|| (EntityType.ENDER_DRAGON.equals(entityType)
+						&& worldDragonCount >= worldDragonCountLimit)) {
 			return true;
 		}
 		return false;
 	}
 
-	private boolean isOutsideBoundaries(double X, double Y, double Z) {
+	private boolean isOutsideBoundaries(final double x, final double y, final double z) {
 		int maxValue = 30000000;
 		int minValue = -30000000;
 
-		if (X > maxValue ||
-			X < minValue ||
-			Y > maxValue ||
-			Y < minValue ||
-			Z > maxValue ||
-			Z < minValue) {
+		if (x > maxValue
+				|| x < minValue
+				|| y > maxValue
+				|| y < minValue
+				|| z > maxValue
+				|| z < minValue) {
 			return true;
 		}
 		return false;
 	}
 
-	private void limitAreaEffectCloudRadius(AreaEffectCloud cloud) {
+	private void limitAreaEffectCloudRadius(final AreaEffectCloud cloud) {
 		if (cloud.getRadius() > 40) {
 			cloud.setRadius(40);
 		}
@@ -134,46 +128,52 @@ public class EntitySpawn implements Listener {
 		}
 	}
 
-	private void limitFollowAttribute(LivingEntity mob) {
+	private void limitFollowAttribute(final LivingEntity mob) {
 		final AttributeInstance followAttribute = mob.getAttribute(Attribute.GENERIC_FOLLOW_RANGE);
 
-		if (followAttribute != null &&
-			followAttribute.getBaseValue() > 40) {
+		if (followAttribute != null
+				&& followAttribute.getBaseValue() > 40) {
 			followAttribute.setBaseValue(40);
 		}
 	}
 
-	public static Location limitLocation(Location location) {
-		double X = location.getX();
-		double Y = location.getY();
-		double Z = location.getZ();
+	public static Location limitLocation(final Location location) {
+		double x = location.getX();
+		double y = location.getY();
+		double z = location.getZ();
 
 		int maxValue = 30000000;
 		int minValue = -30000000;
 
-		if (X > maxValue)
-			X = maxValue;
-		if (X < minValue)
-			X = minValue;
-		if (Y > maxValue)
-			Y = maxValue;
-		if (Y < minValue)
-			Y = minValue;
-		if (Z > maxValue)
-			Z = maxValue;
-		if (Z < minValue)
-			Z = minValue;
+		if (x > maxValue) {
+			x = maxValue;
+		}
+		if (x < minValue) {
+			x = minValue;
+		}
+		if (y > maxValue) {
+			y = maxValue;
+		}
+		if (y < minValue) {
+			y = minValue;
+		}
+		if (z > maxValue) {
+			z = maxValue;
+		}
+		if (z < minValue) {
+			z = minValue;
+		}
 
-		return new Location(location.getWorld(), X, Y, Z);
+		return new Location(location.getWorld(), x, y, z);
 	}
 
-	private void limitSlimeSize(Slime slime) {
+	private void limitSlimeSize(final Slime slime) {
 		if (slime.getSize() > 50) {
 			slime.setSize(50);
 		}
 	}
 
-	private void limitSpawner(CreatureSpawner spawner) {
+	private void limitSpawner(final CreatureSpawner spawner) {
 		if (EntityType.MINECART_MOB_SPAWNER.equals(spawner.getSpawnedType())) {
 			spawner.setSpawnedType(EntityType.MINECART);
 		}
@@ -196,18 +196,18 @@ public class EntitySpawn implements Listener {
 	}
 
 	@EventHandler
-	void onAreaEffectCloudApply(AreaEffectCloudApplyEvent event) {
+	void onAreaEffectCloudApply(final AreaEffectCloudApplyEvent event) {
 		limitAreaEffectCloudRadius(event.getEntity());
 	}
 
 	@EventHandler
-	void onEntityAddToWorld(EntityAddToWorldEvent event) {
+	void onEntityAddToWorld(final EntityAddToWorldEvent event) {
 		final Entity entity = event.getEntity();
-		final double X = entity.getLocation().getX();
-		final double Y = entity.getLocation().getY();
-		final double Z = entity.getLocation().getZ();
+		final double x = entity.getLocation().getX();
+		final double y = entity.getLocation().getY();
+		final double z = entity.getLocation().getZ();
 
-		if (isOutsideBoundaries(X, Y, Z)) {
+		if (isOutsideBoundaries(x, y, z)) {
 			entity.remove();
 			return;
 		}
@@ -219,7 +219,7 @@ public class EntitySpawn implements Listener {
 			final EntityType entityType = entity.getType();
 			final boolean isAddToWorldEvent = true;
 
-			if (checkEntityLimits(entityType, chunk, world, isAddToWorldEvent)
+			if (isEntityLimitReached(entityType, chunk, world, isAddToWorldEvent)
 					&& !EntityType.PLAYER.equals(entity.getType())) {
 				entity.remove();
 				return;
@@ -232,22 +232,22 @@ public class EntitySpawn implements Listener {
 			checkShouldRemoveEntities(world);
 		}
 	}
-	
+
 	@EventHandler
-	void onEntityExplode(EntityExplodeEvent event) {
-		if (EntityType.MINECART_TNT.equals(event.getEntityType()) &&
-				event.getEntity().getWorld().getEntitiesByClass(ExplosiveMinecart.class).size() > 80) {
+	void onEntityExplode(final EntityExplodeEvent event) {
+		if (EntityType.MINECART_TNT.equals(event.getEntityType())
+				&& event.getEntity().getWorld().getEntitiesByClass(ExplosiveMinecart.class).size() > 80) {
 			event.setCancelled(true);
 		}
 	}
 
 	@EventHandler
-	void onEntitySpawn(EntitySpawnEvent event) {
-		final double X = event.getLocation().getX();
-		final double Y = event.getLocation().getY();
-		final double Z = event.getLocation().getZ();
+	void onEntitySpawn(final EntitySpawnEvent event) {
+		final double x = event.getLocation().getX();
+		final double y = event.getLocation().getY();
+		final double z = event.getLocation().getZ();
 
-		if (isOutsideBoundaries(X, Y, Z)) {
+		if (isOutsideBoundaries(x, y, z)) {
 			event.setCancelled(true);
 			return;
 		}
@@ -258,7 +258,7 @@ public class EntitySpawn implements Listener {
 		final World world = entity.getWorld();
 		final boolean isAddToWorldEvent = false;
 
-		if (checkEntityLimits(entityType, chunk, world, isAddToWorldEvent)) {
+		if (isEntityLimitReached(entityType, chunk, world, isAddToWorldEvent)) {
 			event.setCancelled(true);
 			return;
 		}
@@ -267,13 +267,13 @@ public class EntitySpawn implements Listener {
 	}
 
 	@EventHandler
-	void onLightningStrike(LightningStrikeEvent event) {
+	void onLightningStrike(final LightningStrikeEvent event) {
 		final LightningStrike lightning = event.getLightning();
-		final double X = lightning.getLocation().getX();
-		final double Y = lightning.getLocation().getY();
-		final double Z = lightning.getLocation().getZ();
+		final double x = lightning.getLocation().getX();
+		final double y = lightning.getLocation().getY();
+		final double z = lightning.getLocation().getZ();
 
-		if (isOutsideBoundaries(X, Y, Z)) {
+		if (isOutsideBoundaries(x, y, z)) {
 			event.setCancelled(true);
 			return;
 		}
@@ -283,25 +283,25 @@ public class EntitySpawn implements Listener {
 		final World world = lightning.getWorld();
 		final boolean isAddToWorldEvent = false;
 
-		if (checkEntityLimits(entityType, chunk, world, isAddToWorldEvent)) {
+		if (isEntityLimitReached(entityType, chunk, world, isAddToWorldEvent)) {
 			event.setCancelled(true);
 		}
 	}
 
 	@EventHandler
-	void onPreCreatureSpawn(PreCreatureSpawnEvent event) {
+	void onPreCreatureSpawn(final PreCreatureSpawnEvent event) {
 		final EntityType mobType = event.getType();
 		final Chunk chunk = event.getSpawnLocation().getChunk();
 		final World world = event.getSpawnLocation().getWorld();
 		final boolean isAddToWorldEvent = false;
 
-		if (checkEntityLimits(mobType, chunk, world, isAddToWorldEvent)) {
+		if (isEntityLimitReached(mobType, chunk, world, isAddToWorldEvent)) {
 			event.setCancelled(true);
 		}
 	}
 
 	@EventHandler
-	void onPreSpawnerSpawn(PreSpawnerSpawnEvent event) {
+	void onPreSpawnerSpawn(final PreSpawnerSpawnEvent event) {
 		try {
 			limitSpawner((CreatureSpawner) event.getSpawnerLocation().getBlock().getState());
 		} catch (Exception exception) {
@@ -310,7 +310,7 @@ public class EntitySpawn implements Listener {
 	}
 
 	@EventHandler
-	void onSpawnerSpawn(SpawnerSpawnEvent event) {
+	void onSpawnerSpawn(final SpawnerSpawnEvent event) {
 		if (EntityType.FALLING_BLOCK.equals(event.getEntityType())) {
 			if (((FallingBlock) event.getEntity()).getBlockData().getMaterial().equals(Material.SPAWNER)) {
 				event.setCancelled(true);
@@ -320,7 +320,7 @@ public class EntitySpawn implements Listener {
 	}
 
 	@EventHandler
-	void onTNTPrime(TNTPrimeEvent event) {
+	void onTNTPrime(final TNTPrimeEvent event) {
 		if (event.getBlock().getWorld().getEntitiesByClass(TNTPrimed.class).size() > 120) {
 			if (PrimeReason.EXPLOSION.equals(event.getReason())) {
 				event.setCancelled(true);
@@ -329,13 +329,13 @@ public class EntitySpawn implements Listener {
 	}
 
 	@EventHandler
-	void onVehicleCreate(VehicleCreateEvent event) {
+	void onVehicleCreate(final VehicleCreateEvent event) {
 		final Vehicle vehicle = event.getVehicle();
-		final double X = vehicle.getLocation().getX();
-		final double Y = vehicle.getLocation().getY();
-		final double Z = vehicle.getLocation().getZ();
+		final double x = vehicle.getLocation().getX();
+		final double y = vehicle.getLocation().getY();
+		final double z = vehicle.getLocation().getZ();
 
-		if (isOutsideBoundaries(X, Y, Z)) {
+		if (isOutsideBoundaries(x, y, z)) {
 			event.setCancelled(true);
 			return;
 		}
@@ -345,7 +345,7 @@ public class EntitySpawn implements Listener {
 		final World world = vehicle.getWorld();
 		final boolean isAddToWorldEvent = false;
 
-		if (checkEntityLimits(entityType, chunk, world, isAddToWorldEvent)) {
+		if (isEntityLimitReached(entityType, chunk, world, isAddToWorldEvent)) {
 			event.setCancelled(true);
 			return;
 		}

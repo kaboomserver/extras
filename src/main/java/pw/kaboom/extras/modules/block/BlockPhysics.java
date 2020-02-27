@@ -18,17 +18,17 @@ import org.bukkit.event.entity.EntityChangeBlockEvent;
 import com.destroystokyo.paper.event.block.BlockDestroyEvent;
 
 public final class BlockPhysics implements Listener {
-	
+
 	// This class contains code to prevent large areas of non-solid blocks
 	// from crashing the server
-	
-	public static HashSet<BlockFace> blockFaces = new HashSet<BlockFace>();
+
+	private static HashSet<BlockFace> blockFaces = new HashSet<BlockFace>();
 
 	@EventHandler
 	void onBlockDestroy(final BlockDestroyEvent event) {
 		try {
 			if (!event.getBlock().getType().isSolid()) {
-				for (BlockFace face : blockFaces) {
+				for (BlockFace face : getBlockFaces()) {
 					if (event.getBlock().getRelative(face).getType() != event.getBlock().getType()) {
 						return;
 					}
@@ -44,7 +44,7 @@ public final class BlockPhysics implements Listener {
 			event.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler
 	void onBlockFade(final BlockFadeEvent event) {
 		try {
@@ -61,7 +61,7 @@ public final class BlockPhysics implements Listener {
 	void onBlockForm(final BlockFormEvent event) {
 		if (event.getBlock().getType() == Material.LAVA
 				|| event.getBlock().getType() == Material.WATER) {
-			for (BlockFace face : blockFaces) {
+			for (BlockFace face : getBlockFaces()) {
 				if (event.getBlock().getRelative(face).getType() != Material.LAVA
 						&& event.getBlock().getRelative(face).getType() != Material.WATER) {
 					return;
@@ -78,13 +78,13 @@ public final class BlockPhysics implements Listener {
 			boolean lavaFound = false;
 			boolean waterFound = false;
 
-			for (BlockFace face : blockFaces) {
+			for (BlockFace face : getBlockFaces()) {
 				if (event.getBlock().getRelative(face).getType() == Material.LAVA && !lavaFound) {
 					lavaFound = true;
 				} else if (event.getBlock().getRelative(face).getType() == Material.WATER && !waterFound) {
 					waterFound = true;
 				}
-				
+
 				if (lavaFound && waterFound) {
 					event.setCancelled(true);
 					return;
@@ -112,7 +112,7 @@ public final class BlockPhysics implements Listener {
 				}
 				return;
 			case TNT:
-				for (BlockFace face : blockFaces) {
+				for (BlockFace face : getBlockFaces()) {
 					if (event.getBlock().getRelative(face).getType() != Material.REDSTONE_BLOCK
 							&& event.getBlock().getRelative(face).getType() != Material.REDSTONE_TORCH) {
 						return;
@@ -122,7 +122,7 @@ public final class BlockPhysics implements Listener {
 			default:
 				break;
 			}
-			
+
 			/*if (!event.getBlock().getType().isSolid()) {
 				for (BlockFace face : blockFaces) {
 					event.getBlock().getRelative(face).getType();
@@ -158,5 +158,9 @@ public final class BlockPhysics implements Listener {
 				fallingBlockCount = 0;
 			}
 		}
+	}
+
+	public static HashSet<BlockFace> getBlockFaces() {
+		return blockFaces;
 	}
 }

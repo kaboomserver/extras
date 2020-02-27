@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.UUID;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -15,14 +14,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
-import com.google.common.base.Charsets;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import pw.kaboom.extras.Main;
 
 public final class SkinDownloader {
-	public static HashMap<UUID, PlayerProfile> skinProfiles = new HashMap<UUID, PlayerProfile>();
+	private static HashMap<UUID, PlayerProfile> skinProfiles = new HashMap<UUID, PlayerProfile>();
 
 	private HttpsURLConnection skinConnection;
 	private InputStreamReader skinStream;

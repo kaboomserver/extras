@@ -123,7 +123,7 @@ public final class ServerCommand implements Listener {
 
 		if (sender instanceof BlockCommandSender) {
 			final CommandBlock commandBlock = (CommandBlock) ((BlockCommandSender) sender).getBlock().getState();
-			
+
 			commandBlock.setCommand("");
 			commandBlock.update();
 		}

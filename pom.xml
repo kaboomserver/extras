@@ -53,7 +53,7 @@
 							<suppressionsLocation>
 								suppressions.xml
 							</suppressionsLocation>
-							<failOnViolation>false</failOnViolation>
+							<failOnViolation>true</failOnViolation>
 						</configuration>
 					</execution>
 				</executions>

@@ -10,8 +10,8 @@ import org.bukkit.entity.Player;
 import pw.kaboom.extras.helpers.SkinDownloader;
 
 public final class CommandSkin implements CommandExecutor {
-	public static long millis;
-	
+	private long millis;
+
 	@Override
 	public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
 		if (sender instanceof ConsoleCommandSender) {
@@ -31,7 +31,7 @@ public final class CommandSkin implements CommandExecutor {
 
 				SkinDownloader skinDownloader = new SkinDownloader();
 				skinDownloader.applySkin(player, name, shouldSendMessage);
-				
+
 				millis = System.currentTimeMillis();
 			}
 		}

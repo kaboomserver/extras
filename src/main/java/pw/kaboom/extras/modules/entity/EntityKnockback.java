@@ -19,14 +19,14 @@ public final class EntityKnockback implements Listener {
 			);
 		}
 	}
-	
+
 	@EventHandler
 	void onProjectileHit(final ProjectileHitEvent event) {
-		if (event.getHitEntity() != null &&
-				EntityType.ARROW.equals(event.getEntityType())) {
+		if (event.getHitEntity() != null
+				&& EntityType.ARROW.equals(event.getEntityType())) {
 			final Arrow arrow = (Arrow) event.getEntity();
 			final int knockbackLimit = 60;
-			
+
 			if (arrow.getKnockbackStrength() > knockbackLimit) {
 				arrow.setKnockbackStrength(knockbackLimit);
 			}
