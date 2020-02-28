@@ -18,8 +18,8 @@ import org.bukkit.entity.minecart.ExplosiveMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.AreaEffectCloudApplyEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
+import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.entity.SpawnerSpawnEvent;
 import org.bukkit.event.vehicle.VehicleCreateEvent;
 import org.bukkit.event.weather.LightningStrikeEvent;
@@ -69,22 +69,40 @@ public final class EntitySpawn implements Listener {
 		EntitySpawnEvent's event cancel
 		*/
 
-		final int chunkEntityCount =
-				!isAddToWorldEvent ? chunk.getEntities().length + 1
-				: chunk.getEntities().length;
-		final int chunkEntityCountLimit = 30;
+		switch (entityType) {
+		case ENDER_DRAGON:
+			final int worldDragonCount =
+			!isAddToWorldEvent ? world.getEntitiesByClass(EnderDragon.class).size() + 1
+			: world.getEntitiesByClass(EnderDragon.class).size();
+			final int worldDragonCountLimit = 24;
 
-		final int worldDragonCount =
-				!isAddToWorldEvent ? world.getEntitiesByClass(EnderDragon.class).size() + 1
-				: world.getEntitiesByClass(EnderDragon.class).size();
-		final int worldDragonCountLimit = 24;
+			if (worldDragonCount >= worldDragonCountLimit) {
+				return true;
+			}
 
-		if ((!EntityType.PLAYER.equals(entityType)
-				&& chunkEntityCount >= chunkEntityCountLimit)
+			break;
+		case PRIMED_TNT:
+			final int worldTntCount =
+			!isAddToWorldEvent ? world.getEntitiesByClass(TNTPrimed.class).size() + 1
+			: world.getEntitiesByClass(TNTPrimed.class).size();
+			final int worldTntCountLimit = 100;
 
-				|| (EntityType.ENDER_DRAGON.equals(entityType)
-						&& worldDragonCount >= worldDragonCountLimit)) {
-			return true;
+			if (worldTntCount >= worldTntCountLimit) {
+				return true;
+			}
+
+			break;
+		default:
+			if (!EntityType.PLAYER.equals(entityType)) {
+				final int chunkEntityCount =
+						!isAddToWorldEvent ? chunk.getEntities().length + 1
+						: chunk.getEntities().length;
+				final int chunkEntityCountLimit = 30;
+				if (chunkEntityCount >= chunkEntityCountLimit) {
+					return true;
+				}
+			}
+			break;
 		}
 		return false;
 	}
@@ -215,7 +233,7 @@ public final class EntitySpawn implements Listener {
 	}
 
 	@EventHandler
-	void onEntityExplode(final EntityExplodeEvent event) {
+	void onExplosionPrime(final ExplosionPrimeEvent event) {
 		if (EntityType.MINECART_TNT.equals(event.getEntityType())
 				&& event.getEntity().getWorld().getEntitiesByClass(ExplosiveMinecart.class).size() > 80) {
 			event.setCancelled(true);
@@ -233,16 +251,17 @@ public final class EntitySpawn implements Listener {
 			return;
 		}
 
-		final Entity entity = event.getEntity();
-		final EntityType entityType = entity.getType();
-		final Chunk chunk = entity.getChunk();
-		final World world = entity.getWorld();
+		final EntityType entityType = event.getEntityType();
+		final Chunk chunk = event.getLocation().getChunk();
+		final World world = event.getLocation().getWorld();
 		final boolean isAddToWorldEvent = false;
 
 		if (isEntityLimitReached(entityType, chunk, world, isAddToWorldEvent)) {
 			event.setCancelled(true);
 			return;
 		}
+
+		final Entity entity = event.getEntity();
 
 		applyEntityChanges(entity);
 	}
@@ -259,9 +278,9 @@ public final class EntitySpawn implements Listener {
 			return;
 		}
 
-		final EntityType entityType = lightning.getType();
+		final EntityType entityType = EntityType.LIGHTNING;
 		final Chunk chunk = lightning.getChunk();
-		final World world = lightning.getWorld();
+		final World world = event.getWorld();
 		final boolean isAddToWorldEvent = false;
 
 		if (isEntityLimitReached(entityType, chunk, world, isAddToWorldEvent)) {
@@ -306,7 +325,7 @@ public final class EntitySpawn implements Listener {
 		case EXPLOSION:
 		case FIRE:
 		case REDSTONE:
-			if (event.getBlock().getWorld().getEntitiesByClass(TNTPrimed.class).size() > 120) {
+			if (event.getBlock().getWorld().getEntitiesByClass(TNTPrimed.class).size() > 100) {
 				event.setCancelled(true);
 			}
 			return;
