@@ -49,6 +49,12 @@ public final class BlockCheck implements Listener {
 		}
 	}*/
 
+	/*@Subscribe
+	public void onEditSessionEvent(final EditSessionEvent event) {
+		event.setExtent(new NullExtent());
+
+	}*/
+
 	@EventHandler
 	void onSignChange(final SignChangeEvent event) {
 		try {

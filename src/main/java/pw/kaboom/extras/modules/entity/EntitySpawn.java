@@ -4,8 +4,6 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.AreaEffectCloud;
 import org.bukkit.entity.EnderDragon;
@@ -13,7 +11,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.LightningStrike;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Slime;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.entity.Vehicle;
@@ -28,25 +25,18 @@ import org.bukkit.event.vehicle.VehicleCreateEvent;
 import org.bukkit.event.weather.LightningStrikeEvent;
 
 import com.destroystokyo.paper.event.block.TNTPrimeEvent;
-import com.destroystokyo.paper.event.block.TNTPrimeEvent.PrimeReason;
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import com.destroystokyo.paper.event.entity.PreSpawnerSpawnEvent;
 
 public final class EntitySpawn implements Listener {
 	private void applyEntityChanges(final Entity entity) {
-		if (entity instanceof LivingEntity) {
-			final LivingEntity mob = (LivingEntity) entity;
-
-			limitFollowAttribute(mob);
-		}
-
 		switch (entity.getType()) {
 			case AREA_EFFECT_CLOUD:
 				final AreaEffectCloud cloud = (AreaEffectCloud) entity;
 
 				limitAreaEffectCloudRadius(cloud);
-				break;
+				return;
 			case MAGMA_CUBE:
 			case SLIME:
 				final Slime slime = (Slime) entity;
@@ -100,8 +90,8 @@ public final class EntitySpawn implements Listener {
 	}
 
 	private boolean isOutsideBoundaries(final double x, final double y, final double z) {
-		int maxValue = 30000000;
-		int minValue = -30000000;
+		final int maxValue = 30000000;
+		final int minValue = -30000000;
 
 		if (x > maxValue
 				|| x < minValue
@@ -128,22 +118,13 @@ public final class EntitySpawn implements Listener {
 		}
 	}
 
-	private void limitFollowAttribute(final LivingEntity mob) {
-		final AttributeInstance followAttribute = mob.getAttribute(Attribute.GENERIC_FOLLOW_RANGE);
-
-		if (followAttribute != null
-				&& followAttribute.getBaseValue() > 40) {
-			followAttribute.setBaseValue(40);
-		}
-	}
-
 	public static Location limitLocation(final Location location) {
 		double x = location.getX();
 		double y = location.getY();
 		double z = location.getZ();
 
-		int maxValue = 30000000;
-		int minValue = -30000000;
+		final int maxValue = 30000000;
+		final int minValue = -30000000;
 
 		if (x > maxValue) {
 			x = maxValue;
@@ -321,10 +302,16 @@ public final class EntitySpawn implements Listener {
 
 	@EventHandler
 	void onTNTPrime(final TNTPrimeEvent event) {
-		if (event.getBlock().getWorld().getEntitiesByClass(TNTPrimed.class).size() > 120) {
-			if (PrimeReason.EXPLOSION.equals(event.getReason())) {
+		switch (event.getReason()) {
+		case EXPLOSION:
+		case FIRE:
+		case REDSTONE:
+			if (event.getBlock().getWorld().getEntitiesByClass(TNTPrimed.class).size() > 120) {
 				event.setCancelled(true);
 			}
+			return;
+		default:
+			break;
 		}
 	}
 
