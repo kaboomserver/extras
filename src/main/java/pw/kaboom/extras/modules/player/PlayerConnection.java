@@ -61,12 +61,6 @@ public final class PlayerConnection implements Listener {
 				}
 			}
 
-			final Integer spawnRadius = Bukkit.getWorld("world").getGameRuleValue(GameRule.SPAWN_RADIUS);
-
-			if (spawnRadius > 100) {
-				Bukkit.getWorld("world").setGameRule(GameRule.SPAWN_RADIUS, 100);
-			}
-
 			try {
 				final PlayerProfile profile = event.getPlayerProfile();
 
@@ -189,6 +183,12 @@ public final class PlayerConnection implements Listener {
 
 		if (randomTickSpeed > 6) {
 			world.setGameRule(GameRule.RANDOM_TICK_SPEED, 6);
+		}
+
+		final Integer spawnRadius = world.getGameRuleValue(GameRule.SPAWN_RADIUS);
+
+		if (spawnRadius > 100) {
+			world.setGameRule(GameRule.SPAWN_RADIUS, 100);
 		}
 
 		if (!world.isAutoSave()) {
