@@ -6,7 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-import pw.kaboom.extras.modules.entity.EntitySpawn;
+import pw.kaboom.extras.modules.entity.EntityTeleport;
 
 public final class PlayerTeleport implements Listener {
 	@EventHandler
@@ -22,6 +22,6 @@ public final class PlayerTeleport implements Listener {
 
 	@EventHandler
 	void onPlayerTeleport(final PlayerTeleportEvent event) {
-		event.setTo(EntitySpawn.limitLocation(event.getTo()));
+		event.setTo(EntityTeleport.limitLocation(event.getTo()));
 	}
 }

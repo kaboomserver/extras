@@ -43,6 +43,11 @@ public final class PlayerCommand implements Listener {
 				event.setMessage(checkedCommand);
 			}
 		}
+
+		/*final MessageInterceptingCommandRunner cmdRunner = new MessageInterceptingCommandRunner(Bukkit.getConsoleSender());
+		Bukkit.dispatchCommand(cmdRunner, event.getMessage().substring(1));
+
+        event.setCancelled(true);*/
 	}
 
 	public static HashMap<UUID, Long> getCommandMillisList() {

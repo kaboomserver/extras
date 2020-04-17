@@ -30,31 +30,6 @@ public final class BlockCheck implements Listener {
 		}
 	}
 
-	/*@EventHandler
-	void onPlayerPortal(final PlayerPortalEvent event) {
-		event.setCancelled(true);
-		event.getPlayer().teleportAsync(event.getTo());
-		event.getPortalTravelAgent().findOrCreate(event.getTo());
-	}*/
-
-	/*@EventHandler
-	void onPortalCreate(final PortalCreateEvent event) {
-		if (CreateReason.OBC_DESTINATION.equals(event.getReason())) {
-			event.setCancelled(true);
-
-			for (Block block : event.getBlocks()) {
-
-				System.out.println(block.getLocation().toString());
-			}
-		}
-	}*/
-
-	/*@Subscribe
-	public void onEditSessionEvent(final EditSessionEvent event) {
-		event.setExtent(new NullExtent());
-
-	}*/
-
 	@EventHandler
 	void onSignChange(final SignChangeEvent event) {
 		try {

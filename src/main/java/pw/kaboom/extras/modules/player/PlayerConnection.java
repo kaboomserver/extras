@@ -1,15 +1,11 @@
 package pw.kaboom.extras.modules.player;
 
-import java.io.File;
-import java.io.IOException;
+import java.util.HashSet;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,33 +19,12 @@ import org.bukkit.event.player.PlayerStatisticIncrementEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.destroystokyo.paper.event.profile.PreLookupProfileEvent;
-import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import com.google.common.base.Charsets;
 
 import pw.kaboom.extras.Main;
-import pw.kaboom.extras.helpers.SkinDownloader;
 
 public final class PlayerConnection implements Listener {
-	private long connectionMillis;
-
-	private final File configFile = new File("spigot.yml");
-	private final FileConfiguration spigotConfig = YamlConfiguration.loadConfiguration(configFile);
-	private final ConfigurationSection configSection = spigotConfig.getConfigurationSection("commands");
-
-	/*public static boolean isIllegalItem(ItemStack item) {
-		//try {
-		if (item != null &&
-				item.getItemMeta() != null) {
-			System.out.println("itit");
-			System.out.println(item.getItemMeta().getDisplayName());
-		}
-		/*} catch (Exception | StackOverflowError exception) {
-			System.out.println("yes");
-			return true;
-		}
-		return false;
-	}*/
-
 	@EventHandler
 	void onAsyncPlayerPreLogin(final AsyncPlayerPreLoginEvent event) {
 		if (event.getName().length() > 16) {
@@ -61,7 +36,7 @@ public final class PlayerConnection implements Listener {
 				}
 			}
 
-			try {
+			/*try {
 				final PlayerProfile profile = event.getPlayerProfile();
 
 				UUID offlineUUID = UUID.nameUUIDFromBytes(("OfflinePlayer:" + event.getName()).getBytes(Charsets.UTF_8));
@@ -71,25 +46,9 @@ public final class PlayerConnection implements Listener {
 				SkinDownloader skinDownloader = new SkinDownloader();
 				skinDownloader.fillJoinProfile(profile, event.getName(), event.getUniqueId());
 			} catch (Exception ignored) {
-			}
+			}*/
 		}
 	}
-
-	/*@EventHandler
-	void onInventoryClose(InventoryCloseEvent event) {
-		for (ItemStack item : event.getInventory().getContents()) {
-			if (isIllegalItem(item)) {
-				event.getInventory().clear();
-			}
-		}
-	}*/
-
-	/*@EventHandler
-	void onPlayerCommandSend(final PlayerCommandSendEvent event) {
-		if (event.getPlayer().isOnline()) {
-			event.getCommands().clear();
-		}
-	}*/
 
 	@EventHandler
 	void onPlayerJoin(final PlayerJoinEvent event) {
@@ -125,27 +84,7 @@ public final class PlayerConnection implements Listener {
 				&& event.getHostname().endsWith(":25565")) {
 			event.disallow(Result.KICK_OTHER, "You connected to the server using an outdated server address/IP.\nPlease use the following address/IP:\n\nkaboom.pw");
 			return;
-		} else if (System.currentTimeMillis() - connectionMillis < 2000) {
-			if (!configSection.getString("tab-complete").equals("-1")) {
-				configSection.set("tab-complete", -1);
-				try {
-					spigotConfig.save(configFile);
-
-					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "spigot reload");
-				} catch (IOException ignored) {
-				}
-			}
-		} else if (configSection.getString("tab-complete").equals("-1")) {
-			configSection.set("tab-complete", 0);
-			try {
-				spigotConfig.save(configFile);
-
-				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "spigot reload");
-			} catch (IOException ignored) {
-			}
 		}
-
-		connectionMillis = System.currentTimeMillis();
 
 		if (!JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("enableJoinRestrictions")) {
 			event.allow();
@@ -158,16 +97,16 @@ public final class PlayerConnection implements Listener {
 
 		final Player player = event.getPlayer();
 
-		try {
-			player.setPlayerProfile(SkinDownloader.getProfile(player.getUniqueId()));
-			SkinDownloader.removeProfile(player.getUniqueId());
-		} catch (Exception ignored) {
-		}
-
 		if (JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("opOnJoin")
 				&& !player.isOp()) {
 			player.setOp(true);
 		}
+
+		/*try {
+			player.setPlayerProfile(SkinDownloader.getProfile(player.getUniqueId()));
+			SkinDownloader.removeProfile(player.getUniqueId());
+		} catch (Exception ignored) {
+		}*/
 	}
 
 	@EventHandler
@@ -200,7 +139,10 @@ public final class PlayerConnection implements Listener {
 
 	@EventHandler
 	void onPreLookupProfile(final PreLookupProfileEvent event) {
+		// Disable Mojang API calls, we don't need them
 		UUID offlineUUID = UUID.nameUUIDFromBytes(("OfflinePlayer:" + event.getName()).getBytes(Charsets.UTF_8));
 		event.setUUID(offlineUUID);
+
+		event.setProfileProperties(new HashSet<ProfileProperty>());
 	}
 }

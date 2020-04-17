@@ -1,7 +1,8 @@
 package pw.kaboom.extras.modules.entity;
 
+import java.util.Random;
+
 import org.bukkit.Chunk;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.CreatureSpawner;
@@ -20,6 +21,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.AreaEffectCloudApplyEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
+import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.SpawnerSpawnEvent;
 import org.bukkit.event.vehicle.VehicleCreateEvent;
 import org.bukkit.event.weather.LightningStrikeEvent;
@@ -85,7 +87,7 @@ public final class EntitySpawn implements Listener {
 			final int worldTntCount =
 			!isAddToWorldEvent ? world.getEntitiesByClass(TNTPrimed.class).size() + 1
 			: world.getEntitiesByClass(TNTPrimed.class).size();
-			final int worldTntCountLimit = 100;
+			final int worldTntCountLimit = 200;
 
 			if (worldTntCount >= worldTntCountLimit) {
 				return true;
@@ -136,39 +138,9 @@ public final class EntitySpawn implements Listener {
 		}
 	}
 
-	public static Location limitLocation(final Location location) {
-		double x = location.getX();
-		double y = location.getY();
-		double z = location.getZ();
-
-		final int maxValue = 30000000;
-		final int minValue = -30000000;
-
-		if (x > maxValue) {
-			x = maxValue;
-		}
-		if (x < minValue) {
-			x = minValue;
-		}
-		if (y > maxValue) {
-			y = maxValue;
-		}
-		if (y < minValue) {
-			y = minValue;
-		}
-		if (z > maxValue) {
-			z = maxValue;
-		}
-		if (z < minValue) {
-			z = minValue;
-		}
-
-		return new Location(location.getWorld(), x, y, z);
-	}
-
 	private void limitSlimeSize(final Slime slime) {
-		if (slime.getSize() > 50) {
-			slime.setSize(50);
+		if (slime.getSize() > 20) {
+			slime.setSize(20);
 		}
 	}
 
@@ -202,19 +174,19 @@ public final class EntitySpawn implements Listener {
 	@EventHandler
 	void onEntityAddToWorld(final EntityAddToWorldEvent event) {
 		final Entity entity = event.getEntity();
-		final double x = entity.getLocation().getX();
-		final double y = entity.getLocation().getY();
-		final double z = entity.getLocation().getZ();
-
-		if (isOutsideBoundaries(x, y, z)) {
-			entity.remove();
-			return;
-		}
-
-		final World world = entity.getWorld();
 		final Chunk chunk = entity.getChunk();
 
 		if (chunk.isLoaded()) {
+			final double x = entity.getLocation().getX();
+			final double y = entity.getLocation().getY();
+			final double z = entity.getLocation().getZ();
+
+			if (isOutsideBoundaries(x, y, z)) {
+				entity.remove();
+				return;
+			}
+
+			final World world = entity.getWorld();
 			final EntityType entityType = entity.getType();
 			final boolean isAddToWorldEvent = true;
 
@@ -223,13 +195,13 @@ public final class EntitySpawn implements Listener {
 				entity.remove();
 				return;
 			}
+
+			if (checkShouldRemoveEntities(world)) {
+				return;
+			}
 		}
 
 		applyEntityChanges(entity);
-
-		if (chunk.isLoaded()) {
-			checkShouldRemoveEntities(world);
-		}
 	}
 
 	@EventHandler
@@ -264,6 +236,15 @@ public final class EntitySpawn implements Listener {
 		final Entity entity = event.getEntity();
 
 		applyEntityChanges(entity);
+	}
+
+	@EventHandler
+	void onItemSpawn(final ItemSpawnEvent event) {
+		try {
+			event.getEntity().getItemStack().getItemMeta();
+		} catch (Exception exception) {
+			event.setCancelled(true);
+		}
 	}
 
 	@EventHandler
@@ -325,7 +306,7 @@ public final class EntitySpawn implements Listener {
 		case EXPLOSION:
 		case FIRE:
 		case REDSTONE:
-			if (event.getBlock().getWorld().getEntitiesByClass(TNTPrimed.class).size() > 100) {
+			if (new Random().nextBoolean()) {
 				event.setCancelled(true);
 			}
 			return;
