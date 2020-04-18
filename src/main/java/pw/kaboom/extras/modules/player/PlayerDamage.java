@@ -1,10 +1,7 @@
 package pw.kaboom.extras.modules.player;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.HumanEntity;
@@ -78,18 +75,7 @@ public final class PlayerDamage implements Listener {
 				player.teleportAsync(player.getBedSpawnLocation());
 			} else {
 				final World world = Bukkit.getWorld("world");
-				final Location spawnLocation = world.getSpawnLocation();
-
-				for (double y = spawnLocation.getY(); y <= 256; y++) {
-					final Location yLocation = new Location(world, spawnLocation.getX(), y, spawnLocation.getZ());
-					final Block coordBlock = world.getBlockAt(yLocation);
-
-					if (!coordBlock.getType().isSolid()
-							&& !coordBlock.getRelative(BlockFace.UP).getType().isSolid()) {
-						player.teleportAsync(yLocation);
-						break;
-					}
-				}
+				player.teleportAsync(world.getSpawnLocation());
 			}
 		} catch (Exception exception) {
 			player.setMaxHealth(Double.POSITIVE_INFINITY);

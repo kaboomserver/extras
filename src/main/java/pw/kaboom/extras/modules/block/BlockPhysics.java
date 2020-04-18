@@ -105,12 +105,19 @@ public final class BlockPhysics implements Listener {
 			case REDSTONE_TORCH:
 			case REDSTONE_WIRE:
 			case REPEATER:
+			case TRIPWIRE:
 				if (!event.getBlock().getRelative(BlockFace.DOWN).getType().isSolid()
 						&& !Material.AIR.equals(event.getBlock().getRelative(BlockFace.DOWN).getType())
 								&& !Material.CAVE_AIR.equals(event.getBlock().getRelative(BlockFace.DOWN).getType())) {
 					event.setCancelled(true);
 				}
 				return;
+			case COMMAND_BLOCK:
+			case CHAIN_COMMAND_BLOCK:
+			case REPEATING_COMMAND_BLOCK:
+				if (Material.STRUCTURE_BLOCK.equals(event.getSourceBlock().getType())) {
+					event.setCancelled(true);
+				}
 			default:
 				break;
 			}

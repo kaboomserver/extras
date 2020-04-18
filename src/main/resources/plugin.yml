@@ -55,10 +55,6 @@ commands:
    spidey:
       description: Annoying little spider...
       permission: extras.spidey
-   unloadchunks:
-      aliases: uc
-      description: Unloads all unused chunks
-      permission: extras.unloadchunks
    username:
       description: Changes your username on the server
       permission: extras.username

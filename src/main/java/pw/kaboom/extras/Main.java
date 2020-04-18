@@ -25,7 +25,6 @@ import pw.kaboom.extras.commands.CommandSkin;
 import pw.kaboom.extras.commands.CommandSpawn;
 import pw.kaboom.extras.commands.CommandSpidey;
 import pw.kaboom.extras.commands.CommandTellraw;
-import pw.kaboom.extras.commands.CommandUnloadChunks;
 import pw.kaboom.extras.commands.CommandUsername;
 import pw.kaboom.extras.modules.block.BlockCheck;
 import pw.kaboom.extras.modules.block.BlockPhysics;
@@ -77,7 +76,6 @@ public final class Main extends JavaPlugin {
 		this.getCommand("spawn").setExecutor(new CommandSpawn());
 		this.getCommand("spidey").setExecutor(new CommandSpidey());
 		this.getCommand("tellraw").setExecutor(new CommandTellraw());
-		this.getCommand("unloadchunks").setExecutor(new CommandUnloadChunks());
 		this.getCommand("username").setExecutor(new CommandUsername());
 
 		ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Client.WINDOW_CLICK) {
