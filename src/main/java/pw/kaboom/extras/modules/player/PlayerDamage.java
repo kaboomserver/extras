@@ -14,6 +14,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 
 public final class PlayerDamage implements Listener {
 	@EventHandler
@@ -88,7 +89,10 @@ public final class PlayerDamage implements Listener {
 		player.setFoodLevel(20);
 		player.setFireTicks(0);
 		player.setRemainingAir(player.getMaximumAir());
-		player.getActivePotionEffects().clear();
+
+	    for (PotionEffect effect : player.getActivePotionEffects()) {
+	        player.removePotionEffect(effect.getType());
+	    }
 
 		event.setCancelled(true);
 	}
