@@ -90,9 +90,9 @@ public final class PlayerDamage implements Listener {
 		player.setFireTicks(0);
 		player.setRemainingAir(player.getMaximumAir());
 
-	    for (PotionEffect effect : player.getActivePotionEffects()) {
-	        player.removePotionEffect(effect.getType());
-	    }
+		for (PotionEffect effect : player.getActivePotionEffects()) {
+			player.removePotionEffect(effect.getType());
+		}
 
 		event.setCancelled(true);
 	}

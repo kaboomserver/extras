@@ -7,6 +7,7 @@ Extras is a Bukkit plugin that that adds extra functionality to the Kaboom serve
 | Command | Aliases | Permission | Description |
 | ------- | ----- | ---------- | ----------- |
 |/broadcastraw | /bcraw, /tellraw | extras.broadcastraw | Broadcasts raw text to the server|
+|/broadcastvanilla | /bcv | extras.broadcastvanilla | Broadcasts text in vanilla style|
 |/clearchat | /cc | extras.clearchat | Clears messages from the chat|
 |/console | | extras.console | Broadcasts a message as the console|
 |/destroyentities | /de | extras.destroyentities | Destroys all entities in every world|
@@ -18,7 +19,6 @@ Extras is a Bukkit plugin that that adds extra functionality to the Kaboom serve
 |/skin | | extras.skin | Changes your skin|
 |/spawn | | extras.spawn | Teleports you to spawn|
 |/spidey | | extras.spidey | Annoying little spider...|
-|/unloadchunks | /uc | extras.unloadchunks | Unloads all unused chunks|
 |/username | | extras.username | Changes your username on the server|
 
 
