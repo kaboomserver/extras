@@ -27,27 +27,21 @@ import pw.kaboom.extras.Main;
 public final class PlayerConnection implements Listener {
 	@EventHandler
 	void onAsyncPlayerPreLogin(final AsyncPlayerPreLoginEvent event) {
-		if (event.getName().length() > 16) {
-			event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "Your username can't be longer than 16 characters");
-		} else {
-			for (Player player : Bukkit.getOnlinePlayers()) {
-				if (event.getName().equals(player.getName())) {
-					event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "A player with that username is already logged in");
-				}
-			}
-
-			/*try {
-				final PlayerProfile profile = event.getPlayerProfile();
-
-				UUID offlineUUID = UUID.nameUUIDFromBytes(("OfflinePlayer:" + event.getName()).getBytes(Charsets.UTF_8));
-
-				profile.setId(offlineUUID);
-
-				SkinDownloader skinDownloader = new SkinDownloader();
-				skinDownloader.fillJoinProfile(profile, event.getName(), event.getUniqueId());
-			} catch (Exception ignored) {
-			}*/
+		if (Bukkit.getPlayer(event.getName()) != null) {
+			event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "A player with that username is already logged in");
 		}
+
+		/*try {
+			final PlayerProfile profile = event.getPlayerProfile();
+
+			UUID offlineUUID = UUID.nameUUIDFromBytes(("OfflinePlayer:" + event.getName()).getBytes(Charsets.UTF_8));
+
+			profile.setId(offlineUUID);
+
+			SkinDownloader skinDownloader = new SkinDownloader();
+			skinDownloader.fillJoinProfile(profile, event.getName(), event.getUniqueId());
+		} catch (Exception ignored) {
+		}*/
 	}
 
 	@EventHandler

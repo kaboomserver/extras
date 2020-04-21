@@ -1,7 +1,8 @@
 package pw.kaboom.extras.modules.player;
 
 import org.bukkit.Material;
-import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Sign;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -48,11 +49,10 @@ public final class PlayerInteract implements Listener {
 		}
 
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			final Block clickedBlock = event.getClickedBlock();
+			final BlockState clickedBlock = event.getClickedBlock().getState();
 
-			if (clickedBlock.getType() == Material.SIGN
-					|| clickedBlock.getType() == Material.WALL_SIGN) {
-				clickedBlock.getState().update();
+			if (clickedBlock instanceof Sign) {
+				clickedBlock.update();
 			}
 		}
 	}

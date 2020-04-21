@@ -40,7 +40,7 @@ public final class BlockPhysics implements Listener {
 					}
 				}
 			}
-		} catch (Exception e) {
+		} catch (Exception | StackOverflowError e) {
 			event.setCancelled(true);
 		}
 	}
@@ -52,44 +52,52 @@ public final class BlockPhysics implements Listener {
 				event.getBlock().setType(Material.AIR, false);
 				event.setCancelled(true);
 			}
-		} catch (Exception e) {
+		} catch (Exception | StackOverflowError e) {
 			event.setCancelled(true);
 		}
 	}
 
 	@EventHandler
 	void onBlockForm(final BlockFormEvent event) {
-		if (event.getBlock().getType() == Material.LAVA
-				|| event.getBlock().getType() == Material.WATER) {
-			for (BlockFace face : getBlockFaces()) {
-				if (event.getBlock().getRelative(face).getType() != Material.LAVA
-						&& event.getBlock().getRelative(face).getType() != Material.WATER) {
-					return;
+		try {
+			if (event.getBlock().getType() == Material.LAVA
+					|| event.getBlock().getType() == Material.WATER) {
+				for (BlockFace face : getBlockFaces()) {
+					if (event.getBlock().getRelative(face).getType() != Material.LAVA
+							&& event.getBlock().getRelative(face).getType() != Material.WATER) {
+						return;
+					}
+					event.setCancelled(true);
 				}
-				event.setCancelled(true);
 			}
+		} catch (Exception | StackOverflowError e) {
+			event.setCancelled(true);
 		}
 	}
 
 	@EventHandler
 	void onBlockFromTo(final BlockFromToEvent event) {
-		if (event.getBlock().getType() == Material.LAVA
-				|| event.getBlock().getType() == Material.WATER) {
-			boolean lavaFound = false;
-			boolean waterFound = false;
+		try {
+			if (event.getBlock().getType() == Material.LAVA
+					|| event.getBlock().getType() == Material.WATER) {
+				boolean lavaFound = false;
+				boolean waterFound = false;
 
-			for (BlockFace face : getBlockFaces()) {
-				if (event.getBlock().getRelative(face).getType() == Material.LAVA && !lavaFound) {
-					lavaFound = true;
-				} else if (event.getBlock().getRelative(face).getType() == Material.WATER && !waterFound) {
-					waterFound = true;
-				}
+				for (BlockFace face : getBlockFaces()) {
+					if (event.getBlock().getRelative(face).getType() == Material.LAVA && !lavaFound) {
+						lavaFound = true;
+					} else if (event.getBlock().getRelative(face).getType() == Material.WATER && !waterFound) {
+						waterFound = true;
+					}
 
-				if (lavaFound && waterFound) {
-					event.setCancelled(true);
-					return;
+					if (lavaFound && waterFound) {
+						event.setCancelled(true);
+						return;
+					}
 				}
 			}
+		} catch (Exception | StackOverflowError e) {
+			event.setCancelled(true);
 		}
 	}
 
@@ -121,7 +129,7 @@ public final class BlockPhysics implements Listener {
 			default:
 				break;
 			}
-		} catch (Exception e) {
+		} catch (Exception | StackOverflowError e) {
 			event.setCancelled(true);
 		}
 	}
