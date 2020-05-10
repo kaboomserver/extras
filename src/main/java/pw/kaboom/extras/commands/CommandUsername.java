@@ -32,11 +32,10 @@ public final class CommandUsername implements CommandExecutor {
 			} else if (millisDifference <= 2000) {
 				player.sendMessage("Please wait a few seconds before changing your username");
 			} else {
-				for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-					if (name.equals(onlinePlayer.getName())) {
-						player.sendMessage("A player with that username is already logged in");
-						return true;
-					}
+				if (Bukkit.getPlayer(name) != null
+						&& Bukkit.getPlayer(name).isOnline()) {
+					player.sendMessage("A player with that username is already logged in");
+					return true;
 				}
 
 				final PlayerProfile profile = player.getPlayerProfile();
@@ -44,7 +43,6 @@ public final class CommandUsername implements CommandExecutor {
 				profile.setName(name);
 
 				player.setPlayerProfile(profile);
-				player.setOp(true);
 
 				millis = System.currentTimeMillis();
 

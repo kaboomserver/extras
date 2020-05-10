@@ -2,6 +2,7 @@ package pw.kaboom.extras;
 
 import java.util.Collections;
 
+import org.bukkit.Bukkit;
 import org.bukkit.block.BlockFace;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -37,9 +38,11 @@ import pw.kaboom.extras.modules.player.PlayerCommand;
 import pw.kaboom.extras.modules.player.PlayerConnection;
 import pw.kaboom.extras.modules.player.PlayerDamage;
 import pw.kaboom.extras.modules.player.PlayerInteract;
+import pw.kaboom.extras.modules.player.PlayerRecipe;
 import pw.kaboom.extras.modules.player.PlayerTeleport;
 import pw.kaboom.extras.modules.server.ServerCommand;
 import pw.kaboom.extras.modules.server.ServerPing;
+import pw.kaboom.extras.modules.server.ServerTick;
 
 public final class Main extends JavaPlugin {
 	@Override
@@ -105,10 +108,19 @@ public final class Main extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(new PlayerConnection(), this);
 		this.getServer().getPluginManager().registerEvents(new PlayerDamage(), this);
 		this.getServer().getPluginManager().registerEvents(new PlayerInteract(), this);
+		this.getServer().getPluginManager().registerEvents(new PlayerRecipe(), this);
 		this.getServer().getPluginManager().registerEvents(new PlayerTeleport(), this);
 
 		/* Server-related modules */
 		this.getServer().getPluginManager().registerEvents(new ServerCommand(), this);
 		this.getServer().getPluginManager().registerEvents(new ServerPing(), this);
+		this.getServer().getPluginManager().registerEvents(new ServerTick(), this);
+	}
+
+	@Override
+	public void onDisable() {
+		if (Bukkit.isStopping()) {
+			System.exit(1);
+		}
 	}
 }

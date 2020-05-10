@@ -4,8 +4,6 @@ import java.util.HashSet;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.GameRule;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,7 +13,6 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerStatisticIncrementEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.destroystokyo.paper.event.profile.PreLookupProfileEvent;
@@ -27,7 +24,8 @@ import pw.kaboom.extras.Main;
 public final class PlayerConnection implements Listener {
 	@EventHandler
 	void onAsyncPlayerPreLogin(final AsyncPlayerPreLoginEvent event) {
-		if (Bukkit.getPlayer(event.getName()) != null) {
+		if (Bukkit.getPlayer(event.getName()) != null
+				&& Bukkit.getPlayer(event.getName()).isOnline()) {
 			event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "A player with that username is already logged in");
 		}
 
@@ -107,28 +105,6 @@ public final class PlayerConnection implements Listener {
 	void onPlayerQuit(final PlayerQuitEvent event) {
 		PlayerCommand.getCommandMillisList().remove(event.getPlayer().getUniqueId());
 		//PlayerInteract.interactMillisList.remove(event.getPlayer().getUniqueId());
-	}
-
-	@EventHandler
-	void onPlayerStatisticIncrement(final PlayerStatisticIncrementEvent event) {
-		final World world = event.getPlayer().getWorld();
-		final Integer randomTickSpeed = world.getGameRuleValue(GameRule.RANDOM_TICK_SPEED);
-
-		if (randomTickSpeed > 6) {
-			world.setGameRule(GameRule.RANDOM_TICK_SPEED, 6);
-		}
-
-		final Integer spawnRadius = world.getGameRuleValue(GameRule.SPAWN_RADIUS);
-
-		if (spawnRadius > 100) {
-			world.setGameRule(GameRule.SPAWN_RADIUS, 100);
-		}
-
-		if (!world.isAutoSave()) {
-			world.setAutoSave(true);
-		}
-
-		event.setCancelled(true);
 	}
 
 	@EventHandler

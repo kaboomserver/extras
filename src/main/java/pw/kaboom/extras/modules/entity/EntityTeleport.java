@@ -15,25 +15,25 @@ public final class EntityTeleport implements Listener {
 		final int minValue = -30000000;
 
 		if (x > maxValue) {
-			x = maxValue;
+			location.setX(maxValue);
 		}
 		if (x < minValue) {
-			x = minValue;
+			location.setX(minValue);
 		}
 		if (y > maxValue) {
-			y = maxValue;
+			location.setY(maxValue);
 		}
 		if (y < minValue) {
-			y = minValue;
+			location.setY(minValue);
 		}
 		if (z > maxValue) {
-			z = maxValue;
+			location.setZ(maxValue);
 		}
 		if (z < minValue) {
-			z = minValue;
+			location.setZ(minValue);
 		}
 
-		return new Location(location.getWorld(), x, y, z);
+		return location;
 	}
 
 	@EventHandler
