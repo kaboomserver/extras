@@ -120,7 +120,7 @@ public final class Main extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		if (Bukkit.isStopping()) {
-			System.exit(1);
+			Runtime.getRuntime().halt(0);
 		}
 	}
 }
