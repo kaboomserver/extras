@@ -120,6 +120,9 @@ public final class Main extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		if (Bukkit.isStopping()) {
+			/* This should never be done in a critical environment, as it can lead to data corruption.
+				We are not too concerned with data corruption, as the server resets daily. In our case, it's
+				more important to ensure that the server never hangs. */
 			Runtime.getRuntime().halt(0);
 		}
 	}

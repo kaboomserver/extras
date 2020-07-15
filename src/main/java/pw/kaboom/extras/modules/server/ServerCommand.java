@@ -111,6 +111,11 @@ public final class ServerCommand implements Listener {
 		} catch (NumberFormatException exception) {
 			// Do nothing
 		}
+
+		if (command.contains("[distance=")) {
+			return command.replace("[distance=", "[");
+		}
+
 		return null;
 	}
 
