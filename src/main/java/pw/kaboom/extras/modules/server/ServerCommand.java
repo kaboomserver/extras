@@ -3,6 +3,7 @@ package pw.kaboom.extras.modules.server;
 import org.bukkit.block.CommandBlock;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.minecart.CommandMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerCommandEvent;
@@ -144,6 +145,10 @@ public final class ServerCommand implements Listener {
 
 			commandBlock.setCommand("");
 			commandBlock.update();
+		} else if (sender instanceof CommandMinecart) {
+			final CommandMinecart commandMinecart = (CommandMinecart) sender;
+
+			commandMinecart.setCommand("");
 		}
 
 		final String command = event.getCommand();
