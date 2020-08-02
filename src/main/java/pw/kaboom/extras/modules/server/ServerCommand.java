@@ -2,7 +2,6 @@ package pw.kaboom.extras.modules.server;
 
 import org.bukkit.block.CommandBlock;
 import org.bukkit.command.BlockCommandSender;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,12 +29,19 @@ public final class ServerCommand implements Listener {
 									if ("execute".equalsIgnoreCase(arr[i + 1])
 											|| "clone".equalsIgnoreCase(arr[i + 1])
 											|| "fill".equalsIgnoreCase(arr[i + 1])
+											|| "me".equalsIgnoreCase(arr[i + 1])
+											|| "msg".equalsIgnoreCase(arr[i + 1])
 											|| "particle".equalsIgnoreCase(arr[i + 1])
+											|| "reload".equalsIgnoreCase(arr[i + 1])
 											|| "say".equalsIgnoreCase(arr[i + 1])
 											|| "spreadplayers".equalsIgnoreCase(arr[i + 1])
 											|| "stop".equalsIgnoreCase(arr[i + 1])
-											|| "tellraw".equalsIgnoreCase(arr[i + 1])) {
-										Command.broadcastCommandMessage(sender, "Forbidden execute command detected");
+											|| "teammsg".equalsIgnoreCase(arr[i + 1])
+											|| "teleport".equalsIgnoreCase(arr[i + 1])
+											|| "tell".equalsIgnoreCase(arr[i + 1])
+											|| "tellraw".equalsIgnoreCase(arr[i + 1])
+											|| "tm".equalsIgnoreCase(arr[i + 1])
+											|| "tp".equalsIgnoreCase(arr[i + 1])) {
 										return "cancel";
 									} else if (i + 3 < arr.length
 											&& "gamerule".equalsIgnoreCase(arr[i + 1])) {
@@ -60,7 +66,6 @@ public final class ServerCommand implements Listener {
 						}
 
 						if (asAtCount >= 2) {
-							Command.broadcastCommandMessage(sender, "Forbidden execute pattern detected");
 							return "cancel";
 						}
 					}
@@ -103,6 +108,17 @@ public final class ServerCommand implements Listener {
 						}
 
 						return String.join(" ", arr);
+					}
+					break;
+				case "/viaversion:viaver":
+				case "/viaversion:viaversion":
+				case "/viaversion:vvbukkit":
+				case "/viaver":
+				case "/viaversion":
+				case "/vvbukkit":
+					if (arr.length >= 2
+							&& "debug".equalsIgnoreCase(arr[1])) {
+						return "cancel";
 					}
 					break;
 				default:
