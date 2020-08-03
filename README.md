@@ -13,6 +13,7 @@ Extras is a Bukkit plugin that that adds extra functionality to the Kaboom serve
 |/destroyentities | /de | extras.destroyentities | Destroys all entities in every world|
 |/enchantall | | extras.enchantall | Adds every enchantment to a held item|
 |/jumpscare | /scare | extras.jumpscare | Scares a player|
+|/kaboom | | extras.kaboom | I wonder...|
 |/prefix | /rank, /tag | extras.prefix | Changes your tag|
 |/pumpkin | | extras.pumpkin | Places a pumpkin on a player's head|
 |/serverinfo | /specs | extras.serverinfo | Shows detailed server information|
