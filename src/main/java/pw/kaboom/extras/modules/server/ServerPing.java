@@ -9,11 +9,11 @@ public final class ServerPing implements Listener {
 	@EventHandler
 	void onServerListPing(final PaperServerListPingEvent event) {
 		if (event.getClient().getProtocolVersion() == -1) {
-			final int protocol = 736;
+			final int protocol = 754;
 			event.setProtocolVersion(protocol);
 		} else {
 			event.setProtocolVersion(event.getClient().getProtocolVersion());
 		}
-		event.setVersion("1.16.1");
+		event.setVersion("1.16.4");
 	}
 }
