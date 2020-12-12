@@ -134,8 +134,11 @@ public final class ServerCommand implements Listener {
 			// Do nothing
 		}
 
-		if (command.contains("[distance=")) {
-			return command.replace("[distance=", "[");
+		if (command.contains("distance")) {
+            return command
+            .replace("distance=", "")
+            .replace("\"distance\"=", "")
+            .replace("'distance'=", "");
 		}
 
 		return null;
