@@ -9,6 +9,33 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerCommandEvent;
 
 public final class ServerCommand implements Listener {
+	public static boolean checkExecuteCommand(final String cmd) {
+		return ("execute".equalsIgnoreCase(cmd)
+											|| "clone".equalsIgnoreCase(cmd)
+											|| "data".equalsIgnoreCase(cmd)
+											|| "datapack".equalsIgnoreCase(cmd)
+											|| "debug".equalsIgnoreCase(cmd)
+											|| "fill".equalsIgnoreCase(cmd)
+											|| "forceload".equalsIgnoreCase(cmd)
+											|| "kick".equalsIgnoreCase(cmd)
+											|| "me".equalsIgnoreCase(cmd)
+											|| "msg".equalsIgnoreCase(cmd)
+											|| "particle".equalsIgnoreCase(cmd)
+											|| "reload".equalsIgnoreCase(cmd)
+											|| "save-all".equalsIgnoreCase(cmd)
+											|| "say".equalsIgnoreCase(cmd)
+											|| "setblock".equalsIgnoreCase(cmd)
+											|| "spreadplayers".equalsIgnoreCase(cmd)
+											|| "stop".equalsIgnoreCase(cmd)
+											|| "summon".equalsIgnoreCase(cmd)
+											|| "teammsg".equalsIgnoreCase(cmd)
+											|| "teleport".equalsIgnoreCase(cmd)
+											|| "tell".equalsIgnoreCase(cmd)
+											|| "tellraw".equalsIgnoreCase(cmd)
+											|| "tm".equalsIgnoreCase(cmd)
+											|| "tp".equalsIgnoreCase(cmd)
+											|| "w".equalsIgnoreCase(cmd));
+	}
 	public static String checkCommand(final CommandSender sender, final String command, final boolean isConsoleCommand) {
 		final String[] arr = command.split(" ");
 		String commandName = arr[0].toLowerCase();
@@ -27,25 +54,7 @@ public final class ServerCommand implements Listener {
 						for (int i = 1; i < arr.length; i++) {
 							if ("run".equalsIgnoreCase(arr[i])) {
 								if (i + 1 < arr.length) {
-									if ("execute".equalsIgnoreCase(arr[i + 1])
-											|| "clone".equalsIgnoreCase(arr[i + 1])
-											|| "fill".equalsIgnoreCase(arr[i + 1])
-											|| "kick".equalsIgnoreCase(arr[i + 1])
-											|| "me".equalsIgnoreCase(arr[i + 1])
-											|| "msg".equalsIgnoreCase(arr[i + 1])
-											|| "particle".equalsIgnoreCase(arr[i + 1])
-											|| "reload".equalsIgnoreCase(arr[i + 1])
-											|| "save-all".equalsIgnoreCase(arr[i + 1])
-											|| "say".equalsIgnoreCase(arr[i + 1])
-											|| "spreadplayers".equalsIgnoreCase(arr[i + 1])
-											|| "stop".equalsIgnoreCase(arr[i + 1])
-											|| "teammsg".equalsIgnoreCase(arr[i + 1])
-											|| "teleport".equalsIgnoreCase(arr[i + 1])
-											|| "tell".equalsIgnoreCase(arr[i + 1])
-											|| "tellraw".equalsIgnoreCase(arr[i + 1])
-											|| "tm".equalsIgnoreCase(arr[i + 1])
-											|| "tp".equalsIgnoreCase(arr[i + 1])
-											|| "w".equalsIgnoreCase(arr[i + 1])) {
+									if (checkExecuteCommand(arr[i + 1])) {
 										return "cancel";
 									} else if (i + 3 < arr.length
 											&& "gamerule".equalsIgnoreCase(arr[i + 1])) {
@@ -63,8 +72,7 @@ public final class ServerCommand implements Listener {
 								break;
 							}
 
-							if ("as".equalsIgnoreCase(arr[i])
-									|| "at".equalsIgnoreCase(arr[i])) {
+							if ("as".equalsIgnoreCase(arr[i]) || "at".equalsIgnoreCase(arr[i])) {
 								asAtCount++;
 							}
 						}
@@ -76,8 +84,8 @@ public final class ServerCommand implements Listener {
 					break;
 				case "/minecraft:fill":
 				case "/fill":
-					if (command.contains("auto:1")) {
-						return command.replace("auto:1", "auto:0");
+					if (command.contains("auto")) {
+						return command.replace("auto", "[auto]");
 					}
 				case "/minecraft:gamerule":
 				case "/gamerule":
@@ -115,7 +123,6 @@ public final class ServerCommand implements Listener {
 						if (Double.parseDouble(arr[4]) > 50) {
 							arr[4] = "50";
 						}
-
 						return String.join(" ", arr);
 					}
 					break;
@@ -130,6 +137,14 @@ public final class ServerCommand implements Listener {
 						return "cancel";
 					}
 					break;
+				case "/minecraft:say":
+				case "/say":
+					for (int i = 0; i < arr.length; i++) {
+						if (arr[i].toLowerCase().contains("@")) {
+							return "cancel";
+						}
+					}
+					break;
 				default:
 					break;
 			}
@@ -137,8 +152,8 @@ public final class ServerCommand implements Listener {
 			// Do nothing
 		}
 
-		if (command.contains("[distance=")) {
-			return command.replace("[distance=", "[");
+		if (command.contains("distance")) {
+			return command.replace("distance=", "").replace("\"distance\"=", "").replace("'distance'=", "");
 		}
 
 		return null;
