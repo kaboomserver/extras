@@ -1,6 +1,7 @@
 package pw.kaboom.extras.modules.block;
 
 import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -19,6 +20,10 @@ public final class BlockCheck implements Listener {
 
 			event.getBlockPlaced().getState();
 		} catch (Exception exception) {
+			event.setCancelled(true);
+		}
+
+		if (event.getBlock().getType() == Material.STRUCTURE_BLOCK) {
 			event.setCancelled(true);
 		}
 	}

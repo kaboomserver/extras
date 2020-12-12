@@ -124,6 +124,7 @@ public final class BlockPhysics implements Listener {
 			case CHAIN_COMMAND_BLOCK:
 			case REPEATING_COMMAND_BLOCK:
 				if (Material.STRUCTURE_BLOCK.equals(event.getSourceBlock().getType())) {
+					event.getSourceBlock().breakNaturally();
 					event.setCancelled(true);
 				}
 			default:

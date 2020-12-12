@@ -87,6 +87,14 @@ public final class ServerCommand implements Listener {
 					if (command.contains("auto")) {
 						return command.replace("auto", "[auto]");
 					}
+					if	(command.contains("structure_block")) {
+						return command.replace("structure_block", "");
+					}
+				case "/minecraft:setblock":
+				case "/setblock":
+					if (command.contains("structure_block"))  {
+						return command.replace("structure_block", "");
+					}
 				case "/minecraft:gamerule":
 				case "/gamerule":
 					if (arr.length >= 3) {
