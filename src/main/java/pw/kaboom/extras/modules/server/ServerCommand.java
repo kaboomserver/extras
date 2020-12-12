@@ -51,6 +51,8 @@ public final class ServerCommand implements Listener {
                 case "/debug":
                 case "/ess":
                 case "/essentials":
+                case "/eessentials":
+                case "/eess":
                 case "/essentials:ess":
                 case "/essentials:essentials":
                 case "/essentials:eessentials":
