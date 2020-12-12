@@ -46,28 +46,6 @@ public final class ServerCommand implements Listener {
 
 		try {
 			switch (commandName) {
-                case "/minecraft:datapack":
-                case "/datapack":
-                case "/minecraft:debug":
-                case "/debug":
-                case "/ess":
-                case "/essentials":
-                case "/eessentials":
-                case "/eess":
-                case "/essentials:ess":
-                case "/essentials:essentials":
-                case "/essentials:eessentials":
-                case "/essentials:eess":
-                case "/essentials:essversion":
-                case "/ld":
-                case "/libsdisg":
-                case "/libsdisguises":
-                case "/libsdisguises:ld":
-                case "/libsdisguises:libsdisg":
-                case "/libsdisguises:libsdisguises":
-                case "/paper":
-                case "/paper:paper":
-                    return "cancel";
 				case "/minecraft:execute":
 				case "/execute":
 					if (arr.length >= 2) {
