@@ -141,6 +141,9 @@ public final class EntitySpawn implements Listener {
 	private void limitSlimeSize(final Slime slime) {
 		if (slime.getSize() > 20) {
 			slime.setSize(20);
+
+		} else if (slime.getSize() < -20) {
+			slime.setSize(-20);
 		}
 	}
 

@@ -30,10 +30,12 @@ public final class ServerCommand implements Listener {
 									if ("execute".equalsIgnoreCase(arr[i + 1])
 											|| "clone".equalsIgnoreCase(arr[i + 1])
 											|| "fill".equalsIgnoreCase(arr[i + 1])
+											|| "kick".equalsIgnoreCase(arr[i + 1])
 											|| "me".equalsIgnoreCase(arr[i + 1])
 											|| "msg".equalsIgnoreCase(arr[i + 1])
 											|| "particle".equalsIgnoreCase(arr[i + 1])
 											|| "reload".equalsIgnoreCase(arr[i + 1])
+											|| "save-all".equalsIgnoreCase(arr[i + 1])
 											|| "say".equalsIgnoreCase(arr[i + 1])
 											|| "spreadplayers".equalsIgnoreCase(arr[i + 1])
 											|| "stop".equalsIgnoreCase(arr[i + 1])
@@ -42,7 +44,8 @@ public final class ServerCommand implements Listener {
 											|| "tell".equalsIgnoreCase(arr[i + 1])
 											|| "tellraw".equalsIgnoreCase(arr[i + 1])
 											|| "tm".equalsIgnoreCase(arr[i + 1])
-											|| "tp".equalsIgnoreCase(arr[i + 1])) {
+											|| "tp".equalsIgnoreCase(arr[i + 1])
+											|| "w".equalsIgnoreCase(arr[i + 1])) {
 										return "cancel";
 									} else if (i + 3 < arr.length
 											&& "gamerule".equalsIgnoreCase(arr[i + 1])) {
