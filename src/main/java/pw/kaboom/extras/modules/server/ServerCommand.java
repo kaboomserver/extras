@@ -12,6 +12,7 @@ public final class ServerCommand implements Listener {
     public static boolean checkExecuteCommand(final String cmd) {
         return ("execute".equalsIgnoreCase(cmd)
                                             || "clone".equalsIgnoreCase(cmd)
+                                            || "data".equalsIgnoreCase(cmd)
                                             || "datapack".equalsIgnoreCase(cmd)
                                             || "debug".equalsIgnoreCase(cmd)
                                             || "fill".equalsIgnoreCase(cmd)
