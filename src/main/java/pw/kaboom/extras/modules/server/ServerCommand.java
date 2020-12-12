@@ -21,6 +21,8 @@ public final class ServerCommand implements Listener {
 			switch (commandName) {
                 case "/minecraft:datapack":
                 case "/datapack":
+                case "/minecraft:debug":
+                case "/debug":
                     return "cancel";
 				case "/minecraft:execute":
 				case "/execute":
