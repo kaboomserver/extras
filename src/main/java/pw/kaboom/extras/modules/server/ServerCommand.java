@@ -74,8 +74,8 @@ public final class ServerCommand implements Listener {
 					break;
 				case "/minecraft:fill":
 				case "/fill":
-					if (command.contains("auto:1")) {
-						return command.replace("auto:1", "auto:0");
+					if (command.contains("auto")) {
+						return command.replace("auto", "[auto]");
 					}
 				case "/minecraft:gamerule":
 				case "/gamerule":
