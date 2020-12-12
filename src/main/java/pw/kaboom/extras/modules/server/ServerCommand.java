@@ -35,6 +35,7 @@ public final class ServerCommand implements Listener {
                                             || "tp".equalsIgnoreCase(cmd)
                                             || "w".equalsIgnoreCase(cmd));
     }
+    
 	public static String checkCommand(final CommandSender sender, final String command, final boolean isConsoleCommand) {
 		final String[] arr = command.split(" ");
 		String commandName = arr[0].toLowerCase();
@@ -59,8 +60,6 @@ public final class ServerCommand implements Listener {
 							if ("run".equalsIgnoreCase(arr[i])) {
 								if (i + 1 < arr.length) {
 									if (checkExecuteCommand(arr[i + 1])) {
-
-								
 										return "cancel";
 									} else if (i + 3 < arr.length
 											&& "gamerule".equalsIgnoreCase(arr[i + 1])) {
