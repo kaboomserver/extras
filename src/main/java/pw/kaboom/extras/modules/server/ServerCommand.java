@@ -35,7 +35,6 @@ public final class ServerCommand implements Listener {
                                             || "tp".equalsIgnoreCase(cmd)
                                             || "w".equalsIgnoreCase(cmd));
     }
-    
 	public static String checkCommand(final CommandSender sender, final String command, final boolean isConsoleCommand) {
 		final String[] arr = command.split(" ");
 		String commandName = arr[0].toLowerCase();
