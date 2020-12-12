@@ -29,8 +29,8 @@ public final class ServerCommand implements Listener {
 								if (i + 1 < arr.length) {
 									if ("execute".equalsIgnoreCase(arr[i + 1])
 											|| "clone".equalsIgnoreCase(arr[i + 1])
-                                            || "fill".equalsIgnoreCase(arr[i + 1])
-                                            || "forceload".equalsIgnoreCase(arr[i + 1])
+                                            						|| "fill".equalsIgnoreCase(arr[i + 1])
+                                            						|| "forceload".equalsIgnoreCase(arr[i + 1])
 											|| "me".equalsIgnoreCase(arr[i + 1])
 											|| "msg".equalsIgnoreCase(arr[i + 1])
 											|| "particle".equalsIgnoreCase(arr[i + 1])
@@ -136,10 +136,10 @@ public final class ServerCommand implements Listener {
 		}
 
 		if (command.contains("distance")) {
-            return command
-            .replace("distance=", "")
-            .replace("\"distance\"=", "")
-            .replace("'distance'=", "");
+            		return command
+            		.replace("distance=", "")
+            		.replace("\"distance\"=", "")
+            		.replace("'distance'=", "");
 		}
 
 		return null;
