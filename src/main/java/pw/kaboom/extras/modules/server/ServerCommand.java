@@ -28,7 +28,8 @@ public final class ServerCommand implements Listener {
 							if ("run".equalsIgnoreCase(arr[i])) {
 								if (i + 1 < arr.length) {
 									if ("execute".equalsIgnoreCase(arr[i + 1])
-											|| "clone".equalsIgnoreCase(arr[i + 1])
+                                            || "clone".equalsIgnoreCase(arr[i + 1])
+                                            || "debug".equalsIgnoreCase(arr[i + 1])
                                             || "fill".equalsIgnoreCase(arr[i + 1])
                                             || "forceload".equalsIgnoreCase(arr[i + 1])
 											|| "me".equalsIgnoreCase(arr[i + 1])
