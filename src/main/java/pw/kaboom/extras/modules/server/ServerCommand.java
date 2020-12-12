@@ -19,6 +19,9 @@ public final class ServerCommand implements Listener {
 
 		try {
 			switch (commandName) {
+                case "/minecraft:datapack":
+                case "/datapack":
+                    return "cancel";
 				case "/minecraft:execute":
 				case "/execute":
 					if (arr.length >= 2) {
