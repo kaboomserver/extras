@@ -73,8 +73,7 @@ public final class ServerCommand implements Listener {
 								break;
 							}
 
-							if ("as".equalsIgnoreCase(arr[i])
-									|| "at".equalsIgnoreCase(arr[i])) {
+							if ("as".equalsIgnoreCase(arr[i]) || "at".equalsIgnoreCase(arr[i])) {
 								asAtCount++;
 							}
 						}
@@ -125,7 +124,6 @@ public final class ServerCommand implements Listener {
 						if (Double.parseDouble(arr[4]) > 50) {
 							arr[4] = "50";
 						}
-
 						return String.join(" ", arr);
 					}
 					break;
