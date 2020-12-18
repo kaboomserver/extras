@@ -144,6 +144,16 @@ public final class ServerCommand implements Listener {
 							&& "debug".equalsIgnoreCase(arr[1])) {
 						return "cancel";
 					}
+				break;
+				case "/minecraft:bossbar":
+				case "/minecraft:tellraw":
+				case "/minecraft:title":
+				case "/bossbar":
+				case "/tellraw":
+				case "/title":
+					if(command.contains("selector")) {
+						return command.replace("selector:", "").replace("\"selector\":", "").replace("'selector':", "");
+					}
 					break;
 				default:
 					break;
