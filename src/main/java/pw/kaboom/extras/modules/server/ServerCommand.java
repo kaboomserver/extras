@@ -144,7 +144,7 @@ public final class ServerCommand implements Listener {
 							&& "debug".equalsIgnoreCase(arr[1])) {
 						return "cancel";
 					}
-				break;
+					break;
 				case "/minecraft:bossbar":
 				case "/minecraft:tellraw":
 				case "/minecraft:title":
