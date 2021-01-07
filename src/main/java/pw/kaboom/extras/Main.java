@@ -6,12 +6,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.block.BlockFace;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.events.ListenerPriority;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketEvent;
-
 import pw.kaboom.extras.commands.CommandBroadcastVanilla;
 import pw.kaboom.extras.commands.CommandClearChat;
 import pw.kaboom.extras.commands.CommandConsole;
@@ -79,17 +73,6 @@ public final class Main extends JavaPlugin {
 		this.getCommand("spidey").setExecutor(new CommandSpidey());
 		this.getCommand("tellraw").setExecutor(new CommandTellraw());
 		this.getCommand("username").setExecutor(new CommandUsername());
-
-		ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Client.WINDOW_CLICK) {
-			@Override
-			public void onPacketReceiving(final PacketEvent event) {
-				final int maxInventorySize = 46;
-				if (event.getPacket().getIntegers().read(1) > maxInventorySize
-						|| event.getPacket().getIntegers().read(1) < 0) {
-					event.setCancelled(true);
-				}
-			}
-		});
 
 		/* Block-related modules */
 		this.getServer().getPluginManager().registerEvents(new BlockCheck(), this);
