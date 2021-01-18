@@ -139,8 +139,9 @@ public final class ServerCommand implements Listener {
 					break;
 				case "/minecraft:say":
 				case "/say":
-					for (int i = 0; i < arr.length; i++) {
-						if (arr[i].toLowerCase().contains("@")) {
+				case "/console":
+					for (String arg: arr) {
+						if (arg.toLowerCase().contains("@")) {
 							return "cancel";
 						}
 					}
