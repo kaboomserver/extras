@@ -11,30 +11,31 @@ import org.bukkit.event.server.ServerCommandEvent;
 public final class ServerCommand implements Listener {
 	public static boolean checkExecuteCommand(final String cmd) {
 		return ("execute".equalsIgnoreCase(cmd)
-											|| "clone".equalsIgnoreCase(cmd)
-											|| "data".equalsIgnoreCase(cmd)
-											|| "datapack".equalsIgnoreCase(cmd)
-											|| "debug".equalsIgnoreCase(cmd)
-											|| "fill".equalsIgnoreCase(cmd)
-											|| "forceload".equalsIgnoreCase(cmd)
-											|| "kick".equalsIgnoreCase(cmd)
-											|| "me".equalsIgnoreCase(cmd)
-											|| "msg".equalsIgnoreCase(cmd)
-											|| "particle".equalsIgnoreCase(cmd)
-											|| "reload".equalsIgnoreCase(cmd)
-											|| "save-all".equalsIgnoreCase(cmd)
-											|| "say".equalsIgnoreCase(cmd)
-											|| "setblock".equalsIgnoreCase(cmd)
-											|| "spreadplayers".equalsIgnoreCase(cmd)
-											|| "stop".equalsIgnoreCase(cmd)
-											|| "summon".equalsIgnoreCase(cmd)
-											|| "teammsg".equalsIgnoreCase(cmd)
-											|| "teleport".equalsIgnoreCase(cmd)
-											|| "tell".equalsIgnoreCase(cmd)
-											|| "tellraw".equalsIgnoreCase(cmd)
-											|| "tm".equalsIgnoreCase(cmd)
-											|| "tp".equalsIgnoreCase(cmd)
-											|| "w".equalsIgnoreCase(cmd));
+			|| "clone".equalsIgnoreCase(cmd)
+			|| "data".equalsIgnoreCase(cmd)
+			|| "datapack".equalsIgnoreCase(cmd)
+			|| "debug".equalsIgnoreCase(cmd)
+			|| "fill".equalsIgnoreCase(cmd)
+			|| "forceload".equalsIgnoreCase(cmd)
+			|| "kick".equalsIgnoreCase(cmd)
+			|| "me".equalsIgnoreCase(cmd)
+			|| "msg".equalsIgnoreCase(cmd)
+			|| "particle".equalsIgnoreCase(cmd)
+			|| "reload".equalsIgnoreCase(cmd)
+			|| "save-all".equalsIgnoreCase(cmd)
+			|| "say".equalsIgnoreCase(cmd)
+			|| "setblock".equalsIgnoreCase(cmd)
+			|| "spreadplayers".equalsIgnoreCase(cmd)
+			|| "stop".equalsIgnoreCase(cmd)
+			|| "summon".equalsIgnoreCase(cmd)
+			|| "teammsg".equalsIgnoreCase(cmd)
+			|| "teleport".equalsIgnoreCase(cmd)
+			|| "tell".equalsIgnoreCase(cmd)
+			|| "tellraw".equalsIgnoreCase(cmd)
+			|| "tm".equalsIgnoreCase(cmd)
+			|| "tp".equalsIgnoreCase(cmd)
+			|| "w".equalsIgnoreCase(cmd)
+		);
 	}
 	public static String checkCommand(final CommandSender sender, final String command, final boolean isConsoleCommand) {
 		final String[] arr = command.split(" ");
@@ -126,6 +127,12 @@ public final class ServerCommand implements Listener {
 						return String.join(" ", arr);
 					}
 					break;
+				case "/minecraft:title":
+				case "/title":
+					if (command.contains("selector")) {
+						return "cancel";
+					}
+					break;
 				case "/viaversion:viaver":
 				case "/viaversion:viaversion":
 				case "/viaversion:vvbukkit":
@@ -135,14 +142,6 @@ public final class ServerCommand implements Listener {
 					if (arr.length >= 2
 							&& "debug".equalsIgnoreCase(arr[1])) {
 						return "cancel";
-					}
-					break;
-				case "/minecraft:say":
-				case "/say":
-					for (int i = 0; i < arr.length; i++) {
-						if (arr[i].toLowerCase().contains("@")) {
-							return "cancel";
-						}
 					}
 					break;
 				default:
