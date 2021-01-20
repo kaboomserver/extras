@@ -68,6 +68,10 @@ public final class ServerCommand implements Listener {
 											arr[arr.length - 1] = "64";
 											return String.join(" ", arr);
 										}
+									} else if ("title".equalsIgnoreCase(arr[i + 1])) {
+										if (command.contains("selector")) {
+											return "cancel";
+										}
 									}
 								}
 								break;
@@ -129,10 +133,7 @@ public final class ServerCommand implements Listener {
 					break;
 				case "/minecraft:title":
 				case "/title":
-					if (command.contains("@a")
-							|| command.contains("@e")
-							|| command.contains("@p")
-							|| command.contains("@r")) {
+					if (command.contains("selector")) {
 						return "cancel";
 					}
 					break;
@@ -187,5 +188,7 @@ public final class ServerCommand implements Listener {
 				event.setCommand(checkedCommand);
 			}
 		}
+
+		System.out.println("Console command: " + command);
 	}
 }
