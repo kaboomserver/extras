@@ -129,7 +129,10 @@ public final class ServerCommand implements Listener {
 					break;
 				case "/minecraft:title":
 				case "/title":
-					if (command.contains("selector")) {
+					if (command.contains("@a")
+							|| command.contains("@e")
+							|| command.contains("@p")
+							|| command.contains("@r")) {
 						return "cancel";
 					}
 					break;
