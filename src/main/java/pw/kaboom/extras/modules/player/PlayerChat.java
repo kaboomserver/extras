@@ -3,6 +3,7 @@ package pw.kaboom.extras.modules.player;
 import java.io.File;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import org.bukkit.configuration.file.FileConfiguration;
@@ -46,18 +47,17 @@ public final class PlayerChat implements Listener {
 
 		if (prefixConfig.getString(player.getUniqueId().toString()) != null) {
 			prefix = ChatColor.translateAlternateColorCodes(
-				'&',
-				prefixConfig.getString(player.getUniqueId().toString()) +  " " + ChatColor.RESET
+					'&',
+					prefixConfig.getString(player.getUniqueId().toString()) +  " " + ChatColor.RESET
 			);
 		} else if (event.getPlayer().isOp()) {
 			prefix = JavaPlugin.getPlugin(Main.class).getConfig().getString("opTag");
 		} else {
 			prefix = JavaPlugin.getPlugin(Main.class).getConfig().getString("deOpTag");
 		}
-
-		event.setFormat(prefix + name + ChatColor.RESET + ": " + ChatColor.RESET + "%2$s");
-		event.setMessage(
-			ChatColor.translateAlternateColorCodes('&', event.getMessage())
-		);
+		event.setCancelled(true);
+		for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+			onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', String.join(" ", prefix + name + ChatColor.RESET + ": " + ChatColor.RESET + event.getMessage())));
+		}
 	}
 }
