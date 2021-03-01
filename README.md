@@ -14,6 +14,7 @@ Extras is a Bukkit plugin that that adds extra functionality to the Kaboom serve
 |/enchantall | | extras.enchantall | Adds every enchantment to a held item|
 |/jumpscare | /scare | extras.jumpscare | Scares a player|
 |/kaboom | | extras.kaboom | I wonder...|
+|/ping | /ms, /delay | extras.ping | Queries your connection to the server's delay|
 |/prefix | /rank, /tag | extras.prefix | Changes your tag|
 |/pumpkin | | extras.pumpkin | Places a pumpkin on a player's head|
 |/serverinfo | /specs | extras.serverinfo | Shows detailed server information|
