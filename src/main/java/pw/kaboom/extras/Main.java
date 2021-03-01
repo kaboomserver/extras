@@ -13,6 +13,7 @@ import pw.kaboom.extras.commands.CommandDestroyEntities;
 import pw.kaboom.extras.commands.CommandEnchantAll;
 import pw.kaboom.extras.commands.CommandJumpscare;
 import pw.kaboom.extras.commands.CommandKaboom;
+import pw.kaboom.extras.commands.CommandPing;
 import pw.kaboom.extras.commands.CommandPrefix;
 import pw.kaboom.extras.commands.CommandPumpkin;
 import pw.kaboom.extras.commands.CommandServerInfo;
@@ -73,6 +74,7 @@ public final class Main extends JavaPlugin {
 		this.getCommand("spidey").setExecutor(new CommandSpidey());
 		this.getCommand("tellraw").setExecutor(new CommandTellraw());
 		this.getCommand("username").setExecutor(new CommandUsername());
+        this.getCommand("ping").setExecutor(new CommandPing());
 
 		/* Block-related modules */
 		this.getServer().getPluginManager().registerEvents(new BlockCheck(), this);

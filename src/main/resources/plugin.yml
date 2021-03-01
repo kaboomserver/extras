@@ -34,6 +34,10 @@ commands:
    kaboom:
       description: I wonder...
       permission: extras.kaboom
+   ping:
+      aliases: [delay, ms]
+      description: Displays the delay of your connection to the server in milliseconds
+      permission: extras.ping
    prefix:
       aliases: [rank, tag]
       description: Changes your tag

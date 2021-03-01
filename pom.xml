@@ -21,7 +21,14 @@
 			<groupId>com.comphenix.protocol</groupId>
 			<artifactId>ProtocolLib</artifactId>
 			<version>4.4.0</version>
-		</dependency>
+        </dependency>
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>craftbukkit</artifactId>
+            <version>LATEST</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/tools/craftbukkit.jar</systemPath>
+        </dependency>
 	</dependencies>
 
 	<repositories>
