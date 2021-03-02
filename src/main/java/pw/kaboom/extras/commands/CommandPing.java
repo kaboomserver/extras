@@ -4,14 +4,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 public final class CommandPing implements CommandExecutor {
 
     public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
         final Player player = (Player) sender;
-        final int ping = ((CraftPlayer) player).getHandle().playerConnection.player.ping;
+        final int ping = player.spigot().getPing();
         final int d = (int) Math.floor(ping / 100);
         ChatColor highlighting = ChatColor.WHITE;
 
