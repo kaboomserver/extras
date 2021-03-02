@@ -66,6 +66,7 @@ public final class Main extends JavaPlugin {
 		this.getCommand("enchantall").setExecutor(new CommandEnchantAll());
 		this.getCommand("jumpscare").setExecutor(new CommandJumpscare());
 		this.getCommand("kaboom").setExecutor(new CommandKaboom());
+		this.getCommand("ping").setExecutor(new CommandPing());
 		this.getCommand("prefix").setExecutor(new CommandPrefix());
 		this.getCommand("pumpkin").setExecutor(new CommandPumpkin());
 		this.getCommand("serverinfo").setExecutor(new CommandServerInfo());
@@ -74,7 +75,6 @@ public final class Main extends JavaPlugin {
 		this.getCommand("spidey").setExecutor(new CommandSpidey());
 		this.getCommand("tellraw").setExecutor(new CommandTellraw());
 		this.getCommand("username").setExecutor(new CommandUsername());
-        this.getCommand("ping").setExecutor(new CommandPing());
 
 		/* Block-related modules */
 		this.getServer().getPluginManager().registerEvents(new BlockCheck(), this);
