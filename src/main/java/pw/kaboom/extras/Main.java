@@ -13,6 +13,7 @@ import pw.kaboom.extras.commands.CommandDestroyEntities;
 import pw.kaboom.extras.commands.CommandEnchantAll;
 import pw.kaboom.extras.commands.CommandJumpscare;
 import pw.kaboom.extras.commands.CommandKaboom;
+import pw.kaboom.extras.commands.CommandPing;
 import pw.kaboom.extras.commands.CommandPrefix;
 import pw.kaboom.extras.commands.CommandPumpkin;
 import pw.kaboom.extras.commands.CommandServerInfo;
@@ -65,6 +66,7 @@ public final class Main extends JavaPlugin {
 		this.getCommand("enchantall").setExecutor(new CommandEnchantAll());
 		this.getCommand("jumpscare").setExecutor(new CommandJumpscare());
 		this.getCommand("kaboom").setExecutor(new CommandKaboom());
+		this.getCommand("ping").setExecutor(new CommandPing());
 		this.getCommand("prefix").setExecutor(new CommandPrefix());
 		this.getCommand("pumpkin").setExecutor(new CommandPumpkin());
 		this.getCommand("serverinfo").setExecutor(new CommandServerInfo());
