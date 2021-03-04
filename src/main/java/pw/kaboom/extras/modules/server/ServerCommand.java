@@ -95,8 +95,14 @@ public final class ServerCommand implements Listener {
 											arr[arr.length - 1] = "64";
 											return String.join(" ", arr);
 										}
-									} else if ("title".equalsIgnoreCase(arr[i + 1])) {
-										if (parseCharCodes(command).contains("selector")) {
+									} else if ("bossbar".equalsIgnoreCase(arr[i + 1])
+									        || "fill".equalsIgnoreCase(arr[i + 1])
+									        || "setblock".equalsIgnoreCase(arr[i + 1])
+									        || "tellraw".equalsIgnoreCase(arr[i + 1])
+									        || "title".equalsIgnoreCase(arr[i + 1])) {
+										command = parseCharCodes(command)
+										if (command.contains("selector")
+												|| command.contains("translate")) {
 											return "cancel";
 										}
 									}
@@ -118,6 +124,10 @@ public final class ServerCommand implements Listener {
 				case "/fill":
 					if (command.contains("auto")) {
 						return command.replace("auto", "[auto]");
+					}
+					if (command.contains("selector")
+							|| command.contains("translate")) {
+						return "cancel";
 					}
 				case "/minecraft:gamerule":
 				case "/gamerule":
@@ -158,9 +168,17 @@ public final class ServerCommand implements Listener {
 						return String.join(" ", arr);
 					}
 					break;
+				case "/minecraft:bossbar":
+				case "/minecraft:setblock":
+				case "/minecraft:tellraw":
 				case "/minecraft:title":
+				case "/bossbar":
+				case "/setblock":
+				case "/tellraw":
 				case "/title":
-					if (parseCharCodes(command).contains("selector")) {
+					command = parseCharCodes(command)
+					if (command.contains("selector")
+							|| command.contains("translate")) {
 						return "cancel";
 					}
 					break;
