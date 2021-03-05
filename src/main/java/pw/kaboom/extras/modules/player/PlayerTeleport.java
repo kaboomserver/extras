@@ -1,5 +1,6 @@
 package pw.kaboom.extras.modules.player;
 
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,10 +14,10 @@ public final class PlayerTeleport implements Listener {
 	void onPlayerChangedWorld(final PlayerChangedWorldEvent event) {
 		final Player player = event.getPlayer();
 
-		if (player.getMaxHealth() <= 0) {
-			player.setMaxHealth(Double.POSITIVE_INFINITY);
+		if (player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() <= 0) {
+			player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(Double.POSITIVE_INFINITY);
 			player.setHealth(20);
-			player.setMaxHealth(20);
+			player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
 		}
 	}
 
