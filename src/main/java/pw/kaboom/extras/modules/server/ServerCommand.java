@@ -50,7 +50,7 @@ public final class ServerCommand implements Listener {
 				try {
 					int integer = Integer.parseInt(arr[i]);
 					try {
-						if (integer == Double.MAX_VALUE || integer == Float.MAX_VALUE || integer == Integer.MAX_VALUE) {
+						if (integer >= Integer.MAX_VALUE) {
 							return "cancel";
 						}
 					} catch (Exception e) {
