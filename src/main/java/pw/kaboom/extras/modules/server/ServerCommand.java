@@ -11,19 +11,26 @@ import org.bukkit.event.server.ServerCommandEvent;
 public final class ServerCommand implements Listener {
 	public static boolean checkExecuteCommand(final String cmd) {
 		return ("execute".equalsIgnoreCase(cmd)
+			|| "banlist".equalsIgnoreCase(cmd)
 			|| "clone".equalsIgnoreCase(cmd)
 			|| "data".equalsIgnoreCase(cmd)
 			|| "datapack".equalsIgnoreCase(cmd)
 			|| "debug".equalsIgnoreCase(cmd)
+			|| "difficulty".equalsIgnoreCase(cmd)
 			|| "fill".equalsIgnoreCase(cmd)
 			|| "forceload".equalsIgnoreCase(cmd)
+			|| "help".equalsIgnoreCase(cmd)
 			|| "kick".equalsIgnoreCase(cmd)
+			|| "list".equalsIgnoreCase(cmd)
+			|| "locate".equalsIgnoreCase(cmd)
+			|| "locatebiome".equalsIgnoreCase(cmd)
 			|| "me".equalsIgnoreCase(cmd)
 			|| "msg".equalsIgnoreCase(cmd)
 			|| "particle".equalsIgnoreCase(cmd)
 			|| "reload".equalsIgnoreCase(cmd)
 			|| "save-all".equalsIgnoreCase(cmd)
 			|| "say".equalsIgnoreCase(cmd)
+			|| "seed".equalsIgnoreCase(cmd)
 			|| "setblock".equalsIgnoreCase(cmd)
 			|| "spreadplayers".equalsIgnoreCase(cmd)
 			|| "stop".equalsIgnoreCase(cmd)
@@ -35,6 +42,7 @@ public final class ServerCommand implements Listener {
 			|| "tm".equalsIgnoreCase(cmd)
 			|| "tp".equalsIgnoreCase(cmd)
 			|| "w".equalsIgnoreCase(cmd)
+			|| "whitelist".equalsIgnoreCase(cmd)
 		);
 	}
 	public static String checkCommand(final CommandSender sender, final String command, final boolean isConsoleCommand) {
@@ -77,7 +85,7 @@ public final class ServerCommand implements Listener {
 								break;
 							}
 
-							if ("as".equalsIgnoreCase(arr[i]) || "at".equalsIgnoreCase(arr[i])) {
+							if ("as".equalsIgnoreCase(arr[i]) || "at".equalsIgnoreCase(arr[i]) || "facing".equalsIgnoreCase(arr[i])) {
 								asAtCount++;
 							}
 						}
