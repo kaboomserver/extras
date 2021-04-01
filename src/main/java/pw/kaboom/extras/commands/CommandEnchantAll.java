@@ -27,7 +27,7 @@ public final class CommandEnchantAll implements CommandExecutor {
 				for (Enchantment enchantment : Enchantment.values()) {
 					item.addUnsafeEnchantment(enchantment, Short.MAX_VALUE);
 				}
-				player.sendMessage("I killed Tim.");
+				player.sendMessage("I killed Martin.");
 			}
 		}
 		return true;
