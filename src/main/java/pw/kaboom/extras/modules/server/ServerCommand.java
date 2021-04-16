@@ -77,7 +77,7 @@ public final class ServerCommand implements Listener {
 											return String.join(" ", arr);
 										}
 									} else if ("title".equalsIgnoreCase(arr[i + 1])) {
-										if (command.contains("selector")) {
+										if (parseCharCodes(command).contains("selector")) {
 											return "cancel";
 										}
 									}
@@ -141,7 +141,7 @@ public final class ServerCommand implements Listener {
 					break;
 				case "/minecraft:title":
 				case "/title":
-					if (command.contains("selector")) {
+					if (parseCharCodes(command).contains("selector")) {
 						return "cancel";
 					}
 					break;
@@ -198,5 +198,26 @@ public final class ServerCommand implements Listener {
 		}
 
 		System.out.println("Console command: " + command);
+	}
+
+	public static String parseCharCodes(final String input) {
+		if (input.contains("\\u")) {
+			StringBuilder output = new StringBuilder();
+			String[] split = input.split("\\\\u");
+			int index = 0;
+			for (String item:split) {
+				if (index == 0) {
+					output.append(item);
+				} else {
+					String charCode = item.substring(0, 4);
+					output.append((char) Integer.parseInt(charCode, 16));
+					output.append(item.substring(4));
+				}
+				index++;
+			}
+			return output.toString();
+		} else {
+			return input;
+		}
 	}
 }
