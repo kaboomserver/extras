@@ -100,9 +100,9 @@ public final class ServerCommand implements Listener {
 									        || "setblock".equalsIgnoreCase(arr[i + 1])
 									        || "tellraw".equalsIgnoreCase(arr[i + 1])
 									        || "title".equalsIgnoreCase(arr[i + 1])) {
-										command = parseCharCodes(command)
-										if (command.contains("selector")
-												|| command.contains("translate")) {
+										final String charCommand = parseCharCodes(command);
+										if (charCommand.contains("selector")
+												|| charCommand.contains("translate")) {
 											return "cancel";
 										}
 									}
@@ -176,9 +176,9 @@ public final class ServerCommand implements Listener {
 				case "/setblock":
 				case "/tellraw":
 				case "/title":
-					command = parseCharCodes(command)
-					if (command.contains("selector")
-							|| command.contains("translate")) {
+					final String charCommand = parseCharCodes(command);
+					if (charCommand.contains("selector")
+							|| charCommand.contains("translate")) {
 						return "cancel";
 					}
 					break;
