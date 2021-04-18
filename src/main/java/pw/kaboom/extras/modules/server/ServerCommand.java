@@ -53,6 +53,25 @@ public final class ServerCommand implements Listener {
 			commandName = "/" + arr[0].toLowerCase();
 		}
 
+		for (int i = 1; i < arr.length; i++) {
+			if (arr[i].matches("^[+-]?(?:\\d+\\.?\\d*|\\d*\\.?\\d+)[\\r\\n]*$")) {
+				try {
+					int integer = Integer.parseInt(arr[i]);
+					try {
+						if (integer >= Integer.MAX_VALUE) {
+							return "cancel";
+						}
+					} catch (Exception e) {
+						return "cancel";
+					}
+
+				} catch (NumberFormatException e) {
+					// Ignore exception
+				}
+
+			}
+		}
+
 		try {
 			switch (commandName) {
 				case "/minecraft:execute":
