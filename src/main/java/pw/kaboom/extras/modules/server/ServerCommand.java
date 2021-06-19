@@ -26,7 +26,6 @@ public final class ServerCommand implements Listener {
 			|| "locatebiome".equalsIgnoreCase(cmd)
 			|| "me".equalsIgnoreCase(cmd)
 			|| "msg".equalsIgnoreCase(cmd)
-			|| "particle".equalsIgnoreCase(cmd)
 			|| "reload".equalsIgnoreCase(cmd)
 			|| "save-all".equalsIgnoreCase(cmd)
 			|| "say".equalsIgnoreCase(cmd)
@@ -101,8 +100,7 @@ public final class ServerCommand implements Listener {
 									        || "tellraw".equalsIgnoreCase(arr[i + 1])
 									        || "title".equalsIgnoreCase(arr[i + 1])) {
 										final String charCommand = parseCharCodes(command);
-										if (charCommand.contains("selector")
-												|| charCommand.contains("translate")) {
+										if (charCommand.contains("selector")) {
 											return "cancel";
 										}
 									}
@@ -125,8 +123,7 @@ public final class ServerCommand implements Listener {
 					if (command.contains("auto")) {
 						return command.replace("auto", "[auto]");
 					}
-					if (command.contains("selector")
-							|| command.contains("translate")) {
+					if (command.contains("selector")) {
 						return "cancel";
 					}
 				case "/minecraft:gamerule":
@@ -179,8 +176,7 @@ public final class ServerCommand implements Listener {
 				case "/tellraw":
 				case "/title":
 					final String charCommand = parseCharCodes(command);
-					if (charCommand.contains("selector")
-							|| charCommand.contains("translate")) {
+					if (charCommand.contains("selector")) {
 						return "cancel";
 					}
 					break;
