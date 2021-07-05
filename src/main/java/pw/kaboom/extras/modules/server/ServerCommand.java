@@ -1,5 +1,8 @@
 package pw.kaboom.extras.modules.server;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.bukkit.block.CommandBlock;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
@@ -78,6 +81,14 @@ public final class ServerCommand implements Listener {
 				case "/execute":
 					if (arr.length >= 2) {
 						int asAtCount = 0;
+						Pattern asAtPattern = Pattern.compile("\\b(as|at|facing entity) @[ae]\\b");
+						Matcher asAtMatcher = asAtPattern.matcher(command.toLowerCase());
+						while (asAtMatcher.find()) {
+							asAtCount++;
+						}
+						if (asAtCount >= 2) {
+							return "cancel";
+						}
 
 						for (int i = 1; i < arr.length; i++) {
 							if ("run".equalsIgnoreCase(arr[i])) {
@@ -109,14 +120,6 @@ public final class ServerCommand implements Listener {
 								}
 								break;
 							}
-
-							if ("as".equalsIgnoreCase(arr[i]) || "at".equalsIgnoreCase(arr[i]) || "facing".equalsIgnoreCase(arr[i])) {
-								asAtCount++;
-							}
-						}
-
-						if (asAtCount >= 2) {
-							return "cancel";
 						}
 					}
 					break;
