@@ -12,6 +12,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerCommandEvent;
 
 public final class ServerCommand implements Listener {
+	private static Pattern asAtPattern = Pattern.compile("\\b(as|at|facing entity) @[ae]\\b");
+
 	public static boolean checkExecuteCommand(final String cmd) {
 		return ("execute".equalsIgnoreCase(cmd)
 			|| "banlist".equalsIgnoreCase(cmd)
@@ -81,7 +83,6 @@ public final class ServerCommand implements Listener {
 				case "/execute":
 					if (arr.length >= 2) {
 						int asAtCount = 0;
-						Pattern asAtPattern = Pattern.compile("\\b(as|at|facing entity) @[ae]\\b");
 						Matcher asAtMatcher = asAtPattern.matcher(command.toLowerCase());
 						while (asAtMatcher.find()) {
 							asAtCount++;
