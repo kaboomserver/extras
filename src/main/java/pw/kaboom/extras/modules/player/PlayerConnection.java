@@ -20,6 +20,7 @@ import com.destroystokyo.paper.profile.ProfileProperty;
 import com.google.common.base.Charsets;
 
 import pw.kaboom.extras.Main;
+import pw.kaboom.extras.modules.server.ServerTabComplete;
 
 public final class PlayerConnection implements Listener {
 	@EventHandler
@@ -61,6 +62,8 @@ public final class PlayerConnection implements Listener {
 				fadeOut
 			);
 		}
+
+		ServerTabComplete.getLoginNameList().put(player.getUniqueId(), player.getName());
 	}
 
 	@EventHandler
@@ -105,6 +108,7 @@ public final class PlayerConnection implements Listener {
 	void onPlayerQuit(final PlayerQuitEvent event) {
 		PlayerCommand.getCommandMillisList().remove(event.getPlayer().getUniqueId());
 		//PlayerInteract.interactMillisList.remove(event.getPlayer().getUniqueId());
+		ServerTabComplete.getLoginNameList().remove(event.getPlayer().getUniqueId());
 	}
 
 	@EventHandler
