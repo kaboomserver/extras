@@ -103,14 +103,27 @@ public final class ServerCommand implements Listener {
 										}
 									} else if ("give".equalsIgnoreCase(arr[i + 1])) {
 										if (Double.parseDouble(arr[arr.length - 1]) > 64) {
+											// Limit item count
 											arr[arr.length - 1] = "64";
 											return String.join(" ", arr);
 										}
+									} else if ("particle".equalsIgnoreCase(arr[i + 1])) {
+										int[] numArgs = {i + 15, i + 11};
+										for (int j : numArgs) {
+											if (arr.length < j || arr.length > j + 2) {
+												continue;
+											}
+											if (Double.parseDouble(arr[j - 1]) > 10) {
+												// Limit particle count
+												arr[j - 1] = "10";
+												return String.join(" ", arr);
+											}
+										}
 									} else if ("bossbar".equalsIgnoreCase(arr[i + 1])
-									        || "fill".equalsIgnoreCase(arr[i + 1])
-									        || "setblock".equalsIgnoreCase(arr[i + 1])
-									        || "tellraw".equalsIgnoreCase(arr[i + 1])
-									        || "title".equalsIgnoreCase(arr[i + 1])) {
+											|| "fill".equalsIgnoreCase(arr[i + 1])
+											|| "setblock".equalsIgnoreCase(arr[i + 1])
+											|| "tellraw".equalsIgnoreCase(arr[i + 1])
+											|| "title".equalsIgnoreCase(arr[i + 1])) {
 										final String charCommand = parseCharCodes(command);
 										if (charCommand.contains("selector")) {
 											return "cancel";
@@ -142,16 +155,23 @@ public final class ServerCommand implements Listener {
 				case "/minecraft:give":
 				case "/give":
 					if (Double.parseDouble(arr[arr.length - 1]) > 64) {
+						// Limit item count
 						arr[arr.length - 1] = "64";
 						return String.join(" ", arr);
 					}
 					break;
 				case "/minecraft:particle":
 				case "/particle":
-					if (arr.length >= 10
-							&& Double.parseDouble(arr[9]) > 10) {
-						arr[9] = "10";
-						return String.join(" ", arr);
+					int[] numArgs = {14, 10};
+					for (int i : numArgs) {
+						if (arr.length < i || arr.length > i + 2) {
+							continue;
+						}
+						if (Double.parseDouble(arr[i - 1]) > 10) {
+							// Limit particle count
+							arr[i - 1] = "10";
+							return String.join(" ", arr);
+						}
 					}
 					break;
 				case "/minecraft:spreadplayers":
