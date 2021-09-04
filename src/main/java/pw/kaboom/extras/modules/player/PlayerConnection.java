@@ -23,6 +23,17 @@ import pw.kaboom.extras.Main;
 import pw.kaboom.extras.modules.server.ServerTabComplete;
 
 public final class PlayerConnection implements Listener {
+
+	final String title = JavaPlugin.getPlugin(Main.class).getConfig().getString("playerJoinTitle");
+	final String subtitle = JavaPlugin.getPlugin(Main.class).getConfig().getString("playerJoinSubtitle");
+	final int fadeIn = 10;
+	final int stay = 160;
+	final int fadeOut = 5;
+	final boolean enableKick = JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("enableKick");
+	final boolean enableJoinRestrictions = JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("enableJoinRestrictions");
+	final boolean allowJoinOnFullServer = JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("allowJoinOnFullServer");
+	final boolean opOnJoin = JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("opOnJoin");
+
 	@EventHandler
 	void onAsyncPlayerPreLogin(final AsyncPlayerPreLoginEvent event) {
 		if (Bukkit.getPlayer(event.getName()) != null
@@ -46,11 +57,6 @@ public final class PlayerConnection implements Listener {
 	@EventHandler
 	void onPlayerJoin(final PlayerJoinEvent event) {
 		final Player player = event.getPlayer();
-		final String title = JavaPlugin.getPlugin(Main.class).getConfig().getString("playerJoinTitle");
-		final String subtitle = JavaPlugin.getPlugin(Main.class).getConfig().getString("playerJoinSubtitle");
-		final int fadeIn = 10;
-		final int stay = 160;
-		final int fadeOut = 5;
 
 		if (title != null
 				|| subtitle != null) {
@@ -68,7 +74,7 @@ public final class PlayerConnection implements Listener {
 
 	@EventHandler
 	void onPlayerKick(final PlayerKickEvent event) {
-		if (!JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("enableKick")) {
+		if (!enableKick) {
 			event.setCancelled(true);
 		}
 	}
@@ -81,19 +87,17 @@ public final class PlayerConnection implements Listener {
 			return;
 		}
 
-		if (!JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("enableJoinRestrictions")) {
+		if (!enableJoinRestrictions) {
 			event.allow();
 		}
 
-		if (Result.KICK_FULL.equals(event.getResult())
-				&& JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("allowJoinOnFullServer")) {
+		if (Result.KICK_FULL.equals(event.getResult()) && allowJoinOnFullServer) {
 			event.allow();
 		}
 
 		final Player player = event.getPlayer();
 
-		if (JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("opOnJoin")
-				&& !player.isOp()) {
+		if (opOnJoin && !player.isOp()) {
 			player.setOp(true);
 		}
 
