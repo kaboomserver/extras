@@ -86,12 +86,21 @@ public final class ServerCommand implements Listener {
 
 						for (int i = 1; i < arr.length; i++) {
 							if ("run".equalsIgnoreCase(arr[i])) {
-								if (i + 1 < arr.length) {
-									if (checkExecuteCommand(arr[i + 1])) {
-										return "cancel";
-									} else {
-										final String[] executeCommand = Arrays.copyOfRange(arr, i + 1, arr.length);
-										return checkCommand(sender, String.join(" ", executeCommand), true);
+								if (i + 1 == arr.length) break;
+								if (checkExecuteCommand(arr[i + 1])) {
+									return "cancel";
+								} else {
+									final String[] executeCommand = Arrays.copyOfRange(arr, i + 1, arr.length);
+									String result = checkCommand(sender, String.join(" ", executeCommand), true);
+									switch(result) {
+										case "cancel":
+											return "cancel"
+											break;
+										case null:
+											break;
+										default:
+											return result // TODO: fix this
+											break;
 									}
 								}
 								break;
