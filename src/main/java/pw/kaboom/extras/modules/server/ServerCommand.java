@@ -99,7 +99,7 @@ public final class ServerCommand implements Listener {
 											return "cancel";
 										default:
 											String pureExecute = String.join(" ", Arrays.copyOfRange(arr, 0, i + 1));
-											return (pureExecute + " " + result); // I'll fix this later. Like in the next commit.
+											return (pureExecute + " " + result);
 									}
 								}
 							}
