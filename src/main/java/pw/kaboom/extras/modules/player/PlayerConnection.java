@@ -24,15 +24,15 @@ import pw.kaboom.extras.modules.server.ServerTabComplete;
 
 public final class PlayerConnection implements Listener {
 
-	final String title = JavaPlugin.getPlugin(Main.class).getConfig().getString("playerJoinTitle");
-	final String subtitle = JavaPlugin.getPlugin(Main.class).getConfig().getString("playerJoinSubtitle");
-	final int fadeIn = 10;
-	final int stay = 160;
-	final int fadeOut = 5;
-	final boolean enableKick = JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("enableKick");
-	final boolean enableJoinRestrictions = JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("enableJoinRestrictions");
-	final boolean allowJoinOnFullServer = JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("allowJoinOnFullServer");
-	final boolean opOnJoin = JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("opOnJoin");
+	private final String title = JavaPlugin.getPlugin(Main.class).getConfig().getString("playerJoinTitle");
+	private final String subtitle = JavaPlugin.getPlugin(Main.class).getConfig().getString("playerJoinSubtitle");
+	private final int fadeIn = 10;
+	private final int stay = 160;
+	private final int fadeOut = 5;
+	private final boolean enableKick = JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("enableKick");
+	private final boolean enableJoinRestrictions = JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("enableJoinRestrictions");
+	private final boolean allowJoinOnFullServer = JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("allowJoinOnFullServer");
+	private final boolean opOnJoin = JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("opOnJoin");
 
 	@EventHandler
 	void onAsyncPlayerPreLogin(final AsyncPlayerPreLoginEvent event) {
