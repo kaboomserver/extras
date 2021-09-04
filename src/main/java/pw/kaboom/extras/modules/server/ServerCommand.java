@@ -150,7 +150,7 @@ public final class ServerCommand implements Listener {
 					break;
 				case "/minecraft:spreadplayers":
 				case "/spreadplayers":
-					if (arr.length == 7 && ( arr[6].contains("@e") || arr[6].contains("@a") )) {
+					if (arr.length == 7 && (arr[6].contains("@e") || arr[6].contains("@a"))) {
 						return "cancel";
 					} else if (arr.length >= 5) {
 						if (Double.parseDouble(arr[3]) > 0) {
