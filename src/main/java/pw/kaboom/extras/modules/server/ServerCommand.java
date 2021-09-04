@@ -18,13 +18,10 @@ public final class ServerCommand implements Listener {
 
 	public static boolean checkExecuteCommand(final String cmd) {
 		return ("execute".equalsIgnoreCase(cmd)
-			|| "banlist".equalsIgnoreCase(cmd)
 			|| "clone".equalsIgnoreCase(cmd)
 			|| "fill".equalsIgnoreCase(cmd)
 			|| "forceload".equalsIgnoreCase(cmd)
-			|| "help".equalsIgnoreCase(cmd)
 			|| "kick".equalsIgnoreCase(cmd)
-			|| "list".equalsIgnoreCase(cmd)
 			|| "locate".equalsIgnoreCase(cmd)
 			|| "locatebiome".equalsIgnoreCase(cmd)
 			|| "me".equalsIgnoreCase(cmd)
