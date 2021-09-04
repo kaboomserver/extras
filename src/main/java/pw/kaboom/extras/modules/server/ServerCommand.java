@@ -3,6 +3,8 @@ package pw.kaboom.extras.modules.server;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import java.util.Arrays;
+
 import org.bukkit.block.CommandBlock;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
@@ -18,10 +20,6 @@ public final class ServerCommand implements Listener {
 		return ("execute".equalsIgnoreCase(cmd)
 			|| "banlist".equalsIgnoreCase(cmd)
 			|| "clone".equalsIgnoreCase(cmd)
-			|| "data".equalsIgnoreCase(cmd)
-			|| "datapack".equalsIgnoreCase(cmd)
-			|| "debug".equalsIgnoreCase(cmd)
-			|| "difficulty".equalsIgnoreCase(cmd)
 			|| "fill".equalsIgnoreCase(cmd)
 			|| "forceload".equalsIgnoreCase(cmd)
 			|| "help".equalsIgnoreCase(cmd)
@@ -34,11 +32,8 @@ public final class ServerCommand implements Listener {
 			|| "reload".equalsIgnoreCase(cmd)
 			|| "save-all".equalsIgnoreCase(cmd)
 			|| "say".equalsIgnoreCase(cmd)
-			|| "seed".equalsIgnoreCase(cmd)
-			|| "setblock".equalsIgnoreCase(cmd)
 			|| "spreadplayers".equalsIgnoreCase(cmd)
 			|| "stop".equalsIgnoreCase(cmd)
-			|| "summon".equalsIgnoreCase(cmd)
 			|| "teammsg".equalsIgnoreCase(cmd)
 			|| "teleport".equalsIgnoreCase(cmd)
 			|| "tell".equalsIgnoreCase(cmd)
@@ -46,7 +41,6 @@ public final class ServerCommand implements Listener {
 			|| "tm".equalsIgnoreCase(cmd)
 			|| "tp".equalsIgnoreCase(cmd)
 			|| "w".equalsIgnoreCase(cmd)
-			|| "whitelist".equalsIgnoreCase(cmd)
 		);
 	}
 	public static String checkCommand(final CommandSender sender, final String command, final boolean isConsoleCommand) {
@@ -95,39 +89,9 @@ public final class ServerCommand implements Listener {
 								if (i + 1 < arr.length) {
 									if (checkExecuteCommand(arr[i + 1])) {
 										return "cancel";
-									} else if (i + 3 < arr.length
-											&& "gamerule".equalsIgnoreCase(arr[i + 1])) {
-										if ("randomTickSpeed".equalsIgnoreCase(arr[i + 2])
-												&& Double.parseDouble(arr[i + 3]) > 6) {
-											return command.replaceFirst("(?i)" + "randomTickSpeed " + arr[i + 3], "randomTickSpeed 6");
-										}
-									} else if ("give".equalsIgnoreCase(arr[i + 1])) {
-										if (Double.parseDouble(arr[arr.length - 1]) > 64) {
-											// Limit item count
-											arr[arr.length - 1] = "64";
-											return String.join(" ", arr);
-										}
-									} else if ("particle".equalsIgnoreCase(arr[i + 1])) {
-										int[] numArgs = {i + 15, i + 11};
-										for (int j : numArgs) {
-											if (arr.length < j || arr.length > j + 2) {
-												continue;
-											}
-											if (Double.parseDouble(arr[j - 1]) > 10) {
-												// Limit particle count
-												arr[j - 1] = "10";
-												return String.join(" ", arr);
-											}
-										}
-									} else if ("bossbar".equalsIgnoreCase(arr[i + 1])
-											|| "fill".equalsIgnoreCase(arr[i + 1])
-											|| "setblock".equalsIgnoreCase(arr[i + 1])
-											|| "tellraw".equalsIgnoreCase(arr[i + 1])
-											|| "title".equalsIgnoreCase(arr[i + 1])) {
-										final String charCommand = parseCharCodes(command);
-										if (charCommand.contains("selector")) {
-											return "cancel";
-										}
+									} else {
+										final String[] executeCommand = Arrays.copyOfRange(arr, i + 1, arr.length);
+										return checkCommand(sender, String.join(" ", executeCommand), true);
 									}
 								}
 								break;
@@ -143,6 +107,7 @@ public final class ServerCommand implements Listener {
 					if (command.contains("selector")) {
 						return "cancel";
 					}
+					break;
 				case "/minecraft:gamerule":
 				case "/gamerule":
 					if (arr.length >= 3) {
@@ -176,7 +141,7 @@ public final class ServerCommand implements Listener {
 					break;
 				case "/minecraft:spreadplayers":
 				case "/spreadplayers":
-					if (arr.length == 7 && arr[6].contains("@")) {
+					if (arr.length == 7 && ( arr[6].contains("@e") || arr[6].contains("@a") )) {
 						return "cancel";
 					} else if (arr.length >= 5) {
 						if (Double.parseDouble(arr[3]) > 0) {
