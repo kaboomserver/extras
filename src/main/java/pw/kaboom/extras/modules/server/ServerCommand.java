@@ -96,11 +96,11 @@ public final class ServerCommand implements Listener {
 									String result = checkCommand(sender, String.join(" ", executeCommand), true);
 									switch(result) {
 										case "cancel":
-											return "cancel"
+											return "cancel";
 										case null:
 											break;
 										default:
-											return result // TODO: fix this
+											return result; // TODO: fix this
 									}
 								}
 								break;
