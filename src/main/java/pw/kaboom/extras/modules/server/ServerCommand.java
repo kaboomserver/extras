@@ -86,7 +86,9 @@ public final class ServerCommand implements Listener {
 
 						for (int i = 1; i < arr.length; i++) {
 							if ("run".equalsIgnoreCase(arr[i])) {
-								if (i + 1 == arr.length) break;
+								if (i + 1 == arr.length) {
+									break;
+								}
 								if (checkExecuteCommand(arr[i + 1])) {
 									return "cancel";
 								} else {
@@ -95,12 +97,10 @@ public final class ServerCommand implements Listener {
 									switch(result) {
 										case "cancel":
 											return "cancel"
-											break;
 										case null:
 											break;
 										default:
 											return result // TODO: fix this
-											break;
 									}
 								}
 								break;
