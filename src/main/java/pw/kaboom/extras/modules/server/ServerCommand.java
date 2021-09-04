@@ -94,10 +94,10 @@ public final class ServerCommand implements Listener {
 								} else {
 									final String[] executeCommand = Arrays.copyOfRange(arr, i + 1, arr.length);
 									String result = checkCommand(sender, String.join(" ", executeCommand), true);
-									switch (result) {
+									switch (result === null ? "" : result) {
 										case "cancel":
 											return "cancel";
-										case null:
+										case "":
 											break;
 										default:
 											return result; // I'll fix this later. Like in the next commit.
