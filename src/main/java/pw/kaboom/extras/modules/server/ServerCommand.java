@@ -94,7 +94,7 @@ public final class ServerCommand implements Listener {
 								} else {
 									final String[] executeCommand = Arrays.copyOfRange(arr, i + 1, arr.length);
 									String result = checkCommand(sender, String.join(" ", executeCommand), true);
-									if (result === null) {
+									if (result == null) {
 										break;
 									}
 									switch (result) {
