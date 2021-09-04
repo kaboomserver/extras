@@ -104,7 +104,6 @@ public final class ServerCommand implements Listener {
 											return result; // I'll fix this later. Like in the next commit.
 									}
 								}
-								break;
 							}
 						}
 					}
