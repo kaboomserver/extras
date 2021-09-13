@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,16 +24,18 @@ import pw.kaboom.extras.Main;
 import pw.kaboom.extras.modules.server.ServerTabComplete;
 
 public final class PlayerConnection implements Listener {
+	private static final FileConfiguration CONFIG = JavaPlugin.getPlugin(Main.class).getConfig();
 
-	private final String title = JavaPlugin.getPlugin(Main.class).getConfig().getString("playerJoinTitle");
-	private final String subtitle = JavaPlugin.getPlugin(Main.class).getConfig().getString("playerJoinSubtitle");
-	private final int fadeIn = 10;
-	private final int stay = 160;
-	private final int fadeOut = 5;
-	private final boolean enableKick = JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("enableKick");
-	private final boolean enableJoinRestrictions = JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("enableJoinRestrictions");
-	private final boolean allowJoinOnFullServer = JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("allowJoinOnFullServer");
-	private final boolean opOnJoin = JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("opOnJoin");
+	private static final String TITLE = CONFIG.getString("playerJoinTitle");
+	private static final String SUBTITLE = CONFIG.getString("playerJoinSubtitle");
+	private static final int FADE_IN = 10;
+	private static final int STAY = 160;
+	private static final int FADE_OUT = 5;
+
+	private static final boolean ENABLE_KICK = CONFIG.getBoolean("enableKick");
+	private static final boolean ENABLE_JOIN_RESTRICTIONS = CONFIG.getBoolean("enableJoinRestrictions");
+	private static final boolean ALLOW_JOIN_ON_FULL_SERVER = CONFIG.getBoolean("allowJoinOnFullServer");
+	private static final boolean OP_ON_JOIN = CONFIG.getBoolean("opOnJoin");
 
 	@EventHandler
 	void onAsyncPlayerPreLogin(final AsyncPlayerPreLoginEvent event) {
@@ -58,14 +61,14 @@ public final class PlayerConnection implements Listener {
 	void onPlayerJoin(final PlayerJoinEvent event) {
 		final Player player = event.getPlayer();
 
-		if (title != null
-				|| subtitle != null) {
+		if (TITLE != null
+				|| SUBTITLE != null) {
 				player.sendTitle(
-				title,
-				subtitle,
-				fadeIn,
-				stay,
-				fadeOut
+				TITLE,
+				SUBTITLE,
+				FADE_IN,
+				STAY,
+				FADE_OUT
 			);
 		}
 
@@ -74,7 +77,7 @@ public final class PlayerConnection implements Listener {
 
 	@EventHandler
 	void onPlayerKick(final PlayerKickEvent event) {
-		if (!enableKick) {
+		if (!ENABLE_KICK) {
 			event.setCancelled(true);
 		}
 	}
@@ -87,17 +90,17 @@ public final class PlayerConnection implements Listener {
 			return;
 		}
 
-		if (!enableJoinRestrictions) {
+		if (!ENABLE_JOIN_RESTRICTIONS) {
 			event.allow();
 		}
 
-		if (Result.KICK_FULL.equals(event.getResult()) && allowJoinOnFullServer) {
+		if (Result.KICK_FULL.equals(event.getResult()) && ALLOW_JOIN_ON_FULL_SERVER) {
 			event.allow();
 		}
 
 		final Player player = event.getPlayer();
 
-		if (opOnJoin && !player.isOp()) {
+		if (OP_ON_JOIN && !player.isOp()) {
 			player.setOp(true);
 		}
 
