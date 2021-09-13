@@ -1,9 +1,10 @@
 package pw.kaboom.extras.modules.server;
 
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import java.util.Arrays;
 
 import org.bukkit.block.CommandBlock;
 import org.bukkit.command.BlockCommandSender;
@@ -12,9 +13,13 @@ import org.bukkit.entity.minecart.CommandMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerCommandEvent;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import pw.kaboom.extras.Main;
 
 public final class ServerCommand implements Listener {
-	private static Pattern asAtPattern = Pattern.compile("\\b(as|at|facing entity) @[ae]\\b");
+	private static final Pattern AS_AT_PATTERN = Pattern.compile("\\b(as|at|facing entity) @[ae]\\b");
+	private static final Logger LOGGER = JavaPlugin.getPlugin(Main.class).getLogger();
 
 	public static boolean checkExecuteCommand(final String cmd) {
 		return ("execute".equalsIgnoreCase(cmd)
@@ -73,7 +78,7 @@ public final class ServerCommand implements Listener {
 				case "/execute":
 					if (arr.length >= 2) {
 						int asAtCount = 0;
-						Matcher asAtMatcher = asAtPattern.matcher(command.toLowerCase());
+						Matcher asAtMatcher = AS_AT_PATTERN.matcher(command.toLowerCase());
 						while (asAtMatcher.find()) {
 							asAtCount++;
 						}
@@ -228,7 +233,7 @@ public final class ServerCommand implements Listener {
 			}
 		}
 
-		System.out.println("Console command: " + command);
+		LOGGER.log(Level.INFO, "Console command: " + command);
 	}
 
 	public static String parseCharCodes(final String input) {
