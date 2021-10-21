@@ -38,18 +38,19 @@ import pw.kaboom.extras.modules.player.PlayerTeleport;
 import pw.kaboom.extras.modules.server.ServerCommand;
 import pw.kaboom.extras.modules.server.ServerTabComplete;
 import pw.kaboom.extras.modules.server.ServerTick;
+import pw.kaboom.extras.modules.world.WorldGenerator;
 
 public final class Main extends JavaPlugin {
 	@Override
 	public void onLoad() {
 		/* Fill lists */
 		Collections.addAll(
-			BlockPhysics.getBlockFaces(),
-			BlockFace.NORTH,
-			BlockFace.SOUTH,
-			BlockFace.WEST,
-			BlockFace.EAST,
-			BlockFace.UP
+				BlockPhysics.getBlockFaces(),
+				BlockFace.NORTH,
+				BlockFace.SOUTH,
+				BlockFace.WEST,
+				BlockFace.EAST,
+				BlockFace.UP
 		);
 
 		/* Load missing config.yml defaults */
@@ -100,6 +101,11 @@ public final class Main extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(new ServerCommand(), this);
 		this.getServer().getPluginManager().registerEvents(new ServerTabComplete(), this);
 		this.getServer().getPluginManager().registerEvents(new ServerTick(), this);
+
+		/* World-related modules */
+
+		final WorldGenerator worldGenerator = new WorldGenerator();
+		worldGenerator.generateWorlds();
 	}
 
 	@Override
