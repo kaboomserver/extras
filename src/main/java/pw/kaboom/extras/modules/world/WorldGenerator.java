@@ -8,7 +8,7 @@ import org.bukkit.WorldType;
 public final class WorldGenerator {
     public void generateWorlds() {
         if (Bukkit.getWorld("flatworld") == null) {
-            WorldCreator worldCreator = new WorldCreator("flatworld").environment(World.Environment.NORMAL);
+            final WorldCreator worldCreator = new WorldCreator("flatworld").environment(World.Environment.NORMAL);
             worldCreator.type(WorldType.FLAT);
             worldCreator.generateStructures(false);
             Bukkit.getServer().createWorld(worldCreator);
