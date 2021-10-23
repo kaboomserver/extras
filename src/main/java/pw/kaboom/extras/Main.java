@@ -46,12 +46,12 @@ public final class Main extends JavaPlugin {
 	public void onLoad() {
 		/* Fill lists */
 		Collections.addAll(
-			BlockPhysics.getBlockFaces(),
-			BlockFace.NORTH,
-			BlockFace.SOUTH,
-			BlockFace.WEST,
-			BlockFace.EAST,
-			BlockFace.UP
+				BlockPhysics.getBlockFaces(),
+				BlockFace.NORTH,
+				BlockFace.SOUTH,
+				BlockFace.WEST,
+				BlockFace.EAST,
+				BlockFace.UP
 		);
 
 		/* Load missing config.yml defaults */

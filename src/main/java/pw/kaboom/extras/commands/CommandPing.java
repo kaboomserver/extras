@@ -1,5 +1,6 @@
 package pw.kaboom.extras.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -9,9 +10,21 @@ import org.bukkit.entity.Player;
 public final class CommandPing implements CommandExecutor {
 
     public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
-        final Player player = (Player) sender;
-        final int ping = player.spigot().getPing();
-        final int d = (int) Math.floor(ping / 100);
+        Player target;
+
+        if (args.length == 0) {
+            target = (Player) sender;
+        } else {
+            target = Bukkit.getPlayer(args[0]);
+        }
+
+        if (target == null) {
+            sender.sendMessage("Player \"" + args[0] + "\" not found");
+            return true;
+        }
+
+        final int ping = target.spigot().getPing();
+        final int d = (int) Math.floor((float) ping / 100);
         ChatColor highlighting = ChatColor.WHITE;
 
         switch (d) {
@@ -34,7 +47,11 @@ public final class CommandPing implements CommandExecutor {
                 break;
         }
 
-        player.sendMessage("Your ping is " + highlighting + ping + "ms.");
+        if (args.length == 0) {
+            sender.sendMessage("Your ping is " + highlighting + ping + "ms.");
+        } else {
+            sender.sendMessage(target.getName() + "'s ping is " + highlighting + ping + "ms.");
+        }
         return true;
     }
 }
