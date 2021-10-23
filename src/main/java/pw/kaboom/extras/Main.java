@@ -40,7 +40,6 @@ import pw.kaboom.extras.modules.player.PlayerTeleport;
 import pw.kaboom.extras.modules.server.ServerCommand;
 import pw.kaboom.extras.modules.server.ServerTabComplete;
 import pw.kaboom.extras.modules.server.ServerTick;
-import pw.kaboom.extras.modules.world.WorldGenerator;
 
 public final class Main extends JavaPlugin {
 	@Override
@@ -103,7 +102,7 @@ public final class Main extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(new ServerCommand(), this);
 		this.getServer().getPluginManager().registerEvents(new ServerTabComplete(), this);
 		this.getServer().getPluginManager().registerEvents(new ServerTick(), this);
-    
+
 		/* Custom worlds */
 		this.getServer().createWorld(new WorldCreator("world_flatlands").type(WorldType.FLAT));
 	}
