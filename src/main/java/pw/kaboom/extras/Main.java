@@ -104,7 +104,9 @@ public final class Main extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(new ServerTick(), this);
 
 		/* Custom worlds */
-		this.getServer().createWorld(new WorldCreator("world_flatlands").type(WorldType.FLAT));
+		this.getServer().createWorld(
+			new WorldCreator("world_flatlands").generateStructures(false).type(WorldType.FLAT)
+		);
 	}
 
 	@Override
