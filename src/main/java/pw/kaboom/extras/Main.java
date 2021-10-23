@@ -3,6 +3,8 @@ package pw.kaboom.extras;
 import java.util.Collections;
 
 import org.bukkit.Bukkit;
+import org.bukkit.WorldCreator;
+import org.bukkit.WorldType;
 import org.bukkit.block.BlockFace;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -100,6 +102,9 @@ public final class Main extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(new ServerCommand(), this);
 		this.getServer().getPluginManager().registerEvents(new ServerTabComplete(), this);
 		this.getServer().getPluginManager().registerEvents(new ServerTick(), this);
+
+		/* Custom worlds */
+		this.getServer().createWorld(new WorldCreator("world_flatlands").type(WorldType.FLAT));
 	}
 
 	@Override
