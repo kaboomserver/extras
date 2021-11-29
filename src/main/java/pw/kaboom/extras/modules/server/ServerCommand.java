@@ -50,7 +50,10 @@ public final class ServerCommand implements Listener {
 		String commandName = arr[0].toLowerCase();
 
 		if (isConsoleCommand) {
-			commandName = "/" + arr[0].toLowerCase();
+			commandName = "/" + commandName;
+		} else if (arr.length >= 2 && commandName.equals("/")) {
+			// Command could contain spaces after the slash, e.g. "/   spawn"
+			commandName = "/" + arr[1].toLowerCase();
 		}
 
 		for (int i = 1; i < arr.length; i++) {
