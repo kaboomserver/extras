@@ -42,16 +42,8 @@ import pw.kaboom.extras.modules.server.ServerTabComplete;
 import pw.kaboom.extras.modules.server.ServerTick;
 
 public final class Main extends JavaPlugin {
-	private static Main plugin;
-
-	public static Main getInstance() {
-		return plugin;
-	}
-
 	@Override
 	public void onLoad() {
-		plugin = this;
-
 		/* Fill lists */
 		Collections.addAll(
 				BlockPhysics.getBlockFaces(),

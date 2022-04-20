@@ -30,6 +30,7 @@ import com.destroystokyo.paper.event.block.TNTPrimeEvent;
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import com.destroystokyo.paper.event.entity.PreSpawnerSpawnEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 import pw.kaboom.extras.Main;
 
 public final class EntitySpawn implements Listener {
@@ -343,6 +344,6 @@ public final class EntitySpawn implements Listener {
 	}
 
 	public void removeEntitySafely(final Entity entity) {
-		Main.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(Main.getInstance(), entity::remove);
+		JavaPlugin.getPlugin(Main.class).getServer().getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(Main.class), entity::remove);
 	}
 }
