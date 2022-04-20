@@ -35,7 +35,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import pw.kaboom.extras.Main;
 
 public final class EntitySpawn implements Listener {
-	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
+	private static final Main PLUGIN = JavaPlugin.getPlugin(Main.class);
 
 	private void applyEntityChanges(final Entity entity) {
 		switch (entity.getType()) {
@@ -347,6 +347,6 @@ public final class EntitySpawn implements Listener {
 	}
 
 	public void removeEntitySafely(final Entity entity) {
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, entity::remove);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(PLUGIN, entity::remove);
 	}
 }
