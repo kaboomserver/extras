@@ -30,6 +30,7 @@ import com.destroystokyo.paper.event.block.TNTPrimeEvent;
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import com.destroystokyo.paper.event.entity.PreSpawnerSpawnEvent;
+import pw.kaboom.extras.Main;
 
 public final class EntitySpawn implements Listener {
 	private void applyEntityChanges(final Entity entity) {
@@ -55,7 +56,7 @@ public final class EntitySpawn implements Listener {
 		if (worldEntityCount > 1024) {
 			for (Entity entity : world.getEntities()) {
 				if (!EntityType.PLAYER.equals(entity.getType())) {
-					entity.remove();
+					removeEntitySafely(entity);
 				}
 			}
 			return true;
@@ -185,7 +186,7 @@ public final class EntitySpawn implements Listener {
 			final double z = entity.getLocation().getZ();
 
 			if (isOutsideBoundaries(x, y, z)) {
-				entity.remove();
+				removeEntitySafely(entity);
 				return;
 			}
 
@@ -195,7 +196,7 @@ public final class EntitySpawn implements Listener {
 
 			if (isEntityLimitReached(entityType, chunk, world, isAddToWorldEvent)
 					&& !EntityType.PLAYER.equals(entity.getType())) {
-				entity.remove();
+				removeEntitySafely(entity);
 				return;
 			}
 
@@ -339,5 +340,9 @@ public final class EntitySpawn implements Listener {
 			event.setCancelled(true);
 			return;
 		}
+	}
+
+	public void removeEntitySafely(final Entity entity) {
+		Main.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(Main.getInstance(), entity::remove);
 	}
 }
