@@ -2,6 +2,7 @@ package pw.kaboom.extras.modules.entity;
 
 import java.util.Random;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -34,6 +35,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import pw.kaboom.extras.Main;
 
 public final class EntitySpawn implements Listener {
+	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
+
 	private void applyEntityChanges(final Entity entity) {
 		switch (entity.getType()) {
 			case AREA_EFFECT_CLOUD:
@@ -344,6 +347,6 @@ public final class EntitySpawn implements Listener {
 	}
 
 	public void removeEntitySafely(final Entity entity) {
-		JavaPlugin.getPlugin(Main.class).getServer().getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(Main.class), entity::remove);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, entity::remove);
 	}
 }
