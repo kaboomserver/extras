@@ -84,12 +84,6 @@ public final class PlayerConnection implements Listener {
 
 	@EventHandler
 	void onPlayerLogin(final PlayerLoginEvent event) {
-		if (event.getHostname().startsWith("play.flame.ga")
-				&& event.getHostname().endsWith(":25565")) {
-			event.disallow(Result.KICK_OTHER, "You connected to the server using an outdated server address/IP.\nPlease use the following address/IP:\n\nkaboom.pw");
-			return;
-		}
-
 		if (!ENABLE_JOIN_RESTRICTIONS) {
 			event.allow();
 		}
