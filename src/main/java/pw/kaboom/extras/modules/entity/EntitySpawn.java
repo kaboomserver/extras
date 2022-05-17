@@ -5,6 +5,7 @@ import java.util.Random;
 
 import org.bukkit.*;
 import org.bukkit.block.CreatureSpawner;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.AreaEffectCloud;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
@@ -34,6 +35,7 @@ import pw.kaboom.extras.Main;
 
 public final class EntitySpawn implements Listener {
 	private static final Main PLUGIN = JavaPlugin.getPlugin(Main.class);
+	private static final FileConfiguration CONFIG = PLUGIN.getConfig();
 	private static final SecureRandom RANDOM = new SecureRandom();
 
 	private void applyEntityChanges(final Entity entity) {
@@ -90,11 +92,7 @@ public final class EntitySpawn implements Listener {
 		default:
 			if (!EntityType.PLAYER.equals(entityType)) {
 				final int chunkEntityCount = chunk.getEntities().length;
-				final int chunkEntityCountLimit = PLUGIN.getConfig().getInt("maxEntitiesPerChunk");
-
-				if (chunkEntityCount == -1) {
-					return false;
-				}
+				final int chunkEntityCountLimit = CONFIG.getInt("maxEntitiesPerChunk");
 
 				if (chunkEntityCount >= chunkEntityCountLimit) {
 					return true;
@@ -183,7 +181,7 @@ public final class EntitySpawn implements Listener {
 		final World world = event.getPlayer().getWorld();
 		final WorldBorder worldBorder = world.getWorldBorder();
 
-		if (PLUGIN.getConfig().getBoolean("randomizeSpawn") && event.getPlayer().getBedSpawnLocation() != event.getSpawnLocation()) {
+		if (CONFIG.getBoolean("randomizeSpawn") && event.getPlayer().getBedSpawnLocation() != event.getSpawnLocation()) {
 			event.setSpawnLocation(new Location(world, RANDOM.nextDouble(-300000000D, 30000000D) + .5, 100D, RANDOM.nextDouble(-300000000D, 30000000D) + .5));
 		}
 	}
