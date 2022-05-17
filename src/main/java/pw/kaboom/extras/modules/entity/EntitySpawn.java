@@ -184,7 +184,7 @@ public final class EntitySpawn implements Listener {
 		final WorldBorder worldBorder = world.getWorldBorder();
 
 		if (PLUGIN.getConfig().getBoolean("randomizeSpawn") && event.getPlayer().getBedSpawnLocation() != event.getSpawnLocation()) {
-			event.setSpawnLocation(new Location(world, RANDOM.nextDouble(-300000000D, 30000000D), 100D, RANDOM.nextDouble(-300000000D, 30000000D)));
+			event.setSpawnLocation(new Location(world, RANDOM.nextDouble(-300000000D, 30000000D) + .5, 100D, RANDOM.nextDouble(-300000000D, 30000000D) + .5));
 		}
 	}
 
