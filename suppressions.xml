@@ -11,4 +11,5 @@
 	<suppress checks="MagicNumber" files="."/>
 	<suppress checks="MethodLength" files="."/>
 	<suppress checks="NewlineAtEndOfFile" files="."/>
+	<suppress checks="AvoidStarImport" files="."/>
 </suppressions>
