@@ -91,8 +91,9 @@ public final class EntitySpawn implements Listener {
 			if (!EntityType.PLAYER.equals(entityType)) {
 				final int chunkEntityCount = chunk.getEntities().length;
 				final int chunkEntityCountLimit = PLUGIN.getConfig().getInt("maxEntitiesPerChunk");
-				if(chunkEntityCount == -1) {
-					return;
+
+				if (chunkEntityCount == -1) {
+					return false;
 				}
 
 				if (chunkEntityCount >= chunkEntityCountLimit) {
