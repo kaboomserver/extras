@@ -1,10 +1,9 @@
 package pw.kaboom.extras.modules.entity;
 
+import java.security.SecureRandom;
 import java.util.Random;
 
-import org.bukkit.Chunk;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.AreaEffectCloud;
 import org.bukkit.entity.EnderDragon;
@@ -29,8 +28,14 @@ import org.bukkit.event.weather.LightningStrikeEvent;
 import com.destroystokyo.paper.event.block.TNTPrimeEvent;
 import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import com.destroystokyo.paper.event.entity.PreSpawnerSpawnEvent;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.spigotmc.event.player.PlayerSpawnLocationEvent;
+import pw.kaboom.extras.Main;
 
 public final class EntitySpawn implements Listener {
+	private static final Main PLUGIN = JavaPlugin.getPlugin(Main.class);
+	private static final SecureRandom RANDOM = new SecureRandom();
+
 	private void applyEntityChanges(final Entity entity) {
 		switch (entity.getType()) {
 			case AREA_EFFECT_CLOUD:
@@ -165,6 +170,16 @@ public final class EntitySpawn implements Listener {
 		if (EntityType.MINECART_TNT.equals(event.getEntityType())
 				&& event.getEntity().getWorld().getEntitiesByClass(ExplosiveMinecart.class).size() > 80) {
 			event.setCancelled(true);
+		}
+	}
+
+	@EventHandler
+	void onPlayerSpawn(final PlayerSpawnLocationEvent event) {
+		final World world = event.getPlayer().getWorld();
+		final WorldBorder worldBorder = world.getWorldBorder();
+
+		if (PLUGIN.getConfig().getBoolean("randomizeSpawn") && event.getPlayer().getBedSpawnLocation() != event.getSpawnLocation()) {
+			event.setSpawnLocation(new Location(world, RANDOM.nextDouble(-300000000, 30000000), 100, RANDOM.nextDouble(-300000000, 30000000)));
 		}
 	}
 
