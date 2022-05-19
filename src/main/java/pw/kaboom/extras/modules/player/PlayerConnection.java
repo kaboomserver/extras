@@ -2,8 +2,11 @@ package pw.kaboom.extras.modules.player;
 
 import java.util.HashSet;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,6 +18,8 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 import com.destroystokyo.paper.event.profile.PreLookupProfileEvent;
 import com.destroystokyo.paper.profile.ProfileProperty;
@@ -36,6 +41,7 @@ public final class PlayerConnection implements Listener {
 	private static final boolean ENABLE_JOIN_RESTRICTIONS = CONFIG.getBoolean("enableJoinRestrictions");
 	private static final boolean ALLOW_JOIN_ON_FULL_SERVER = CONFIG.getBoolean("allowJoinOnFullServer");
 	private static final boolean OP_ON_JOIN = CONFIG.getBoolean("opOnJoin");
+	private static final boolean RANDOMIZE_SPAWN = CONFIG.getBoolean("randomizeSpawn");
 
 	@EventHandler
 	void onAsyncPlayerPreLogin(final AsyncPlayerPreLoginEvent event) {
@@ -103,6 +109,18 @@ public final class PlayerConnection implements Listener {
 			SkinDownloader.removeProfile(player.getUniqueId());
 		} catch (Exception ignored) {
 		}*/
+	}
+
+	@EventHandler
+	void onPlayerSpawn(final PlayerSpawnLocationEvent event) {
+		if (RANDOMIZE_SPAWN && event.getPlayer().getBedSpawnLocation() != event.getSpawnLocation()) {
+			final World world = event.getPlayer().getWorld();
+			final double x = ThreadLocalRandom.current().nextInt(-300000000, 30000000) + .5;
+			final double y = 100;
+			final double z = ThreadLocalRandom.current().nextInt(-300000000, 30000000) + .5;
+
+			event.setSpawnLocation(new Location(world, x, y, z));
+		}
 	}
 
 	@EventHandler

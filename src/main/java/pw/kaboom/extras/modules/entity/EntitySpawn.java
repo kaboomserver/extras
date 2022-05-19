@@ -1,13 +1,10 @@
 package pw.kaboom.extras.modules.entity;
 
-import java.security.SecureRandom;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.bukkit.Chunk;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.WorldBorder;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.AreaEffectCloud;
@@ -34,13 +31,11 @@ import com.destroystokyo.paper.event.block.TNTPrimeEvent;
 import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import com.destroystokyo.paper.event.entity.PreSpawnerSpawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 import pw.kaboom.extras.Main;
 
 public final class EntitySpawn implements Listener {
-	private static final Main PLUGIN = JavaPlugin.getPlugin(Main.class);
-	private static final FileConfiguration CONFIG = PLUGIN.getConfig();
-	private static final SecureRandom RANDOM = new SecureRandom();
+	private static final FileConfiguration CONFIG = JavaPlugin.getPlugin(Main.class).getConfig();
+	private static final int MAX_ENTITIES_PER_CHUNK = CONFIG.getInt("maxEntitiesPerChunk");
 
 	private void applyEntityChanges(final Entity entity) {
 		switch (entity.getType()) {
@@ -96,9 +91,8 @@ public final class EntitySpawn implements Listener {
 		default:
 			if (!EntityType.PLAYER.equals(entityType)) {
 				final int chunkEntityCount = chunk.getEntities().length;
-				final int chunkEntityCountLimit = CONFIG.getInt("maxEntitiesPerChunk");
 
-				if (chunkEntityCount >= chunkEntityCountLimit) {
+				if (chunkEntityCount >= MAX_ENTITIES_PER_CHUNK) {
 					return true;
 				}
 			}
@@ -177,16 +171,6 @@ public final class EntitySpawn implements Listener {
 		if (EntityType.MINECART_TNT.equals(event.getEntityType())
 				&& event.getEntity().getWorld().getEntitiesByClass(ExplosiveMinecart.class).size() > 80) {
 			event.setCancelled(true);
-		}
-	}
-
-	@EventHandler
-	void onPlayerSpawn(final PlayerSpawnLocationEvent event) {
-		final World world = event.getPlayer().getWorld();
-		final WorldBorder worldBorder = world.getWorldBorder();
-
-		if (CONFIG.getBoolean("randomizeSpawn") && event.getPlayer().getBedSpawnLocation() != event.getSpawnLocation()) {
-			event.setSpawnLocation(new Location(world, RANDOM.nextDouble(-300000000D, 30000000D) + .5, 100D, RANDOM.nextDouble(-300000000D, 30000000D) + .5));
 		}
 	}
 
@@ -284,7 +268,7 @@ public final class EntitySpawn implements Listener {
 		case EXPLOSION:
 		case FIRE:
 		case REDSTONE:
-			if (new Random().nextBoolean()) {
+			if (ThreadLocalRandom.current().nextBoolean()) {
 				event.setCancelled(true);
 			}
 			return;
