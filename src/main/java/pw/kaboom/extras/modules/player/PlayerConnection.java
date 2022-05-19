@@ -95,7 +95,7 @@ public final class PlayerConnection implements Listener {
 			event.allow();
 		}
 
-		if (Result.KICK_FULL.equals(event.getResult() && ALLOW_JOIN_ON_FULL_SERVER)) {
+		if (Result.KICK_FULL.equals(event.getResult()) && ALLOW_JOIN_ON_FULL_SERVER)) {
 			event.allow();
 		}
 
