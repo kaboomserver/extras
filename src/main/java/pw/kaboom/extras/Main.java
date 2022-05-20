@@ -40,6 +40,7 @@ import pw.kaboom.extras.modules.player.PlayerInteract;
 import pw.kaboom.extras.modules.player.PlayerRecipe;
 import pw.kaboom.extras.modules.player.PlayerTeleport;
 import pw.kaboom.extras.modules.server.ServerCommand;
+import pw.kaboom.extras.modules.server.ServerGameRule;
 import pw.kaboom.extras.modules.server.ServerTabComplete;
 import pw.kaboom.extras.modules.server.ServerTick;
 
@@ -109,6 +110,7 @@ public final class Main extends JavaPlugin {
 
         /* Server-related modules */
         this.getServer().getPluginManager().registerEvents(new ServerCommand(), this);
+        this.getServer().getPluginManager().registerEvents(new ServerGameRule(), this);
         this.getServer().getPluginManager().registerEvents(new ServerTabComplete(), this);
         this.getServer().getPluginManager().registerEvents(new ServerTick(), this);
 

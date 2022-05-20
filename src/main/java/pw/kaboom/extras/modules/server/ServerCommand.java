@@ -128,15 +128,6 @@ public final class ServerCommand implements Listener {
                         return "cancel";
                     }
                     break;
-                case "/minecraft:gamerule":
-                case "/gamerule":
-                    if (arr.length >= 3) {
-                        if ("randomTickSpeed".equalsIgnoreCase(arr[1])
-                                && Double.parseDouble(arr[2]) > 6) {
-                            return command.replaceFirst(arr[2], "6");
-                        }
-                    }
-                    break;
                 case "/minecraft:give":
                 case "/give":
                     if (Double.parseDouble(arr[arr.length - 1]) > 64) {
