@@ -18,7 +18,8 @@ public final class PlayerCommand implements Listener {
         final UUID playerUuid = event.getPlayer().getUniqueId();
 
         if (getCommandMillisList().get(playerUuid) != null) {
-            final long millisDifference = System.currentTimeMillis() - getCommandMillisList().get(playerUuid);
+            final long lastCommandTime = getCommandMillisList().get(playerUuid);
+            final long millisDifference = System.currentTimeMillis() - lastCommandTime;
 
             if (millisDifference < 75) {
                 event.setCancelled(true);
@@ -43,11 +44,6 @@ public final class PlayerCommand implements Listener {
                 event.setMessage(checkedCommand);
             }
         }
-
-        /*final MessageInterceptingCommandRunner cmdRunner = new MessageInterceptingCommandRunner(Bukkit.getConsoleSender());
-        Bukkit.dispatchCommand(cmdRunner, event.getMessage().substring(1));
-
-        event.setCancelled(true);*/
     }
 
     public static HashMap<UUID, Long> getCommandMillisList() {

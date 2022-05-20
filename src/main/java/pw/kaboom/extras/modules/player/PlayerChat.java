@@ -26,7 +26,8 @@ public final class PlayerChat implements Listener {
         final UUID playerUuid = event.getPlayer().getUniqueId();
 
         if (PlayerCommand.getCommandMillisList().get(playerUuid) != null) {
-            final long millisDifference = System.currentTimeMillis() - PlayerCommand.getCommandMillisList().get(playerUuid);
+            final long lastCommandTime = PlayerCommand.getCommandMillisList().get(playerUuid);
+            final long millisDifference = System.currentTimeMillis() - lastCommandTime;
 
             if (millisDifference < 50) {
                 event.setCancelled(true);
@@ -39,7 +40,8 @@ public final class PlayerChat implements Listener {
             return;
         }
 
-        final File configFile = new File(JavaPlugin.getPlugin(Main.class).getDataFolder(), "prefixes.yml");
+        final File configFile = new File(JavaPlugin.getPlugin(Main.class).getDataFolder(),
+                                         "prefixes.yml");
         final FileConfiguration prefixConfig = YamlConfiguration.loadConfiguration(configFile);
         final String prefix;
         final String name = player.getDisplayName().toString();

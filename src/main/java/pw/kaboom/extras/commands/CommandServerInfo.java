@@ -13,14 +13,16 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 public final class CommandServerInfo implements CommandExecutor {
-    private void sendInfoMessage(final CommandSender target, final String description, final String value) {
+    private void sendInfoMessage(final CommandSender target, final String description,
+                                 final String value) {
         target.sendMessage(
             ChatColor.GRAY + description + ": "
                     + ChatColor.WHITE + value
         );
     }
 
-    public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
+    public boolean onCommand(final CommandSender sender, final Command command, final String label,
+                             final String[] args) {
         try {
             sendInfoMessage(sender, "Hostname",
                 InetAddress.getLocalHost().getHostName()
@@ -79,7 +81,8 @@ public final class CommandServerInfo implements CommandExecutor {
         );
 
         final long heapUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed();
-        final long nonHeapUsage = ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage().getUsed();
+        final long nonHeapUsage = ManagementFactory.getMemoryMXBean()
+            .getNonHeapMemoryUsage().getUsed();
         final long memoryMax = (
             ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax()
                     + ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage().getMax()

@@ -15,7 +15,8 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 public final class CommandSpawn implements CommandExecutor {
-    public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
+    public boolean onCommand(final CommandSender sender, final Command command, final String label,
+                             final String[] args) {
         if (sender instanceof ConsoleCommandSender) {
             sender.sendMessage("Command has to be run by a player");
         } else {
@@ -25,7 +26,8 @@ public final class CommandSpawn implements CommandExecutor {
             final int maxWorldHeight = 256;
 
             for (double y = spawnLocation.getY(); y <= maxWorldHeight; y++) {
-                final Location yLocation = new Location(world, spawnLocation.getX(), y, spawnLocation.getZ());
+                final Location yLocation = new Location(world, spawnLocation.getX(), y,
+                                                        spawnLocation.getZ());
                 final Block coordBlock = world.getBlockAt(yLocation);
 
                 if (!coordBlock.getType().isSolid()

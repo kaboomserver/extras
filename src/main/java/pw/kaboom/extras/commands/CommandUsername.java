@@ -14,13 +14,15 @@ public final class CommandUsername implements CommandExecutor {
     private long millis;
 
     @Override
-    public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
+    public boolean onCommand(final CommandSender sender, final Command command, final String label,
+                             final String[] args) {
         if (sender instanceof ConsoleCommandSender) {
             sender.sendMessage("Command has to be run by a player");
         } else {
             final Player player = (Player) sender;
 
-            final String nameColor = ChatColor.translateAlternateColorCodes('&', String.join(" ", args));
+            final String nameColor = ChatColor.translateAlternateColorCodes(
+                '&', String.join(" ", args));
             final String name = nameColor.substring(0, Math.min(16, nameColor.length()));
 
             final long millisDifference = System.currentTimeMillis() - millis;

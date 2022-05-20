@@ -65,7 +65,8 @@ public final class PlayerDamage implements Listener {
             }
 
             if (event.getDroppedExp() > 0) {
-                ExperienceOrb xp = player.getWorld().spawn(player.getLocation(), ExperienceOrb.class);
+                ExperienceOrb xp = player.getWorld().spawn(player.getLocation(),
+                                                           ExperienceOrb.class);
                 xp.setExperience(event.getDroppedExp());
             }
 

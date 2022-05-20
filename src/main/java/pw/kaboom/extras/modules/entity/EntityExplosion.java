@@ -1,5 +1,7 @@
 package pw.kaboom.extras.modules.entity;
 
+import org.bukkit.World;
+
 import org.bukkit.entity.Fireball;
 
 import org.bukkit.event.EventHandler;
@@ -16,9 +18,10 @@ public final class EntityExplosion implements Listener {
             event.setRadius(maxRadius);
         }
 
+        final World world = event.getEntity().getWorld();
         final int maxFireballCount = 30;
 
-        if (event.getEntity().getWorld().getEntitiesByClass(Fireball.class).size() > maxFireballCount
+        if (world.getEntitiesByClass(Fireball.class).size() > maxFireballCount
                 && event.getRadius() > 1) {
             event.setRadius(1);
         }

@@ -17,7 +17,8 @@ public final class CommandPumpkin implements CommandExecutor {
         player.getInventory().setHelmet(new ItemStack(Material.CARVED_PUMPKIN));
     }
 
-    public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
+    public boolean onCommand(final CommandSender sender, final Command command, final String label,
+                             final String[] args) {
         if (args.length == 0) {
             sender.sendMessage(ChatColor.RED + "Usage: /" + label + " <player>");
         } else {

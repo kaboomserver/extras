@@ -19,7 +19,8 @@ public final class ServerTabComplete implements Listener {
     void onAsyncTabComplete(final AsyncTabCompleteEvent event) {
         final String[] arr = event.getBuffer().split(" ", 2);
 
-        // Vanilla clients will not send tab complete requests on the first word, but modified or bot clients may
+        // Vanilla clients will not send tab complete requests on the first word,
+        // but modified or bot clients may
         if (arr.length < 2) {
             return;
         }

@@ -15,7 +15,8 @@ import org.bukkit.inventory.ItemStack;
 
 public final class CommandKaboom implements CommandExecutor {
 
-    public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
+    public boolean onCommand(final CommandSender sender, final Command command, final String label,
+                             final String[] args) {
         final Player player = (Player) sender;
         boolean explode = ThreadLocalRandom.current().nextBoolean();
 

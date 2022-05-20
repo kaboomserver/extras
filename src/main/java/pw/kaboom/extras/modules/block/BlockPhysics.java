@@ -29,7 +29,8 @@ public final class BlockPhysics implements Listener {
         try {
             if (!event.getBlock().getType().isSolid()) {
                 for (BlockFace face : getBlockFaces()) {
-                    if (event.getBlock().getRelative(face).getType() != event.getBlock().getType()) {
+                    if (event.getBlock().getRelative(face).getType()
+                            != event.getBlock().getType()) {
                         return;
                     }
                     if (!event.getBlock().getType().equals(Material.AIR)) {
@@ -84,9 +85,11 @@ public final class BlockPhysics implements Listener {
                 boolean waterFound = false;
 
                 for (BlockFace face : getBlockFaces()) {
-                    if (event.getBlock().getRelative(face).getType() == Material.LAVA && !lavaFound) {
+                    if (event.getBlock().getRelative(face).getType() == Material.LAVA
+                            && !lavaFound) {
                         lavaFound = true;
-                    } else if (event.getBlock().getRelative(face).getType() == Material.WATER && !waterFound) {
+                    } else if (event.getBlock().getRelative(face).getType() == Material.WATER
+                            && !waterFound) {
                         waterFound = true;
                     }
 
@@ -115,8 +118,10 @@ public final class BlockPhysics implements Listener {
             case REPEATER:
             case TRIPWIRE:
                 if (!event.getBlock().getRelative(BlockFace.DOWN).getType().isSolid()
-                        && !Material.AIR.equals(event.getBlock().getRelative(BlockFace.DOWN).getType())
-                                && !Material.CAVE_AIR.equals(event.getBlock().getRelative(BlockFace.DOWN).getType())) {
+                        && !Material.AIR.equals(event.getBlock().getRelative(BlockFace.DOWN)
+                        .getType())
+                                && !Material.CAVE_AIR.equals(event.getBlock()
+                                .getRelative(BlockFace.DOWN).getType())) {
                     event.setCancelled(true);
                 }
                 return;

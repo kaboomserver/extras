@@ -38,8 +38,10 @@ public final class PlayerConnection implements Listener {
     private static final int FADE_OUT = 5;
 
     private static final boolean ENABLE_KICK = CONFIG.getBoolean("enableKick");
-    private static final boolean ENABLE_JOIN_RESTRICTIONS = CONFIG.getBoolean("enableJoinRestrictions");
-    private static final boolean ALLOW_JOIN_ON_FULL_SERVER = CONFIG.getBoolean("allowJoinOnFullServer");
+    private static final boolean ENABLE_JOIN_RESTRICTIONS = CONFIG.getBoolean(
+                                                            "enableJoinRestrictions");
+    private static final boolean ALLOW_JOIN_ON_FULL_SERVER = CONFIG.getBoolean(
+                                                             "allowJoinOnFullServer");
     private static final boolean OP_ON_JOIN = CONFIG.getBoolean("opOnJoin");
     private static final boolean RANDOMIZE_SPAWN = CONFIG.getBoolean("randomizeSpawn");
 
@@ -47,13 +49,15 @@ public final class PlayerConnection implements Listener {
     void onAsyncPlayerPreLogin(final AsyncPlayerPreLoginEvent event) {
         if (Bukkit.getPlayer(event.getName()) != null
                 && Bukkit.getPlayer(event.getName()).isOnline()) {
-            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "A player with that username is already logged in");
+            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
+                           "A player with that username is already logged in");
         }
 
         /*try {
             final PlayerProfile profile = event.getPlayerProfile();
 
-            UUID offlineUUID = UUID.nameUUIDFromBytes(("OfflinePlayer:" + event.getName()).getBytes(Charsets.UTF_8));
+            UUID offlineUUID = UUID.nameUUIDFromBytes(
+                ("OfflinePlayer:" + event.getName()).getBytes(Charsets.UTF_8));
 
             profile.setId(offlineUUID);
 
@@ -113,7 +117,8 @@ public final class PlayerConnection implements Listener {
 
     @EventHandler
     void onPlayerSpawn(final PlayerSpawnLocationEvent event) {
-        if (RANDOMIZE_SPAWN && event.getPlayer().getBedSpawnLocation() != event.getSpawnLocation()) {
+        if (RANDOMIZE_SPAWN
+                && event.getPlayer().getBedSpawnLocation() != event.getSpawnLocation()) {
             final World world = event.getPlayer().getWorld();
             final double x = ThreadLocalRandom.current().nextInt(-300000000, 30000000) + .5;
             final double y = 100;
@@ -133,7 +138,8 @@ public final class PlayerConnection implements Listener {
     @EventHandler
     void onPreLookupProfile(final PreLookupProfileEvent event) {
         // Disable Mojang API calls, we don't need them
-        UUID offlineUUID = UUID.nameUUIDFromBytes(("OfflinePlayer:" + event.getName()).getBytes(Charsets.UTF_8));
+        UUID offlineUUID = UUID.nameUUIDFromBytes(
+            ("OfflinePlayer:" + event.getName()).getBytes(Charsets.UTF_8));
         event.setUUID(offlineUUID);
 
         event.setProfileProperties(new HashSet<ProfileProperty>());

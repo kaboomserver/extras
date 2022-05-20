@@ -14,7 +14,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public final class CommandEnchantAll implements CommandExecutor {
-    public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
+    public boolean onCommand(final CommandSender sender, final Command command, final String label,
+                             final String[] args) {
         if (sender instanceof ConsoleCommandSender) {
             sender.sendMessage("Command has to be run by a player");
         } else {

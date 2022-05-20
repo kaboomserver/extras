@@ -18,7 +18,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import pw.kaboom.extras.Main;
 
 public final class ServerCommand implements Listener {
-    private static final Pattern AS_AT_PATTERN = Pattern.compile("\\b(as|at|facing entity) @[ae]\\b");
+    private static final Pattern AS_AT_PATTERN = Pattern.compile(
+        "\\b(as|at|facing entity) @[ae]\\b");
     private static final Logger LOGGER = JavaPlugin.getPlugin(Main.class).getLogger();
 
     public static boolean checkExecuteCommand(final String cmd) {
@@ -46,7 +47,8 @@ public final class ServerCommand implements Listener {
             || "w".equalsIgnoreCase(cmd)
         );
     }
-    public static String checkCommand(final CommandSender sender, final String command, final boolean isConsoleCommand) {
+    public static String checkCommand(final CommandSender sender, final String command,
+                                      final boolean isConsoleCommand) {
         final String[] arr = command.split(" ");
         String commandName = arr[0].toLowerCase();
 
@@ -72,7 +74,6 @@ public final class ServerCommand implements Listener {
                 } catch (NumberFormatException e) {
                     // Ignore exception
                 }
-
             }
         }
 
@@ -98,8 +99,10 @@ public final class ServerCommand implements Listener {
                                 if (checkExecuteCommand(arr[i + 1])) {
                                     return "cancel";
                                 } else {
-                                    final String[] executeCommand = Arrays.copyOfRange(arr, i + 1, arr.length);
-                                    String result = checkCommand(sender, String.join(" ", executeCommand), true);
+                                    final String[] executeCommand = Arrays.copyOfRange(
+                                        arr, i + 1, arr.length);
+                                    String result = checkCommand(sender,
+                                        String.join(" ", executeCommand), true);
                                     if (result == null) {
                                         break;
                                     }
@@ -107,7 +110,8 @@ public final class ServerCommand implements Listener {
                                         case "cancel":
                                             return "cancel";
                                         default:
-                                            String pureExecute = String.join(" ", Arrays.copyOfRange(arr, 0, i + 1));
+                                            String pureExecute = String.join(
+                                                " ", Arrays.copyOfRange(arr, 0, i + 1));
                                             return (pureExecute + " " + result);
                                     }
                                 }
@@ -211,7 +215,8 @@ public final class ServerCommand implements Listener {
         }
 
         if (command.contains("distance")) {
-            return command.replace("distance=", "]").replace("\"distance\"=", "]").replace("'distance'=", "]");
+            return command.replace("distance=", "]").replace("\"distance\"=", "]")
+                .replace("'distance'=", "]");
         }
 
         return null;
@@ -222,7 +227,8 @@ public final class ServerCommand implements Listener {
         final CommandSender sender = event.getSender();
 
         if (sender instanceof BlockCommandSender) {
-            final CommandBlock commandBlock = (CommandBlock) ((BlockCommandSender) sender).getBlock().getState();
+            final CommandBlock commandBlock = (CommandBlock) ((BlockCommandSender) sender)
+                .getBlock().getState();
 
             commandBlock.setCommand("");
             commandBlock.update();

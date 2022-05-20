@@ -9,7 +9,8 @@ import org.bukkit.entity.Player;
 
 public final class CommandPing implements CommandExecutor {
 
-    public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
+    public boolean onCommand(final CommandSender sender, final Command command, final String label,
+                             final String[] args) {
         Player target;
 
         if (args.length == 0) {

@@ -28,7 +28,8 @@ public final class PlayerInteract implements Listener {
         /*final UUID playerUuid = event.getPlayer().getUniqueId();
 
         if (interactMillisList.get(playerUuid) != null) {
-            final long millisDifference = System.currentTimeMillis() - interactMillisList.get(playerUuid);
+            final long lastInteractionTime = interactMillisList.get(playerUuid);
+            final long millisDifference = System.currentTimeMillis() - lastInteractionTime;
 
             if (millisDifference < 150) {
                 event.setCancelled(true);

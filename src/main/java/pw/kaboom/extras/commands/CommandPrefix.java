@@ -19,12 +19,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 import pw.kaboom.extras.Main;
 
 public final class CommandPrefix implements CommandExecutor {
-    public boolean onCommand(final CommandSender sender, final Command cmd, final String label, final String[] args) {
+    public boolean onCommand(final CommandSender sender, final Command cmd, final String label,
+                             final String[] args) {
         if (sender instanceof ConsoleCommandSender) {
             sender.sendMessage("Command has to be run by a player");
         } else {
             final Player player = (Player) sender;
-            final File configFile = new File(JavaPlugin.getPlugin(Main.class).getDataFolder(), "prefixes.yml");
+            final File configFile = new File(JavaPlugin.getPlugin(Main.class).getDataFolder(),
+                                             "prefixes.yml");
             final FileConfiguration prefixConfig = YamlConfiguration.loadConfiguration(configFile);
 
             try {
@@ -37,10 +39,13 @@ public final class CommandPrefix implements CommandExecutor {
                 } else {
                     prefixConfig.set(player.getUniqueId().toString(), String.join(" ", args));
                     prefixConfig.save(configFile);
-                    player.sendMessage("You now have the tag: " + ChatColor.translateAlternateColorCodes('&', String.join(" ", args)));
+                    player.sendMessage("You now have the tag: "
+                                       + ChatColor.translateAlternateColorCodes(
+                                       '&', String.join(" ", args)));
                 }
             } catch (Exception exception) {
-                player.sendMessage("Something went wrong while saving the prefix. Please check console.");
+                player.sendMessage("Something went wrong while saving the prefix. "
+                                   + "Please check console.");
                 exception.printStackTrace();
             }
         }

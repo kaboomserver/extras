@@ -68,7 +68,8 @@ public final class EntitySpawn implements Listener {
         return false;
     }
 
-    private boolean isEntityLimitReached(final EntityType entityType, final Chunk chunk, final World world) {
+    private boolean isEntityLimitReached(final EntityType entityType, final Chunk chunk,
+                                         final World world) {
         switch (entityType) {
         case ENDER_DRAGON:
             final int worldDragonCount = world.getEntitiesByClass(EnderDragon.class).size();
@@ -169,7 +170,8 @@ public final class EntitySpawn implements Listener {
     @EventHandler
     void onExplosionPrime(final ExplosionPrimeEvent event) {
         if (EntityType.MINECART_TNT.equals(event.getEntityType())
-                && event.getEntity().getWorld().getEntitiesByClass(ExplosiveMinecart.class).size() > 80) {
+                && event.getEntity().getWorld()
+                .getEntitiesByClass(ExplosiveMinecart.class).size() > 80) {
             event.setCancelled(true);
         }
     }
@@ -255,7 +257,9 @@ public final class EntitySpawn implements Listener {
     @EventHandler
     void onSpawnerSpawn(final SpawnerSpawnEvent event) {
         if (EntityType.FALLING_BLOCK.equals(event.getEntityType())) {
-            if (((FallingBlock) event.getEntity()).getBlockData().getMaterial().equals(Material.SPAWNER)) {
+            final FallingBlock block = (FallingBlock) event.getEntity();
+
+            if (block.getBlockData().getMaterial().equals(Material.SPAWNER)) {
                 event.setCancelled(true);
                 event.getSpawner().setSpawnedType(EntityType.FALLING_BLOCK);
             }

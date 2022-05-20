@@ -22,7 +22,8 @@ public final class CommandJumpscare implements CommandExecutor {
         }
     }
 
-    public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
+    public boolean onCommand(final CommandSender sender, final Command command, final String label,
+                             final String[] args) {
         if (args.length == 0) {
             sender.sendMessage(ChatColor.RED + "Usage: /" + label + " <player>");
         } else {
@@ -35,7 +36,8 @@ public final class CommandJumpscare implements CommandExecutor {
                 final Player target = Bukkit.getPlayer(args[0]);
                 if (target != null) {
                     createJumpscare(target);
-                    sender.sendMessage("Successfully created jumpscare for player \"" + target.getName() + "\"");
+                    sender.sendMessage("Successfully created jumpscare for player \""
+                                       + target.getName() + "\"");
                 } else {
                     sender.sendMessage("Player \"" + args[0] + "\" not found");
                 }
