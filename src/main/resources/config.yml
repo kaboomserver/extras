@@ -3,6 +3,9 @@ allowJoinOnFullServer: true
 enableKick: false
 enableJoinRestrictions: false
 opOnJoin: true
+# It's recommended to do this on a pre-generated world
+# as chunk generation can be very slow in newer Minecraft
+# versions.
 randomizeSpawn: false
 maxEntitiesPerChunk: 30  # Set to -1 to disable
 playerJoinTitle: "§7Welcome to Kaboom!"
