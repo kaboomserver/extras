@@ -1,10 +1,13 @@
 package pw.kaboom.extras;
 
+import java.io.File;
 import java.util.Collections;
 
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import pw.kaboom.extras.commands.CommandBroadcastVanilla;
@@ -41,6 +44,9 @@ import pw.kaboom.extras.modules.server.ServerTabComplete;
 import pw.kaboom.extras.modules.server.ServerTick;
 
 public final class Main extends JavaPlugin {
+    private File prefixConfigFile;
+    private FileConfiguration prefixConfig;
+
     @Override
     public void onLoad() {
         /* Fill lists */
@@ -60,6 +66,10 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        /* Prefixes */
+        prefixConfigFile = new File(this.getDataFolder(), "prefixes.yml");
+        prefixConfig = YamlConfiguration.loadConfiguration(prefixConfigFile);
+
         /* Commands */
         this.getCommand("broadcastvanilla").setExecutor(new CommandBroadcastVanilla());
         this.getCommand("clearchat").setExecutor(new CommandClearChat());
@@ -107,4 +117,12 @@ public final class Main extends JavaPlugin {
             new WorldCreator("world_flatlands").generateStructures(false).type(WorldType.FLAT)
         );
     }
+
+	public File getPrefixConfigFile() {
+		return this.prefixConfigFile;
+	}
+
+	public FileConfiguration getPrefixConfig() {
+		return this.prefixConfig;
+	}
 }

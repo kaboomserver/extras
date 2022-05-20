@@ -20,6 +20,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import pw.kaboom.extras.Main;
 
 public final class PlayerChat implements Listener {
+    private static final FileConfiguration CONFIG = JavaPlugin.getPlugin(Main.class).getConfig();
+    private static final FileConfiguration PREFIX_CONFIG = JavaPlugin
+        .getPlugin(Main.class).getPrefixConfig();
+
+    private static final String OP_TAG = CONFIG.getString("opTag");
+    private static final String DEOP_TAG = CONFIG.getString("deOpTag");
+
     @EventHandler
     void onAsyncPlayerChat(final AsyncPlayerChatEvent event) {
         final Player player = event.getPlayer();
@@ -40,21 +47,15 @@ public final class PlayerChat implements Listener {
             return;
         }
 
-        final File configFile = new File(JavaPlugin.getPlugin(Main.class).getDataFolder(),
-                                         "prefixes.yml");
-        final FileConfiguration prefixConfig = YamlConfiguration.loadConfiguration(configFile);
-        final String prefix;
         final String name = player.getDisplayName().toString();
+        String prefix = PREFIX_CONFIG.getString(player.getUniqueId().toString());
 
-        if (prefixConfig.getString(player.getUniqueId().toString()) != null) {
-            prefix = ChatColor.translateAlternateColorCodes(
-                '&',
-                prefixConfig.getString(player.getUniqueId().toString()) +  " " + ChatColor.RESET
-            );
+        if (prefix != null) {
+            prefix = ChatColor.translateAlternateColorCodes('&', prefix + " " + ChatColor.RESET);
         } else if (event.getPlayer().isOp()) {
-            prefix = JavaPlugin.getPlugin(Main.class).getConfig().getString("opTag");
+            prefix = OP_TAG;
         } else {
-            prefix = JavaPlugin.getPlugin(Main.class).getConfig().getString("deOpTag");
+            prefix = DEOP_TAG;
         }
 
         event.setFormat(prefix + name + ChatColor.RESET + ": " + ChatColor.RESET + "%2$s");
