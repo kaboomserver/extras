@@ -129,7 +129,12 @@ public final class PlayerConnection implements Listener {
             final ThreadLocalRandom random = ThreadLocalRandom.current();
 
             final double teleportAmount = 500000D;
-            final Location location = new Location(world, random.nextDouble(-teleportAmount, teleportAmount), 100, random.nextDouble(-teleportAmount, teleportAmount));
+            final Location location = new Location(
+                world,
+                random.nextDouble(-teleportAmount, teleportAmount), 
+                100, 
+                random.nextDouble(-teleportAmount, teleportAmount)
+            );
             event.setSpawnLocation(location);
         }
     }
