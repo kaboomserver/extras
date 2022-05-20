@@ -2,7 +2,6 @@ package pw.kaboom.extras;
 
 import java.util.Collections;
 
-import org.bukkit.Bukkit;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.block.BlockFace;

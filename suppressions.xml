@@ -10,5 +10,4 @@
 	<suppress checks="LineLength" files="."/>
 	<suppress checks="MagicNumber" files="."/>
 	<suppress checks="MethodLength" files="."/>
-	<suppress checks="NewlineAtEndOfFile" files="."/>
 </suppressions>
