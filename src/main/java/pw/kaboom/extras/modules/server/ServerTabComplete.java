@@ -13,63 +13,63 @@ import org.bukkit.event.Listener;
 import com.destroystokyo.paper.event.server.AsyncTabCompleteEvent;
 
 public final class ServerTabComplete implements Listener {
-	private static HashMap<UUID, String> loginNameList = new HashMap<UUID, String>();
+    private static HashMap<UUID, String> loginNameList = new HashMap<UUID, String>();
 
-	@EventHandler
-	void onAsyncTabComplete(final AsyncTabCompleteEvent event) {
-		final String[] arr = event.getBuffer().split(" ", 2);
+    @EventHandler
+    void onAsyncTabComplete(final AsyncTabCompleteEvent event) {
+        final String[] arr = event.getBuffer().split(" ", 2);
 
-		// Vanilla clients will not send tab complete requests on the first word, but modified or bot clients may
-		if (arr.length < 2) {
-			return;
-		}
+        // Vanilla clients will not send tab complete requests on the first word, but modified or bot clients may
+        if (arr.length < 2) {
+            return;
+        }
 
-		String command = arr[0];
-		String argsFragment = arr[1];
-		if (command.startsWith("/")) {
-			command = command.substring(1);
-		}
+        String command = arr[0];
+        String argsFragment = arr[1];
+        if (command.startsWith("/")) {
+            command = command.substring(1);
+        }
 
-		if (command.equalsIgnoreCase("op")) {
-			event.setCompletions(getOpCompletions(argsFragment));
-		} else if (command.equalsIgnoreCase("deop")) {
-			event.setCompletions(getDeopCompletions(argsFragment));
-		} else {
-			return;
-		}
+        if (command.equalsIgnoreCase("op")) {
+            event.setCompletions(getOpCompletions(argsFragment));
+        } else if (command.equalsIgnoreCase("deop")) {
+            event.setCompletions(getDeopCompletions(argsFragment));
+        } else {
+            return;
+        }
 
-		if (event.getCompletions().size() == 0) {
-			event.setCancelled(true);
-		}
-	}
+        if (event.getCompletions().size() == 0) {
+            event.setCancelled(true);
+        }
+    }
 
-	static List<String> getOpCompletions(final String argsFragment) {
-		ArrayList<String> deops = new ArrayList<String>();
-		for (Player player : Bukkit.getOnlinePlayers()) {
-			if (!player.isOp()) {
-				String loginName = loginNameList.get(player.getUniqueId());
-				if (loginName != null && loginName.startsWith(argsFragment)) {
-					deops.add(loginName);
-				}
-			}
-		}
-		return deops;
-	}
+    static List<String> getOpCompletions(final String argsFragment) {
+        ArrayList<String> deops = new ArrayList<String>();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!player.isOp()) {
+                String loginName = loginNameList.get(player.getUniqueId());
+                if (loginName != null && loginName.startsWith(argsFragment)) {
+                    deops.add(loginName);
+                }
+            }
+        }
+        return deops;
+    }
 
-	static List<String> getDeopCompletions(final String argsFragment) {
-		ArrayList<String> ops = new ArrayList<String>();
-		for (Player player : Bukkit.getOnlinePlayers()) {
-			if (player.isOp()) {
-				String loginName = loginNameList.get(player.getUniqueId());
-				if (loginName != null && loginName.startsWith(argsFragment)) {
-					ops.add(loginName);
-				}
-			}
-		}
-		return ops;
-	}
+    static List<String> getDeopCompletions(final String argsFragment) {
+        ArrayList<String> ops = new ArrayList<String>();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player.isOp()) {
+                String loginName = loginNameList.get(player.getUniqueId());
+                if (loginName != null && loginName.startsWith(argsFragment)) {
+                    ops.add(loginName);
+                }
+            }
+        }
+        return ops;
+    }
 
-	public static HashMap<UUID, String> getLoginNameList() {
-		return loginNameList;
-	}
+    public static HashMap<UUID, String> getLoginNameList() {
+        return loginNameList;
+    }
 }

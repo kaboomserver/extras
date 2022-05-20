@@ -8,27 +8,27 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
 public final class BlockCheck implements Listener {
-	@EventHandler
-	void onBlockPlace(final BlockPlaceEvent event) {
-		try {
-			final int maxItemStringLength = 3019;
+    @EventHandler
+    void onBlockPlace(final BlockPlaceEvent event) {
+        try {
+            final int maxItemStringLength = 3019;
 
-			if (event.getItemInHand().toString().length() > maxItemStringLength) {
-				event.setCancelled(true);
-			}
+            if (event.getItemInHand().toString().length() > maxItemStringLength) {
+                event.setCancelled(true);
+            }
 
-			event.getBlockPlaced().getState();
-		} catch (Exception exception) {
-			event.setCancelled(true);
-		}
-	}
+            event.getBlockPlaced().getState();
+        } catch (Exception exception) {
+            event.setCancelled(true);
+        }
+    }
 
-	@EventHandler
-	void onChunkUnload(final ChunkUnloadEvent event) {
-		for (Chunk chunk : event.getChunk().getWorld().getForceLoadedChunks()) {
-			chunk.setForceLoaded(false);
-		}
-	}
+    @EventHandler
+    void onChunkUnload(final ChunkUnloadEvent event) {
+        for (Chunk chunk : event.getChunk().getWorld().getForceLoadedChunks()) {
+            chunk.setForceLoaded(false);
+        }
+    }
 
 	@EventHandler
 	void onSignChange(final SignChangeEvent event) {

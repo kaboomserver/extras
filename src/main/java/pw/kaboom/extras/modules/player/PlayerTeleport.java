@@ -9,19 +9,19 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import pw.kaboom.extras.modules.entity.EntityTeleport;
 
 public final class PlayerTeleport implements Listener {
-	@EventHandler
-	void onPlayerChangedWorld(final PlayerChangedWorldEvent event) {
-		final Player player = event.getPlayer();
+    @EventHandler
+    void onPlayerChangedWorld(final PlayerChangedWorldEvent event) {
+        final Player player = event.getPlayer();
 
-		if (player.getMaxHealth() <= 0) {
-			player.setMaxHealth(Double.POSITIVE_INFINITY);
-			player.setHealth(20);
-			player.setMaxHealth(20);
-		}
-	}
+        if (player.getMaxHealth() <= 0) {
+            player.setMaxHealth(Double.POSITIVE_INFINITY);
+            player.setHealth(20);
+            player.setMaxHealth(20);
+        }
+    }
 
-	@EventHandler
-	void onPlayerTeleport(final PlayerTeleportEvent event) {
-		event.setTo(EntityTeleport.limitLocation(event.getTo()));
-	}
+    @EventHandler
+    void onPlayerTeleport(final PlayerTeleportEvent event) {
+        event.setTo(EntityTeleport.limitLocation(event.getTo()));
+    }
 }
