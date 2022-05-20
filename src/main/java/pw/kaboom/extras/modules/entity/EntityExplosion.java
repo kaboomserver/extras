@@ -1,12 +1,9 @@
 package pw.kaboom.extras.modules.entity;
 
 import org.bukkit.World;
-
 import org.bukkit.entity.Fireball;
-
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 
 public final class EntityExplosion implements Listener {

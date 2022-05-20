@@ -2,12 +2,10 @@ package pw.kaboom.extras.commands;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 
 import org.bukkit.ChatColor;
-
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

@@ -23,6 +23,7 @@ import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 import com.destroystokyo.paper.event.profile.PreLookupProfileEvent;
 import com.destroystokyo.paper.profile.ProfileProperty;
+
 import com.google.common.base.Charsets;
 
 import pw.kaboom.extras.Main;

@@ -1,9 +1,10 @@
 package pw.kaboom.extras.modules.server;
 
-import io.papermc.paper.event.world.WorldGameRuleChangeEvent;
 import org.bukkit.GameRule;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+
+import io.papermc.paper.event.world.WorldGameRuleChangeEvent;
 
 public final class ServerGameRule implements Listener {
     @EventHandler
