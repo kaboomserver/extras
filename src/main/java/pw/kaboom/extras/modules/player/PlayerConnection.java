@@ -94,7 +94,14 @@ public final class PlayerConnection implements Listener {
 
     @EventHandler
     void onPlayerLogin(final PlayerLoginEvent event) {
-        if (!ENABLE_JOIN_RESTRICTIONS) {
+        // #312 - If allow join on full server is off,
+        // but join restrictions are disabled,
+        // player can still join on full server
+
+        // Full server kicks should be handled differently from other join restrictions
+        // since we have a separate configuration value for it
+
+        if (!ENABLE_JOIN_RESTRICTIONS && !Result.KICK_FULL.equals(event.getResult())) {
             event.allow();
         }
 
