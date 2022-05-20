@@ -6,6 +6,7 @@ opOnJoin: true
 # It's recommended to do this on a pre-generated world
 # as chunk generation can be very slow in newer Minecraft
 # versions.
+# You can use the pre-world generation plugin "Chunky" to achieve this
 randomizeSpawn: false
 maxEntitiesPerChunk: 30  # Set to -1 to disable
 playerJoinTitle: "§7Welcome to Kaboom!"
