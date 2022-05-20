@@ -20,44 +20,47 @@ import org.bukkit.plugin.java.JavaPlugin;
 import pw.kaboom.extras.Main;
 
 public final class PlayerChat implements Listener {
-	@EventHandler
-	void onAsyncPlayerChat(final AsyncPlayerChatEvent event) {
-		final Player player = event.getPlayer();
-		final UUID playerUuid = event.getPlayer().getUniqueId();
+    private static final FileConfiguration CONFIG = JavaPlugin.getPlugin(Main.class).getConfig();
+    private static final FileConfiguration PREFIX_CONFIG = JavaPlugin
+        .getPlugin(Main.class).getPrefixConfig();
 
-		if (PlayerCommand.getCommandMillisList().get(playerUuid) != null) {
-			final long millisDifference = System.currentTimeMillis() - PlayerCommand.getCommandMillisList().get(playerUuid);
+    private static final String OP_TAG = CONFIG.getString("opTag");
+    private static final String DEOP_TAG = CONFIG.getString("deOpTag");
 
-			if (millisDifference < 50) {
-				event.setCancelled(true);
-			}
-		}
+    @EventHandler
+    void onAsyncPlayerChat(final AsyncPlayerChatEvent event) {
+        final Player player = event.getPlayer();
+        final UUID playerUuid = event.getPlayer().getUniqueId();
 
-		PlayerCommand.getCommandMillisList().put(playerUuid, System.currentTimeMillis());
+        if (PlayerCommand.getCommandMillisList().get(playerUuid) != null) {
+            final long lastCommandTime = PlayerCommand.getCommandMillisList().get(playerUuid);
+            final long millisDifference = System.currentTimeMillis() - lastCommandTime;
 
-		if (event.isCancelled()) {
-			return;
-		}
+            if (millisDifference < 50) {
+                event.setCancelled(true);
+            }
+        }
 
-		final File configFile = new File(JavaPlugin.getPlugin(Main.class).getDataFolder(), "prefixes.yml");
-		final FileConfiguration prefixConfig = YamlConfiguration.loadConfiguration(configFile);
-		final String prefix;
-		final String name = player.getDisplayName().toString();
+        PlayerCommand.getCommandMillisList().put(playerUuid, System.currentTimeMillis());
 
-		if (prefixConfig.getString(player.getUniqueId().toString()) != null) {
-			prefix = ChatColor.translateAlternateColorCodes(
-				'&',
-				prefixConfig.getString(player.getUniqueId().toString()) +  " " + ChatColor.RESET
-			);
-		} else if (event.getPlayer().isOp()) {
-			prefix = JavaPlugin.getPlugin(Main.class).getConfig().getString("opTag");
-		} else {
-			prefix = JavaPlugin.getPlugin(Main.class).getConfig().getString("deOpTag");
-		}
+        if (event.isCancelled()) {
+            return;
+        }
 
-		event.setFormat(prefix + name + ChatColor.RESET + ": " + ChatColor.RESET + "%2$s");
-		event.setMessage(
-			ChatColor.translateAlternateColorCodes('&', event.getMessage())
-		);
-	}
+        final String name = player.getDisplayName().toString();
+        String prefix = PREFIX_CONFIG.getString(player.getUniqueId().toString());
+
+        if (prefix != null) {
+            prefix = ChatColor.translateAlternateColorCodes('&', prefix + " " + ChatColor.RESET);
+        } else if (event.getPlayer().isOp()) {
+            prefix = OP_TAG;
+        } else {
+            prefix = DEOP_TAG;
+        }
+
+        event.setFormat(prefix + name + ChatColor.RESET + ": " + ChatColor.RESET + "%2$s");
+        event.setMessage(
+            ChatColor.translateAlternateColorCodes('&', event.getMessage())
+        );
+    }
 }

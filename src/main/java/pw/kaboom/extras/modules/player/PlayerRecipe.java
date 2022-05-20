@@ -5,16 +5,16 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRecipeDiscoverEvent;
 
 public final class PlayerRecipe implements Listener {
-	private long recipeMillis;
+    private long recipeMillis;
 
-	@EventHandler
-	void onPlayerRecipeDiscover(final PlayerRecipeDiscoverEvent event) {
-		final long millisDifference = System.currentTimeMillis() - recipeMillis;
+    @EventHandler
+    void onPlayerRecipeDiscover(final PlayerRecipeDiscoverEvent event) {
+        final long millisDifference = System.currentTimeMillis() - recipeMillis;
 
-		if (millisDifference < 75) {
-			event.setCancelled(true);
-		}
+        if (millisDifference < 75) {
+            event.setCancelled(true);
+        }
 
-		recipeMillis = System.currentTimeMillis();
-	}
+        recipeMillis = System.currentTimeMillis();
+    }
 }

@@ -9,22 +9,24 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
 public final class CommandDestroyEntities implements CommandExecutor {
-	@Override
-	public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
-		int entityCount = 0;
-		int worldCount = 0;
+    @Override
+    public boolean onCommand(final CommandSender sender, final Command command, final String label,
+                             final String[] args) {
+        int entityCount = 0;
+        int worldCount = 0;
 
-		for (World world : Bukkit.getWorlds()) {
-			for (Entity entity : world.getEntities()) {
-				if (!EntityType.PLAYER.equals(entity.getType())) {
-					entity.remove();
-					entityCount++;
-				}
-			}
-			worldCount++;
-		}
+        for (World world : Bukkit.getWorlds()) {
+            for (Entity entity : world.getEntities()) {
+                if (!EntityType.PLAYER.equals(entity.getType())) {
+                    entity.remove();
+                    entityCount++;
+                }
+            }
+            worldCount++;
+        }
 
-		sender.sendMessage("Successfully destroyed " + entityCount + " entities in " + worldCount + " worlds");
-		return true;
-	}
+        sender.sendMessage("Successfully destroyed " + entityCount + " entities in "
+                           + worldCount + " worlds");
+        return true;
+    }
 }
