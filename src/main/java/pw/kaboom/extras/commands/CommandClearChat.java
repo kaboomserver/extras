@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
 
@@ -22,10 +23,12 @@ public final class CommandClearChat implements CommandExecutor {
                     .append(Component.newline());
         }
 
-        Bukkit.getServer().broadcast(clearChatComponent
-                .append(Component
-                        .text("The chat has been cleared",
-                                NamedTextColor.DARK_GREEN)));
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            onlinePlayer.sendMessage(clearChatComponent
+                    .append(Component
+                            .text("The chat has been cleared",
+                                    NamedTextColor.DARK_GREEN)));
+        }
 
         return true;
     }
