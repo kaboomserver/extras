@@ -4,24 +4,26 @@ Extras is a Bukkit plugin that that adds extra functionality to the Kaboom serve
 
 ## Commands
 
-| Command | Aliases | Permission | Description |
-| ------- | ----- | ---------- | ----------- |
-|/broadcastraw | /bcraw, /tellraw | extras.broadcastraw | Broadcasts raw text to the server|
-|/broadcastvanilla | /bcv | extras.broadcastvanilla | Broadcasts text in vanilla style|
-|/clearchat | /cc | extras.clearchat | Clears messages from the chat|
-|/console | | extras.console | Broadcasts a message as the console|
-|/destroyentities | /de | extras.destroyentities | Destroys all entities in every world|
-|/enchantall | | extras.enchantall | Adds every enchantment to a held item|
-|/jumpscare | /scare | extras.jumpscare | Scares a player|
-|/kaboom | | extras.kaboom | I wonder...|
-|/ping | /ms, /delay | extras.ping | Gets your ping|
-|/prefix | /rank, /tag | extras.prefix | Changes your tag|
-|/pumpkin | | extras.pumpkin | Places a pumpkin on a player's head|
-|/serverinfo | /specs | extras.serverinfo | Shows detailed server information|
-|/skin | | extras.skin | Changes your skin|
-|/spawn | | extras.spawn | Teleports you to spawn|
-|/spidey | | extras.spidey | Annoying little spider...|
-|/username | | extras.username | Changes your username on the server|
+| Command               | Aliases                                      | Permission                  | Description                                                   |
+|-----------------------|----------------------------------------------|-----------------------------|---------------------------------------------------------------|
+| /broadcastminimessage | /broadcastmm, /bcmm                          | extras.broadcastminimessage | Broadcasts a deserialized MiniMessage component               |
+| /broadcastraw         | /bcraw, /tellraw                             | extras.broadcastraw         | Broadcasts raw text to the server                             |
+| /broadcastvanilla     | /bcv                                         | extras.broadcastvanilla     | Broadcasts text in vanilla style                              |
+| /clearchat            | /cc                                          | extras.clearchat            | Clears messages from the chat                                 |
+| /console              |                                              | extras.console              | Broadcasts a message as the console                           |
+| /destroyentities      | /de                                          | extras.destroyentities      | Destroys all entities in every world                          |
+| /enchantall           |                                              | extras.enchantall           | Adds every enchantment to a held item                         |
+| /getjson              | /gj, /gmm                                    | extras.getjson              | Gets the JSON of a deserialized MiniMessage/legacy component  |
+| /jumpscare            | /scare                                       | extras.jumpscare            | Scares a player                                               |
+| /kaboom               |                                              | extras.kaboom               | I wonder...                                                   |
+| /ping                 | /ms, /delay                                  | extras.ping                 | Gets your ping                                                |
+| /prefix               | /rank, /tag                                  | extras.prefix               | Changes your tag                                              |
+| /pumpkin              |                                              | extras.pumpkin              | Places a pumpkin on a player's head                           |
+| /serverinfo           | /specs                                       | extras.serverinfo           | Shows detailed server information                             |
+| /skin                 |                                              | extras.skin                 | Changes your skin                                             |
+| /spawn                |                                              | extras.spawn                | Teleports you to spawn                                        |
+| /spidey               |                                              | extras.spidey               | Annoying little spider...                                     |
+| /username             |                                              | extras.username             | Changes your username on the server                           |
 
 
 ## Compiling

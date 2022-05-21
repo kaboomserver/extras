@@ -1,5 +1,6 @@
 package pw.kaboom.extras.commands;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -10,11 +11,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
+import javax.annotation.Nonnull;
+
 public final class CommandSpidey implements CommandExecutor {
-    public boolean onCommand(final CommandSender sender, final Command command, final String label,
+    public boolean onCommand(final @Nonnull CommandSender sender,
+                             final @Nonnull Command command,
+                             final @Nonnull String label,
                              final String[] args) {
         if (sender instanceof ConsoleCommandSender) {
-            sender.sendMessage("Command has to be run by a player");
+            sender.sendMessage(Component
+                    .text("Command has to be run by a player"));
         } else {
             final Player player = (Player) sender;
             final World world = player.getWorld();

@@ -1,20 +1,18 @@
 package pw.kaboom.extras;
 
-import java.io.File;
-import java.util.Collections;
-
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-
+import pw.kaboom.extras.commands.CommandBroadcastMM;
 import pw.kaboom.extras.commands.CommandBroadcastVanilla;
 import pw.kaboom.extras.commands.CommandClearChat;
 import pw.kaboom.extras.commands.CommandConsole;
 import pw.kaboom.extras.commands.CommandDestroyEntities;
 import pw.kaboom.extras.commands.CommandEnchantAll;
+import pw.kaboom.extras.commands.CommandGetJSON;
 import pw.kaboom.extras.commands.CommandJumpscare;
 import pw.kaboom.extras.commands.CommandKaboom;
 import pw.kaboom.extras.commands.CommandPing;
@@ -44,6 +42,9 @@ import pw.kaboom.extras.modules.server.ServerGameRule;
 import pw.kaboom.extras.modules.server.ServerTabComplete;
 import pw.kaboom.extras.modules.server.ServerTick;
 
+import java.io.File;
+import java.util.Collections;
+
 public final class Main extends JavaPlugin {
     private File prefixConfigFile;
     private FileConfiguration prefixConfig;
@@ -72,11 +73,13 @@ public final class Main extends JavaPlugin {
         prefixConfig = YamlConfiguration.loadConfiguration(prefixConfigFile);
 
         /* Commands */
+        this.getCommand("broadcastminimessage").setExecutor(new CommandBroadcastMM());
         this.getCommand("broadcastvanilla").setExecutor(new CommandBroadcastVanilla());
         this.getCommand("clearchat").setExecutor(new CommandClearChat());
         this.getCommand("console").setExecutor(new CommandConsole());
         this.getCommand("destroyentities").setExecutor(new CommandDestroyEntities());
         this.getCommand("enchantall").setExecutor(new CommandEnchantAll());
+        this.getCommand("getjson").setExecutor(new CommandGetJSON());
         this.getCommand("jumpscare").setExecutor(new CommandJumpscare());
         this.getCommand("kaboom").setExecutor(new CommandKaboom());
         this.getCommand("ping").setExecutor(new CommandPing());

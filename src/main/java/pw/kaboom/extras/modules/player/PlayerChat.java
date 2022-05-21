@@ -2,6 +2,7 @@ package pw.kaboom.extras.modules.player;
 
 import io.papermc.paper.chat.ChatRenderer;
 import io.papermc.paper.event.player.AsyncChatEvent;
+import javax.annotation.Nonnull;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -12,7 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 import pw.kaboom.extras.Main;
 
 import java.util.UUID;
@@ -52,10 +52,10 @@ public final class PlayerChat implements Listener {
     public static class PlayerChatRenderer implements ChatRenderer {
 
         @Override
-        public @NotNull Component render(@NotNull Player player,
-                                         @NotNull Component displayName,
-                                         @NotNull Component component,
-                                         @NotNull Audience audience) {
+        public @Nonnull Component render(@Nonnull Player player,
+                                         @Nonnull Component displayName,
+                                         @Nonnull Component component,
+                                         @Nonnull Audience audience) {
             Component newComponent = Component.empty();
             final String legacyPrefix = PREFIX_CONFIG.getString(player.getUniqueId().toString());
             final Component prefix = legacyPrefix == null ?

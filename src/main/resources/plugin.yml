@@ -5,12 +5,16 @@ api-version: 1.13
 version: master
 
 commands:
+   broadcastminimessage:
+      aliases: [ broadcastmm, bcmm ]
+      description: Broadcasts a deserialized MiniMessage component
+      permission: extras.broadcastminimessage
    broadcastraw:
-      aliases: [bcraw, tellraw]
+      aliases: [ bcraw, tellraw ]
       description: Broadcasts raw text to the server
       permission: extras.broadcastraw
    broadcastvanilla:
-      aliases: [bcv]
+      aliases: [ bcv ]
       description: Broadcasts text in vanilla style
       permission: extras.broadcastvanilla
    clearchat:
@@ -27,6 +31,10 @@ commands:
    enchantall:
       description: Adds every enchantment to a held item
       permission: extras.enchantall
+   getjson:
+      aliases: [ gj, gmm ]
+      description: Gets the JSON of a deserialized MiniMessage/legacy component
+      permission: extras.getjson
    jumpscare:
       aliases: scare
       description: Scares a player
