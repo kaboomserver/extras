@@ -63,7 +63,12 @@ public final class EntitySpawn implements Listener {
         if (worldEntityCount > MAX_ENTITIES_PER_WORLD) {
             for (Entity entity : world.getEntities()) {
                 if (!EntityType.PLAYER.equals(entity.getType())) {
-                    entity.remove();
+                    try {
+                        entity.remove();
+                    } catch (Exception ignored) {
+                        // Broken entity
+                        continue;
+                    }
                 }
             }
             return true;
