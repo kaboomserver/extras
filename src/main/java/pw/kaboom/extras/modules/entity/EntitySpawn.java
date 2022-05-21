@@ -35,7 +35,10 @@ import pw.kaboom.extras.Main;
 
 public final class EntitySpawn implements Listener {
     private static final FileConfiguration CONFIG = JavaPlugin.getPlugin(Main.class).getConfig();
+
     private static final int MAX_ENTITIES_PER_CHUNK = CONFIG.getInt("maxEntitiesPerChunk");
+    private static final int MAX_ENTITIES_PER_WORLD = CONFIG.getInt("maxEntitiesPerWorld");
+    private static final int MAX_TNTS_PER_WORLD = CONFIG.getInt("maxTntsPerWorld");
 
     private void applyEntityChanges(final Entity entity) {
         switch (entity.getType()) {
@@ -57,7 +60,7 @@ public final class EntitySpawn implements Listener {
     private boolean checkShouldRemoveEntities(final World world) {
         final int worldEntityCount = world.getEntities().size();
 
-        if (worldEntityCount > 1024) {
+        if (worldEntityCount > MAX_ENTITIES_PER_WORLD) {
             for (Entity entity : world.getEntities()) {
                 if (!EntityType.PLAYER.equals(entity.getType())) {
                     entity.remove();
@@ -78,16 +81,13 @@ public final class EntitySpawn implements Listener {
             if (worldDragonCount >= worldDragonCountLimit) {
                 return true;
             }
-
             break;
         case PRIMED_TNT:
             final int worldTntCount = world.getEntitiesByClass(TNTPrimed.class).size();
-            final int worldTntCountLimit = 200;
 
-            if (worldTntCount >= worldTntCountLimit) {
+            if (worldTntCount >= MAX_TNTS_PER_WORLD) {
                 return true;
             }
-
             break;
         default:
             if (!EntityType.PLAYER.equals(entityType)) {
