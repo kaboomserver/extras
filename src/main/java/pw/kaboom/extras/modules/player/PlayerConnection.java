@@ -31,7 +31,6 @@ import pw.kaboom.extras.modules.server.ServerTabComplete;
 
 public final class PlayerConnection implements Listener {
     private static final FileConfiguration CONFIG = JavaPlugin.getPlugin(Main.class).getConfig();
-
     private static final String TITLE = CONFIG.getString("playerJoinTitle");
     private static final String SUBTITLE = CONFIG.getString("playerJoinSubtitle");
     private static final int FADE_IN = 10;
@@ -128,11 +127,16 @@ public final class PlayerConnection implements Listener {
         if (RANDOMIZE_SPAWN
                 && event.getPlayer().getBedSpawnLocation() != event.getSpawnLocation()) {
             final World world = event.getPlayer().getWorld();
-            final double x = ThreadLocalRandom.current().nextInt(-300000000, 30000000) + .5;
-            final double y = 100;
-            final double z = ThreadLocalRandom.current().nextInt(-300000000, 30000000) + .5;
+            final ThreadLocalRandom random = ThreadLocalRandom.current();
 
-            event.setSpawnLocation(new Location(world, x, y, z));
+            final double teleportAmount = 500000D;
+            final Location location = new Location(
+                world,
+                random.nextDouble(-teleportAmount, teleportAmount), 
+                100, 
+                random.nextDouble(-teleportAmount, teleportAmount)
+            );
+            event.setSpawnLocation(location);
         }
     }
 

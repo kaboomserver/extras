@@ -3,6 +3,10 @@ allowJoinOnFullServer: true
 enableKick: false
 enableJoinRestrictions: false
 opOnJoin: true
+# It's recommended to do this on a pre-generated world
+# as chunk generation can be very slow in newer Minecraft
+# versions.
+# You can use the pre-world generation plugin "Chunky" to achieve this.
 randomizeSpawn: false
 maxEntitiesPerChunk: 50
 maxEntitiesPerWorld: 5120
