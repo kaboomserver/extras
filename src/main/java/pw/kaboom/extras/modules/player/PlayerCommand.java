@@ -3,6 +3,7 @@ package pw.kaboom.extras.modules.player;
 import java.util.HashMap;
 import java.util.UUID;
 
+import io.papermc.paper.event.player.PlayerSignCommandPreprocessEvent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -44,6 +45,11 @@ public final class PlayerCommand implements Listener {
                 event.setMessage(checkedCommand);
             }
         }
+    }
+
+    @EventHandler
+    void onPlayerSignCommandPreprocess(final PlayerSignCommandPreprocessEvent event) {
+        this.onPlayerCommandPreprocess(event);
     }
 
     public static HashMap<UUID, Long> getCommandMillisList() {
