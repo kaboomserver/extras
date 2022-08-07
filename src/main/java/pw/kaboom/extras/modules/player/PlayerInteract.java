@@ -48,13 +48,5 @@ public final class PlayerInteract implements Listener {
                 item.addUnsafeEnchantment(Enchantment.RIPTIDE, riptideLimit);
             }
         }
-
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            final BlockState clickedBlock = event.getClickedBlock().getState();
-
-            if (clickedBlock instanceof Sign) {
-                clickedBlock.update();
-            }
-        }
     }
 }
