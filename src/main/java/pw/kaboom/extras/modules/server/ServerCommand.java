@@ -47,8 +47,18 @@ public final class ServerCommand implements Listener {
             || "w".equalsIgnoreCase(cmd)
         );
     }
+
     public static String checkCommand(final CommandSender sender, final String command,
                                       final boolean isConsoleCommand) {
+        return checkCommand(sender, command, isConsoleCommand, 1);
+    }
+
+    public static String checkCommand(final CommandSender sender, final String command,
+                                      final boolean isConsoleCommand, int depth) {
+        if (depth > 50) {
+            return "cancel";
+        }
+
         final String[] arr = command.split(" ");
         String commandName = arr[0].toLowerCase();
 
@@ -102,9 +112,9 @@ public final class ServerCommand implements Listener {
                                     final String[] executeCommand = Arrays.copyOfRange(
                                         arr, i + 1, arr.length);
                                     String result = checkCommand(sender,
-                                        String.join(" ", executeCommand), true);
+                                        String.join(" ", executeCommand), true, depth + 1);
                                     if (result == null) {
-                                        break;
+                                        continue;
                                     }
                                     switch (result) {
                                         case "cancel":
@@ -112,7 +122,8 @@ public final class ServerCommand implements Listener {
                                         default:
                                             String pureExecute = String.join(
                                                 " ", Arrays.copyOfRange(arr, 0, i + 1));
-                                            return (pureExecute + " " + result);
+                                            return checkCommand(sender, pureExecute + " " + result,
+                                                isConsoleCommand, depth + 1);
                                     }
                                 }
                             }
