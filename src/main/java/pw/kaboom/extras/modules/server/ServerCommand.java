@@ -206,7 +206,7 @@ public final class ServerCommand implements Listener {
                 case "/scissors":
                     if(arr.length >= 2
                            && "reload".equalsIgnoreCase(arr[1])) {
-                        return "cancel":
+                        return "cancel";
                     }
                     break;
                 case "/geyser-spigot:geyser":
