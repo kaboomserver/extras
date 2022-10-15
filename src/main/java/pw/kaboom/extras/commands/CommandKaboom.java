@@ -1,7 +1,6 @@
 package pw.kaboom.extras.commands;
 
-import java.util.concurrent.ThreadLocalRandom;
-
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -11,9 +10,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+import java.util.concurrent.ThreadLocalRandom;
+
 public final class CommandKaboom implements CommandExecutor {
 
-    public boolean onCommand(final CommandSender sender, final Command command, final String label,
+    public boolean onCommand(final @Nonnull CommandSender sender,
+                             final @Nonnull Command command,
+                             final @Nonnull String label,
                              final String[] args) {
         final Player player = (Player) sender;
         boolean explode = ThreadLocalRandom.current().nextBoolean();
@@ -38,10 +42,10 @@ public final class CommandKaboom implements CommandExecutor {
                 explodeLocation.getBlock().setType(Material.LAVA);
             }
 
-            player.sendMessage("Forgive me :c");
+            player.sendMessage(Component.text("Forgive me :c"));
         } else {
             player.getInventory().setItemInMainHand(new ItemStack(Material.CAKE));
-            player.sendMessage("Have a nice day :)");
+            player.sendMessage(Component.text("Have a nice day :)"));
         }
         return true;
     }

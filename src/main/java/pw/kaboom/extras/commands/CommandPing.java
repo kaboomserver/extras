@@ -1,15 +1,20 @@
 package pw.kaboom.extras.commands;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import javax.annotation.Nonnull;
+
 public final class CommandPing implements CommandExecutor {
 
-    public boolean onCommand(final CommandSender sender, final Command command, final String label,
+    public boolean onCommand(final @Nonnull CommandSender sender,
+                             final @Nonnull Command command,
+                             final @Nonnull String label,
                              final String[] args) {
         Player target;
 
@@ -20,39 +25,39 @@ public final class CommandPing implements CommandExecutor {
         }
 
         if (target == null) {
-            sender.sendMessage("Player \"" + args[0] + "\" not found");
+            sender.sendMessage(Component
+                    .text("Player \"" + args[0] + "\" not found"));
             return true;
         }
 
         final int ping = target.spigot().getPing();
         final int d = (int) Math.floor((float) ping / 100);
-        ChatColor highlighting = ChatColor.WHITE;
+        NamedTextColor highlighting = NamedTextColor.WHITE;
 
         switch (d) {
             case 0:
-                highlighting = ChatColor.GREEN;
+                highlighting = NamedTextColor.GREEN;
                 break;
             case 1:
             case 2:
             case 3:
             case 4:
-                highlighting = ChatColor.YELLOW;
+                highlighting = NamedTextColor.YELLOW;
                 break;
             case 5:
-                highlighting = ChatColor.RED;
+                highlighting = NamedTextColor.RED;
                 break;
             default:
                 if (d > 5) {
-                    highlighting = ChatColor.DARK_RED;
+                    highlighting = NamedTextColor.DARK_RED;
                 }
                 break;
         }
 
-        if (args.length == 0) {
-            sender.sendMessage("Your ping is " + highlighting + ping + "ms.");
-        } else {
-            sender.sendMessage(target.getName() + "'s ping is " + highlighting + ping + "ms.");
-        }
+        sender.sendMessage(Component.text((args.length == 0 ?
+                        "Your" : target.getName() + "'s") + " ping is ")
+                .append(Component.text(ping, highlighting))
+                .append(Component.text("ms.", highlighting)));
         return true;
     }
 }

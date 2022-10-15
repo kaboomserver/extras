@@ -1,32 +1,35 @@
 package pw.kaboom.extras.commands;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+
+import javax.annotation.Nonnull;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-
 public final class CommandServerInfo implements CommandExecutor {
     private void sendInfoMessage(final CommandSender target, final String description,
                                  final String value) {
         target.sendMessage(
-            ChatColor.GRAY + description + ": "
-                    + ChatColor.WHITE + value
-        );
+                Component.text(description, NamedTextColor.GRAY)
+                        .append(Component.text(": " + value, NamedTextColor.WHITE)));
     }
 
-    public boolean onCommand(final CommandSender sender, final Command command, final String label,
+    public boolean onCommand(final @Nonnull CommandSender sender,
+                             final @Nonnull Command command,
+                             final @Nonnull String label,
                              final String[] args) {
         try {
             sendInfoMessage(sender, "Hostname",
-                InetAddress.getLocalHost().getHostName()
+                    InetAddress.getLocalHost().getHostName()
             );
             sendInfoMessage(sender, "IP address",
-                InetAddress.getLocalHost().getHostAddress()
+                    InetAddress.getLocalHost().getHostAddress()
             );
         } catch (Exception ignored) {
         }
