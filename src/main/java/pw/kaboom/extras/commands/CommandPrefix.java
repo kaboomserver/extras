@@ -28,32 +28,36 @@ public final class CommandPrefix implements CommandExecutor {
         if (sender instanceof ConsoleCommandSender) {
             sender.sendMessage(Component
                     .text("Command has to be run by a player"));
-        } else {
-            final Player player = (Player) sender;
+            return true;
+        }
 
-            try {
-                if (args.length == 0) {
-                    player.sendMessage(Component
-                            .text("Usage: /" + label + " <prefix|off>",
-                                    NamedTextColor.RED));
-                } else if ("off".equalsIgnoreCase(args[0])) {
-                    PREFIX_CONFIG.set(player.getUniqueId().toString(), null);
-                    PREFIX_CONFIG.save(PREFIX_CONFIG_FILE);
-                    player.sendMessage(Component
-                            .text("You no longer have a tag"));
-                } else {
-                    PREFIX_CONFIG.set(player.getUniqueId().toString(), String.join(" ", args));
-                    PREFIX_CONFIG.save(PREFIX_CONFIG_FILE);
-                    player.sendMessage(Component.text("You now have the tag: ")
-                            .append(LegacyComponentSerializer.legacyAmpersand()
-                                    .deserialize(String.join(" ", args))));
-                }
-            } catch (Exception exception) {
+        final Player player = (Player) sender;
+
+        if (args.length == 0) {
+            player.sendMessage(Component
+                    .text("Usage: /" + label + " <prefix|off>",
+                            NamedTextColor.RED));
+            return true;
+        }
+
+        try {
+            if ("off".equalsIgnoreCase(args[0])) {
+                PREFIX_CONFIG.set(player.getUniqueId().toString(), null);
+                PREFIX_CONFIG.save(PREFIX_CONFIG_FILE);
                 player.sendMessage(Component
-                        .text("Something went wrong while saving the prefix. " +
-                                "Please check console."));
-                exception.printStackTrace();
+                        .text("You no longer have a tag"));
+            } else {
+                PREFIX_CONFIG.set(player.getUniqueId().toString(), String.join(" ", args));
+                PREFIX_CONFIG.save(PREFIX_CONFIG_FILE);
+                player.sendMessage(Component.text("You now have the tag: ")
+                        .append(LegacyComponentSerializer.legacyAmpersand()
+                                .deserialize(String.join(" ", args))));
             }
+        } catch (Exception exception) {
+            player.sendMessage(Component
+                    .text("Something went wrong while saving the prefix. " +
+                            "Please check console."));
+            exception.printStackTrace();
         }
         return true;
     }

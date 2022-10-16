@@ -43,10 +43,11 @@ public final class CommandKaboom implements CommandExecutor {
             }
 
             player.sendMessage(Component.text("Forgive me :c"));
-        } else {
-            player.getInventory().setItemInMainHand(new ItemStack(Material.CAKE));
-            player.sendMessage(Component.text("Have a nice day :)"));
+            return true;
         }
+
+        player.getInventory().setItemInMainHand(new ItemStack(Material.CAKE));
+        player.sendMessage(Component.text("Have a nice day :)"));
         return true;
     }
 }

@@ -19,13 +19,14 @@ public final class CommandTellraw implements CommandExecutor {
         if (args.length == 0) {
             sender.sendMessage(Component
                     .text("Usage: /" + label + " <message ..>", NamedTextColor.RED));
-        } else {
-            final Component message = LegacyComponentSerializer.legacyAmpersand()
-                    .deserialize(String.join(" ", args));
+            return true;
+        }
 
-            for (Player onlinePlayer: Bukkit.getOnlinePlayers()) {
-                onlinePlayer.sendMessage(message);
-            }
+        final Component message = LegacyComponentSerializer.legacyAmpersand()
+                .deserialize(String.join(" ", args));
+
+        for (Player onlinePlayer: Bukkit.getOnlinePlayers()) {
+            onlinePlayer.sendMessage(message);
         }
         return true;
     }

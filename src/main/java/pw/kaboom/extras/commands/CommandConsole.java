@@ -19,13 +19,14 @@ public final class CommandConsole implements CommandExecutor {
             sender.sendMessage(Component
                     .text("Usage: /" + label + " <message ..>",
                             NamedTextColor.RED));
-        } else {
-            Bukkit.dispatchCommand(
-                    Bukkit.getConsoleSender(),
-                    "minecraft:say " + ChatColor.translateAlternateColorCodes(
-                            '&', String.join(" ", args))
-            );
+            return true;
         }
+
+        Bukkit.dispatchCommand(
+                Bukkit.getConsoleSender(),
+                "minecraft:say " + ChatColor.translateAlternateColorCodes(
+                        '&', String.join(" ", args))
+        );
         return true;
     }
 }

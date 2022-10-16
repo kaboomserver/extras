@@ -20,21 +20,23 @@ public final class CommandEnchantAll implements CommandExecutor {
         if (sender instanceof ConsoleCommandSender) {
             sender.sendMessage(Component
                     .text("Command has to be run by a player"));
-        } else {
-            final Player player = (Player) sender;
-            final ItemStack item = player.getInventory().getItemInMainHand();
-
-            if (Material.AIR.equals(item.getType())) {
-                player.sendMessage(Component
-                        .text("Please hold an item in your hand to enchant it"));
-            } else {
-                for (Enchantment enchantment : Enchantment.values()) {
-                    item.addUnsafeEnchantment(enchantment, Short.MAX_VALUE);
-                }
-                player.sendMessage(Component
-                        .text("I killed Martin."));
-            }
+            return true;
         }
+
+        final Player player = (Player) sender;
+        final ItemStack item = player.getInventory().getItemInMainHand();
+
+        if (Material.AIR.equals(item.getType())) {
+            player.sendMessage(Component
+                    .text("Please hold an item in your hand to enchant it"));
+            return true;
+        }
+
+        for (Enchantment enchantment : Enchantment.values()) {
+            item.addUnsafeEnchantment(enchantment, Short.MAX_VALUE);
+        }
+        player.sendMessage(Component
+                .text("I killed Martin."));
         return true;
     }
 }

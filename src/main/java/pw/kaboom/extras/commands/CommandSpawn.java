@@ -22,28 +22,29 @@ public final class CommandSpawn implements CommandExecutor {
         if (sender instanceof ConsoleCommandSender) {
             sender.sendMessage(Component
                     .text("Command has to be run by a player"));
-        } else {
-            final Player player = (Player) sender;
-            final World defaultWorld = Bukkit.getWorld("world");
-            final World world = (defaultWorld == null) ? Bukkit.getWorlds().get(0) : defaultWorld;
-            final Location spawnLocation = world.getSpawnLocation();
-            final int maxWorldHeight = 256;
-
-            for (double y = spawnLocation.getY(); y <= maxWorldHeight; y++) {
-                final Location yLocation = new Location(world, spawnLocation.getX(), y,
-                        spawnLocation.getZ());
-                final Block coordBlock = world.getBlockAt(yLocation);
-
-                if (!coordBlock.getType().isSolid()
-                        && !coordBlock.getRelative(BlockFace.UP).getType().isSolid()) {
-                    player.teleportAsync(yLocation);
-                    break;
-                }
-            }
-
-            player.sendMessage(Component
-                    .text("Successfully moved to spawn"));
+            return true;
         }
+
+        final Player player = (Player) sender;
+        final World defaultWorld = Bukkit.getWorld("world");
+        final World world = (defaultWorld == null) ? Bukkit.getWorlds().get(0) : defaultWorld;
+        final Location spawnLocation = world.getSpawnLocation();
+        final int maxWorldHeight = 256;
+
+        for (double y = spawnLocation.getY(); y <= maxWorldHeight; y++) {
+            final Location yLocation = new Location(world, spawnLocation.getX(), y,
+                    spawnLocation.getZ());
+            final Block coordBlock = world.getBlockAt(yLocation);
+
+            if (!coordBlock.getType().isSolid()
+                    && !coordBlock.getRelative(BlockFace.UP).getType().isSolid()) {
+                player.teleportAsync(yLocation);
+                break;
+            }
+        }
+
+        player.sendMessage(Component
+                .text("Successfully moved to spawn"));
         return true;
     }
 }

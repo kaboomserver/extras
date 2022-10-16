@@ -22,28 +22,32 @@ public final class CommandSkin implements CommandExecutor {
         if (sender instanceof ConsoleCommandSender) {
             sender.sendMessage(Component
                     .text("Command has to be run by a player"));
-        } else {
-            final Player player = (Player) sender;
-
-            final long millisDifference = System.currentTimeMillis() - millis;
-
-            if (args.length == 0) {
-                player.sendMessage(Component
-                        .text("Usage: /" + label + " <username>",
-                                NamedTextColor.RED));
-            } else if (millisDifference <= 2000) {
-                player.sendMessage(Component
-                        .text("Please wait a few seconds before changing your skin"));
-            } else {
-                final String name = args[0];
-                final boolean shouldSendMessage = true;
-
-                SkinDownloader skinDownloader = new SkinDownloader();
-                skinDownloader.applySkin(player, name, shouldSendMessage);
-
-                millis = System.currentTimeMillis();
-            }
+            return true;
         }
+
+        final Player player = (Player) sender;
+        final long millisDifference = System.currentTimeMillis() - millis;
+
+        if (args.length == 0) {
+            player.sendMessage(Component
+                    .text("Usage: /" + label + " <username>",
+                            NamedTextColor.RED));
+            return true;
+        }
+
+        if (millisDifference <= 2000) {
+            player.sendMessage(Component
+                    .text("Please wait a few seconds before changing your skin"));
+            return true;
+        }
+
+        final String name = args[0];
+        final boolean shouldSendMessage = true;
+
+        SkinDownloader skinDownloader = new SkinDownloader();
+        skinDownloader.applySkin(player, name, shouldSendMessage);
+
+        millis = System.currentTimeMillis();
         return true;
     }
 }

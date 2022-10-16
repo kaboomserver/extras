@@ -21,27 +21,28 @@ public final class CommandSpidey implements CommandExecutor {
         if (sender instanceof ConsoleCommandSender) {
             sender.sendMessage(Component
                     .text("Command has to be run by a player"));
-        } else {
-            final Player player = (Player) sender;
-            final World world = player.getWorld();
-            final Vector start = player.getEyeLocation().toVector();
-            final Vector direction = player.getEyeLocation().getDirection();
-            final int yOffset = 0;
-            final int distance = 50;
+            return true;
+        }
 
-            final BlockIterator blockIterator = new BlockIterator(
-                world,
-                start,
-                direction,
-                yOffset,
-                distance
-            );
+        final Player player = (Player) sender;
+        final World world = player.getWorld();
+        final Vector start = player.getEyeLocation().toVector();
+        final Vector direction = player.getEyeLocation().getDirection();
+        final int yOffset = 0;
+        final int distance = 50;
 
-            while (blockIterator.hasNext()
-                    && (Material.AIR.equals(blockIterator.next().getType())
-                    || Material.CAVE_AIR.equals(blockIterator.next().getType()))) {
-                blockIterator.next().setType(Material.COBWEB);
-            }
+        final BlockIterator blockIterator = new BlockIterator(
+            world,
+            start,
+            direction,
+            yOffset,
+            distance
+        );
+
+        while (blockIterator.hasNext()
+                && (Material.AIR.equals(blockIterator.next().getType())
+                || Material.CAVE_AIR.equals(blockIterator.next().getType()))) {
+            blockIterator.next().setType(Material.COBWEB);
         }
         return true;
     }

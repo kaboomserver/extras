@@ -18,10 +18,11 @@ public final class CommandBroadcastVanilla implements CommandExecutor {
             sender.sendMessage(Component
                     .text("Usage: /" + label + " <message ..>",
                             NamedTextColor.RED));
-        } else {
-            Command.broadcastCommandMessage(sender, ChatColor.translateAlternateColorCodes(
-                    '&', String.join(" ", args)));
+            return true;
         }
+
+        Command.broadcastCommandMessage(sender, ChatColor.translateAlternateColorCodes(
+                '&', String.join(" ", args)));
         return true;
     }
 }

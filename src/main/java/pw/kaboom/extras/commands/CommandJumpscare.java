@@ -31,26 +31,30 @@ public final class CommandJumpscare implements CommandExecutor {
             sender.sendMessage(Component
                     .text("Usage: /" + label + " <player>",
                             NamedTextColor.RED));
-        } else {
-            if (args[0].equals("*") || args[0].equals("**")) {
-                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                    createJumpscare(onlinePlayer);
-                }
-                sender.sendMessage(Component
-                        .text("Successfully created jumpscare for every player"));
-            } else {
-                final Player target = Bukkit.getPlayer(args[0]);
-                if (target != null) {
-                    createJumpscare(target);
-                    sender.sendMessage(Component
-                            .text("Successfully created jumpscare for player \""
-                                    + target.getName() + "\""));
-                } else {
-                    sender.sendMessage(Component
-                            .text("Player \"" + args[0] + "\" not found"));
-                }
-            }
+            return true;
         }
+
+        if (args[0].equals("*") || args[0].equals("**")) {
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                createJumpscare(onlinePlayer);
+            }
+            sender.sendMessage(Component
+                    .text("Successfully created jumpscare for every player"));
+            return true;
+        }
+
+        final Player target = Bukkit.getPlayer(args[0]);
+
+        if (target == null) {
+            sender.sendMessage(Component
+                    .text("Player \"" + args[0] + "\" not found"));
+            return true;
+        }
+
+        createJumpscare(target);
+        sender.sendMessage(Component
+                .text("Successfully created jumpscare for player \""
+                        + target.getName() + "\""));
         return true;
     }
 }

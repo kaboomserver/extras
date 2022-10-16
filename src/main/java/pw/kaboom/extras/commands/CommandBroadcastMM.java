@@ -20,9 +20,10 @@ public class CommandBroadcastMM implements CommandExecutor {
         if (args.length == 0) {
             sender.sendMessage(Component
                     .text("Usage: /" + label + " <message ..>", NamedTextColor.RED));
-        } else {
-            Bukkit.broadcast(MINI_MESSAGE.deserialize(String.join(" ", args)));
+            return true;
         }
+
+        Bukkit.broadcast(MINI_MESSAGE.deserialize(String.join(" ", args)));
         return true;
     }
 }

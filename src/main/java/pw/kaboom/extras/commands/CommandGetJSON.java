@@ -18,22 +18,22 @@ public class CommandGetJSON implements CommandExecutor {
         if (args.length == 0) {
             sender.sendMessage(Component
                     .text("Usage: /" + label + " <message ..>", NamedTextColor.RED));
-        } else {
-            final String message = String.join(" ", args);
-            Component createdComponent = LegacyComponentSerializer
-                .legacyAmpersand()
-                .deserialize(message);
-
-            String asJson = GsonComponentSerializer.gson().serialize(createdComponent);
-
-            Component feedback = Component.empty()
-                    .append(Component.text("Your component as JSON (click to copy): "))
-                    .append(Component.text(asJson, NamedTextColor.GREEN))
-                    .clickEvent(ClickEvent.copyToClipboard(asJson));
-
-            sender.sendMessage(feedback);
+            return true;
         }
 
+        final String message = String.join(" ", args);
+        Component createdComponent = LegacyComponentSerializer
+            .legacyAmpersand()
+            .deserialize(message);
+
+        String asJson = GsonComponentSerializer.gson().serialize(createdComponent);
+
+        Component feedback = Component.empty()
+                .append(Component.text("Your component as JSON (click to copy): "))
+                .append(Component.text(asJson, NamedTextColor.GREEN))
+                .clickEvent(ClickEvent.copyToClipboard(asJson));
+
+        sender.sendMessage(feedback);
         return true;
     }
 }
