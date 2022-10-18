@@ -216,6 +216,14 @@ public final class ServerCommand implements Listener {
                         return "cancel";
                     }
                     break;
+                case "/fastasyncworldedit:fawe":
+                case "/fawe":
+                case "/worldedit":
+                    if (arr.length >= 2
+                            && "debugpaste".equalsIgnoreCase(arr[1])) {
+                        return "cancel";
+                    }
+                    break;
                 default:
                     break;
             }
