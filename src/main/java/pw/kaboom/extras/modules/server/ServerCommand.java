@@ -178,14 +178,8 @@ public final class ServerCommand implements Listener {
                         return String.join(" ", arr);
                     }
                     break;
-                case "/minecraft:bossbar":
                 case "/minecraft:setblock":
-                case "/minecraft:tellraw":
-                case "/minecraft:title":
-                case "/bossbar":
                 case "/setblock":
-                case "/tellraw":
-                case "/title":
                     final String charCommand = parseCharCodes(command);
                     if (charCommand.contains("selector")) {
                         return "cancel";
