@@ -32,19 +32,27 @@ public final class CommandPumpkin implements CommandExecutor {
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 placePumpkin(onlinePlayer);
             }
-            sender.sendMessage("Everyone is now a pumpkin");
+            sender.sendMessage(Component.text("Everyone is now a pumpkin"));
             return true;
         }
 
         final Player target = Bukkit.getPlayer(args[0]);
 
         if (target == null) {
-            sender.sendMessage("Player \"" + args[0] + "\" not found");
+            sender.sendMessage(
+                Component.text("Player \"")
+                    .append(Component.text(args[0]))
+                    .append(Component.text("\" not found"))
+            );
             return true;
         }
 
         placePumpkin(target);
-        sender.sendMessage("Player \"" + target.getName() + "\" is now a pumpkin");
+        sender.sendMessage(
+            Component.text("Player \"")
+                .append(Component.text(target.getName()))
+                .append(Component.text("\" is now a pumpkin"))
+        );
         return true;
     }
 }
