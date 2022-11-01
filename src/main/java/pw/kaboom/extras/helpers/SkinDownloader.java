@@ -44,8 +44,8 @@ public final class SkinDownloader {
                     if (shouldSendMessage) {
                         player.sendMessage(
                             Component.text("Successfully set your skin to ")
-                            .append(Component.text(name))
-                            .append(Component.text("'s"))
+                                .append(Component.text(name))
+                                .append(Component.text("'s"))
                         );
                     }
                 } catch (Exception exception) {
