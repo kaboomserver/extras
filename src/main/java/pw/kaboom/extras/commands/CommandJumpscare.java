@@ -48,8 +48,8 @@ public final class CommandJumpscare implements CommandExecutor {
         if (target == null) {
             sender.sendMessage(
                 Component.text("Player \"")
-                .append(Component.text(args[0]))
-                .append(Component.text("\" not found"))
+                    .append(Component.text(args[0]))
+                    .append(Component.text("\" not found"))
             );
             return true;
         }
@@ -57,8 +57,8 @@ public final class CommandJumpscare implements CommandExecutor {
         createJumpscare(target);
         sender.sendMessage(
             Component.text("Successfully created jumpscare for player \"")
-            .append(Component.text(target.getName()))
-            .append(Component.text("\""))
+                .append(Component.text(target.getName()))
+                .append(Component.text("\""))
         );
         return true;
     }

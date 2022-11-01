@@ -41,8 +41,8 @@ public final class CommandPumpkin implements CommandExecutor {
         if (target == null) {
             sender.sendMessage(
                 Component.text("Player \"")
-                .append(Component.text(args[0]))
-                .append(Component.text("\" not found"))
+                    .append(Component.text(args[0]))
+                    .append(Component.text("\" not found"))
             );
             return true;
         }
@@ -50,8 +50,8 @@ public final class CommandPumpkin implements CommandExecutor {
         placePumpkin(target);
         sender.sendMessage(
             Component.text("Player \"")
-            .append(Component.text(target.getName()))
-            .append(Component.text("\" is now a pumpkin"))
+                .append(Component.text(target.getName()))
+                .append(Component.text("\" is now a pumpkin"))
         );
         return true;
     }
