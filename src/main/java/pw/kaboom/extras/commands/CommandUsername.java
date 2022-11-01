@@ -64,8 +64,11 @@ public final class CommandUsername implements CommandExecutor {
         player.setPlayerProfile(profile);
         millis = System.currentTimeMillis();
 
-        player.sendMessage(Component
-                .text("Successfully set your username to \"" + name + "\""));
+        player.sendMessage(
+            Component.text("Successfully set your username to \"")
+                .append(Component.text(name))
+                .append(Component.text("\""))
+        );
         return true;
     }
 }

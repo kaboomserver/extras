@@ -15,6 +15,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 
+import net.kyori.adventure.text.Component;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -40,7 +42,11 @@ public final class SkinDownloader {
                     profile.setProperty(new ProfileProperty("textures", texture, signature));
 
                     if (shouldSendMessage) {
-                        player.sendMessage("Successfully set your skin to " + name + "'s");
+                        player.sendMessage(
+                            Component.text("Successfully set your skin to ")
+                            .append(Component.text(name))
+                            .append(Component.text("'s"))
+                        );
                     }
                 } catch (Exception exception) {
                     try {
@@ -50,7 +56,8 @@ public final class SkinDownloader {
                     }
 
                     if (shouldSendMessage) {
-                        player.sendMessage("A player with that username doesn't exist");
+                        player.sendMessage(Component
+                            .text("A player with that username doesn't exist"));
                     }
 
                     return;
