@@ -135,9 +135,6 @@ public final class ServerCommand implements Listener {
                     if (command.contains("auto")) {
                         return command.replace("auto", "[auto]");
                     }
-                    if (command.contains("selector")) {
-                        return "cancel";
-                    }
                     break;
                 case "/minecraft:give":
                 case "/give":
@@ -176,13 +173,6 @@ public final class ServerCommand implements Listener {
                             arr[4] = "50";
                         }
                         return String.join(" ", arr);
-                    }
-                    break;
-                case "/minecraft:setblock":
-                case "/setblock":
-                    final String charCommand = parseCharCodes(command);
-                    if (charCommand.contains("selector")) {
-                        return "cancel";
                     }
                     break;
                 case "/viaversion:viaver":
@@ -254,26 +244,5 @@ public final class ServerCommand implements Listener {
         }
 
         LOGGER.log(Level.INFO, "Console command: " + command);
-    }
-
-    public static String parseCharCodes(final String input) {
-        if (input.contains("\\u")) {
-            StringBuilder output = new StringBuilder();
-            String[] split = input.split("\\\\u");
-            int index = 0;
-            for (String item:split) {
-                if (index == 0) {
-                    output.append(item);
-                } else {
-                    String charCode = item.substring(0, 4);
-                    output.append((char) Integer.parseInt(charCode, 16));
-                    output.append(item.substring(4));
-                }
-                index++;
-            }
-            return output.toString();
-        } else {
-            return input;
-        }
     }
 }
