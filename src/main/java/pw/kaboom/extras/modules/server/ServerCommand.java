@@ -37,7 +37,6 @@ public final class ServerCommand implements Listener {
             || "say".equalsIgnoreCase(cmd)
             || "spreadplayers".equalsIgnoreCase(cmd)
             || "stop".equalsIgnoreCase(cmd)
-            || "summon".equalsIgnoreCase(cmd)
             || "teammsg".equalsIgnoreCase(cmd)
             || "teleport".equalsIgnoreCase(cmd)
             || "tell".equalsIgnoreCase(cmd)
