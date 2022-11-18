@@ -54,8 +54,12 @@ public final class CommandPing implements CommandExecutor {
                 break;
         }
 
-        sender.sendMessage(Component.text((args.length == 0 ?
-                        "Your" : target.getName() + "'s") + " ping is ")
+        Component namePrefix = args.length == 0
+            ? Component.text("Your")
+            : Component.text(target.getName()).append(Component.text("'s"));
+
+        sender.sendMessage(namePrefix
+                .append(Component.text(" ping is "))
                 .append(Component.text(ping, highlighting))
                 .append(Component.text("ms.", highlighting)));
         return true;

@@ -35,9 +35,13 @@ public final class CommandDestroyEntities implements CommandExecutor {
             worldCount++;
         }
 
-        sender.sendMessage(Component.text(
-                "Successfully destroyed " + entityCount + " entities in "
-                        + worldCount + " worlds"));
+        sender.sendMessage(
+            Component.text("Successfully destroyed ")
+                .append(Component.text(entityCount))
+                .append(Component.text(" entities in "))
+                .append(Component.text(worldCount))
+                .append(Component.text(" worlds"))
+        );
         return true;
     }
 }
