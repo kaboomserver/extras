@@ -1,6 +1,8 @@
 package pw.kaboom.extras.commands;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
+import java.util.HashMap;
+import java.util.Map;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -14,7 +16,7 @@ import org.bukkit.entity.Player;
 import javax.annotation.Nonnull;
 
 public final class CommandUsername implements CommandExecutor {
-    private long millis;
+    private final Map<Player, Long> lastUsedMillis = new HashMap<>();
 
     @Override
     public boolean onCommand(final @Nonnull CommandSender sender,
@@ -31,6 +33,7 @@ public final class CommandUsername implements CommandExecutor {
         final String nameColor = ChatColor.translateAlternateColorCodes(
                 '&', String.join(" ", args));
         final String name = nameColor.substring(0, Math.min(16, nameColor.length()));
+        final long millis = lastUsedMillis.getOrDefault(player, 0L);
         final long millisDifference = System.currentTimeMillis() - millis;
 
         if (args.length == 0) {
@@ -62,7 +65,7 @@ public final class CommandUsername implements CommandExecutor {
 
         profile.setName(name);  // FIXME: Marked for removal
         player.setPlayerProfile(profile);
-        millis = System.currentTimeMillis();
+        lastUsedMillis.put(player, System.currentTimeMillis());
 
         player.sendMessage(
             Component.text("Successfully set your username to \"")
