@@ -1,5 +1,7 @@
 package pw.kaboom.extras;
 
+import java.io.File;
+import java.util.Collections;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.block.BlockFace;
@@ -35,15 +37,13 @@ import pw.kaboom.extras.modules.player.PlayerCommand;
 import pw.kaboom.extras.modules.player.PlayerConnection;
 import pw.kaboom.extras.modules.player.PlayerDamage;
 import pw.kaboom.extras.modules.player.PlayerInteract;
+import pw.kaboom.extras.modules.player.PlayerPrefix;
 import pw.kaboom.extras.modules.player.PlayerRecipe;
 import pw.kaboom.extras.modules.player.PlayerTeleport;
 import pw.kaboom.extras.modules.server.ServerCommand;
 import pw.kaboom.extras.modules.server.ServerGameRule;
 import pw.kaboom.extras.modules.server.ServerTabComplete;
 import pw.kaboom.extras.modules.server.ServerTick;
-
-import java.io.File;
-import java.util.Collections;
 
 public final class Main extends JavaPlugin {
     private File prefixConfigFile;
@@ -110,6 +110,7 @@ public final class Main extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new PlayerInteract(), this);
         this.getServer().getPluginManager().registerEvents(new PlayerRecipe(), this);
         this.getServer().getPluginManager().registerEvents(new PlayerTeleport(), this);
+        this.getServer().getPluginManager().registerEvents(new PlayerPrefix(), this);
 
         /* Server-related modules */
         this.getServer().getPluginManager().registerEvents(new ServerCommand(), this);
