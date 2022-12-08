@@ -14,6 +14,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.entity.Player;
+
+import pw.kaboom.extras.helpers.PlayerMuting;
 
 import pw.kaboom.extras.Main;
 
@@ -200,6 +203,22 @@ public final class ServerCommand implements Listener {
                         return "cancel";
                     }
                     break;
+                case "/minecraft:say":
+                case "/minecraft:me":
+                case "/minecraft:tell":
+                case "/minecraft:msg":
+                case "/minecraft:w":
+                case "/say":
+                case "/me":
+                case "/tell":
+                case "/msg":
+                case "/w":
+                    if (isConsoleCommand) break;
+                    Player player = (Player) sender;
+
+                    if (!player.isOp() && PlayerMuting.isMuted(player)) {
+                        return "cancel";
+                    }
                 default:
                     break;
             }
