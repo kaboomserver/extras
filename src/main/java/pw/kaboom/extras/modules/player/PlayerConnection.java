@@ -6,10 +6,12 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -28,6 +30,7 @@ import com.google.common.base.Charsets;
 
 import pw.kaboom.extras.Main;
 import pw.kaboom.extras.modules.server.ServerTabComplete;
+import pw.kaboom.extras.skin.SkinManager;
 
 public final class PlayerConnection implements Listener {
     private static final FileConfiguration CONFIG = JavaPlugin.getPlugin(Main.class).getConfig();
@@ -115,11 +118,12 @@ public final class PlayerConnection implements Listener {
             player.setOp(true);
         }
 
-        /*try {
-            player.setPlayerProfile(SkinDownloader.getProfile(player.getUniqueId()));
-            SkinDownloader.removeProfile(player.getUniqueId());
-        } catch (Exception ignored) {
-        }*/
+        final Server server = Bukkit.getServer();
+
+
+        if (!server.getOnlineMode()) {
+            SkinManager.applySkin(player, player.getName(), false);
+        }
     }
 
     @EventHandler
