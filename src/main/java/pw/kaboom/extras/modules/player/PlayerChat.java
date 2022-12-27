@@ -2,30 +2,19 @@ package pw.kaboom.extras.modules.player;
 
 import io.papermc.paper.chat.ChatRenderer;
 import io.papermc.paper.event.player.AsyncChatEvent;
+import java.io.IOException;
+import java.util.UUID;
 import javax.annotation.Nonnull;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
-import pw.kaboom.extras.Main;
-
-import java.util.UUID;
 
 public final class PlayerChat implements Listener {
-    private static final FileConfiguration CONFIG = JavaPlugin.getPlugin(Main.class).getConfig();
-    private static final FileConfiguration PREFIX_CONFIG = JavaPlugin
-            .getPlugin(Main.class).getPrefixConfig();
-
-    private static final Component OP_TAG = LegacyComponentSerializer
-            .legacySection().deserialize(CONFIG.getString("opTag", ""));
-    private static final Component DEOP_TAG = LegacyComponentSerializer
-            .legacySection().deserialize(CONFIG.getString("deOpTag", ""));
     private static final PlayerChatRenderer CHAT_RENDERER = new PlayerChatRenderer();
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -57,12 +46,17 @@ public final class PlayerChat implements Listener {
                                          @Nonnull Component component,
                                          @Nonnull Audience audience) {
             Component newComponent = Component.empty();
-            final String legacyPrefix = PREFIX_CONFIG.getString(player.getUniqueId().toString());
-            final Component prefix = legacyPrefix == null ?
-                    ((player.isOp()) ? OP_TAG : DEOP_TAG)
-                    : LegacyComponentSerializer.legacyAmpersand().deserialize(legacyPrefix)
-                    .append(Component.space());
+            final Component prefix;
+            Component prefix1;
 
+            try {
+                prefix1 = PlayerPrefix.getPrefix(player);
+            } catch (IOException e) {
+                e.printStackTrace();
+                prefix1 = PlayerPrefix.getDefaultPrefix(player);
+            }
+
+            prefix = prefix1;
             final String message = ((TextComponent) component).content();
 
             newComponent = newComponent
