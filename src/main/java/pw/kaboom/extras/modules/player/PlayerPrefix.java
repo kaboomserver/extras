@@ -92,10 +92,11 @@ public class PlayerPrefix implements Listener {
 	}
 
 	private static void onUpdate(Player player) throws IOException {
-		final Component prefix = getPrefix(player);
-		final Component displayName = player.displayName();
+		final Component component = Component.empty()
+			.append(getPrefix(player))
+			.append(player.displayName());
 
-		player.playerListName(prefix.append(displayName));
+		player.playerListName(component);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
