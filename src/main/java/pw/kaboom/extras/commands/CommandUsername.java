@@ -55,7 +55,9 @@ public final class CommandUsername implements CommandExecutor {
             return true;
         }
 
-        if (Bukkit.getPlayer(name) != null) {
+        for (Player other : Bukkit.getOnlinePlayers()) {
+            if (!other.getName().equals(name)) continue;
+
             player.sendMessage(Component
                     .text("A player with that username is already logged in."));
             return true;
