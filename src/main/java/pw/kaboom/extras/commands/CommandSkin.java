@@ -33,7 +33,7 @@ public final class CommandSkin implements CommandExecutor {
 
         if (args.length == 0) {
             player.sendMessage(Component
-                    .text("Usage: /" + label + " <username>\n/" + label + "off",
+                    .text("Usage: /" + label + " <username>\n/" + label + " off",
                             NamedTextColor.RED));
             return true;
         }
