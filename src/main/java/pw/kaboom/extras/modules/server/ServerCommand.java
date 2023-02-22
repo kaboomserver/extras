@@ -102,31 +102,32 @@ public final class ServerCommand implements Listener {
                         }
 
                         for (int i = 1; i < arr.length; i++) {
-                            if ("run".equalsIgnoreCase(arr[i])) {
-                                if (i + 1 == arr.length) {
-                                    break;
-                                }
-                                if (checkExecuteCommand(arr[i + 1])) {
-                                    return "cancel";
-                                } else {
-                                    final String[] executeCommand = Arrays.copyOfRange(
-                                        arr, i + 1, arr.length);
-                                    String result = checkCommand(sender,
-                                        String.join(" ", executeCommand), true, depth + 1);
-                                    if (result == null) {
-                                        continue;
-                                    }
-                                    switch (result) {
-                                        case "cancel":
-                                            return "cancel";
-                                        default:
-                                            String pureExecute = String.join(
-                                                " ", Arrays.copyOfRange(arr, 0, i + 1));
-                                            return checkCommand(sender, pureExecute + " " + result,
-                                                isConsoleCommand, depth + 1);
-                                    }
-                                }
+                            if (!"run".equalsIgnoreCase(arr[i])) {
+                                continue;
                             }
+                            if (i + 1 == arr.length) {
+                                break;
+                            }
+                            if (checkExecuteCommand(arr[i + 1])) {
+                                return "cancel";
+                            }
+                            final String[] executeCommand = Arrays.copyOfRange(
+                                arr, i + 1, arr.length);
+                            final String result = checkCommand(sender,
+                                String.join(" ", executeCommand), true, depth + 1);
+                            if (result == null) {
+                                continue;
+                            } else if (result == "cancel") {
+                                return "cancel";
+                            }
+                            final String pureExecute = String.join(
+                                " ", Arrays.copyOfRange(arr, 0, i + 1));
+                            final String finalResult = checkCommand(sender,
+                                pureExecute + " " + result, isConsoleCommand, depth + 1);
+                            if (finalResult == null) {
+                                return pureExecute + " " + result;
+                            }
+                            return finalResult;
                         }
                     }
                     break;
