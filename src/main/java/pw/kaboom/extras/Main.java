@@ -93,6 +93,8 @@ public final class Main extends JavaPlugin {
         this.getCommand("username").setExecutor(new CommandUsername());
 
         /* Block-related modules */
+        BlockPhysics.init(this);
+
         this.getServer().getPluginManager().registerEvents(new BlockCheck(), this);
         this.getServer().getPluginManager().registerEvents(new BlockPhysics(), this);
 

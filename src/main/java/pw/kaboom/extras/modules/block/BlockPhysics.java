@@ -16,12 +16,14 @@ import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 
 import com.destroystokyo.paper.event.block.BlockDestroyEvent;
+import org.bukkit.scheduler.BukkitScheduler;
+import pw.kaboom.extras.Main;
 
 public final class BlockPhysics implements Listener {
 
     // This class contains code to prevent large areas of non-solid blocks
     // from crashing the server
-
+    private static double tps = 20;
     private static HashSet<BlockFace> blockFaces = new HashSet<BlockFace>();
 
     @EventHandler
@@ -141,7 +143,6 @@ public final class BlockPhysics implements Listener {
 
     @EventHandler
     void onBlockRedstone(final BlockRedstoneEvent event) {
-        final double tps = Bukkit.getServer().getTPS()[0];
         final int maxTps = 10;
 
         if (tps < maxTps) {
@@ -168,5 +169,17 @@ public final class BlockPhysics implements Listener {
 
     public static HashSet<BlockFace> getBlockFaces() {
         return blockFaces;
+    }
+
+    private static void updateTPS() {
+        final double[] tpsValues = Bukkit.getTPS();
+
+        tps = tpsValues[0];
+    }
+
+    public static void init(final Main main) {
+        final BukkitScheduler scheduler = Bukkit.getScheduler();
+
+        scheduler.runTaskTimer(main, BlockPhysics::updateTPS, 0L, 1200L); // 1 minute
     }
 }
