@@ -1,6 +1,16 @@
 package pw.kaboom.extras.skin;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import com.google.gson.Gson;
+import net.kyori.adventure.text.Component;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+import pw.kaboom.extras.Main;
+import pw.kaboom.extras.platform.PlatformScheduler;
+import pw.kaboom.extras.skin.response.ProfileResponse;
+import pw.kaboom.extras.skin.response.SkinResponse;
+
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -8,24 +18,9 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.List;
 import java.util.UUID;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import com.destroystokyo.paper.profile.PlayerProfile;
-import com.destroystokyo.paper.profile.ProfileProperty;
-
-import net.kyori.adventure.text.Component;
-
-import org.bukkit.scheduler.BukkitScheduler;
-import pw.kaboom.extras.Main;
-import pw.kaboom.extras.skin.response.ProfileResponse;
-import pw.kaboom.extras.skin.response.SkinResponse;
 
 public final class SkinManager {
     private static final HttpClient httpClient = HttpClient.newHttpClient();
@@ -34,14 +29,17 @@ public final class SkinManager {
         .newCachedThreadPool();
 
     public static void resetSkin(final Player player, final boolean shouldSendMessage) {
+        final Main plugin = JavaPlugin.getPlugin(Main.class);
+
+        if (plugin.isFolia()) {
+            return;
+        }
+
         executorService.submit(() -> {
             final PlayerProfile playerProfile = player.getPlayerProfile();
             playerProfile.removeProperty("textures");
 
-            final BukkitScheduler bukkitScheduler = Bukkit.getScheduler();
-            final Main plugin = JavaPlugin.getPlugin(Main.class);
-
-            bukkitScheduler.runTask(plugin, () -> player.setPlayerProfile(playerProfile));
+            PlatformScheduler.runSync(plugin, () -> player.setPlayerProfile(playerProfile));
 
             if(!shouldSendMessage) {
                 return;
@@ -53,6 +51,12 @@ public final class SkinManager {
 
     public static void applySkin(final Player player, final String name,
         final boolean shouldSendMessage) {
+        final Main plugin = JavaPlugin.getPlugin(Main.class);
+
+        if (plugin.isFolia()) {
+            return;
+        }
+
         executorService.submit(() -> {
             final PlayerProfile profile = player.getPlayerProfile();
             final SkinData skinData;
@@ -72,10 +76,7 @@ public final class SkinManager {
             final String signature = skinData.signature();
             profile.setProperty(new ProfileProperty("textures", texture, signature));
 
-            final BukkitScheduler bukkitScheduler = Bukkit.getScheduler();
-            final Main plugin = JavaPlugin.getPlugin(Main.class);
-
-            bukkitScheduler.runTask(plugin,
+            PlatformScheduler.runSync(plugin,
                 () -> player.setPlayerProfile(profile));
 
 

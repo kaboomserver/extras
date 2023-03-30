@@ -1,11 +1,5 @@
 package pw.kaboom.extras.modules.player;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
@@ -18,8 +12,16 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitScheduler;
 import pw.kaboom.extras.Main;
+import pw.kaboom.extras.platform.PlatformScheduler;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class PlayerPrefix implements Listener {
 	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
@@ -42,12 +44,10 @@ public class PlayerPrefix implements Listener {
 		opTag = LegacyComponentSerializer.legacySection().deserialize(legacyOpTag);
 		deOpTag = LegacyComponentSerializer.legacySection().deserialize(legacyDeOpTag);
 
-		final BukkitScheduler scheduler = Bukkit.getScheduler();
-
-		scheduler.runTaskTimerAsynchronously(plugin, PlayerPrefix::checkOpStatus,
-			0L, 1L);
-		scheduler.runTaskTimerAsynchronously(plugin, PlayerPrefix::checkDisplayNames,
-			0L, 1L);
+		PlatformScheduler.runRepeating(plugin, PlayerPrefix::checkOpStatus,
+			0L, 20L, TimeUnit.MILLISECONDS);
+		PlatformScheduler.runRepeating(plugin, PlayerPrefix::checkDisplayNames,
+				0L, 20L, TimeUnit.MILLISECONDS);
 	}
 
 	public static void removePrefix(Player player) throws IOException {
