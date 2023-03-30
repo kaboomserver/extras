@@ -1,4 +1,4 @@
-name: Maven CI
+name: Gradle CI
 
 on:
   push:
@@ -17,17 +17,13 @@ jobs:
         distribution: 'temurin'
         java-version: 17
 
-    - name: Cache maven packages to speed up build
-      uses: actions/cache@v1
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
 
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
+    - name: Build with Gradle
+      run: ./gradlew --no-daemon build
 
     - uses: actions/upload-artifact@v1
       with:
         name: Extras
-        path: target/Extras.jar
+        path: build/libs/Extras-master-all.jar
