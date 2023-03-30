@@ -21,14 +21,6 @@ public final class CommandSpawn implements CommandExecutor {
                              final @Nonnull Command command,
                              final @Nonnull String label,
                              final String[] args) {
-        final Main plugin = JavaPlugin.getPlugin(Main.class);
-
-        if (plugin.isFolia()) {
-            sender.sendMessage(Component
-                    .text("Command cannot be ran on Folia servers!"));
-            return true;
-        }
-
         if (sender instanceof ConsoleCommandSender) {
             sender.sendMessage(Component
                     .text("Command has to be run by a player"));
@@ -36,8 +28,18 @@ public final class CommandSpawn implements CommandExecutor {
         }
 
         final Player player = (Player) sender;
+        final World playerWorld = player.getWorld();
         final World defaultWorld = Bukkit.getWorld("world");
         final World world = (defaultWorld == null) ? Bukkit.getWorlds().get(0) : defaultWorld;
+        final Main plugin = JavaPlugin.getPlugin(Main.class);
+
+
+        if (!world.equals(playerWorld) && plugin.isFolia()) {
+            sender.sendMessage(Component
+                    .text("Cross-dimensional teleports are currently unsupported on Folia."));
+            return true;
+        }
+
         final Location spawnLocation = world.getSpawnLocation();
         final int maxWorldHeight = 256;
 
