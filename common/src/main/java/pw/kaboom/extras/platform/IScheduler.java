@@ -13,4 +13,5 @@ public interface IScheduler {
     void runSync(final Plugin plugin, final Runnable runnable);
     void runAsync(final Plugin plugin, final Runnable runnable);
     void executeOnChunk(final Plugin plugin, final Chunk chunk, final Runnable runnable);
+    void executeOnGlobalRegion(final Plugin plugin, final Runnable runnable);
 }

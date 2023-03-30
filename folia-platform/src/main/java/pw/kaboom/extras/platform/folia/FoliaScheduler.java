@@ -1,6 +1,7 @@
 package pw.kaboom.extras.platform.folia;
 
 import io.papermc.paper.threadedregions.scheduler.AsyncScheduler;
+import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
 import io.papermc.paper.threadedregions.scheduler.RegionScheduler;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import org.bukkit.Bukkit;
@@ -15,6 +16,8 @@ import java.util.function.Consumer;
 public final class FoliaScheduler implements IScheduler {
     private static final AsyncScheduler ASYNC_SCHEDULER = Bukkit.getAsyncScheduler();
     private static final RegionScheduler REGION_SCHEDULER = Bukkit.getRegionScheduler();
+    private static final GlobalRegionScheduler GLOBAL_REGION_SCHEDULER =
+            Bukkit.getGlobalRegionScheduler();
 
     @Override
     public void runRepeating(final Plugin plugin, final Runnable runnable,
@@ -46,6 +49,11 @@ public final class FoliaScheduler implements IScheduler {
         final int chunkZ = chunk.getZ();
 
         REGION_SCHEDULER.execute(plugin, world, chunkX, chunkZ, runnable);
+    }
+
+    @Override
+    public void executeOnGlobalRegion(final Plugin plugin, final Runnable runnable) {
+        GLOBAL_REGION_SCHEDULER.execute(plugin, runnable);
     }
 
     private static final class FoliaTask implements Consumer<ScheduledTask> {

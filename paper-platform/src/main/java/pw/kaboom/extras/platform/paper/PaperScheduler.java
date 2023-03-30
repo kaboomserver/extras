@@ -45,4 +45,9 @@ public final class PaperScheduler implements IScheduler {
     public void executeOnChunk(final Plugin plugin, final Chunk chunk, final Runnable runnable) {
         BUKKIT_SCHEDULER.runTask(plugin, runnable);
     }
+
+    @Override
+    public void executeOnGlobalRegion(final Plugin plugin, final Runnable runnable) {
+        BUKKIT_SCHEDULER.runTask(plugin, runnable);
+    }
 }

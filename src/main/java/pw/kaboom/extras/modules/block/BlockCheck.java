@@ -31,7 +31,7 @@ public final class BlockCheck implements Listener {
         final Main plugin = JavaPlugin.getPlugin(Main.class);
 
         for (Chunk chunk : event.getChunk().getWorld().getForceLoadedChunks()) {
-            PlatformScheduler.executeOnChunk(plugin, chunk, () -> chunk.setForceLoaded(false));
+            PlatformScheduler.executeOnGlobalRegion(plugin, () -> chunk.setForceLoaded(false));
         }
     }
 

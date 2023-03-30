@@ -39,4 +39,8 @@ public final class PlatformScheduler {
                                       final Runnable runnable) {
         currentScheduler.executeOnChunk(plugin, chunk, runnable);
     }
+
+    public static void executeOnGlobalRegion(final Plugin plugin, final Runnable runnable) {
+        currentScheduler.executeOnGlobalRegion(plugin, runnable);
+    }
 }
