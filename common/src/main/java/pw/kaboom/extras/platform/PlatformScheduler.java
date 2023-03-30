@@ -1,5 +1,6 @@
 package pw.kaboom.extras.platform;
 
+import org.bukkit.Chunk;
 import org.bukkit.plugin.Plugin;
 
 import java.util.concurrent.TimeUnit;
@@ -32,5 +33,9 @@ public final class PlatformScheduler {
 
     public static void runAsync(final Plugin plugin, final Runnable runnable) {
         currentScheduler.runAsync(plugin, runnable);
+    }
+
+    public static void executeOnChunk(final Plugin plugin, final Chunk chunk, final Runnable runnable) {
+        currentScheduler.executeOnChunk(plugin, chunk, runnable);
     }
 }

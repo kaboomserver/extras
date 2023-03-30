@@ -6,6 +6,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
+import org.bukkit.plugin.java.JavaPlugin;
+import pw.kaboom.extras.Main;
+import pw.kaboom.extras.platform.PlatformScheduler;
 
 public final class BlockCheck implements Listener {
     @EventHandler
@@ -25,8 +28,10 @@ public final class BlockCheck implements Listener {
 
     @EventHandler
     void onChunkUnload(final ChunkUnloadEvent event) {
+        final Main plugin = JavaPlugin.getPlugin(Main.class);
+
         for (Chunk chunk : event.getChunk().getWorld().getForceLoadedChunks()) {
-            chunk.setForceLoaded(false);
+            PlatformScheduler.executeOnChunk(plugin, chunk, () -> chunk.setForceLoaded(false));
         }
     }
 

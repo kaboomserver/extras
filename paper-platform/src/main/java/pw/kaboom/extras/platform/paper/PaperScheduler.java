@@ -1,6 +1,7 @@
 package pw.kaboom.extras.platform.paper;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import pw.kaboom.extras.platform.IScheduler;
@@ -38,5 +39,10 @@ public final class PaperScheduler implements IScheduler {
     @Override
     public void runAsync(final Plugin plugin, final Runnable runnable) {
         BUKKIT_SCHEDULER.runTaskAsynchronously(plugin, runnable);
+    }
+
+    @Override
+    public void executeOnChunk(final Plugin plugin, final Chunk chunk, final Runnable runnable) {
+        BUKKIT_SCHEDULER.runTask(plugin, runnable);
     }
 }
