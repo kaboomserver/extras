@@ -35,7 +35,8 @@ public final class PlatformScheduler {
         currentScheduler.runAsync(plugin, runnable);
     }
 
-    public static void executeOnChunk(final Plugin plugin, final Chunk chunk, final Runnable runnable) {
+    public static void executeOnChunk(final Plugin plugin, final Chunk chunk,
+                                      final Runnable runnable) {
         currentScheduler.executeOnChunk(plugin, chunk, runnable);
     }
 }
