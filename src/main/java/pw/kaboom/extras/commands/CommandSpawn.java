@@ -31,16 +31,19 @@ public final class CommandSpawn implements CommandExecutor {
         final World defaultWorld = Bukkit.getWorld("world");
         final World world = (defaultWorld == null) ? Bukkit.getWorlds().get(0) : defaultWorld;
         final Location spawnLocation = world.getSpawnLocation();
-        final Chunk chunk = spawnLocation.getChunk();
         final Main plugin = JavaPlugin.getPlugin(Main.class);
 
-        PlatformScheduler.executeOnChunk(plugin, chunk, () -> {
-            final Location safeSpawnLocation = world.getHighestBlockAt(spawnLocation)
-                    .getLocation()
-                    .add(0, 20, 0);
-            player.teleportAsync(safeSpawnLocation);
-            player.sendMessage(Component
-                    .text("Successfully moved to spawn"));
+        PlatformScheduler.executeOnGlobalRegion(plugin, () -> {
+            final Chunk chunk = spawnLocation.getChunk();
+
+            PlatformScheduler.executeOnChunk(plugin, chunk, () -> {
+                final Location safeSpawnLocation = world.getHighestBlockAt(spawnLocation)
+                        .getLocation()
+                        .add(0, 20, 0);
+                player.teleportAsync(safeSpawnLocation);
+                player.sendMessage(Component
+                        .text("Successfully moved to spawn"));
+            });
         });
 
         return true;
