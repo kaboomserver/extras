@@ -2,7 +2,6 @@ package pw.kaboom.extras.commands;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -31,18 +30,16 @@ public final class CommandSpawn implements CommandExecutor {
         final World defaultWorld = Bukkit.getWorld("world");
         final World world = (defaultWorld == null) ? Bukkit.getWorlds().get(0) : defaultWorld;
         final Location spawnLocation = world.getSpawnLocation();
-        final Main plugin = JavaPlugin.getPlugin(Main.class);
 
-        PlatformScheduler.executeOnGlobalRegion(plugin, () -> {
-            final Chunk chunk = spawnLocation.getChunk();
+        world.getChunkAtAsync(spawnLocation).thenAccept(chunk -> {
+            final Main plugin = JavaPlugin.getPlugin(Main.class);
+            final Location highestSpawnLocation = world.getHighestBlockAt(spawnLocation)
+                    .getLocation()
+                    .add(0, 1, 0);
 
-            PlatformScheduler.executeOnChunk(plugin, chunk, () -> {
-                final Location safeSpawnLocation = world.getHighestBlockAt(spawnLocation)
-                        .getLocation()
-                        .add(0, 20, 0);
-                player.teleportAsync(safeSpawnLocation);
-                player.sendMessage(Component
-                        .text("Successfully moved to spawn"));
+            PlatformScheduler.executeOnEntity(plugin, player, () -> {
+                player.teleportAsync(highestSpawnLocation);
+                player.sendMessage(Component.text("Successfully moved to spawn"));
             });
         });
 
