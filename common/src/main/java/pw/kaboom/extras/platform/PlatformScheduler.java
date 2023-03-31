@@ -1,6 +1,7 @@
 package pw.kaboom.extras.platform;
 
 import org.bukkit.Chunk;
+import org.bukkit.entity.Entity;
 import org.bukkit.plugin.Plugin;
 
 import java.util.concurrent.TimeUnit;
@@ -42,5 +43,9 @@ public final class PlatformScheduler {
 
     public static void executeOnGlobalRegion(final Plugin plugin, final Runnable runnable) {
         currentScheduler.executeOnGlobalRegion(plugin, runnable);
+    }
+
+    public static void executeOnEntity(final Plugin plugin, final Entity entity, final Runnable runnable) {
+        currentScheduler.executeOnEntity(plugin, entity, runnable);
     }
 }

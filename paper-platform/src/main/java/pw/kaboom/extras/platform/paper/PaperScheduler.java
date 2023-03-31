@@ -2,6 +2,7 @@ package pw.kaboom.extras.platform.paper;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.entity.Entity;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import pw.kaboom.extras.platform.IScheduler;
@@ -48,6 +49,11 @@ public final class PaperScheduler implements IScheduler {
 
     @Override
     public void executeOnGlobalRegion(final Plugin plugin, final Runnable runnable) {
+        BUKKIT_SCHEDULER.runTask(plugin, runnable);
+    }
+
+    @Override
+    public void executeOnEntity(final Plugin plugin, final Entity entity, final Runnable runnable) {
         BUKKIT_SCHEDULER.runTask(plugin, runnable);
     }
 }

@@ -7,6 +7,7 @@ import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.plugin.Plugin;
 import pw.kaboom.extras.platform.IScheduler;
 
@@ -54,6 +55,11 @@ public final class FoliaScheduler implements IScheduler {
     @Override
     public void executeOnGlobalRegion(final Plugin plugin, final Runnable runnable) {
         GLOBAL_REGION_SCHEDULER.execute(plugin, runnable);
+    }
+
+    @Override
+    public void executeOnEntity(final Plugin plugin, final Entity entity, final Runnable runnable) {
+        entity.getScheduler().run(plugin, FoliaTask.from(runnable), () -> {});
     }
 
     private static final class FoliaTask implements Consumer<ScheduledTask> {

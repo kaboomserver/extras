@@ -1,6 +1,7 @@
 package pw.kaboom.extras.platform;
 
 import org.bukkit.Chunk;
+import org.bukkit.entity.Entity;
 import org.bukkit.plugin.Plugin;
 
 import java.util.concurrent.TimeUnit;
@@ -14,4 +15,5 @@ public interface IScheduler {
     void runAsync(final Plugin plugin, final Runnable runnable);
     void executeOnChunk(final Plugin plugin, final Chunk chunk, final Runnable runnable);
     void executeOnGlobalRegion(final Plugin plugin, final Runnable runnable);
+    void executeOnEntity(final Plugin plugin, final Entity entity, final Runnable runnable);
 }
