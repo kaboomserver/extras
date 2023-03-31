@@ -29,17 +29,13 @@ public final class SkinManager {
         .newCachedThreadPool();
 
     public static void resetSkin(final Player player, final boolean shouldSendMessage) {
-        final Main plugin = JavaPlugin.getPlugin(Main.class);
-
-        if (plugin.isFolia()) {
-            return;
-        }
-
         executorService.submit(() -> {
             final PlayerProfile playerProfile = player.getPlayerProfile();
             playerProfile.removeProperty("textures");
 
-            PlatformScheduler.runSync(plugin, () -> player.setPlayerProfile(playerProfile));
+            final Main plugin = JavaPlugin.getPlugin(Main.class);
+            PlatformScheduler.executeOnEntity(plugin, player,
+                    () -> player.setPlayerProfile(playerProfile));
 
             if(!shouldSendMessage) {
                 return;
@@ -51,12 +47,6 @@ public final class SkinManager {
 
     public static void applySkin(final Player player, final String name,
         final boolean shouldSendMessage) {
-        final Main plugin = JavaPlugin.getPlugin(Main.class);
-
-        if (plugin.isFolia()) {
-            return;
-        }
-
         executorService.submit(() -> {
             final PlayerProfile profile = player.getPlayerProfile();
             final SkinData skinData;
@@ -76,7 +66,8 @@ public final class SkinManager {
             final String signature = skinData.signature();
             profile.setProperty(new ProfileProperty("textures", texture, signature));
 
-            PlatformScheduler.runSync(plugin,
+            final Main plugin = JavaPlugin.getPlugin(Main.class);
+            PlatformScheduler.executeOnEntity(plugin, player,
                 () -> player.setPlayerProfile(profile));
 
 

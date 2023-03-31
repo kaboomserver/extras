@@ -7,8 +7,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-import pw.kaboom.extras.Main;
 import pw.kaboom.extras.skin.SkinManager;
 
 import javax.annotation.Nonnull;
@@ -23,14 +21,6 @@ public final class CommandSkin implements CommandExecutor {
                              final @Nonnull Command command,
                              final @Nonnull String label,
                              final String[] args) {
-        final Main plugin = JavaPlugin.getPlugin(Main.class);
-
-        if (plugin.isFolia()) {
-            sender.sendMessage(Component
-                    .text("Command cannot be ran on Folia servers!"));
-            return true;
-        }
-
         if (sender instanceof ConsoleCommandSender) {
             sender.sendMessage(Component
                     .text("Command has to be run by a player"));

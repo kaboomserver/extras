@@ -110,10 +110,8 @@ public final class PlayerConnection implements Listener {
         }
 
         final Server server = Bukkit.getServer();
-        final Main plugin = JavaPlugin.getPlugin(Main.class);
 
-
-        if (!server.getOnlineMode() && !plugin.isFolia()) {
+        if (!server.getOnlineMode()) {
             SkinManager.applySkin(player, player.getName(), false);
         }
     }

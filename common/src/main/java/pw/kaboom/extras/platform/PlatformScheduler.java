@@ -45,7 +45,8 @@ public final class PlatformScheduler {
         currentScheduler.executeOnGlobalRegion(plugin, runnable);
     }
 
-    public static void executeOnEntity(final Plugin plugin, final Entity entity, final Runnable runnable) {
+    public static void executeOnEntity(final Plugin plugin, final Entity entity,
+                                       final Runnable runnable) {
         currentScheduler.executeOnEntity(plugin, entity, runnable);
     }
 }
