@@ -6,7 +6,6 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
@@ -18,13 +17,12 @@ public final class CommandSpidey implements CommandExecutor {
                              final @Nonnull Command command,
                              final @Nonnull String label,
                              final String[] args) {
-        if (sender instanceof ConsoleCommandSender) {
+        if (!(sender instanceof final Player player)) {
             sender.sendMessage(Component
                     .text("Command has to be run by a player"));
             return true;
         }
 
-        final Player player = (Player) sender;
         final World world = player.getWorld();
         final Vector start = player.getEyeLocation().toVector();
         final Vector direction = player.getEyeLocation().getDirection();

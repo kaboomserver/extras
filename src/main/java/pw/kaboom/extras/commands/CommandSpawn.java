@@ -9,7 +9,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
@@ -19,13 +18,12 @@ public final class CommandSpawn implements CommandExecutor {
                              final @Nonnull Command command,
                              final @Nonnull String label,
                              final String[] args) {
-        if (sender instanceof ConsoleCommandSender) {
+        if (!(sender instanceof final Player player)) {
             sender.sendMessage(Component
                     .text("Command has to be run by a player"));
             return true;
         }
 
-        final Player player = (Player) sender;
         final World defaultWorld = Bukkit.getWorld("world");
         final World world = (defaultWorld == null) ? Bukkit.getWorlds().get(0) : defaultWorld;
         final Location spawnLocation = world.getSpawnLocation();

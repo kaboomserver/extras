@@ -19,7 +19,12 @@ public final class CommandKaboom implements CommandExecutor {
                              final @Nonnull Command command,
                              final @Nonnull String label,
                              final String[] args) {
-        final Player player = (Player) sender;
+        if (!(sender instanceof final Player player)) {
+            sender.sendMessage(Component
+                    .text("Command has to be run by a player"));
+            return true;
+        }
+
         boolean explode = ThreadLocalRandom.current().nextBoolean();
 
         if (explode) {

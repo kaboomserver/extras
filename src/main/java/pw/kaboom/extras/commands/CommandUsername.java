@@ -1,8 +1,6 @@
 package pw.kaboom.extras.commands;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
-import java.util.HashMap;
-import java.util.Map;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -10,10 +8,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class CommandUsername implements CommandExecutor {
     private final Map<Player, Long> lastUsedMillis = new HashMap<>();
@@ -23,13 +22,12 @@ public final class CommandUsername implements CommandExecutor {
                              final @Nonnull Command command,
                              final @Nonnull String label,
                              final String[] args) {
-        if (sender instanceof ConsoleCommandSender) {
+        if (!(sender instanceof final Player player)) {
             sender.sendMessage(Component
                     .text("Command has to be run by a player"));
             return true;
         }
 
-        final Player player = (Player) sender;
         final String nameColor = ChatColor.translateAlternateColorCodes(
                 '&', String.join(" ", args));
         final String name = nameColor.substring(0, Math.min(16, nameColor.length()));
