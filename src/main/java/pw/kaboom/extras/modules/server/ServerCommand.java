@@ -46,6 +46,9 @@ public final class ServerCommand implements Listener {
             || "tm".equalsIgnoreCase(cmd)
             || "tp".equalsIgnoreCase(cmd)
             || "w".equalsIgnoreCase(cmd)
+            || "place".equalsIgnoreCase(cmd)
+            || "fillbiome".equalsIgnoreCase(cmd)
+            || "ride".equalsIgnoreCase(cmd)
         );
     }
 
