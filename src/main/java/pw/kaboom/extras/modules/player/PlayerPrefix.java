@@ -1,11 +1,5 @@
 package pw.kaboom.extras.modules.player;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
@@ -21,7 +15,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import pw.kaboom.extras.Main;
 
-public class PlayerPrefix implements Listener {
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+public final class PlayerPrefix implements Listener {
 	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
 	private static final File PREFIX_CONFIG_FILE = plugin.getPrefixConfigFile();
 	private static final FileConfiguration PREFIX_CONFIG = plugin.getPrefixConfig();
