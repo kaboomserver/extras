@@ -1,11 +1,5 @@
 package pw.kaboom.extras.modules.server;
 
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.bukkit.block.CommandBlock;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
@@ -14,8 +8,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-
 import pw.kaboom.extras.Main;
+
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class ServerCommand implements Listener {
     private static final Pattern AS_AT_PATTERN = Pattern.compile(
@@ -117,7 +116,7 @@ public final class ServerCommand implements Listener {
                                 String.join(" ", executeCommand), true, depth + 1);
                             if (result == null) {
                                 continue;
-                            } else if (result == "cancel") {
+                            } else if (result.equals("cancel")) {
                                 return "cancel";
                             }
                             final String pureExecute = String.join(
