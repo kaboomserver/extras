@@ -1,6 +1,5 @@
 package pw.kaboom.extras.commands;
 
-import javax.annotation.Nonnull;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -10,7 +9,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-public class CommandGetJSON implements CommandExecutor {
+import javax.annotation.Nonnull;
+
+public final class CommandGetJSON implements CommandExecutor {
     public boolean onCommand(final @Nonnull CommandSender sender,
                              final @Nonnull Command command,
                              final @Nonnull String label,

@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender;
 
 import javax.annotation.Nonnull;
 
-public class CommandBroadcastMM implements CommandExecutor {
+public final class CommandBroadcastMM implements CommandExecutor {
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
 
     public boolean onCommand(final @Nonnull CommandSender sender,
