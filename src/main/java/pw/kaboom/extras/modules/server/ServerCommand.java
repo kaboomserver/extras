@@ -106,6 +106,9 @@ public final class ServerCommand implements Listener {
                         }
 
                         for (int i = 1; i < arr.length; i++) {
+                            if ("summon".equalsIgnoreCase(arr[i])) {
+                                return "cancel";
+                            }
                             if (!"run".equalsIgnoreCase(arr[i])) {
                                 continue;
                             }
