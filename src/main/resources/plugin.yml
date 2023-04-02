@@ -32,9 +32,13 @@ commands:
       description: Adds every enchantment to a held item
       permission: extras.enchantall
    getjson:
-      aliases: [ gj, gmm ]
-      description: Gets the JSON of a deserialized MiniMessage/legacy component
+      aliases: [ gj ]
+      description: Gets the JSON of a deserialized legacy component
       permission: extras.getjson
+   getjsonmm:
+      aliases: [ gmm ]
+      description: Gets the JSON of a deserialized MiniMessage component
+      permission: extras.getjsonmm
    jumpscare:
       aliases: scare
       description: Scares a player
