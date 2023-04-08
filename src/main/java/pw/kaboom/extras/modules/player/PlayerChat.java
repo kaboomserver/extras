@@ -49,8 +49,8 @@ public final class PlayerChat implements Listener {
                 TextReplacementConfig
                         .builder()
                 .match(Pattern
-                        .compile("((https?://(www\\.)?)?[-a-zA-Z0-9@:%._+~#=]" +
-                                "{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_+.~#?&/=]*))"))
+                        .compile("((https?://(ww(w|\\d)\\.)?|ww(w|\\d))[-a-zA-Z0-9@:%._+~#=]{1,256}"
+                                + "\\.[a-zA-Z0-9]{2,6}\\b([-a-zA-Z0-9@:%_+.~#?&/=]*))"))
                 .replacement((b, c) -> {
                     if (c == null) {
                         return null;
@@ -64,7 +64,7 @@ public final class PlayerChat implements Listener {
                     final String url;
 
                     /*
-                    Minecraft doesn't accept "www.google.com" or "google.com" as URLs
+                    Minecraft doesn't accept "www.google.com" as a URL
                     in click events
                      */
                     if (content.contains("://")) {
