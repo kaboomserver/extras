@@ -1,9 +1,8 @@
 package pw.kaboom.extras.modules.player;
 
-import java.util.HashSet;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
-
+import com.destroystokyo.paper.event.profile.PreLookupProfileEvent;
+import com.destroystokyo.paper.profile.ProfileProperty;
+import com.google.common.base.Charsets;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Server;
@@ -11,26 +10,19 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
-
-import com.destroystokyo.paper.event.profile.PreLookupProfileEvent;
-import com.destroystokyo.paper.profile.ProfileProperty;
-
-import com.google.common.base.Charsets;
-
 import pw.kaboom.extras.Main;
 import pw.kaboom.extras.modules.server.ServerTabComplete;
 import pw.kaboom.extras.skin.SkinManager;
+import pw.kaboom.extras.util.Utility;
+
+import java.util.HashSet;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 public final class PlayerConnection implements Listener {
     private static final FileConfiguration CONFIG = JavaPlugin.getPlugin(Main.class).getConfig();
@@ -50,8 +42,9 @@ public final class PlayerConnection implements Listener {
 
     @EventHandler
     void onAsyncPlayerPreLogin(final AsyncPlayerPreLoginEvent event) {
-        if (Bukkit.getPlayer(event.getName()) != null
-                && Bukkit.getPlayer(event.getName()).isOnline()) {
+        final Player player = Utility.getPlayerExactIgnoreCase(event.getName());
+
+        if (player != null) {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
                            "A player with that username is already logged in");
         }
