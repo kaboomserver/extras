@@ -20,7 +20,7 @@ public final class ServerCommand implements Listener {
     private static final Pattern AS_AT_PATTERN = Pattern.compile(
         "\\b(as|at|facing entity) @[ae]\\b");
     private static final Pattern DISTANCE_SELECTOR_PATTERN = Pattern.compile(
-            "[\"']?distance[\"']?\\s*=\\s*");
+            "@[aeprs]\\[[\"']?distance[\"']?\\s*=\\s*");
     private static final Logger LOGGER = JavaPlugin.getPlugin(Main.class).getLogger();
 
     public static boolean checkExecuteCommand(final String cmd) {
