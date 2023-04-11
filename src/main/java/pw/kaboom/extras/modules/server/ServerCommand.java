@@ -19,8 +19,6 @@ import java.util.regex.Pattern;
 public final class ServerCommand implements Listener {
     private static final Pattern AS_AT_PATTERN = Pattern.compile(
         "\\b(as|at|facing entity) @[ae]\\b");
-    private static final Pattern DISTANCE_SELECTOR_PATTERN = Pattern.compile(
-            "@[aeprs]\\[[\"']?distance[\"']?\\s*=\\s*");
     private static final Logger LOGGER = JavaPlugin.getPlugin(Main.class).getLogger();
 
     public static boolean checkExecuteCommand(final String cmd) {
@@ -213,11 +211,6 @@ public final class ServerCommand implements Listener {
             }
         } catch (NumberFormatException exception) {
             // Do nothing
-        }
-
-        if (command.contains("distance")) {
-            final Matcher distanceMatcher = DISTANCE_SELECTOR_PATTERN.matcher(command);
-            return distanceMatcher.replaceAll("]");
         }
 
         return null;
