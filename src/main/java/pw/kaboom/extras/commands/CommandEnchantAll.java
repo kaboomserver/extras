@@ -5,7 +5,6 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -17,13 +16,12 @@ public final class CommandEnchantAll implements CommandExecutor {
                              final @Nonnull Command command,
                              final @Nonnull String label,
                              final String[] args) {
-        if (sender instanceof ConsoleCommandSender) {
+        if (!(sender instanceof final Player player)) {
             sender.sendMessage(Component
                     .text("Command has to be run by a player"));
             return true;
         }
 
-        final Player player = (Player) sender;
         final ItemStack item = player.getInventory().getItemInMainHand();
 
         if (Material.AIR.equals(item.getType())) {

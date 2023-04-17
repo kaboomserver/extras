@@ -1,11 +1,5 @@
 package pw.kaboom.extras.modules.player;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
@@ -21,15 +15,22 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import pw.kaboom.extras.Main;
 
-public class PlayerPrefix implements Listener {
-	private static final Main plugin = JavaPlugin.getPlugin(Main.class);
-	private static final File PREFIX_CONFIG_FILE = plugin.getPrefixConfigFile();
-	private static final FileConfiguration PREFIX_CONFIG = plugin.getPrefixConfig();
-	private static final FileConfiguration PLUGIN_CONFIGURATION = plugin.getConfig();
-	private static final Component opTag;
-	private static final Component deOpTag;
-	private static final Map<Player, Boolean> opMap = new HashMap<>();
-	private static final Map<Player, Component> displayNameMap = new HashMap<>();
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+public final class PlayerPrefix implements Listener {
+	private static final Main PLUGIN = JavaPlugin.getPlugin(Main.class);
+	private static final File PREFIX_CONFIG_FILE = PLUGIN.getPrefixConfigFile();
+	private static final FileConfiguration PREFIX_CONFIG = PLUGIN.getPrefixConfig();
+	private static final FileConfiguration PLUGIN_CONFIGURATION = PLUGIN.getConfig();
+	private static final Component OP_TAG;
+	private static final Component DE_OP_TAG;
+	private static final Map<Player, Boolean> OP_MAP = new HashMap<>();
+	private static final Map<Player, Component> DISPLAY_NAME_MAP = new HashMap<>();
 
 	static {
 		final String legacyOpTag = PLUGIN_CONFIGURATION.getString("opTag");
@@ -39,14 +40,14 @@ public class PlayerPrefix implements Listener {
 			throw new RuntimeException("Invalid plugin configuration!");
 		}
 
-		opTag = LegacyComponentSerializer.legacySection().deserialize(legacyOpTag);
-		deOpTag = LegacyComponentSerializer.legacySection().deserialize(legacyDeOpTag);
+		OP_TAG = LegacyComponentSerializer.legacySection().deserialize(legacyOpTag);
+		DE_OP_TAG = LegacyComponentSerializer.legacySection().deserialize(legacyDeOpTag);
 
 		final BukkitScheduler scheduler = Bukkit.getScheduler();
 
-		scheduler.runTaskTimerAsynchronously(plugin, PlayerPrefix::checkOpStatus,
+		scheduler.runTaskTimerAsynchronously(PLUGIN, PlayerPrefix::checkOpStatus,
 			0L, 1L);
-		scheduler.runTaskTimerAsynchronously(plugin, PlayerPrefix::checkDisplayNames,
+		scheduler.runTaskTimerAsynchronously(PLUGIN, PlayerPrefix::checkDisplayNames,
 			0L, 1L);
 	}
 
@@ -79,7 +80,7 @@ public class PlayerPrefix implements Listener {
 		final String legacyPrefix = PREFIX_CONFIG.getString(stringifiedUUID);
 
 		if (legacyPrefix == null) {
-			return player.isOp() ? opTag : deOpTag;
+			return player.isOp() ? OP_TAG : DE_OP_TAG;
 		}
 
 		return LegacyComponentSerializer.legacyAmpersand()
@@ -88,7 +89,7 @@ public class PlayerPrefix implements Listener {
 	}
 
 	public static Component getDefaultPrefix(Player player) {
-		return player.isOp() ? opTag : deOpTag;
+		return player.isOp() ? OP_TAG : DE_OP_TAG;
 	}
 
 	private static void onUpdate(Player player) throws IOException {
@@ -104,8 +105,8 @@ public class PlayerPrefix implements Listener {
 		final Player player = event.getPlayer();
 		final boolean isOp = player.isOp();
 
-		opMap.put(player, isOp);
-		displayNameMap.put(player, player.displayName());
+		OP_MAP.put(player, isOp);
+		DISPLAY_NAME_MAP.put(player, player.displayName());
 		onUpdate(player);
 	}
 
@@ -113,8 +114,8 @@ public class PlayerPrefix implements Listener {
 	public void onPlayerQuitEvent(PlayerQuitEvent event) {
 		final Player player = event.getPlayer();
 
-		opMap.remove(player);
-		displayNameMap.remove(player);
+		OP_MAP.remove(player);
+		DISPLAY_NAME_MAP.remove(player);
 	}
 
 	private static void checkOpStatus() {
@@ -124,17 +125,17 @@ public class PlayerPrefix implements Listener {
 		for (Player player : players) {
 			final boolean isOp = player.isOp();
 
-			if (!opMap.containsKey(player)) {
+			if (!OP_MAP.containsKey(player)) {
 				return;
 			}
 
-			final boolean storedOp = opMap.get(player);
+			final boolean storedOp = OP_MAP.get(player);
 
 			if (isOp == storedOp) {
 				continue;
 			}
 
-			opMap.put(player, isOp);
+			OP_MAP.put(player, isOp);
 
 			try {
 				onUpdate(player);
@@ -151,17 +152,17 @@ public class PlayerPrefix implements Listener {
 		for (Player player : players) {
 			final Component displayName = player.displayName();
 
-			if (!displayNameMap.containsKey(player)) {
+			if (!DISPLAY_NAME_MAP.containsKey(player)) {
 				return;
 			}
 
-			final Component storedDisplayName = displayNameMap.get(player);
+			final Component storedDisplayName = DISPLAY_NAME_MAP.get(player);
 
 			if (displayName.equals(storedDisplayName)) {
 				continue;
 			}
 
-			displayNameMap.put(player, displayName);
+			DISPLAY_NAME_MAP.put(player, displayName);
 
 			try {
 				onUpdate(player);

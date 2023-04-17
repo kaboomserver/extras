@@ -1,18 +1,17 @@
 package pw.kaboom.extras.commands;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.Bukkit;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import javax.annotation.Nonnull;
 
-public final class CommandBroadcastMM implements CommandExecutor {
-    private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
-
+public final class CommandGetJSONMM implements CommandExecutor {
     public boolean onCommand(final @Nonnull CommandSender sender,
                              final @Nonnull Command command,
                              final @Nonnull String label,
@@ -23,7 +22,19 @@ public final class CommandBroadcastMM implements CommandExecutor {
             return true;
         }
 
-        Bukkit.broadcast(MINI_MESSAGE.deserialize(String.join(" ", args)));
+        final String message = String.join(" ", args);
+        Component createdComponent = MiniMessage.miniMessage()
+                .deserialize(message);
+
+        String asJson = GsonComponentSerializer.gson()
+                .serialize(createdComponent);
+
+        Component feedback = Component.empty()
+                .append(Component.text("Your component as JSON (click to copy): "))
+                .append(Component.text(asJson, NamedTextColor.GREEN))
+                .clickEvent(ClickEvent.copyToClipboard(asJson));
+
+        sender.sendMessage(feedback);
         return true;
     }
 }
