@@ -25,6 +25,9 @@ import pw.kaboom.extras.platform.paper.PaperScheduler;
 import java.io.File;
 import java.util.Collections;
 
+import java.io.File;
+import java.util.Collections;
+
 public final class Main extends JavaPlugin {
     private boolean isFolia;
     private File prefixConfigFile;
@@ -78,6 +81,7 @@ public final class Main extends JavaPlugin {
         this.getCommand("destroyentities").setExecutor(new CommandDestroyEntities());
         this.getCommand("enchantall").setExecutor(new CommandEnchantAll());
         this.getCommand("getjson").setExecutor(new CommandGetJSON());
+        this.getCommand("getjsonmm").setExecutor(new CommandGetJSONMM());
         this.getCommand("jumpscare").setExecutor(new CommandJumpscare());
         this.getCommand("kaboom").setExecutor(new CommandKaboom());
         this.getCommand("ping").setExecutor(new CommandPing());

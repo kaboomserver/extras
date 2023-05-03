@@ -8,7 +8,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import pw.kaboom.extras.Main;
@@ -33,13 +32,12 @@ public final class CommandUsername implements CommandExecutor {
             return true;
         }
 
-        if (sender instanceof ConsoleCommandSender) {
+        if (!(sender instanceof final Player player)) {
             sender.sendMessage(Component
                     .text("Command has to be run by a player"));
             return true;
         }
 
-        final Player player = (Player) sender;
         final String nameColor = ChatColor.translateAlternateColorCodes(
                 '&', String.join(" ", args));
         final String name = nameColor.substring(0, Math.min(16, nameColor.length()));
@@ -66,7 +64,7 @@ public final class CommandUsername implements CommandExecutor {
         }
 
         for (Player other : Bukkit.getOnlinePlayers()) {
-            if (!other.getName().equals(name)) continue;
+            if (!other.getName().equalsIgnoreCase(name)) continue;
 
             player.sendMessage(Component
                     .text("A player with that username is already logged in."));

@@ -18,6 +18,11 @@ import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 import pw.kaboom.extras.Main;
 import pw.kaboom.extras.modules.server.ServerTabComplete;
 import pw.kaboom.extras.skin.SkinManager;
+import pw.kaboom.extras.util.Utility;
+
+import java.util.HashSet;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 import java.util.HashSet;
 import java.util.UUID;
@@ -41,8 +46,9 @@ public final class PlayerConnection implements Listener {
 
     @EventHandler
     void onAsyncPlayerPreLogin(final AsyncPlayerPreLoginEvent event) {
-        if (Bukkit.getPlayer(event.getName()) != null
-                && Bukkit.getPlayer(event.getName()).isOnline()) {
+        final Player player = Utility.getPlayerExactIgnoreCase(event.getName());
+
+        if (player != null) {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
                            "A player with that username is already logged in");
         }

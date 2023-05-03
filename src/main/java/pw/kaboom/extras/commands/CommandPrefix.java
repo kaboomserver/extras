@@ -1,14 +1,14 @@
 package pw.kaboom.extras.commands;
 
-import javax.annotation.Nonnull;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import pw.kaboom.extras.modules.player.PlayerPrefix;
+
+import javax.annotation.Nonnull;
 
 public final class CommandPrefix implements CommandExecutor {
 
@@ -17,13 +17,11 @@ public final class CommandPrefix implements CommandExecutor {
                              final @Nonnull Command cmd,
                              final @Nonnull String label,
                              final String[] args) {
-        if (sender instanceof ConsoleCommandSender) {
+        if (!(sender instanceof final Player player)) {
             sender.sendMessage(Component
                     .text("Command has to be run by a player"));
             return true;
         }
-
-        final Player player = (Player) sender;
 
         if (args.length == 0) {
             player.sendMessage(Component
