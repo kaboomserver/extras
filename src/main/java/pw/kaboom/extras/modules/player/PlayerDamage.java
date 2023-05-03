@@ -14,7 +14,10 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
+import pw.kaboom.extras.Main;
+import pw.kaboom.extras.platform.PlatformScheduler;
 
 public final class PlayerDamage implements Listener {
     @EventHandler
@@ -73,11 +76,14 @@ public final class PlayerDamage implements Listener {
             player.setMaxHealth(20);
             player.setHealth(20);
 
+            final Main plugin = JavaPlugin.getPlugin(Main.class);
+
             if (player.getBedSpawnLocation() != null) {
                 player.teleportAsync(player.getBedSpawnLocation());
             } else {
                 final World world = Bukkit.getWorld("world");
-                player.teleportAsync(world.getSpawnLocation());
+                PlatformScheduler.executeOnGlobalRegion(plugin, () -> player
+                        .teleportAsync(world.getSpawnLocation()));
             }
         } catch (Exception exception) {
             player.setMaxHealth(Double.POSITIVE_INFINITY);
