@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 public final class ServerCommand implements Listener {
     private static final Pattern AS_AT_PATTERN = Pattern.compile(
         "\\b(as|at|facing entity) @[ae]\\b");
+    private static final Pattern SELECTOR_PATTERN = Pattern.compile("(?>\\s)*@[aepsr](?>\\s)*");
     private static final Logger LOGGER = JavaPlugin.getPlugin(Main.class).getLogger();
 
     public static boolean checkExecuteCommand(final String cmd) {
@@ -48,6 +49,19 @@ public final class ServerCommand implements Listener {
             || "fillbiome".equalsIgnoreCase(cmd)
             || "ride".equalsIgnoreCase(cmd)
         );
+    }
+
+    private static String checkSelectors(final String[] arr) {
+        final String[] args = Arrays.copyOfRange(arr, 1, arr.length);
+        final String str = String.join(" ", args);
+        final Matcher matcher = SELECTOR_PATTERN.matcher(str);
+        final long count = matcher.results().count();
+
+        if (count > 3) {
+            return "cancel";
+        }
+
+        return null;
     }
 
     public static String checkCommand(final CommandSender sender, final String command,
@@ -146,6 +160,19 @@ public final class ServerCommand implements Listener {
                         }
                     }
                     break;
+                case "/minecraft:ban":
+                case "/ban":
+                case "/minecraft:kick":
+                case "/kick":
+                case "/minecraft:tell":
+                case "/tell":
+                case "/minecraft:msg":
+                case "/msg":
+                case "/minecraft:w":
+                case "/w":
+                case "/minecraft:say":
+                case "/say":
+                    return checkSelectors(arr);
                 case "/minecraft:spreadplayers":
                 case "/spreadplayers":
                     if (arr.length == 7 && (arr[6].contains("@e") || arr[6].contains("@a"))) {
