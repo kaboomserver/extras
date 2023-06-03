@@ -24,6 +24,10 @@ import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
+import java.util.HashSet;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
+
 public final class PlayerConnection implements Listener {
     private static final FileConfiguration CONFIG = JavaPlugin.getPlugin(Main.class).getConfig();
     private static final String TITLE = CONFIG.getString("playerJoinTitle");
@@ -112,7 +116,6 @@ public final class PlayerConnection implements Listener {
         }
 
         final Server server = Bukkit.getServer();
-
 
         if (!server.getOnlineMode()) {
             SkinManager.applySkin(player, player.getName(), false);

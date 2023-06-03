@@ -9,6 +9,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+import pw.kaboom.extras.Main;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -22,6 +24,14 @@ public final class CommandUsername implements CommandExecutor {
                              final @Nonnull Command command,
                              final @Nonnull String label,
                              final String[] args) {
+        final Main plugin = JavaPlugin.getPlugin(Main.class);
+
+        if (plugin.isFolia()) {
+            sender.sendMessage(Component
+                    .text("Command cannot be ran on Folia servers!"));
+            return true;
+        }
+
         if (!(sender instanceof final Player player)) {
             sender.sendMessage(Component
                     .text("Command has to be run by a player"));

@@ -4,12 +4,13 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+import pw.kaboom.extras.Main;
+import pw.kaboom.extras.platform.PlatformScheduler;
 
 import javax.annotation.Nonnull;
 
@@ -27,22 +28,19 @@ public final class CommandSpawn implements CommandExecutor {
         final World defaultWorld = Bukkit.getWorld("world");
         final World world = (defaultWorld == null) ? Bukkit.getWorlds().get(0) : defaultWorld;
         final Location spawnLocation = world.getSpawnLocation();
-        final int maxWorldHeight = 256;
 
-        for (double y = spawnLocation.getY(); y <= maxWorldHeight; y++) {
-            final Location yLocation = new Location(world, spawnLocation.getX(), y,
-                    spawnLocation.getZ());
-            final Block coordBlock = world.getBlockAt(yLocation);
+        world.getChunkAtAsync(spawnLocation).thenAccept(chunk -> {
+            final Main plugin = JavaPlugin.getPlugin(Main.class);
+            final Location highestSpawnLocation = world.getHighestBlockAt(spawnLocation)
+                    .getLocation()
+                    .add(0, 1, 0);
 
-            if (!coordBlock.getType().isSolid()
-                    && !coordBlock.getRelative(BlockFace.UP).getType().isSolid()) {
-                player.teleportAsync(yLocation);
-                break;
-            }
-        }
+            PlatformScheduler.executeOnEntity(plugin, player, () -> {
+                player.teleportAsync(highestSpawnLocation);
+                player.sendMessage(Component.text("Successfully moved to spawn"));
+            });
+        });
 
-        player.sendMessage(Component
-                .text("Successfully moved to spawn"));
         return true;
     }
 }

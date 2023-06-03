@@ -18,16 +18,40 @@ import pw.kaboom.extras.modules.server.ServerCommand;
 import pw.kaboom.extras.modules.server.ServerGameRule;
 import pw.kaboom.extras.modules.server.ServerTabComplete;
 import pw.kaboom.extras.modules.server.ServerTick;
+import pw.kaboom.extras.platform.PlatformScheduler;
+import pw.kaboom.extras.platform.folia.FoliaScheduler;
+import pw.kaboom.extras.platform.paper.PaperScheduler;
+
+import java.io.File;
+import java.util.Collections;
 
 import java.io.File;
 import java.util.Collections;
 
 public final class Main extends JavaPlugin {
+    private boolean isFolia;
     private File prefixConfigFile;
     private FileConfiguration prefixConfig;
 
+    public boolean isFolia() {
+        return this.isFolia;
+    }
+
     @Override
     public void onLoad() {
+        try {
+            Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
+            isFolia = true;
+        } catch (ClassNotFoundException ignored) {
+            isFolia = false;
+        }
+
+        if (isFolia) {
+            PlatformScheduler.setCurrentScheduler(new FoliaScheduler());
+        } else {
+            PlatformScheduler.setCurrentScheduler(new PaperScheduler());
+        }
+
         /* Fill lists */
         Collections.addAll(
                 BlockPhysics.getBlockFaces(),
@@ -64,11 +88,11 @@ public final class Main extends JavaPlugin {
         this.getCommand("prefix").setExecutor(new CommandPrefix());
         this.getCommand("pumpkin").setExecutor(new CommandPumpkin());
         this.getCommand("serverinfo").setExecutor(new CommandServerInfo());
-        this.getCommand("skin").setExecutor(new CommandSkin());
+        this.getCommand("username").setExecutor(new CommandUsername());
         this.getCommand("spawn").setExecutor(new CommandSpawn());
         this.getCommand("spidey").setExecutor(new CommandSpidey());
         this.getCommand("tellraw").setExecutor(new CommandTellraw());
-        this.getCommand("username").setExecutor(new CommandUsername());
+        this.getCommand("skin").setExecutor(new CommandSkin());
 
         /* Block-related modules */
         BlockPhysics.init(this);
@@ -99,9 +123,15 @@ public final class Main extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new ServerTick(), this);
 
         /* Custom worlds */
-        this.getServer().createWorld(
-            new WorldCreator("world_flatlands").generateStructures(false).type(WorldType.FLAT)
-        );
+        // Custom worlds are not implemented on Folia!
+        if(!isFolia) {
+            this.getServer().createWorld(
+                    new WorldCreator("world_flatlands")
+                            .generateStructures(false)
+                            .type(WorldType.FLAT)
+            );
+        }
+
     }
 
 	public File getPrefixConfigFile() {

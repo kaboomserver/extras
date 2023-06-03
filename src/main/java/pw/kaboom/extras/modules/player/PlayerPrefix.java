@@ -1,5 +1,6 @@
 package pw.kaboom.extras.modules.player;
 
+import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
@@ -12,7 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitScheduler;
 import pw.kaboom.extras.Main;
 
 import java.io.File;
@@ -42,13 +42,6 @@ public final class PlayerPrefix implements Listener {
 
 		OP_TAG = LegacyComponentSerializer.legacySection().deserialize(legacyOpTag);
 		DE_OP_TAG = LegacyComponentSerializer.legacySection().deserialize(legacyDeOpTag);
-
-		final BukkitScheduler scheduler = Bukkit.getScheduler();
-
-		scheduler.runTaskTimerAsynchronously(PLUGIN, PlayerPrefix::checkOpStatus,
-			0L, 1L);
-		scheduler.runTaskTimerAsynchronously(PLUGIN, PlayerPrefix::checkDisplayNames,
-			0L, 1L);
 	}
 
 	public static void removePrefix(Player player) throws IOException {
@@ -108,6 +101,12 @@ public final class PlayerPrefix implements Listener {
 		OP_MAP.put(player, isOp);
 		DISPLAY_NAME_MAP.put(player, player.displayName());
 		onUpdate(player);
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onTickEnd(final ServerTickEndEvent event) {
+		checkOpStatus();
+		checkDisplayNames();
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)

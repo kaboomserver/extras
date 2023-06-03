@@ -1,23 +1,19 @@
 package pw.kaboom.extras.modules.block;
 
-import java.util.HashSet;
-
+import com.destroystokyo.paper.event.block.BlockDestroyEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockFadeEvent;
-import org.bukkit.event.block.BlockFormEvent;
-import org.bukkit.event.block.BlockFromToEvent;
-import org.bukkit.event.block.BlockPhysicsEvent;
-import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
-
-import com.destroystokyo.paper.event.block.BlockDestroyEvent;
-import org.bukkit.scheduler.BukkitScheduler;
 import pw.kaboom.extras.Main;
+import pw.kaboom.extras.platform.PlatformScheduler;
+
+import java.util.HashSet;
+import java.util.concurrent.TimeUnit;
 
 public final class BlockPhysics implements Listener {
 
@@ -178,8 +174,7 @@ public final class BlockPhysics implements Listener {
     }
 
     public static void init(final Main main) {
-        final BukkitScheduler scheduler = Bukkit.getScheduler();
-
-        scheduler.runTaskTimer(main, BlockPhysics::updateTPS, 0L, 1200L); // 1 minute
+        PlatformScheduler.runRepeating(main, BlockPhysics::updateTPS, 0L,
+                1L, TimeUnit.MINUTES);
     }
 }
