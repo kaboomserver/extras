@@ -9,6 +9,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import pw.kaboom.extras.commands.*;
 import pw.kaboom.extras.modules.block.BlockCheck;
 import pw.kaboom.extras.modules.block.BlockPhysics;
+import pw.kaboom.extras.modules.checks.DenyTorchLoad;
+import pw.kaboom.extras.modules.checks.DenyWaterFlow;
 import pw.kaboom.extras.modules.entity.EntityExplosion;
 import pw.kaboom.extras.modules.entity.EntityKnockback;
 import pw.kaboom.extras.modules.entity.EntitySpawn;
@@ -25,7 +27,6 @@ import java.util.Collections;
 public final class Main extends JavaPlugin {
     private File prefixConfigFile;
     private FileConfiguration prefixConfig;
-
     @Override
     public void onLoad() {
         /* Fill lists */
@@ -97,6 +98,10 @@ public final class Main extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new ServerGameRule(), this);
         this.getServer().getPluginManager().registerEvents(new ServerTabComplete(), this);
         this.getServer().getPluginManager().registerEvents(new ServerTick(), this);
+
+        /* Anti-lag-related modules */
+        this.getServer().getPluginManager().registerEvents(new DenyWaterFlow(), this);
+        this.getServer().getPluginManager().registerEvents(new DenyTorchLoad(), this);
 
         /* Custom worlds */
         this.getServer().createWorld(
