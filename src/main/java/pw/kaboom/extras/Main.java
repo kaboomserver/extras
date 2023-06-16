@@ -9,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import pw.kaboom.extras.commands.*;
 import pw.kaboom.extras.modules.block.BlockCheck;
 import pw.kaboom.extras.modules.block.BlockPhysics;
+import pw.kaboom.extras.modules.checks.DenyMobLag;
 import pw.kaboom.extras.modules.checks.DenyTorchLoad;
 import pw.kaboom.extras.modules.checks.DenyWaterFlow;
 import pw.kaboom.extras.modules.entity.EntityExplosion;
@@ -102,6 +103,7 @@ public final class Main extends JavaPlugin {
         /* Anti-lag-related modules */
         this.getServer().getPluginManager().registerEvents(new DenyWaterFlow(), this);
         this.getServer().getPluginManager().registerEvents(new DenyTorchLoad(), this);
+        this.getServer().getPluginManager().registerEvents(new DenyMobLag(), this);
 
         /* Custom worlds */
         this.getServer().createWorld(
