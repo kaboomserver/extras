@@ -69,7 +69,8 @@ public final class Main extends JavaPlugin {
         this.getCommand("spidey").setExecutor(new CommandSpidey());
         this.getCommand("tellraw").setExecutor(new CommandTellraw());
         this.getCommand("username").setExecutor(new CommandUsername());
-
+	this.getCommand("rainbow").setExecutor(new CommandRainbow());
+	    
         /* Block-related modules */
         BlockPhysics.init(this);
 
