@@ -79,3 +79,4 @@ commands:
          - bcrainbow
          - bcr
       description: Broadcasts a rainbow message in the server
+      permission: extras.broadcastminimessage
