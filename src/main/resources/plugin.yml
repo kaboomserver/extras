@@ -73,3 +73,9 @@ commands:
    username:
       description: Changes your username on the server
       permission: extras.username
+   rainbow:
+      aliases:
+         - rb
+         - bcrainbow
+         - bcr
+      description: Broadcasts a rainbow message in the server
