@@ -11,7 +11,7 @@ commands:
       permission: extras.broadcastminimessage
    broadcastrainbow:
       aliases: [ bcr ]
-      description: Broadcasts a rainbow message in the server
+      description: Broadcasts a rainbow message
       permission: extras.broadcastrainbow
    broadcastraw:
       aliases: [ bcraw, tellraw ]
