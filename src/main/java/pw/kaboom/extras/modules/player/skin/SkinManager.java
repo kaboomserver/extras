@@ -1,4 +1,4 @@
-package pw.kaboom.extras.skin;
+package pw.kaboom.extras.modules.player.skin;
 
 import com.google.gson.Gson;
 import java.net.URI;
@@ -24,8 +24,8 @@ import net.kyori.adventure.text.Component;
 
 import org.bukkit.scheduler.BukkitScheduler;
 import pw.kaboom.extras.Main;
-import pw.kaboom.extras.skin.response.ProfileResponse;
-import pw.kaboom.extras.skin.response.SkinResponse;
+import pw.kaboom.extras.modules.player.skin.response.ProfileResponse;
+import pw.kaboom.extras.modules.player.skin.response.SkinResponse;
 
 public final class SkinManager {
     private static final HttpClient httpClient = HttpClient.newHttpClient();

@@ -17,7 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 import pw.kaboom.extras.Main;
 import pw.kaboom.extras.modules.server.ServerTabComplete;
-import pw.kaboom.extras.skin.SkinManager;
+import pw.kaboom.extras.modules.player.skin.SkinManager;
 import pw.kaboom.extras.util.Utility;
 
 import java.util.HashSet;
