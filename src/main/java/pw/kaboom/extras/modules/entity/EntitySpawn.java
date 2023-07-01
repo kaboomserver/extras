@@ -168,10 +168,6 @@ public final class EntitySpawn implements Listener {
 
     @EventHandler
     void onEntitySpawn(final EntitySpawnEvent event) {
-        final double x = event.getLocation().getX();
-        final double y = event.getLocation().getY();
-        final double z = event.getLocation().getZ();
-
         final EntityType entityType = event.getEntityType();
         final Chunk chunk = event.getLocation().getChunk();
         final World world = event.getLocation().getWorld();
@@ -201,10 +197,6 @@ public final class EntitySpawn implements Listener {
     @EventHandler
     void onLightningStrike(final LightningStrikeEvent event) {
         final LightningStrike lightning = event.getLightning();
-        final double x = lightning.getLocation().getX();
-        final double y = lightning.getLocation().getY();
-        final double z = lightning.getLocation().getZ();
-
         final EntityType entityType = EntityType.LIGHTNING;
         final Chunk chunk = lightning.getChunk();
         final World world = event.getWorld();
@@ -256,10 +248,6 @@ public final class EntitySpawn implements Listener {
     @EventHandler
     void onVehicleCreate(final VehicleCreateEvent event) {
         final Vehicle vehicle = event.getVehicle();
-        final double x = vehicle.getLocation().getX();
-        final double y = vehicle.getLocation().getY();
-        final double z = vehicle.getLocation().getZ();
-
         final EntityType entityType = vehicle.getType();
         final Chunk chunk = vehicle.getChunk();
         final World world = vehicle.getWorld();
