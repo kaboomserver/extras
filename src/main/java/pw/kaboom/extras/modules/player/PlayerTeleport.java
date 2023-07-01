@@ -6,8 +6,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-import pw.kaboom.extras.modules.entity.EntityTeleport;
-
 public final class PlayerTeleport implements Listener {
     @EventHandler
     void onPlayerChangedWorld(final PlayerChangedWorldEvent event) {
@@ -18,10 +16,5 @@ public final class PlayerTeleport implements Listener {
             player.setHealth(20);
             player.setMaxHealth(20);
         }
-    }
-
-    @EventHandler
-    void onPlayerTeleport(final PlayerTeleportEvent event) {
-        event.setTo(EntityTeleport.limitLocation(event.getTo()));
     }
 }

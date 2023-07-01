@@ -19,6 +19,7 @@ import org.bukkit.entity.Vehicle;
 import org.bukkit.entity.minecart.ExplosiveMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.TNTPrimeEvent;
 import org.bukkit.event.entity.AreaEffectCloudApplyEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
@@ -27,7 +28,6 @@ import org.bukkit.event.entity.SpawnerSpawnEvent;
 import org.bukkit.event.vehicle.VehicleCreateEvent;
 import org.bukkit.event.weather.LightningStrikeEvent;
 
-import com.destroystokyo.paper.event.block.TNTPrimeEvent;
 import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import com.destroystokyo.paper.event.entity.PreSpawnerSpawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -107,21 +107,6 @@ public final class EntitySpawn implements Listener {
         return false;
     }
 
-    private boolean isOutsideBoundaries(final double x, final double y, final double z) {
-        final int maxValue = 30000000;
-        final int minValue = -30000000;
-
-        if (x > maxValue
-                || x < minValue
-                || y > maxValue
-                || y < minValue
-                || z > maxValue
-                || z < minValue) {
-            return true;
-        }
-        return false;
-    }
-
     private void limitAreaEffectCloudRadius(final AreaEffectCloud cloud) {
         if (cloud.getRadius() > 40) {
             cloud.setRadius(40);
@@ -187,11 +172,6 @@ public final class EntitySpawn implements Listener {
         final double y = event.getLocation().getY();
         final double z = event.getLocation().getZ();
 
-        if (isOutsideBoundaries(x, y, z)) {
-            event.setCancelled(true);
-            return;
-        }
-
         final EntityType entityType = event.getEntityType();
         final Chunk chunk = event.getLocation().getChunk();
         final World world = event.getLocation().getWorld();
@@ -224,11 +204,6 @@ public final class EntitySpawn implements Listener {
         final double x = lightning.getLocation().getX();
         final double y = lightning.getLocation().getY();
         final double z = lightning.getLocation().getZ();
-
-        if (isOutsideBoundaries(x, y, z)) {
-            event.setCancelled(true);
-            return;
-        }
 
         final EntityType entityType = EntityType.LIGHTNING;
         final Chunk chunk = lightning.getChunk();
@@ -273,16 +248,8 @@ public final class EntitySpawn implements Listener {
 
     @EventHandler
     void onTNTPrime(final TNTPrimeEvent event) {
-        switch (event.getReason()) {
-        case EXPLOSION:
-        case FIRE:
-        case REDSTONE:
-            if (ThreadLocalRandom.current().nextBoolean()) {
-                event.setCancelled(true);
-            }
-            return;
-        default:
-            break;
+        if (ThreadLocalRandom.current().nextBoolean()) {
+            event.setCancelled(true);
         }
     }
 
@@ -292,11 +259,6 @@ public final class EntitySpawn implements Listener {
         final double x = vehicle.getLocation().getX();
         final double y = vehicle.getLocation().getY();
         final double z = vehicle.getLocation().getZ();
-
-        if (isOutsideBoundaries(x, y, z)) {
-            event.setCancelled(true);
-            return;
-        }
 
         final EntityType entityType = vehicle.getType();
         final Chunk chunk = vehicle.getChunk();

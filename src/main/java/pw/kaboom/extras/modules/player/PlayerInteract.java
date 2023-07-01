@@ -15,15 +15,6 @@ public final class PlayerInteract implements Listener {
     //static HashMap<UUID, Long> interactMillisList = new HashMap<UUID, Long>();
 
     @EventHandler
-    void onInventoryClick(final InventoryClickEvent event) {
-        try {
-            event.getSlot();
-        } catch (Exception exception) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
     void onPlayerInteract(final PlayerInteractEvent event) {
         /*final UUID playerUuid = event.getPlayer().getUniqueId();
 
