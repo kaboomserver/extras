@@ -3,6 +3,8 @@ package pw.kaboom.extras.modules.player;
 import com.destroystokyo.paper.event.profile.PreLookupProfileEvent;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import com.google.common.base.Charsets;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Server;
@@ -20,6 +22,7 @@ import pw.kaboom.extras.modules.server.ServerTabComplete;
 import pw.kaboom.extras.modules.player.skin.SkinManager;
 import pw.kaboom.extras.util.Utility;
 
+import java.time.Duration;
 import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -28,9 +31,9 @@ public final class PlayerConnection implements Listener {
     private static final FileConfiguration CONFIG = JavaPlugin.getPlugin(Main.class).getConfig();
     private static final String TITLE = CONFIG.getString("playerJoinTitle");
     private static final String SUBTITLE = CONFIG.getString("playerJoinSubtitle");
-    private static final int FADE_IN = 10;
-    private static final int STAY = 160;
-    private static final int FADE_OUT = 5;
+    private static final Duration FADE_IN = Duration.ofMillis(50);
+    private static final Duration STAY = Duration.ofMillis(8000);
+    private static final Duration FADE_OUT = Duration.ofMillis(250);
 
     private static final boolean ENABLE_KICK = CONFIG.getBoolean("enableKick");
     private static final boolean ENABLE_JOIN_RESTRICTIONS = CONFIG.getBoolean(
@@ -46,7 +49,7 @@ public final class PlayerConnection implements Listener {
 
         if (player != null) {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
-                           "A player with that username is already logged in");
+                Component.text("A player with that username is already logged in"));
         }
 
         /*try {
@@ -67,15 +70,12 @@ public final class PlayerConnection implements Listener {
     void onPlayerJoin(final PlayerJoinEvent event) {
         final Player player = event.getPlayer();
 
-        if (TITLE != null
-                || SUBTITLE != null) {
-                player.sendTitle(
-                TITLE,
-                SUBTITLE,
-                FADE_IN,
-                STAY,
-                FADE_OUT
-            );
+        if (TITLE != null || SUBTITLE != null) {
+            player.showTitle(Title.title(
+                Component.text(TITLE),
+                Component.text(SUBTITLE),
+                Title.Times.times(FADE_IN, STAY, FADE_OUT)
+            ));
         }
 
         ServerTabComplete.getLoginNameList().put(player.getUniqueId(), player.getName());

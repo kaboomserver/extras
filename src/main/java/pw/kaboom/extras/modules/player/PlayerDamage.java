@@ -2,6 +2,8 @@ package pw.kaboom.extras.modules.player;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.HumanEntity;
@@ -15,6 +17,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
+import pw.kaboom.extras.util.Utility;
 
 public final class PlayerDamage implements Listener {
     @EventHandler
@@ -34,19 +37,17 @@ public final class PlayerDamage implements Listener {
         }
     }
 
-    @SuppressWarnings("deprecation")
     @EventHandler
     void onFoodLevelChange(final FoodLevelChangeEvent event) {
         final HumanEntity player = event.getEntity();
-
-        if (player.getMaxHealth() <= 0) {
-            player.setMaxHealth(Double.POSITIVE_INFINITY);
+        final AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        if (attribute == null) return;
+        if (attribute.getValue() <= 0) {
+            Utility.resetAttribute(attribute);
             player.setHealth(20);
-            player.setMaxHealth(20);
         }
     }
 
-    @SuppressWarnings("deprecation")
     @EventHandler
     void onPlayerDeath(final PlayerDeathEvent event) {
         final Player player = event.getEntity();
@@ -70,7 +71,11 @@ public final class PlayerDamage implements Listener {
                 xp.setExperience(event.getDroppedExp());
             }
 
-            player.setMaxHealth(20);
+            final AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+            if (attribute != null) {
+                Utility.resetAttribute(attribute);
+            }
+
             player.setHealth(20);
 
             if (player.getBedSpawnLocation() != null) {
@@ -80,9 +85,11 @@ public final class PlayerDamage implements Listener {
                 player.teleportAsync(world.getSpawnLocation());
             }
         } catch (Exception exception) {
-            player.setMaxHealth(Double.POSITIVE_INFINITY);
+            final AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+            if (attribute != null) {
+                Utility.resetAttribute(attribute);
+            }
             player.setHealth(20);
-            player.setMaxHealth(20);
         }
 
         player.setExp(event.getNewExp());

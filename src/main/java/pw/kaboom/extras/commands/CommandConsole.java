@@ -3,10 +3,10 @@ package pw.kaboom.extras.commands;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import pw.kaboom.extras.util.Utility;
 
 import javax.annotation.Nonnull;
 
@@ -24,8 +24,7 @@ public final class CommandConsole implements CommandExecutor {
 
         Bukkit.dispatchCommand(
                 Bukkit.getConsoleSender(),
-                "minecraft:say " + ChatColor.translateAlternateColorCodes(
-                        '&', String.join(" ", args))
+                "minecraft:say " + Utility.translateLegacyColors(String.join(" ", args))
         );
         return true;
     }

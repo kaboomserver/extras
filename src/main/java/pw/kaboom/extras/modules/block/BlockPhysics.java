@@ -1,21 +1,13 @@
 package pw.kaboom.extras.modules.block;
 
-import java.util.HashSet;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockFadeEvent;
-import org.bukkit.event.block.BlockFormEvent;
-import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
-
-import com.destroystokyo.paper.event.block.BlockDestroyEvent;
 import org.bukkit.scheduler.BukkitScheduler;
 import pw.kaboom.extras.Main;
 

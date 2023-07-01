@@ -4,11 +4,11 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import pw.kaboom.extras.util.Utility;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -28,8 +28,7 @@ public final class CommandUsername implements CommandExecutor {
             return true;
         }
 
-        final String nameColor = ChatColor.translateAlternateColorCodes(
-                '&', String.join(" ", args));
+        final String nameColor = Utility.translateLegacyColors(String.join(" ", args));
         final String name = nameColor.substring(0, Math.min(16, nameColor.length()));
         final long millis = lastUsedMillis.getOrDefault(player, 0L);
         final long millisDifference = System.currentTimeMillis() - millis;
@@ -61,10 +60,11 @@ public final class CommandUsername implements CommandExecutor {
             return true;
         }
 
-        final PlayerProfile profile = player.getPlayerProfile();
+        // Preserve UUIDs, as changing them breaks clients
+        final PlayerProfile newProfile = Bukkit.createProfileExact(player.getUniqueId(), name);
+        newProfile.setProperties(player.getPlayerProfile().getProperties());
 
-        profile.setName(name);  // FIXME: Marked for removal
-        player.setPlayerProfile(profile);
+        player.setPlayerProfile(newProfile);
         lastUsedMillis.put(player, System.currentTimeMillis());
 
         player.sendMessage(
