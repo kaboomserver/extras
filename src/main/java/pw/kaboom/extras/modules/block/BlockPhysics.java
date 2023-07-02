@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
@@ -12,7 +13,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import pw.kaboom.extras.Main;
 
 public final class BlockPhysics implements Listener {
-
+    private static final double MINIMUM_TPS = 10;
     // This class contains code to prevent large areas of non-solid blocks
     // from crashing the server
     private static double tps = 20;
@@ -37,15 +38,20 @@ public final class BlockPhysics implements Listener {
 
     @EventHandler
     void onBlockRedstone(final BlockRedstoneEvent event) {
-        final int maxTps = 10;
-
-        if (tps < maxTps) {
+        if (tps < MINIMUM_TPS) {
             event.setNewCurrent(0);
         }
     }
 
     private int fallingBlockCount;
 
+    @EventHandler
+    void onBlockForm(final BlockFormEvent event) {
+        if (tps < MINIMUM_TPS) {
+            event.setCancelled(true);
+        }
+    }
+    
     @EventHandler
     void onEntityChangeBlock(final EntityChangeBlockEvent event) {
         if (event.getEntityType() == EntityType.FALLING_BLOCK
