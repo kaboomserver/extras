@@ -6,6 +6,7 @@ Extras is a Bukkit plugin that that adds extra functionality to the Kaboom serve
 
 | Command               | Aliases             | Permission                  | Description                                             |
 |-----------------------|---------------------|-----------------------------|---------------------------------------------------------|
+| /broadcastrainbow     | /bcr                | extras.broadcastrainbow     | Broadcasts a rainbow message                            |
 | /broadcastminimessage | /broadcastmm, /bcmm | extras.broadcastminimessage | Broadcasts a deserialized MiniMessage component         |
 | /broadcastraw         | /bcraw, /tellraw    | extras.broadcastraw         | Broadcasts raw text to the server                       |
 | /broadcastvanilla     | /bcv                | extras.broadcastvanilla     | Broadcasts text in vanilla style                        |

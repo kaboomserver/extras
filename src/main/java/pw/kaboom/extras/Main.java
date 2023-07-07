@@ -50,6 +50,7 @@ public final class Main extends JavaPlugin {
         prefixConfig = YamlConfiguration.loadConfiguration(prefixConfigFile);
 
         /* Commands */
+        this.getCommand("broadcastrainbow").setExecutor(new CommandBroadcastRainbow());
         this.getCommand("broadcastminimessage").setExecutor(new CommandBroadcastMM());
         this.getCommand("broadcastvanilla").setExecutor(new CommandBroadcastVanilla());
         this.getCommand("clearchat").setExecutor(new CommandClearChat());
@@ -69,7 +70,7 @@ public final class Main extends JavaPlugin {
         this.getCommand("spidey").setExecutor(new CommandSpidey());
         this.getCommand("tellraw").setExecutor(new CommandTellraw());
         this.getCommand("username").setExecutor(new CommandUsername());
-
+	    
         /* Block-related modules */
         BlockPhysics.init(this);
 
