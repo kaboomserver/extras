@@ -11,6 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import pw.kaboom.extras.Main;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -22,33 +23,17 @@ public final class ServerCommand implements Listener {
     private static final Pattern SELECTOR_PATTERN = Pattern.compile("(?>\\s)*@[aepsr](?>\\s)*");
     private static final Logger LOGGER = JavaPlugin.getPlugin(Main.class).getLogger();
 
+    private static final String[] COMMANDS = { "execute", "clone", "fill", "forceload", "kick", "locate", "locatebiome",
+        "me", "msg", "reload", "save-all", "say", "spreadplayers", "stop", "summon", "teammsg", "teleport", "tell",
+        "tellraw", "tm", "tp", "w", "place", "fillbiome", "ride" };
+
     public static boolean checkExecuteCommand(final String cmd) {
-        return ("execute".equalsIgnoreCase(cmd)
-            || "clone".equalsIgnoreCase(cmd)
-            || "fill".equalsIgnoreCase(cmd)
-            || "forceload".equalsIgnoreCase(cmd)
-            || "kick".equalsIgnoreCase(cmd)
-            || "locate".equalsIgnoreCase(cmd)
-            || "locatebiome".equalsIgnoreCase(cmd)
-            || "me".equalsIgnoreCase(cmd)
-            || "msg".equalsIgnoreCase(cmd)
-            || "reload".equalsIgnoreCase(cmd)
-            || "save-all".equalsIgnoreCase(cmd)
-            || "say".equalsIgnoreCase(cmd)
-            || "spreadplayers".equalsIgnoreCase(cmd)
-            || "stop".equalsIgnoreCase(cmd)
-            || "summon".equalsIgnoreCase(cmd)
-            || "teammsg".equalsIgnoreCase(cmd)
-            || "teleport".equalsIgnoreCase(cmd)
-            || "tell".equalsIgnoreCase(cmd)
-            || "tellraw".equalsIgnoreCase(cmd)
-            || "tm".equalsIgnoreCase(cmd)
-            || "tp".equalsIgnoreCase(cmd)
-            || "w".equalsIgnoreCase(cmd)
-            || "place".equalsIgnoreCase(cmd)
-            || "fillbiome".equalsIgnoreCase(cmd)
-            || "ride".equalsIgnoreCase(cmd)
-        );
+        for (String command : COMMANDS) {
+            if (command.equalsIgnoreCase(cmd)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static String checkSelectors(final String[] arr) {
@@ -87,8 +72,7 @@ public final class ServerCommand implements Listener {
 
         try {
             switch (commandName) {
-                case "/minecraft:execute":
-                case "/execute":
+                case "/minecraft:execute", "/execute" -> {
                     if (arr.length >= 2) {
                         int asAtCount = 0;
                         Matcher asAtMatcher = AS_AT_PATTERN.matcher(command.toLowerCase());
@@ -113,41 +97,35 @@ public final class ServerCommand implements Listener {
                                 return "cancel";
                             }
                             final String[] executeCommand = Arrays.copyOfRange(
-                                arr, i + 1, arr.length);
+                                    arr, i + 1, arr.length);
                             final String result = checkCommand(sender,
-                                String.join(" ", executeCommand), true, depth + 1);
+                                    String.join(" ", executeCommand), true, depth + 1);
                             if (result == null) {
                                 continue;
                             } else if (result.equals("cancel")) {
                                 return "cancel";
                             }
                             final String pureExecute = String.join(
-                                " ", Arrays.copyOfRange(arr, 0, i + 1));
+                                    " ", Arrays.copyOfRange(arr, 0, i + 1));
                             final String finalResult = checkCommand(sender,
-                                pureExecute + " " + result, isConsoleCommand, depth + 1);
-                            if (finalResult == null) {
-                                return pureExecute + " " + result;
-                            }
-                            return finalResult;
+                                    pureExecute + " " + result, isConsoleCommand, depth + 1);
+                            return Objects.requireNonNullElseGet(finalResult, () -> pureExecute + " " + result);
                         }
                     }
-                    break;
-                case "/minecraft:fill":
-                case "/fill":
+                }
+                case "/minecraft:fill", "/fill" -> {
                     if (command.contains("auto")) {
                         return command.replace("auto", "[auto]");
                     }
-                    break;
-                case "/minecraft:give":
-                case "/give":
+                }
+                case "/minecraft:give", "/give" -> {
                     if (Double.parseDouble(arr[arr.length - 1]) > 64) {
                         // Limit item count
                         arr[arr.length - 1] = "64";
                         return String.join(" ", arr);
                     }
-                    break;
-                case "/minecraft:particle":
-                case "/particle":
+                }
+                case "/minecraft:particle", "/particle" -> {
                     int[] numArgs = {14, 10};
                     for (int i : numArgs) {
                         if (arr.length < i || arr.length > i + 2) {
@@ -159,22 +137,11 @@ public final class ServerCommand implements Listener {
                             return String.join(" ", arr);
                         }
                     }
-                    break;
-                case "/minecraft:ban":
-                case "/ban":
-                case "/minecraft:kick":
-                case "/kick":
-                case "/minecraft:tell":
-                case "/tell":
-                case "/minecraft:msg":
-                case "/msg":
-                case "/minecraft:w":
-                case "/w":
-                case "/minecraft:say":
-                case "/say":
+                }
+                case "/minecraft:ban", "/ban", "/minecraft:kick", "/kick", "/minecraft:tell", "/tell", "/minecraft:msg", "/msg", "/minecraft:w", "/w", "/minecraft:say", "/say" -> {
                     return checkSelectors(arr);
-                case "/minecraft:spreadplayers":
-                case "/spreadplayers":
+                }
+                case "/minecraft:spreadplayers", "/spreadplayers" -> {
                     if (arr.length == 7 && (arr[6].contains("@e") || arr[6].contains("@a"))) {
                         return "cancel";
                     } else if (arr.length >= 5) {
@@ -189,34 +156,27 @@ public final class ServerCommand implements Listener {
                         }
                         return String.join(" ", arr);
                     }
-                    break;
-                case "/viaversion:viaver":
-                case "/viaversion:viaversion":
-                case "/viaversion:vvbukkit":
-                case "/viaver":
-                case "/viaversion":
-                case "/vvbukkit":
+                }
+                case "/viaversion:viaver", "/viaversion:viaversion", "/viaversion:vvbukkit", "/viaver", "/viaversion", "/vvbukkit" -> {
                     if (arr.length >= 2
                             && "debug".equalsIgnoreCase(arr[1])) {
                         return "cancel";
                     }
-                    break;
-                case "/scissors:scissors":
-                case "/scissors":
-                    if(arr.length >= 2
-                           && "reload".equalsIgnoreCase(arr[1])) {
+                }
+                case "/scissors:scissors", "/scissors" -> {
+                    if (arr.length >= 2
+                            && "reload".equalsIgnoreCase(arr[1])) {
                         return "cancel";
                     }
-                    break;
-                case "/geyser-spigot:geyser":
-                case "/geyser":
+                }
+                case "/geyser-spigot:geyser", "/geyser" -> {
                     if (arr.length >= 2
                             && "dump".equalsIgnoreCase(arr[1])) {
                         return "cancel";
                     }
-                    break;
-                default:
-                    break;
+                }
+                default -> {
+                }
             }
         } catch (NumberFormatException exception) {
             // Do nothing
@@ -229,15 +189,12 @@ public final class ServerCommand implements Listener {
     void onServerCommand(final ServerCommandEvent event) {
         final CommandSender sender = event.getSender();
 
-        if (sender instanceof BlockCommandSender) {
-            final CommandBlock commandBlock = (CommandBlock) ((BlockCommandSender) sender)
-                .getBlock().getState();
+        if (sender instanceof BlockCommandSender blockCommandSender) {
+            final var commandBlock = (CommandBlock) blockCommandSender.getBlock().getState();
 
             commandBlock.setCommand("");
             commandBlock.update();
-        } else if (sender instanceof CommandMinecart) {
-            final CommandMinecart commandMinecart = (CommandMinecart) sender;
-
+        } else if (sender instanceof CommandMinecart commandMinecart) {
             commandMinecart.setCommand("");
         }
 
