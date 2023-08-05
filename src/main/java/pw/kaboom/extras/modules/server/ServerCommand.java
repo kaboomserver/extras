@@ -23,9 +23,10 @@ public final class ServerCommand implements Listener {
     private static final Pattern SELECTOR_PATTERN = Pattern.compile("(?>\\s)*@[aepsr](?>\\s)*");
     private static final Logger LOGGER = JavaPlugin.getPlugin(Main.class).getLogger();
 
-    private static final String[] COMMANDS = { "execute", "clone", "fill", "forceload", "kick", "locate", "locatebiome",
-        "me", "msg", "reload", "save-all", "say", "spreadplayers", "stop", "summon", "teammsg", "teleport", "tell",
-        "tellraw", "tm", "tp", "w", "place", "fillbiome", "ride" };
+    private static final String[] COMMANDS = { "execute", "clone", "fill", "forceload", "kick",
+            "locate", "locatebiome", "me", "msg", "reload", "save-all", "say", "spreadplayers",
+            "stop", "summon", "teammsg", "teleport", "tell", "tellraw", "tm", "tp", "w", "place",
+            "fillbiome", "ride" };
 
     public static boolean checkExecuteCommand(final String cmd) {
         for (String command : COMMANDS) {
@@ -109,7 +110,8 @@ public final class ServerCommand implements Listener {
                                     " ", Arrays.copyOfRange(arr, 0, i + 1));
                             final String finalResult = checkCommand(sender,
                                     pureExecute + " " + result, isConsoleCommand, depth + 1);
-                            return Objects.requireNonNullElseGet(finalResult, () -> pureExecute + " " + result);
+                            return Objects.requireNonNullElseGet(finalResult,
+                                    () -> pureExecute + " " + result);
                         }
                     }
                 }
@@ -138,8 +140,9 @@ public final class ServerCommand implements Listener {
                         }
                     }
                 }
-                case "/minecraft:ban", "/ban", "/minecraft:kick", "/kick", "/minecraft:tell", "/tell",
-                        "/minecraft:msg", "/msg", "/minecraft:w", "/w", "/minecraft:say", "/say" -> {
+                case "/minecraft:ban", "/ban", "/minecraft:kick", "/kick",
+                        "/minecraft:tell", "/tell", "/minecraft:msg", "/msg",
+                        "/minecraft:w", "/w", "/minecraft:say", "/say" -> {
                     return checkSelectors(arr);
                 }
                 case "/minecraft:spreadplayers", "/spreadplayers" -> {
