@@ -138,7 +138,8 @@ public final class ServerCommand implements Listener {
                         }
                     }
                 }
-                case "/minecraft:ban", "/ban", "/minecraft:kick", "/kick", "/minecraft:tell", "/tell", "/minecraft:msg", "/msg", "/minecraft:w", "/w", "/minecraft:say", "/say" -> {
+                case "/minecraft:ban", "/ban", "/minecraft:kick", "/kick", "/minecraft:tell", "/tell",
+                        "/minecraft:msg", "/msg", "/minecraft:w", "/w", "/minecraft:say", "/say" -> {
                     return checkSelectors(arr);
                 }
                 case "/minecraft:spreadplayers", "/spreadplayers" -> {
@@ -157,7 +158,8 @@ public final class ServerCommand implements Listener {
                         return String.join(" ", arr);
                     }
                 }
-                case "/viaversion:viaver", "/viaversion:viaversion", "/viaversion:vvbukkit", "/viaver", "/viaversion", "/vvbukkit" -> {
+                case "/viaversion:viaver", "/viaversion:viaversion", "/viaversion:vvbukkit",
+                        "/viaver", "/viaversion", "/vvbukkit" -> {
                     if (arr.length >= 2
                             && "debug".equalsIgnoreCase(arr[1])) {
                         return "cancel";
