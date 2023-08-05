@@ -1,7 +1,7 @@
 name: Extras
 main: pw.kaboom.extras.Main
 description: Plugin that adds extra functionality to the server.
-api-version: '1.20'
+api-version: '1.19'
 version: master
 
 commands:
