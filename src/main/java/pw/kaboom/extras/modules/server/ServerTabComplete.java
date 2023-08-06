@@ -13,7 +13,7 @@ import org.bukkit.event.Listener;
 import com.destroystokyo.paper.event.server.AsyncTabCompleteEvent;
 
 public final class ServerTabComplete implements Listener {
-    private static HashMap<UUID, String> loginNameList = new HashMap<UUID, String>();
+    private static final HashMap<UUID, String> loginNameList = new HashMap<>();
 
     @EventHandler
     void onAsyncTabComplete(final AsyncTabCompleteEvent event) {
@@ -39,13 +39,13 @@ public final class ServerTabComplete implements Listener {
             return;
         }
 
-        if (event.getCompletions().size() == 0) {
+        if (event.getCompletions().isEmpty()) {
             event.setCancelled(true);
         }
     }
 
     static List<String> getOpCompletions(final String argsFragment) {
-        ArrayList<String> deops = new ArrayList<String>();
+        final List<String> deops = new ArrayList<>();
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (!player.isOp()) {
                 String loginName = loginNameList.get(player.getUniqueId());
@@ -58,7 +58,7 @@ public final class ServerTabComplete implements Listener {
     }
 
     static List<String> getDeopCompletions(final String argsFragment) {
-        ArrayList<String> ops = new ArrayList<String>();
+        final List<String> ops = new ArrayList<>();
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.isOp()) {
                 String loginName = loginNameList.get(player.getUniqueId());
