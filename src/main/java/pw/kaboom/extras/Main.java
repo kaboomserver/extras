@@ -80,6 +80,8 @@ public final class Main extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new PlayerPrefix(), this);
 
         /* Server-related modules */
+        ServerGameRule.init(this);
+
         this.getServer().getPluginManager().registerEvents(new ServerCommand(), this);
         this.getServer().getPluginManager().registerEvents(new ServerGameRule(), this);
         this.getServer().getPluginManager().registerEvents(new ServerTabComplete(), this);
