@@ -240,7 +240,9 @@ public final class EntitySpawn implements Listener {
 
     @EventHandler
     void onTNTPrime(final TNTPrimeEvent event) {
-        if (ThreadLocalRandom.current().nextBoolean()) {
+        if (event.getBlock()
+                .getWorld().getEntitiesByClass(TNTPrimed.class).size() >= MAX_TNTS_PER_WORLD
+                && ThreadLocalRandom.current().nextBoolean()) {
             event.setCancelled(true);
         }
     }
