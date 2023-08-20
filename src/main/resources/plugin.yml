@@ -1,7 +1,7 @@
 name: Extras
 main: pw.kaboom.extras.Main
 description: Plugin that adds extra functionality to the server.
-api-version: 1.13
+api-version: '1.19'
 version: master
 
 commands:
@@ -22,14 +22,14 @@ commands:
       description: Broadcasts text in vanilla style
       permission: extras.broadcastvanilla
    clearchat:
-      aliases: cc
+      aliases: [ cc ]
       description: Clears messages from the chat
       permission: extras.clearchat
    console:
       description: Broadcasts a message as the console
       permission: extras.console
    destroyentities:
-      aliases: de
+      aliases: [ de ]
       description: Destroys all entities in every world
       permission: extras.destroyentities
    enchantall:
@@ -44,7 +44,7 @@ commands:
       description: Gets the JSON of a deserialized MiniMessage component
       permission: extras.getjsonmm
    jumpscare:
-      aliases: scare
+      aliases: [ scare ]
       description: Scares a player
       permission: extras.jumpscare
    kaboom:
@@ -62,7 +62,7 @@ commands:
       description: Places a pumpkin on a player's head
       permission: extras.pumpkin
    serverinfo:
-      aliases: specs
+      aliases: [ specs ]
       description: Shows detailed server information
       permission: extras.serverinfo
    skin:

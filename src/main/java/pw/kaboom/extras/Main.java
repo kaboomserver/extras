@@ -12,12 +12,10 @@ import pw.kaboom.extras.modules.block.BlockPhysics;
 import pw.kaboom.extras.modules.entity.EntityExplosion;
 import pw.kaboom.extras.modules.entity.EntityKnockback;
 import pw.kaboom.extras.modules.entity.EntitySpawn;
-import pw.kaboom.extras.modules.entity.EntityTeleport;
 import pw.kaboom.extras.modules.player.*;
 import pw.kaboom.extras.modules.server.ServerCommand;
 import pw.kaboom.extras.modules.server.ServerGameRule;
 import pw.kaboom.extras.modules.server.ServerTabComplete;
-import pw.kaboom.extras.modules.server.ServerTick;
 
 import java.io.File;
 import java.util.Collections;
@@ -28,16 +26,6 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        /* Fill lists */
-        Collections.addAll(
-                BlockPhysics.getBlockFaces(),
-                BlockFace.NORTH,
-                BlockFace.SOUTH,
-                BlockFace.WEST,
-                BlockFace.EAST,
-                BlockFace.UP
-        );
-
         /* Load missing config.yml defaults */
         getConfig().options().copyDefaults(true);
         saveConfig();
@@ -81,7 +69,6 @@ public final class Main extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new EntityExplosion(), this);
         this.getServer().getPluginManager().registerEvents(new EntityKnockback(), this);
         this.getServer().getPluginManager().registerEvents(new EntitySpawn(), this);
-        this.getServer().getPluginManager().registerEvents(new EntityTeleport(), this);
 
         /* Player-related modules */
         this.getServer().getPluginManager().registerEvents(new PlayerChat(), this);
@@ -94,10 +81,11 @@ public final class Main extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new PlayerPrefix(), this);
 
         /* Server-related modules */
+        ServerGameRule.init(this);
+
         this.getServer().getPluginManager().registerEvents(new ServerCommand(), this);
         this.getServer().getPluginManager().registerEvents(new ServerGameRule(), this);
         this.getServer().getPluginManager().registerEvents(new ServerTabComplete(), this);
-        this.getServer().getPluginManager().registerEvents(new ServerTick(), this);
 
         /* Custom worlds */
         this.getServer().createWorld(
