@@ -26,7 +26,7 @@ public final class ServerCommand implements Listener {
     private static final String[] COMMANDS = { "execute", "clone", "fill", "forceload", "kick",
             "locate", "locatebiome", "me", "msg", "reload", "save-all", "say", "spreadplayers",
             "stop", "summon", "teammsg", "teleport", "tell", "tellraw", "tm", "tp", "w", "place",
-            "fillbiome", "ride" };
+            "fillbiome", "ride" , "tick"};
 
     public static boolean checkExecuteCommand(final String cmd) {
         for (String command : COMMANDS) {
