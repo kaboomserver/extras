@@ -1,6 +1,7 @@
 package pw.kaboom.extras.modules.player.skin;
 
 import com.google.gson.Gson;
+import java.lang.InterruptedException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -10,8 +11,12 @@ import java.util.List;
 import java.util.UUID;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -58,8 +63,22 @@ public final class SkinManager {
             final SkinData skinData;
 
             try {
-                skinData = getSkinData(name).get();
-            } catch (Exception e) {
+                skinData = getSkinData(name).get(15, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                if (!shouldSendMessage) {
+                    return;
+                }
+
+                player.sendMessage(Component.text("Skin fetching was interrupted"));
+                return;
+            } catch (TimeoutException e) {
+                if (!shouldSendMessage) {
+                    return;
+                }
+
+                player.sendMessage(Component.text("Took too long to fetch skin"));
+                return;
+            } catch (ExecutionException | CompletionException e) {
                 if(!shouldSendMessage) {
                     return;
                 }
