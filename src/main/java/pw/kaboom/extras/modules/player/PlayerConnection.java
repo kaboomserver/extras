@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.profile.PreLookupProfileEvent;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import com.google.common.base.Charsets;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -29,8 +30,22 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public final class PlayerConnection implements Listener {
     private static final FileConfiguration CONFIG = JavaPlugin.getPlugin(Main.class).getConfig();
-    private static final String TITLE = CONFIG.getString("playerJoinTitle");
-    private static final String SUBTITLE = CONFIG.getString("playerJoinSubtitle");
+    private static final Component TITLE =
+            LegacyComponentSerializer.legacySection()
+                .deserialize(
+                        CONFIG.getString(
+                                "playerJoinTitle",
+                                ""
+                        )
+                );
+    private static final Component SUBTITLE =
+            LegacyComponentSerializer.legacySection()
+                .deserialize(
+                        CONFIG.getString(
+                                "playerJoinSubtitle",
+                                ""
+                        )
+                );
     private static final Duration FADE_IN = Duration.ofMillis(50);
     private static final Duration STAY = Duration.ofMillis(8000);
     private static final Duration FADE_OUT = Duration.ofMillis(250);
@@ -70,13 +85,11 @@ public final class PlayerConnection implements Listener {
     void onPlayerJoin(final PlayerJoinEvent event) {
         final Player player = event.getPlayer();
 
-        if (TITLE != null || SUBTITLE != null) {
-            player.showTitle(Title.title(
-                Component.text(TITLE),
-                Component.text(SUBTITLE),
-                Title.Times.times(FADE_IN, STAY, FADE_OUT)
-            ));
-        }
+        player.showTitle(Title.title(
+            TITLE,
+            SUBTITLE,
+            Title.Times.times(FADE_IN, STAY, FADE_OUT)
+        ));
 
         ServerTabComplete.getLoginNameList().put(player.getUniqueId(), player.getName());
     }
