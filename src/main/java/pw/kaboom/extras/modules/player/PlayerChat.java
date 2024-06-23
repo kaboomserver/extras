@@ -41,6 +41,10 @@ public final class PlayerChat implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     void onAsyncChatEventRenderer(final AsyncChatEvent event) {
+        if (PlayerPrefix.isUsingVanillaFormat(event.getPlayer())) {
+            return;
+        }
+
         event.renderer(CHAT_RENDERER);
     }
 
