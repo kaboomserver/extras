@@ -1,18 +1,47 @@
 package pw.kaboom.extras.commands;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import pw.kaboom.extras.util.Lazy;
 
 import javax.annotation.Nonnull;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
+import java.util.Collections;
+import java.util.List;
 
 public final class CommandServerInfo implements CommandExecutor {
+    private static final Lazy<List<String>> CPU_MODEL_SUPPLIER = new Lazy<>(() -> {
+        final String[] shCommand = {
+                "/bin/sh",
+                "-c",
+                "cat /proc/cpuinfo | grep 'model name' | cut -f 2 -d ':' | awk '{$1=$1}1' | head -1"
+        };
+
+        try {
+            final Process process = Runtime.getRuntime().exec(shCommand);
+            final InputStreamReader isr = new InputStreamReader(process.getInputStream());
+            final BufferedReader br = new BufferedReader(isr);
+            final List<String> lines = new ObjectArrayList<>();
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                lines.add(line);
+            }
+
+            br.close();
+            return lines;
+        } catch (Exception ignored) {
+            return Collections.emptyList();
+        }
+    });
+
     private void sendInfoMessage(final CommandSender target, final String description,
                                  final String value) {
         target.sendMessage(
@@ -52,26 +81,8 @@ public final class CommandServerInfo implements CommandExecutor {
                     + ManagementFactory.getRuntimeMXBean().getVmVersion()
         );
 
-        try {
-            final String[] shCommand = {
-                "/bin/sh",
-                "-c",
-                "cat /proc/cpuinfo | grep 'model name' | cut -f 2 -d ':' | awk '{$1=$1}1' | head -1"
-            };
-
-             final Process process = Runtime.getRuntime().exec(shCommand);
-            final InputStreamReader isr = new InputStreamReader(process.getInputStream());
-            final BufferedReader br = new BufferedReader(isr);
-            String line;
-
-            while ((line = br.readLine()) != null) {
-                sendInfoMessage(sender, "CPU model",
-                    line
-                );
-            }
-
-            br.close();
-        } catch (Exception ignored) {
+        for (final String modelLine: CPU_MODEL_SUPPLIER.get()) {
+            sendInfoMessage(sender, "CPU model", modelLine);
         }
 
         sendInfoMessage(sender, "CPU cores",
