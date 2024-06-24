@@ -1,7 +1,9 @@
 package pw.kaboom.extras.modules.player;
 
+import io.papermc.paper.event.world.WorldGameRuleChangeEvent;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -10,6 +12,7 @@ import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -20,7 +23,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import pw.kaboom.extras.util.Utility;
 
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.Objects;
+
 public final class PlayerDamage implements Listener {
+    private final Map<World, Boolean> deathMessageToggles = new IdentityHashMap<>();
+
     @EventHandler
     void onEntityDamage(final EntityDamageEvent event) {
         if (EntityType.PLAYER.equals(event.getEntityType())) {
@@ -49,12 +58,27 @@ public final class PlayerDamage implements Listener {
         }
     }
 
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    void onGameRuleChange(final WorldGameRuleChangeEvent event) {
+        if (event.getGameRule() != GameRule.SHOW_DEATH_MESSAGES) {
+            return;
+        }
+
+        this.deathMessageToggles.put(event.getWorld(), Boolean.parseBoolean(event.getValue()));
+    }
+
     @EventHandler
     void onPlayerDeath(final PlayerDeathEvent event) {
         final Player player = event.getEntity();
         final Component deathMessage = event.deathMessage();
 
-        if (deathMessage != null) {
+        if (deathMessage != null && this.deathMessageToggles.computeIfAbsent(
+                player.getWorld(),
+                (key) -> Objects.requireNonNullElse(
+                        key.getGameRuleValue(GameRule.SHOW_DEATH_MESSAGES),
+                        key.getGameRuleDefault(GameRule.SHOW_DEATH_MESSAGES)
+                )
+        )) {
             Bukkit.broadcast(deathMessage);
         }
 
