@@ -1,5 +1,6 @@
 package pw.kaboom.extras.modules.player;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
@@ -51,8 +52,11 @@ public final class PlayerDamage implements Listener {
     @EventHandler
     void onPlayerDeath(final PlayerDeathEvent event) {
         final Player player = event.getEntity();
+        final Component deathMessage = event.deathMessage();
 
-        Bukkit.broadcast(event.deathMessage());
+        if (deathMessage != null) {
+            Bukkit.broadcast(deathMessage);
+        }
 
         try {
             if (!event.getKeepInventory()) {
