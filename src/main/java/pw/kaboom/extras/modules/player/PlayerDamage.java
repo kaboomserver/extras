@@ -52,9 +52,7 @@ public final class PlayerDamage implements Listener {
     void onPlayerDeath(final PlayerDeathEvent event) {
         final Player player = event.getEntity();
 
-        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            onlinePlayer.sendMessage(event.deathMessage());
-        }
+        Bukkit.broadcast(event.deathMessage());
 
         try {
             if (!event.getKeepInventory()) {
