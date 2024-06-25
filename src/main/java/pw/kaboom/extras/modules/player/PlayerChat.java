@@ -41,10 +41,6 @@ public final class PlayerChat implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     void onAsyncChatEventRenderer(final AsyncChatEvent event) {
-        if (PlayerPrefix.isUsingVanillaFormat(event.getPlayer())) {
-            return;
-        }
-
         event.renderer(CHAT_RENDERER);
     }
 
@@ -87,11 +83,24 @@ public final class PlayerChat implements Listener {
                 LegacyComponentSerializer
                         .legacyAmpersand();
 
+        private Component renderVanilla(@Nonnull Component displayName,
+                                        @Nonnull Component component) {
+            return Component.translatable(
+                    "chat.type.text",
+                    displayName,
+                    component.replaceText(URL_REPLACEMENT_CONFIG)
+            );
+        }
+
         @Override
         public @Nonnull Component render(@Nonnull Player player,
                                          @Nonnull Component displayName,
                                          @Nonnull Component component,
                                          @Nonnull Audience audience) {
+            if (PlayerPrefix.isUsingVanillaFormat(player)) {
+                return renderVanilla(displayName, component);
+            }
+
             Component newComponent = Component.empty();
             final Component prefix;
             Component prefix1;
