@@ -74,6 +74,14 @@ public final class PlayerPrefix implements Listener {
 		return prefix;
 	}
 
+	public static boolean isUsingVanillaFormat(Player player) {
+		final UUID playerUUID = player.getUniqueId();
+		final String stringifiedUUID = playerUUID.toString();
+		final String legacyPrefix = PREFIX_CONFIG.getString(stringifiedUUID);
+
+		return legacyPrefix != null && legacyPrefix.equals("%");
+	}
+
 	public static Component getPrefix(Player player) throws IOException {
 		final UUID playerUUID = player.getUniqueId();
 		final String stringifiedUUID = playerUUID.toString();
@@ -94,7 +102,10 @@ public final class PlayerPrefix implements Listener {
 
 	private static void onUpdate(Player player) throws IOException {
 		final Component component = Component.empty()
-			.append(getPrefix(player))
+			.append(
+					isUsingVanillaFormat(player) ?
+					Component.empty() : getPrefix(player)
+			)
 			.append(player.displayName());
 
 		player.playerListName(component);
