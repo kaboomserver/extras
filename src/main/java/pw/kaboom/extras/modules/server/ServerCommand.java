@@ -62,6 +62,11 @@ public final class ServerCommand implements Listener {
         }
 
         final String[] arr = command.split(" ");
+
+        if (arr.length == 0) {
+            return command;
+        }
+
         String commandName = arr[0].toLowerCase();
 
         if (isConsoleCommand) {
