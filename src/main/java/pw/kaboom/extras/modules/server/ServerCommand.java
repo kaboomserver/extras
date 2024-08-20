@@ -173,9 +173,6 @@ public final class ServerCommand implements Listener {
                         return "cancel";
                     }
                 }
-                case "/minecraft:datapack", "/datapack" -> {
-                    return "cancel";
-                }
                 case "/scissors:scissors", "/scissors" -> {
                     if (arr.length >= 2
                             && "reload".equalsIgnoreCase(arr[1])) {
