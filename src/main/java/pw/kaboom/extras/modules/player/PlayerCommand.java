@@ -15,7 +15,7 @@ import pw.kaboom.extras.modules.server.ServerCommand;
 public final class PlayerCommand implements Listener {
     private static HashMap<UUID, Long> commandMillisList = new HashMap<UUID, Long>();
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     void onPlayerCommandPreprocess(final PlayerCommandPreprocessEvent event) {
         final UUID playerUuid = event.getPlayer().getUniqueId();
 
