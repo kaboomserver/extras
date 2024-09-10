@@ -23,10 +23,10 @@ public final class ServerCommand implements Listener {
     private static final Pattern SELECTOR_PATTERN = Pattern.compile("(?>\\s)*@[aepsr](?>\\s)*");
     private static final Logger LOGGER = JavaPlugin.getPlugin(Main.class).getLogger();
 
-    private static final String[] COMMANDS = { "execute", "clone", "datapack", "fill", "forceload", "kick",
-            "locate", "locatebiome", "me", "msg", "reload", "save-all", "say", "spreadplayers",
-            "stop", "summon", "teammsg", "teleport", "tell", "tellraw", "tm", "tp", "w", "place",
-            "fillbiome", "ride" , "tick", "jfr"};
+    private static final String[] COMMANDS = { "execute", "clone", "datapack", "fill",
+            "forceload", "kick", "locate", "locatebiome", "me", "msg", "reload", "save-all",
+            "say", "spreadplayers", "stop", "summon", "teammsg", "teleport", "tell", "tellraw",
+            "tm", "tp", "w", "place", "fillbiome", "ride" , "tick", "jfr"};
 
     public static boolean checkExecuteCommand(final String cmd) {
         for (String command : COMMANDS) {
