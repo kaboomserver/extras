@@ -6,6 +6,7 @@ import java.util.UUID;
 import io.papermc.paper.event.player.PlayerSignCommandPreprocessEvent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
@@ -14,7 +15,7 @@ import pw.kaboom.extras.modules.server.ServerCommand;
 public final class PlayerCommand implements Listener {
     private static HashMap<UUID, Long> commandMillisList = new HashMap<UUID, Long>();
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     void onPlayerCommandPreprocess(final PlayerCommandPreprocessEvent event) {
         final UUID playerUuid = event.getPlayer().getUniqueId();
 
@@ -24,14 +25,11 @@ public final class PlayerCommand implements Listener {
 
             if (millisDifference < 75) {
                 event.setCancelled(true);
+                return;
             }
         }
 
         getCommandMillisList().put(playerUuid, System.currentTimeMillis());
-
-        if (event.isCancelled()) {
-            return;
-        }
 
         final CommandSender sender = event.getPlayer();
         final String command = event.getMessage();
