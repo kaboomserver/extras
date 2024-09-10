@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 public final class PlayerChat implements Listener {
     private static final PlayerChatRenderer CHAT_RENDERER = new PlayerChatRenderer();
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     void onAsyncChatEventProcess(final AsyncChatEvent event) {
         final UUID playerUuid = event.getPlayer().getUniqueId();
 
@@ -33,6 +33,7 @@ public final class PlayerChat implements Listener {
 
             if (millisDifference < 50) {
                 event.setCancelled(true);
+                return;
             }
         }
 
