@@ -7,8 +7,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import javax.annotation.Nonnull;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 
@@ -51,28 +49,6 @@ public final class CommandServerInfo implements CommandExecutor {
                     + " "
                     + ManagementFactory.getRuntimeMXBean().getVmVersion()
         );
-
-        try {
-            final String[] shCommand = {
-                "/bin/sh",
-                "-c",
-                "cat /proc/cpuinfo | grep 'model name' | cut -f 2 -d ':' | awk '{$1=$1}1' | head -1"
-            };
-
-             final Process process = Runtime.getRuntime().exec(shCommand);
-            final InputStreamReader isr = new InputStreamReader(process.getInputStream());
-            final BufferedReader br = new BufferedReader(isr);
-            String line;
-
-            while ((line = br.readLine()) != null) {
-                sendInfoMessage(sender, "CPU model",
-                    line
-                );
-            }
-
-            br.close();
-        } catch (Exception ignored) {
-        }
 
         sendInfoMessage(sender, "CPU cores",
             String.valueOf(Runtime.getRuntime().availableProcessors())
