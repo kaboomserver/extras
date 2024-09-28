@@ -221,6 +221,6 @@ public final class ServerCommand implements Listener {
             }
         }
 
-        LOGGER.log(Level.INFO, "Console command: " + command);
+        LOGGER.log(Level.INFO, "Console/Commandblock command: " + command);
     }
 }
