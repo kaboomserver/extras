@@ -18,15 +18,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class ServerCommand implements Listener {
-    private static final Pattern AS_AT_PATTERN = Pattern.compile(
-        "\\b(as|at|facing entity) @[ae]\\b");
     private static final Pattern SELECTOR_PATTERN = Pattern.compile("(?>\\s)*@[aepsr](?>\\s)*");
     private static final Logger LOGGER = JavaPlugin.getPlugin(Main.class).getLogger();
 
-    private static final String[] COMMANDS = { "execute", "clone", "datapack", "fill",
-            "forceload", "give", "kick", "locate", "locatebiome", "me", "msg", "reload",
-            "save-all", "say", "spawnpoint", "spreadplayers", "stop", "summon", "teammsg",
-            "teleport", "tell", "tellraw", "tm", "tp", "w", "place", "fillbiome", "ride" ,
+    private static final String[] COMMANDS = {"clone", "datapack", "fill", "forceload",
+            "give", "kick", "locate", "locatebiome", "me", "msg", "reload", "save-all",
+            "say", "spawnpoint", "spreadplayers", "stop", "summon", "teammsg",
+            "teleport", "tell", "tellraw", "tm", "tp", "w", "place", "fillbiome", "ride",
             "tick", "jfr"};
 
     public static boolean checkExecuteCommand(final String cmd) {
@@ -81,15 +79,6 @@ public final class ServerCommand implements Listener {
             switch (commandName) {
                 case "/minecraft:execute", "/execute" -> {
                     if (arr.length >= 2) {
-                        int asAtCount = 0;
-                        Matcher asAtMatcher = AS_AT_PATTERN.matcher(command.toLowerCase());
-                        while (asAtMatcher.find()) {
-                            asAtCount++;
-                        }
-                        if (asAtCount >= 2) {
-                            return "cancel";
-                        }
-
                         for (int i = 1; i < arr.length; i++) {
                             if ("summon".equalsIgnoreCase(arr[i])) {
                                 return "cancel";

@@ -37,7 +37,7 @@ public final class EntitySpawn implements Listener {
     private static final FileConfiguration CONFIG = JavaPlugin.getPlugin(Main.class).getConfig();
 
     private static final int MAX_ENTITIES_PER_CHUNK = CONFIG.getInt("maxEntitiesPerChunk");
-    private static final int MAX_ENTITIES_PER_WORLD = CONFIG.getInt("maxEntitiesPerWorld");
+    public static final int MAX_ENTITIES_PER_WORLD = CONFIG.getInt("maxEntitiesPerWorld");
     private static final int MAX_TNTS_PER_WORLD = CONFIG.getInt("maxTntsPerWorld");
 
     private void applyEntityChanges(final Entity entity) {
