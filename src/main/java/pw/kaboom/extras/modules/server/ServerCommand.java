@@ -36,8 +36,8 @@ public final class ServerCommand implements Listener {
         return false;
     }
 
-    private static String checkSelectors(final String[] arr) {
-        final String[] args = Arrays.copyOfRange(arr, 1, arr.length);
+    private static String checkSelectors(final String[] arr, final int offset) {
+        final String[] args = Arrays.copyOfRange(arr, offset, arr.length);
         final String str = String.join(" ", args);
         final Matcher matcher = SELECTOR_PATTERN.matcher(str);
         final long count = matcher.results().count();
@@ -79,6 +79,10 @@ public final class ServerCommand implements Listener {
             switch (commandName) {
                 case "/minecraft:execute", "/execute" -> {
                     if (arr.length >= 2) {
+                        if (arr.length >= 3 && checkSelectors(arr, 2) != null) {
+                            return "cancel";
+                        }
+
                         for (int i = 1; i < arr.length; i++) {
                             if ("summon".equalsIgnoreCase(arr[i])) {
                                 return "cancel";
@@ -138,7 +142,7 @@ public final class ServerCommand implements Listener {
                 case "/minecraft:ban", "/ban", "/minecraft:kick", "/kick",
                         "/minecraft:tell", "/tell", "/minecraft:msg", "/msg",
                         "/minecraft:w", "/w", "/minecraft:say", "/say" -> {
-                    return checkSelectors(arr);
+                    return checkSelectors(arr, 1);
                 }
                 case "/minecraft:spreadplayers", "/spreadplayers" -> {
                     if (arr.length == 7 && (arr[6].contains("@e") || arr[6].contains("@a"))) {
