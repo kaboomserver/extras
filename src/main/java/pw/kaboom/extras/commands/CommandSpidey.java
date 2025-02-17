@@ -41,7 +41,7 @@ public final class CommandSpidey implements CommandExecutor {
         while (blockIterator.hasNext()) {
             final Block block = blockIterator.next();
 
-            if (!block.getType().isAir()) break;
+            if (block.getType() != Material.COBWEB && !block.getType().isAir()) break;
             block.setType(Material.COBWEB);
         }
         return true;
