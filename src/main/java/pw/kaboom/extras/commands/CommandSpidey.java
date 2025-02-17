@@ -3,6 +3,7 @@ package pw.kaboom.extras.commands;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -37,10 +38,11 @@ public final class CommandSpidey implements CommandExecutor {
             distance
         );
 
+        Block block;
         while (blockIterator.hasNext()
-                && (Material.AIR.equals(blockIterator.next().getType())
-                || Material.CAVE_AIR.equals(blockIterator.next().getType()))) {
-            blockIterator.next().setType(Material.COBWEB);
+                && (Material.AIR.equals((block = blockIterator.next()).getType())
+                || Material.CAVE_AIR.equals(block.getType()))) {
+            block.setType(Material.COBWEB);
         }
         return true;
     }
