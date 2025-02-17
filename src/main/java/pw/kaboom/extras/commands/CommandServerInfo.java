@@ -1,21 +1,24 @@
 package pw.kaboom.extras.commands;
 
+import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.Nullable;
 import oshi.SystemInfo;
 import oshi.hardware.GraphicsCard;
-import oshi.hardware.HardwareAbstractionLayer;
+import pw.kaboom.extras.util.Utility;
 
 import javax.annotation.Nonnull;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 
 public final class CommandServerInfo implements CommandExecutor {
-    private static final String[] GPU_DEVICES;
-    private static final String PROCESSOR_NAME;
+    private static final @Nullable String[] GPU_DEVICES;
+    private static final @Nullable String PROCESSOR_NAME;
 
     static {
         // No need to store this in a static variable as it would
@@ -23,15 +26,34 @@ public final class CommandServerInfo implements CommandExecutor {
         // anyway.
 
         final SystemInfo systemInfo = new SystemInfo();
-        final HardwareAbstractionLayer hardware = systemInfo.getHardware();
 
-        GPU_DEVICES = hardware.getGraphicsCards()
-                .stream()
-                .map(GraphicsCard::getName)
-                .toArray(String[]::new);
-        PROCESSOR_NAME = hardware.getProcessor()
-                .getProcessorIdentifier()
-                .getName();
+        // Unfortunately, we need to do something like this
+        // because calls to getHardware may fail if the
+        // server is running on an unrecognized platform,
+        // and we're unable to use guard clauses due to
+        // returns not being supported in static blocks.
+
+        final @Nullable Pair<String[], String> hardwareInfo = Utility.composeCallable(
+                systemInfo::getHardware,
+                hardware ->
+                        new ObjectObjectImmutablePair<>(
+                            hardware.getGraphicsCards()
+                                .stream()
+                                .map(GraphicsCard::getName)
+                                .toArray(String[]::new),
+                            hardware.getProcessor()
+                                .getProcessorIdentifier()
+                                .getName()
+                )
+        );
+
+        if (hardwareInfo == null) {
+            GPU_DEVICES = null;
+            PROCESSOR_NAME = null;
+        } else {
+            GPU_DEVICES = hardwareInfo.first();
+            PROCESSOR_NAME = hardwareInfo.second();
+        }
     }
 
     private void sendInfoMessage(final CommandSender target, final String description,

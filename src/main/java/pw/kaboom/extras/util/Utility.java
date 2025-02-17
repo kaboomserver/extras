@@ -7,6 +7,8 @@ import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.concurrent.Callable;
+import java.util.function.Function;
 
 public final class Utility {
     public static @Nullable Player getPlayerExactIgnoreCase(final String username) {
@@ -35,5 +37,16 @@ public final class Utility {
             }
         }
         return new String(b);
+    }
+
+    public static <T, R> @Nullable R composeCallable(
+            Callable<T> callable,
+            Function<T, R> composer
+    ) {
+        try {
+            return composer.apply(callable.call());
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
