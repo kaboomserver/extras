@@ -5,12 +5,35 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import oshi.SystemInfo;
+import oshi.hardware.GraphicsCard;
+import oshi.hardware.HardwareAbstractionLayer;
 
 import javax.annotation.Nonnull;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 
 public final class CommandServerInfo implements CommandExecutor {
+    private static final String[] GPU_DEVICES;
+    private static final String PROCESSOR_NAME;
+
+    static {
+        // No need to store this in a static variable as it would
+        // just waste memory & won't be accessed outside construction
+        // anyway.
+
+        final SystemInfo systemInfo = new SystemInfo();
+        final HardwareAbstractionLayer hardware = systemInfo.getHardware();
+
+        GPU_DEVICES = hardware.getGraphicsCards()
+                .stream()
+                .map(GraphicsCard::getName)
+                .toArray(String[]::new);
+        PROCESSOR_NAME = hardware.getProcessor()
+                .getProcessorIdentifier()
+                .getName();
+    }
+
     private void sendInfoMessage(final CommandSender target, final String description,
                                  final String value) {
         target.sendMessage(
@@ -50,12 +73,22 @@ public final class CommandServerInfo implements CommandExecutor {
                     + ManagementFactory.getRuntimeMXBean().getVmVersion()
         );
 
+        sendInfoMessage(sender, "CPU model", PROCESSOR_NAME);
+
         sendInfoMessage(sender, "CPU cores",
             String.valueOf(Runtime.getRuntime().availableProcessors())
         );
         sendInfoMessage(sender, "CPU load",
             String.valueOf(ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage())
         );
+
+        for (int i = 0; i < GPU_DEVICES.length; i++) {
+            sendInfoMessage(
+                    sender,
+                    "GPU device (" + i + ")",
+                    GPU_DEVICES[i]
+            );
+        }
 
         final long heapUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed();
         final long nonHeapUsage = ManagementFactory.getMemoryMXBean()
