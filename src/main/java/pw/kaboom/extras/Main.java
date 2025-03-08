@@ -2,10 +2,10 @@ package pw.kaboom.extras;
 
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
-import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.messaging.Messenger;
 import pw.kaboom.extras.commands.*;
 import pw.kaboom.extras.modules.block.BlockCheck;
 import pw.kaboom.extras.modules.block.BlockPhysics;
@@ -18,7 +18,6 @@ import pw.kaboom.extras.modules.server.ServerGameRule;
 import pw.kaboom.extras.modules.server.ServerTabComplete;
 
 import java.io.File;
-import java.util.Collections;
 
 public final class Main extends JavaPlugin {
     private File prefixConfigFile;
@@ -91,6 +90,15 @@ public final class Main extends JavaPlugin {
         this.getServer().createWorld(
             new WorldCreator("world_flatlands").generateStructures(false).type(WorldType.FLAT)
         );
+
+        final Messenger messenger = this.getServer().getMessenger();
+        final PlayerMessaging playerMessaging = new PlayerMessaging(this);
+
+        messenger.registerIncomingPluginChannel(this, PlayerMessaging.REGISTER, playerMessaging);
+        messenger.registerIncomingPluginChannel(this, PlayerMessaging.UNREGISTER, playerMessaging);
+
+        messenger.registerIncomingPluginChannel(this, PlayerMessaging.MESSAGE, playerMessaging);
+        messenger.registerOutgoingPluginChannel(this, PlayerMessaging.MESSAGE);
     }
 
 	public File getPrefixConfigFile() {
