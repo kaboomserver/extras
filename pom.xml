@@ -18,6 +18,14 @@
             <version>1.20.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.github.oshi</groupId>
+            <artifactId>oshi-core</artifactId>
+            <version>6.4.5</version>
+            <!-- This is a vanilla dependency, as of 1.20.4 -->
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <repositories>
