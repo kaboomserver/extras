@@ -107,8 +107,9 @@ public final class PlayerMessaging implements PluginMessageListener {
         if (players == null) return;
 
         synchronized (players) {
-            // we start at null so that we do not read the bytes if the
-            // only player in the channel is the sender of the message
+            // we initialize as null so that we do not read the incoming
+            // data and serialize the payload if the only recipient
+            // would be the sender, who we do not send to
             byte[] msg = null;
 
             for (final Player playerInSet : players) {
