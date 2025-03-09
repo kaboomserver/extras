@@ -26,6 +26,7 @@ public final class PlayerMessaging implements PluginMessageListener {
             Component.text("Could not send plugin channel message.", NamedTextColor.RED);
     private static final ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE =
             Executors.newSingleThreadScheduledExecutor();
+    private static final byte END_CHAR_MASK = (byte) 0x80;
 
     private final Main plugin;
 
@@ -61,10 +62,19 @@ public final class PlayerMessaging implements PluginMessageListener {
     private final Map<String, Set<Player>> listening = Collections.synchronizedMap(new HashMap<>());
 
     private static String readString(DataInput dataInput) throws IOException {
-        final int len = dataInput.readUnsignedByte();
-        final byte[] buf = new byte[len];
-        dataInput.readFully(buf);
-        return new String(buf, StandardCharsets.US_ASCII);
+        final byte[] buf = new byte[255];
+        int idx = 0;
+
+        for(;;) {
+            final byte input = dataInput.readByte();
+            if (idx == buf.length) throw new IOException("Index overflow");
+            final boolean isLast = (input & END_CHAR_MASK) == END_CHAR_MASK;
+            buf[idx++] = (byte) (input & ~END_CHAR_MASK);
+
+            if (isLast) break;
+        }
+
+        return new String(Arrays.copyOf(buf, idx), StandardCharsets.US_ASCII);
     }
 
     private void handleRegister(final Player player, final DataInput input) throws IOException {
@@ -106,20 +116,21 @@ public final class PlayerMessaging implements PluginMessageListener {
                 if (msg == null) {
                     final int remaining = input.available();
 
-                    // remaining count + channel name + channel length header + uuid
+                    // remaining count + channel name + uuid
                     // note: calls to channelName.length() are safe because we only read ASCII
-                    final int realLength = remaining + channelName.length() + 17;
+                    final int realLength = remaining + channelName.length() + 16;
                     if (realLength > Messenger.MAX_MESSAGE_SIZE) {
                         player.sendMessage(ERROR);
                         return;
                     }
 
                     msg = new byte[realLength];
-                    msg[0] = (byte) channelName.length();
-                    int offset = 1;
+                    int offset = 0;
 
+                    final byte[] nameBytes = channelName.getBytes(StandardCharsets.US_ASCII);
+                    nameBytes[nameBytes.length - 1] |= END_CHAR_MASK;
                     System.arraycopy(
-                            channelName.getBytes(StandardCharsets.US_ASCII),
+                            nameBytes,
                             0,
                             msg,
                             offset,
