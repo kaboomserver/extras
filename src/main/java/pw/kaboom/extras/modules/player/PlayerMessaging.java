@@ -74,7 +74,7 @@ public final class PlayerMessaging implements PluginMessageListener {
             if (isLast) break;
         }
 
-        return new String(Arrays.copyOf(buf, idx), StandardCharsets.US_ASCII);
+        return new String(buf, 0, idx, StandardCharsets.US_ASCII);
     }
 
     private void handleRegister(final Player player, final DataInput input) throws IOException {
