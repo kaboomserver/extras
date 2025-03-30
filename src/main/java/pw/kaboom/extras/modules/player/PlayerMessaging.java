@@ -30,7 +30,7 @@ public final class PlayerMessaging implements PluginMessageListener {
 
     private final Main plugin;
 
-    public PlayerMessaging(Main plugin) {
+    public PlayerMessaging(final Main plugin) {
         this.plugin = plugin;
 
         SCHEDULED_EXECUTOR_SERVICE.scheduleAtFixedRate(() -> {
@@ -61,7 +61,7 @@ public final class PlayerMessaging implements PluginMessageListener {
 
     private final Map<String, Set<Player>> listening = Collections.synchronizedMap(new HashMap<>());
 
-    private static String readString(DataInput dataInput) throws IOException {
+    private static String readString(final DataInput dataInput) throws IOException {
         final byte[] buf = new byte[255];
         int idx = 0;
 
@@ -92,7 +92,8 @@ public final class PlayerMessaging implements PluginMessageListener {
         });
     }
 
-    private void handleUnregister(final Player player, final DataInput input) throws IOException {
+    private void handleUnregister(final Player player,
+                                  final DataInput input) throws IOException {
         this.listening.computeIfPresent(readString(input), (k, v) -> {
             v.remove(player);
             return v;
@@ -185,7 +186,7 @@ public final class PlayerMessaging implements PluginMessageListener {
                         new DataInputStream(new FastByteArrayInputStream(bytes))
                 );
             }
-        } catch (Exception ignored) {
+        } catch (final Exception ignored) {
             player.sendMessage(ERROR);
         }
     }
