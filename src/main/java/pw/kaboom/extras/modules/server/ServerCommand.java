@@ -20,7 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class ServerCommand implements Listener {
-    private static final Pattern SELECTOR_PATTERN = Pattern.compile("(?>\\s)*@[aepsr](?>\\s)*");
+    private static final Pattern SELECTOR_PATTERN = Pattern.compile("(?>\\s)*@[aenprs](?>\\s)*");
     private static final Logger LOGGER = JavaPlugin.getPlugin(Main.class).getLogger();
 
     private static final Set<String> BLOCKED_EXECUTE_COMMANDS = ImmutableSet.of(
