@@ -1,5 +1,6 @@
 package pw.kaboom.extras.modules.server;
 
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.block.CommandBlock;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
@@ -12,6 +13,7 @@ import pw.kaboom.extras.Main;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -21,18 +23,10 @@ public final class ServerCommand implements Listener {
     private static final Pattern SELECTOR_PATTERN = Pattern.compile("(?>\\s)*@[aepsr](?>\\s)*");
     private static final Logger LOGGER = JavaPlugin.getPlugin(Main.class).getLogger();
 
-    private static final String[] COMMANDS = {"clone", "fill", "give", "kick", "locate", "me",
-            "msg", "save-all", "say", "spawnpoint", "spreadplayers", "summon", "teammsg",
-            "teleport", "tell", "tellraw", "tm", "tp", "w", "fillbiome", "ride"};
-
-    public static boolean checkExecuteCommand(final String cmd) {
-        for (String command : COMMANDS) {
-            if (command.equalsIgnoreCase(cmd)) {
-                return true;
-            }
-        }
-        return false;
-    }
+    private static final Set<String> BLOCKED_EXECUTE_COMMANDS = ImmutableSet.of(
+            "clone", "fill", "give", "kick", "locate",  "me", "msg", "save-all", "say",
+            "spawnpoint", "spreadplayers",  "summon", "teammsg",  "teleport", "tell", "tellraw",
+            "tm", "tp", "w", "fillbiome", "ride");
 
     private static String checkSelectors(final String[] arr, final int offset) {
         final String[] args = Arrays.copyOfRange(arr, offset, arr.length);
@@ -91,7 +85,7 @@ public final class ServerCommand implements Listener {
                             if (i + 1 == arr.length) {
                                 break;
                             }
-                            if (checkExecuteCommand(arr[i + 1])) {
+                            if (BLOCKED_EXECUTE_COMMANDS.contains(arr[i + 1])) {
                                 return "cancel";
                             }
                             final String[] executeCommand = Arrays.copyOfRange(
