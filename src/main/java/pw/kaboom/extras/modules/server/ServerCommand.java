@@ -1,5 +1,6 @@
 package pw.kaboom.extras.modules.server;
 
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.block.CommandBlock;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
@@ -12,29 +13,20 @@ import pw.kaboom.extras.Main;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class ServerCommand implements Listener {
-    private static final Pattern SELECTOR_PATTERN = Pattern.compile("(?>\\s)*@[aepsr](?>\\s)*");
+    private static final Pattern SELECTOR_PATTERN = Pattern.compile("(?>\\s)*@[aenprs](?>\\s)*");
     private static final Logger LOGGER = JavaPlugin.getPlugin(Main.class).getLogger();
 
-    private static final String[] COMMANDS = {"clone", "datapack", "fill", "forceload",
-            "give", "kick", "locate", "locatebiome", "me", "msg", "reload", "save-all",
-            "say", "spawnpoint", "spreadplayers", "stop", "summon", "teammsg",
-            "teleport", "tell", "tellraw", "tm", "tp", "w", "place", "fillbiome", "ride",
-            "tick", "jfr"};
-
-    public static boolean checkExecuteCommand(final String cmd) {
-        for (String command : COMMANDS) {
-            if (command.equalsIgnoreCase(cmd)) {
-                return true;
-            }
-        }
-        return false;
-    }
+    private static final Set<String> BLOCKED_EXECUTE_COMMANDS = ImmutableSet.of(
+            "clone", "fill", "give", "kick", "locate",  "me", "msg", "save-all", "say",
+            "spawnpoint", "spreadplayers",  "summon", "teammsg",  "teleport", "tell", "tellraw",
+            "tm", "tp", "w", "fillbiome", "ride");
 
     private static String checkSelectors(final String[] arr, final int offset) {
         final String[] args = Arrays.copyOfRange(arr, offset, arr.length);
@@ -93,7 +85,7 @@ public final class ServerCommand implements Listener {
                             if (i + 1 == arr.length) {
                                 break;
                             }
-                            if (checkExecuteCommand(arr[i + 1])) {
+                            if (BLOCKED_EXECUTE_COMMANDS.contains(arr[i + 1])) {
                                 return "cancel";
                             }
                             final String[] executeCommand = Arrays.copyOfRange(
@@ -164,12 +156,6 @@ public final class ServerCommand implements Listener {
                         "/viaver", "/viaversion", "/vvbukkit" -> {
                     if (arr.length >= 2
                             && "debug".equalsIgnoreCase(arr[1])) {
-                        return "cancel";
-                    }
-                }
-                case "/scissors:scissors", "/scissors" -> {
-                    if (arr.length >= 2
-                            && "reload".equalsIgnoreCase(arr[1])) {
                         return "cancel";
                     }
                 }
