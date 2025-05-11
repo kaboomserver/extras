@@ -45,7 +45,7 @@ public final class Utility {
     ) {
         try {
             return composer.apply(callable.call());
-        } catch (Exception e) {
+        } catch (Throwable ex) {
             return null;
         }
     }
