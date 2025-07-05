@@ -180,10 +180,9 @@ public final class ServerCommand implements Listener {
         final CommandSender sender = event.getSender();
 
         if (sender instanceof BlockCommandSender blockCommandSender) {
-            final var commandBlock = (CommandBlock) blockCommandSender.getBlock().getState();
+            final var commandBlock = (CommandBlock) blockCommandSender.getBlock().getState(false);
 
             commandBlock.setCommand("");
-            commandBlock.update();
         } else if (sender instanceof CommandMinecart commandMinecart) {
             commandMinecart.setCommand("");
         }
