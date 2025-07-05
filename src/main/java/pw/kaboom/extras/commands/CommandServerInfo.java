@@ -17,7 +17,7 @@ import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 
 public final class CommandServerInfo implements CommandExecutor {
-    private static final @Nullable String[] GPU_DEVICES;
+    private static final String[] GPU_DEVICES;
     private static final @Nullable String PROCESSOR_NAME;
 
     static {
@@ -48,7 +48,7 @@ public final class CommandServerInfo implements CommandExecutor {
         );
 
         if (hardwareInfo == null) {
-            GPU_DEVICES = null;
+            GPU_DEVICES = new String[0];
             PROCESSOR_NAME = null;
         } else {
             GPU_DEVICES = hardwareInfo.first();
@@ -95,7 +95,9 @@ public final class CommandServerInfo implements CommandExecutor {
                     + ManagementFactory.getRuntimeMXBean().getVmVersion()
         );
 
-        sendInfoMessage(sender, "CPU model", PROCESSOR_NAME);
+        if (PROCESSOR_NAME != null) {
+            sendInfoMessage(sender, "CPU model", PROCESSOR_NAME);
+        }
 
         sendInfoMessage(sender, "CPU cores",
             String.valueOf(Runtime.getRuntime().availableProcessors())
