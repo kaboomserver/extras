@@ -104,8 +104,8 @@ public final class PlayerDamage implements Listener {
 
             player.setHealth(20);
 
-            if (player.getBedSpawnLocation() != null) {
-                player.teleportAsync(player.getBedSpawnLocation());
+            if (player.getRespawnLocation() != null) {
+                player.teleportAsync(player.getRespawnLocation());
             } else {
                 final World world = Bukkit.getWorld("world");
                 player.teleportAsync(world.getSpawnLocation());

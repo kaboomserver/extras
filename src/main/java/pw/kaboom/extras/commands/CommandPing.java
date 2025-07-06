@@ -30,7 +30,7 @@ public final class CommandPing implements CommandExecutor {
             return true;
         }
 
-        final int ping = target.spigot().getPing();
+        final int ping = target.getPing();
         final int d = (int) Math.floor((float) ping / 100);
         NamedTextColor highlighting = NamedTextColor.WHITE;
 
