@@ -50,7 +50,7 @@ public final class PlayerDamage implements Listener {
     @EventHandler
     void onFoodLevelChange(final FoodLevelChangeEvent event) {
         final HumanEntity player = event.getEntity();
-        final AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        final AttributeInstance attribute = player.getAttribute(Attribute.MAX_HEALTH);
         if (attribute == null) return;
         if (attribute.getValue() <= 0) {
             Utility.resetAttribute(attribute);
@@ -97,7 +97,7 @@ public final class PlayerDamage implements Listener {
                 xp.setExperience(event.getDroppedExp());
             }
 
-            final AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+            final AttributeInstance attribute = player.getAttribute(Attribute.MAX_HEALTH);
             if (attribute != null) {
                 Utility.resetAttribute(attribute);
             }
@@ -111,7 +111,7 @@ public final class PlayerDamage implements Listener {
                 player.teleportAsync(world.getSpawnLocation());
             }
         } catch (Exception exception) {
-            final AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+            final AttributeInstance attribute = player.getAttribute(Attribute.MAX_HEALTH);
             if (attribute != null) {
                 Utility.resetAttribute(attribute);
             }

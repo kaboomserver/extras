@@ -87,7 +87,7 @@ public final class EntitySpawn implements Listener {
                 return true;
             }
             break;
-        case PRIMED_TNT:
+        case TNT:
             final int worldTntCount = world.getEntitiesByClass(TNTPrimed.class).size();
 
             if (worldTntCount >= MAX_TNTS_PER_WORLD) {
@@ -131,7 +131,7 @@ public final class EntitySpawn implements Listener {
     }
 
     private void limitSpawner(final CreatureSpawner spawner) {
-        if (EntityType.MINECART_MOB_SPAWNER.equals(spawner.getSpawnedType())) {
+        if (EntityType.SPAWNER_MINECART.equals(spawner.getSpawnedType())) {
             spawner.setSpawnedType(EntityType.MINECART);
         }
 
@@ -159,7 +159,7 @@ public final class EntitySpawn implements Listener {
 
     @EventHandler
     void onExplosionPrime(final ExplosionPrimeEvent event) {
-        if (EntityType.MINECART_TNT.equals(event.getEntityType())
+        if (EntityType.TNT_MINECART.equals(event.getEntityType())
                 && event.getEntity().getWorld()
                 .getEntitiesByClass(ExplosiveMinecart.class).size() > 80) {
             event.setCancelled(true);
@@ -197,7 +197,7 @@ public final class EntitySpawn implements Listener {
     @EventHandler
     void onLightningStrike(final LightningStrikeEvent event) {
         final LightningStrike lightning = event.getLightning();
-        final EntityType entityType = EntityType.LIGHTNING;
+        final EntityType entityType = EntityType.LIGHTNING_BOLT;
         final Chunk chunk = lightning.getChunk();
         final World world = event.getWorld();
 

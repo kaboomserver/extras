@@ -13,7 +13,7 @@ public final class PlayerTeleport implements Listener {
     void onPlayerChangedWorld(final PlayerChangedWorldEvent event) {
         final Player player = event.getPlayer();
 
-        final AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        final AttributeInstance attribute = player.getAttribute(Attribute.MAX_HEALTH);
         if (attribute == null) return;
         if (attribute.getValue() <= 0) {
             Utility.resetAttribute(attribute);
