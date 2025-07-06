@@ -231,8 +231,10 @@ public final class EntitySpawn implements Listener {
         if (EntityType.FALLING_BLOCK.equals(event.getEntityType())) {
             final FallingBlock block = (FallingBlock) event.getEntity();
 
-            if (block.getBlockData().getMaterial().equals(Material.SPAWNER)) {
-                event.setCancelled(true);
+            if (!block.getBlockData().getMaterial().equals(Material.SPAWNER)) return;
+            event.setCancelled(true);
+
+            if (event.getSpawner() != null) {
                 event.getSpawner().setSpawnedType(EntityType.FALLING_BLOCK);
             }
         }
