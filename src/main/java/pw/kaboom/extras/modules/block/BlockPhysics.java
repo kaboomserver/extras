@@ -6,7 +6,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFormEvent;
-import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -17,24 +16,6 @@ public final class BlockPhysics implements Listener {
     // This class contains code to prevent large areas of non-solid blocks
     // from crashing the server
     private static double tps = 20;
-
-    @EventHandler
-    void onBlockPhysics(final BlockPhysicsEvent event) {
-        try {
-            switch (event.getChangedType()) {
-            case COMMAND_BLOCK:
-            case CHAIN_COMMAND_BLOCK:
-            case REPEATING_COMMAND_BLOCK:
-                if (Material.STRUCTURE_BLOCK.equals(event.getSourceBlock().getType())) {
-                    event.setCancelled(true);
-                }
-            default:
-                break;
-            }
-        } catch (Exception | StackOverflowError e) {
-            event.setCancelled(true);
-        }
-    }
 
     @EventHandler
     void onBlockRedstone(final BlockRedstoneEvent event) {
