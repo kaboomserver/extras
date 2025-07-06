@@ -1,5 +1,6 @@
 package pw.kaboom.extras.modules.entity;
 
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
@@ -7,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
 
 import com.destroystokyo.paper.event.entity.EntityKnockbackByEntityEvent;
+import org.bukkit.inventory.ItemStack;
 
 public final class EntityKnockback implements Listener {
     @EventHandler
@@ -14,7 +16,7 @@ public final class EntityKnockback implements Listener {
         final int knockbackLimit = 60;
 
         if (event.getKnockbackStrength() > knockbackLimit) {
-            event.getAcceleration().multiply(
+            event.getKnockback().multiply(
                 knockbackLimit / event.getKnockbackStrength()
             );
         }
@@ -27,8 +29,13 @@ public final class EntityKnockback implements Listener {
             final Arrow arrow = (Arrow) event.getEntity();
             final int knockbackLimit = 60;
 
-            if (arrow.getKnockbackStrength() > knockbackLimit) {
-                arrow.setKnockbackStrength(knockbackLimit);
+            final ItemStack weapon = arrow.getWeapon();
+            if (weapon == null) return;
+
+            if (weapon.getEnchantmentLevel(Enchantment.KNOCKBACK) > knockbackLimit) {
+                // replaces if already present
+                weapon.addUnsafeEnchantment(Enchantment.KNOCKBACK, knockbackLimit);
+                arrow.setWeapon(weapon);
             }
         }
     }

@@ -15,7 +15,7 @@ import javax.annotation.Nonnull;
 public final class CommandJumpscare implements CommandExecutor {
     private void createJumpscare(final Player player) {
         final int count = 4;
-        player.spawnParticle(Particle.MOB_APPEARANCE, player.getLocation(), count);
+        player.spawnParticle(Particle.ELDER_GUARDIAN, player.getLocation(), count);
 
         final int maxIterator = 10;
         for (int i = 0; i <= maxIterator; i++) {
