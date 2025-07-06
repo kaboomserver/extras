@@ -135,20 +135,20 @@ public final class EntitySpawn implements Listener {
             spawner.setSpawnedType(EntityType.MINECART);
         }
 
-        if (spawner.getDelay() > 100) {
-            spawner.setMaxSpawnDelay(100);
-            spawner.setDelay(100);
-            spawner.update();
+        if (spawner.getMinSpawnDelay() < 1000) {
+            spawner.setMinSpawnDelay(1000);
+        }
+
+        if (spawner.getMaxSpawnDelay() < 1000) {
+            spawner.setMaxSpawnDelay(1000);
         }
 
         if (spawner.getSpawnCount() > 200) {
             spawner.setSpawnCount(200);
-            spawner.update();
         }
 
         if (spawner.getSpawnRange() > 50) {
             spawner.setSpawnRange(50);
-            spawner.update();
         }
     }
 
@@ -220,7 +220,7 @@ public final class EntitySpawn implements Listener {
     @EventHandler
     void onPreSpawnerSpawn(final PreSpawnerSpawnEvent event) {
         try {
-            limitSpawner((CreatureSpawner) event.getSpawnerLocation().getBlock().getState());
+            limitSpawner((CreatureSpawner) event.getSpawnerLocation().getBlock().getState(false));
         } catch (Exception exception) {
             event.setCancelled(true);
         }
