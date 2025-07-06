@@ -135,7 +135,7 @@ public final class PlayerConnection implements Listener {
     @EventHandler
     void onPlayerSpawn(final PlayerSpawnLocationEvent event) {
         if (RANDOMIZE_SPAWN
-                && event.getPlayer().getBedSpawnLocation() != event.getSpawnLocation()) {
+                && event.getPlayer().getRespawnLocation() != event.getSpawnLocation()) {
             final World world = event.getPlayer().getWorld();
             final ThreadLocalRandom random = ThreadLocalRandom.current();
 

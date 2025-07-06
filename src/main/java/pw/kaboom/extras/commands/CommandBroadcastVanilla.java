@@ -33,10 +33,10 @@ public final class CommandBroadcastVanilla implements CommandExecutor {
         final Component senderName = sender.name();
         final String input = String.join(" ", args);
         final Component component = LEGACY_COMPONENT_SERIALIZER.deserialize(input);
-        final Component broadcastComponent = Component.translatable("chat.type.admin")
+        final Component broadcastComponent =
+                Component.translatable("chat.type.admin", senderName, component)
                 .decorate(TextDecoration.ITALIC)
-                .color(NamedTextColor.GRAY)
-                .args(senderName, component);
+                .color(NamedTextColor.GRAY);
 
         sender.sendMessage(component);
 

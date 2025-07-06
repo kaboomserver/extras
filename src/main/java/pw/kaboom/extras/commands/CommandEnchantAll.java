@@ -1,13 +1,17 @@
 package pw.kaboom.extras.commands;
 
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
+import org.bukkit.Registry;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 
@@ -30,7 +34,9 @@ public final class CommandEnchantAll implements CommandExecutor {
             return true;
         }
 
-        for (Enchantment enchantment : Enchantment.values()) {
+        final Registry<@NotNull Enchantment> registry = RegistryAccess.registryAccess()
+                .getRegistry(RegistryKey.ENCHANTMENT);
+        for (Enchantment enchantment : registry) {
             item.addUnsafeEnchantment(enchantment, Short.MAX_VALUE);
         }
         player.sendMessage(Component
