@@ -17,7 +17,7 @@ Extras is a Bukkit plugin that that adds extra functionality to the Kaboom serve
 | /getjson              | /gj                 | extras.getjson              | Gets the JSON of a deserialized legacy component        |
 | /getjsonmm            | /gmm                | extras.getjsonmm            | Gets the JSON of a deserialized MiniMessage component   |                             
 | /jumpscare            | /scare              | extras.jumpscare            | Scares a player                                         |
-| /kaboom               |                     | extras.kaboom               | I wonder...                                             |
+| /kaboom               |                     | extras.kaboom               | I do not wonder...                                      |
 | /ping                 | /ms, /delay         | extras.ping                 | Gets your ping                                          |
 | /prefix               | /rank, /tag         | extras.prefix               | Changes your tag                                        |
 | /pumpkin              |                     | extras.pumpkin              | Places a pumpkin on a player's head                     |
