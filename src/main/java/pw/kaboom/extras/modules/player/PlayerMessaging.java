@@ -5,6 +5,10 @@ import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
@@ -13,50 +17,20 @@ import pw.kaboom.extras.Main;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
-public final class PlayerMessaging implements PluginMessageListener {
+public final class PlayerMessaging implements PluginMessageListener, Listener {
     public static final String REGISTER = "extras:register";
     public static final String UNREGISTER = "extras:unregister";
     public static final String MESSAGE = "extras:message";
 
     private static final Component ERROR =
             Component.text("Could not send plugin channel message.", NamedTextColor.RED);
-    private static final ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE =
-            Executors.newSingleThreadScheduledExecutor();
     private static final byte END_CHAR_MASK = (byte) 0x80;
 
     private final Main plugin;
 
     public PlayerMessaging(final Main plugin) {
         this.plugin = plugin;
-
-        SCHEDULED_EXECUTOR_SERVICE.scheduleAtFixedRate(() -> {
-            synchronized (this.listening) {
-                final Iterator<Map.Entry<String, Set<Player>>> iterator =
-                        this.listening.entrySet().iterator();
-
-                while (iterator.hasNext()) {
-                    final Map.Entry<String, Set<Player>> entry = iterator.next();
-
-                    final Set<Player> players = entry.getValue();
-                    synchronized (players) {
-                        // try and avoid issues with other plugins causing player obj leaks
-                        int onlineCount = 0;
-
-                        for (final Player player: players) {
-                            if (!player.isOnline()) continue;
-                            onlineCount++;
-                        }
-
-                        if (onlineCount != 0) continue;
-                        iterator.remove();
-                    }
-                }
-            }
-        }, 1, 1, TimeUnit.MINUTES);
     }
 
     private final Map<String, Set<Player>> listening = Collections.synchronizedMap(new HashMap<>());
@@ -188,6 +162,26 @@ public final class PlayerMessaging implements PluginMessageListener {
             }
         } catch (final Exception ignored) {
             player.sendMessage(ERROR);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        final Player removedPlayer = event.getPlayer();
+
+        synchronized (this.listening) {
+            final Iterator<Map.Entry<String, Set<Player>>> listeningIterator =
+                    this.listening.entrySet().iterator();
+
+            while (listeningIterator.hasNext()) {
+                final Map.Entry<String, Set<Player>> entry = listeningIterator.next();
+                final Set<Player> players = entry.getValue();
+                synchronized (players) {
+                    players.remove(removedPlayer);
+
+                    if (players.isEmpty()) listeningIterator.remove();
+                }
+            }
         }
     }
 }
