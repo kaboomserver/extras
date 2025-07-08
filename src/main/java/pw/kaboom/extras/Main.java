@@ -94,6 +94,8 @@ public final class Main extends JavaPlugin {
         final Messenger messenger = this.getServer().getMessenger();
         final PlayerMessaging playerMessaging = new PlayerMessaging(this);
 
+        this.getServer().getPluginManager().registerEvents(playerMessaging, this);
+
         messenger.registerIncomingPluginChannel(this, PlayerMessaging.REGISTER, playerMessaging);
         messenger.registerIncomingPluginChannel(this, PlayerMessaging.UNREGISTER, playerMessaging);
 
