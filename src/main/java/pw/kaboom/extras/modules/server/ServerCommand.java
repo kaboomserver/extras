@@ -67,6 +67,11 @@ public final class ServerCommand implements Listener {
             commandName = "/" + arr[1].toLowerCase();
         }
 
+        // Block /clone only in command blocks
+        if ((sender instanceof BlockCommandSender) || (sender instanceof CommandMinecart)) {
+            if (commandName == "/clone" || commandName == "/minecraft:clone") return "cancel";
+        }
+
         try {
             switch (commandName) {
                 case "/minecraft:execute", "/execute" -> {
