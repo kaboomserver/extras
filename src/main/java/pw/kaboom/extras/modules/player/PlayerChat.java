@@ -2,12 +2,10 @@ package pw.kaboom.extras.modules.player;
 
 import io.papermc.paper.chat.ChatRenderer;
 import io.papermc.paper.event.player.AsyncChatEvent;
-import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.TextReplacementConfig;
-import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
@@ -46,57 +44,37 @@ public final class PlayerChat implements Listener {
     }
 
     public static class PlayerChatRenderer implements ChatRenderer.ViewerUnaware {
-        private static final TextReplacementConfig URL_REPLACEMENT_CONFIG =
-                TextReplacementConfig
-                        .builder()
-                .match(Pattern
-                        .compile("((https?://(ww(w|\\d)\\.)?|ww(w|\\d))[-a-zA-Z0-9@:%._+~#=]{1,256}"
-                                + "\\.[a-zA-Z0-9]{2,6}\\b([-a-zA-Z0-9@:%_+.~#?&/=]*))"))
-                .replacement((b, c) -> {
-                    if (c == null) {
-                        return null;
-                    }
+        private static final Pattern URL_PATTERN = Pattern
+                .compile("((https?://(ww(w|\\d)\\.)?|ww(w|\\d))[-a-zA-Z0-9@:%._+~#=]{1,256}"
+                                 + "\\.[a-zA-Z0-9]{2,6}\\b([-a-zA-Z0-9@:%_+.~#?&/=]*))");
+        private static final Style URL_STYLE = Style.style(NamedTextColor.BLUE,
+                                                           TextDecoration.UNDERLINED);
 
-                    if (b.groupCount() < 1) {
-                        return null;
-                    }
+        // Match vanilla by only rendering section sign legacy colors in vanilla chat
+        private static final LegacyComponentSerializer VANILLA_CHAT_SERIALIZER =
+                LegacyComponentSerializer.builder()
+                        .character(LegacyComponentSerializer.SECTION_CHAR)
+                        .extractUrls(URL_PATTERN, URL_STYLE)
+                        .hexColors()
+                        .build();
 
-                    final String content = b.group(1);
-                    final String url;
+        private static final LegacyComponentSerializer CHAT_SERIALIZER =
+                LegacyComponentSerializer.builder()
+                        .character(LegacyComponentSerializer.AMPERSAND_CHAR)
+                        .extractUrls(URL_PATTERN, URL_STYLE)
+                        .hexColors()
+                        .build();
 
-                    /*
-                    Minecraft doesn't accept "www.google.com" as a URL
-                    in click events
-                     */
-                    if (content.contains("://")) {
-                        url = content;
-                    } else {
-                        url = "https://" + content;
-                    }
-
-                    return Component.text(content, NamedTextColor.BLUE)
-                            .decorate(TextDecoration.UNDERLINED)
-                            .clickEvent(ClickEvent.openUrl(url));
-                })
-                .build();
-
-        private static final LegacyComponentSerializer LEGACY_COMPONENT_SERIALIZER =
-                LegacyComponentSerializer
-                        .legacyAmpersand();
-
-        private Component renderVanilla(@Nonnull Component displayName,
-                                        @Nonnull Component component) {
-            return Component.translatable(
-                    "chat.type.text",
-                    displayName,
-                    component.replaceText(URL_REPLACEMENT_CONFIG)
-            );
+        private Component renderVanilla(final @Nonnull Component displayName,
+                                        final @Nonnull Component component) {
+            return Component.translatable("chat.type.text", displayName, component);
         }
 
         @Override
         public @Nonnull Component render(@Nonnull Player player,
                                          @Nonnull Component displayName,
                                          @Nonnull Component component) {
+            final String message = ((TextComponent) component).content();
             final Component prefix;
             Component prefix1;
 
@@ -109,22 +87,15 @@ public final class PlayerChat implements Listener {
 
             prefix = prefix1;
             if (prefix == null) {
-                return renderVanilla(displayName, component);
+                return renderVanilla(displayName, VANILLA_CHAT_SERIALIZER.deserialize(message));
             }
 
-            final String message = ((TextComponent) component).content();
-            final Component newComponent = Component.empty()
+            return Component.empty()
                     .append(prefix)
                     .append(displayName)
                     .append(Component.text(":"))
-                    .append(Component.space());
-
-            final Component messageWithColorCodes = LEGACY_COMPONENT_SERIALIZER
-                    .deserialize(message);
-            final Component completedMessage = messageWithColorCodes
-                    .replaceText(URL_REPLACEMENT_CONFIG);
-
-            return newComponent.append(completedMessage);
+                    .append(Component.space())
+                    .append(CHAT_SERIALIZER.deserialize(message));
         }
     }
 }
