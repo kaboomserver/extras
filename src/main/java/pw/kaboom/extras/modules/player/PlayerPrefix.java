@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.jetbrains.annotations.Nullable;
 import pw.kaboom.extras.Main;
 
 import java.io.File;
@@ -74,21 +75,14 @@ public final class PlayerPrefix implements Listener {
 		return prefix;
 	}
 
-	public static boolean isUsingVanillaFormat(Player player) {
+	public static @Nullable Component getPrefix(Player player) throws IOException {
 		final UUID playerUUID = player.getUniqueId();
 		final String stringifiedUUID = playerUUID.toString();
 		final String legacyPrefix = PREFIX_CONFIG.getString(stringifiedUUID);
-
-		return legacyPrefix != null && legacyPrefix.equals("%");
-	}
-
-	public static Component getPrefix(Player player) throws IOException {
-		final UUID playerUUID = player.getUniqueId();
-		final String stringifiedUUID = playerUUID.toString();
-		final String legacyPrefix = PREFIX_CONFIG.getString(stringifiedUUID);
-
 		if (legacyPrefix == null) {
-			return player.isOp() ? OP_TAG : DE_OP_TAG;
+			return getDefaultPrefix(player);
+		} else if (legacyPrefix.equals("%")) {
+			return null;
 		}
 
 		return LegacyComponentSerializer.legacyAmpersand()
@@ -101,14 +95,18 @@ public final class PlayerPrefix implements Listener {
 	}
 
 	private static void onUpdate(Player player) throws IOException {
-		final Component component = Component.empty()
-			.append(
-					isUsingVanillaFormat(player) ?
-					Component.empty() : getPrefix(player)
-			)
-			.append(player.displayName());
+		final Component prefix = getPrefix(player);
 
-		player.playerListName(component);
+		final Component playerListName;
+		if (prefix != null) {
+			playerListName = Component.empty()
+					.append(prefix)
+					.append(player.displayName());
+		} else {
+			playerListName = player.displayName();
+		}
+
+		player.playerListName(playerListName);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
