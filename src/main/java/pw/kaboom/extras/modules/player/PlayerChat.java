@@ -42,10 +42,10 @@ public final class PlayerChat implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     void onAsyncChatEventRenderer(final AsyncChatEvent event) {
-        event.renderer(CHAT_RENDERER);
+        event.renderer(ChatRenderer.viewerUnaware(CHAT_RENDERER));
     }
 
-    public static class PlayerChatRenderer implements ChatRenderer {
+    public static class PlayerChatRenderer implements ChatRenderer.ViewerUnaware {
         private static final TextReplacementConfig URL_REPLACEMENT_CONFIG =
                 TextReplacementConfig
                         .builder()
@@ -96,8 +96,7 @@ public final class PlayerChat implements Listener {
         @Override
         public @Nonnull Component render(@Nonnull Player player,
                                          @Nonnull Component displayName,
-                                         @Nonnull Component component,
-                                         @Nonnull Audience audience) {
+                                         @Nonnull Component component) {
             final Component prefix;
             Component prefix1;
 
