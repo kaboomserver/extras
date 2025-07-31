@@ -1,8 +1,11 @@
 package pw.kaboom.extras.util;
 
 import org.bukkit.Bukkit;
+import org.bukkit.attribute.Attributable;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
@@ -19,12 +22,22 @@ public final class Utility {
                 .orElse(null);
     }
 
-    public static void resetAttribute(final AttributeInstance attribute) {
-        for (final AttributeModifier modifier: attribute.getModifiers()) {
-            attribute.removeModifier(modifier);
+    public static <T extends Entity & Attributable> void resetAttribute (final T entity,
+                                                                         final Attribute attrib) {
+        final AttributeInstance instance = entity.getAttribute(attrib);
+        if (instance == null) return;
+
+        for (final AttributeModifier modifier : instance.getModifiers()) {
+            instance.removeModifier(modifier);
         }
 
-        attribute.setBaseValue(attribute.getDefaultValue());
+        final AttributeInstance defaultInstance = entity.getType().getDefaultAttributes()
+                .getAttribute(instance.getAttribute());
+        if (defaultInstance != null) {
+            instance.setBaseValue(defaultInstance.getBaseValue());
+        } else {
+            instance.setBaseValue(instance.getDefaultValue());
+        }
     }
 
     // TODO: Support hex color codes, too (they aren't supported in Spigot either)

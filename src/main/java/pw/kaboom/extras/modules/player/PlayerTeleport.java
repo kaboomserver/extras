@@ -16,7 +16,7 @@ public final class PlayerTeleport implements Listener {
         final AttributeInstance attribute = player.getAttribute(Attribute.MAX_HEALTH);
         if (attribute == null) return;
         if (attribute.getValue() <= 0) {
-            Utility.resetAttribute(attribute);
+            Utility.resetAttribute(player, Attribute.MAX_HEALTH);
             player.setHealth(20);
         }
     }
