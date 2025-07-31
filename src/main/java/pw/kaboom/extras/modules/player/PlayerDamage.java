@@ -53,7 +53,7 @@ public final class PlayerDamage implements Listener {
         final AttributeInstance attribute = player.getAttribute(Attribute.MAX_HEALTH);
         if (attribute == null) return;
         if (attribute.getValue() <= 0) {
-            Utility.resetAttribute(attribute);
+            Utility.resetAttribute(player, Attribute.MAX_HEALTH);
             player.setHealth(20);
         }
     }
@@ -97,11 +97,7 @@ public final class PlayerDamage implements Listener {
                 xp.setExperience(event.getDroppedExp());
             }
 
-            final AttributeInstance attribute = player.getAttribute(Attribute.MAX_HEALTH);
-            if (attribute != null) {
-                Utility.resetAttribute(attribute);
-            }
-
+            Utility.resetAttribute(player, Attribute.MAX_HEALTH);
             player.setHealth(20);
 
             if (player.getRespawnLocation() != null) {
@@ -111,10 +107,7 @@ public final class PlayerDamage implements Listener {
                 player.teleportAsync(world.getSpawnLocation());
             }
         } catch (Exception exception) {
-            final AttributeInstance attribute = player.getAttribute(Attribute.MAX_HEALTH);
-            if (attribute != null) {
-                Utility.resetAttribute(attribute);
-            }
+            Utility.resetAttribute(player, Attribute.MAX_HEALTH);
             player.setHealth(20);
         }
 
