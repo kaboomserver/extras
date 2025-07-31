@@ -98,11 +98,6 @@ public final class PlayerChat implements Listener {
                                          @Nonnull Component displayName,
                                          @Nonnull Component component,
                                          @Nonnull Audience audience) {
-            if (PlayerPrefix.isUsingVanillaFormat(player)) {
-                return renderVanilla(displayName, component);
-            }
-
-            Component newComponent = Component.empty();
             final Component prefix;
             Component prefix1;
 
@@ -114,9 +109,12 @@ public final class PlayerChat implements Listener {
             }
 
             prefix = prefix1;
-            final String message = ((TextComponent) component).content();
+            if (prefix == null) {
+                return renderVanilla(displayName, component);
+            }
 
-            newComponent = newComponent
+            final String message = ((TextComponent) component).content();
+            final Component newComponent = Component.empty()
                     .append(prefix)
                     .append(displayName)
                     .append(Component.text(":"))
