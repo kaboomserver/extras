@@ -1,5 +1,9 @@
 package pw.kaboom.extras.util;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
+import io.papermc.paper.connection.PlayerConfigurationConnection;
+import io.papermc.paper.connection.PlayerConnection;
+import io.papermc.paper.connection.PlayerLoginConnection;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -10,6 +14,7 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -17,6 +22,22 @@ import java.util.concurrent.Callable;
 import java.util.function.Function;
 
 public final class Utility {
+    @SuppressWarnings("UnstableApiUsage")
+    public static @NotNull PlayerProfile getConnectionUuid(final PlayerConnection conn) {
+        final PlayerProfile profile;
+
+        if ((conn instanceof final PlayerLoginConnection login)) {
+            profile = login.getAuthenticatedProfile(); // This is present even in offline-mode.
+        } else if ((conn instanceof final PlayerConfigurationConnection config)) {
+            profile = config.getProfile();
+        } else {
+            throw new IllegalStateException("Invalid phase");
+        }
+
+        if (profile == null) throw new IllegalStateException("Connection has no profile");
+        return profile;
+    }
+
     public static void teleportToSpawn(final Player player,
                                        final PlayerTeleportEvent.TeleportCause cause) {
         final World world = player.getServer().getRespawnWorld();
