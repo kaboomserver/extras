@@ -5,6 +5,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.AreaEffectCloud;
@@ -32,6 +34,7 @@ import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import com.destroystokyo.paper.event.entity.PreSpawnerSpawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import pw.kaboom.extras.Main;
+import pw.kaboom.extras.util.Utility;
 
 public final class EntitySpawn implements Listener {
     private static final FileConfiguration CONFIG = JavaPlugin.getPlugin(Main.class).getConfig();
@@ -122,11 +125,12 @@ public final class EntitySpawn implements Listener {
     }
 
     private void limitSlimeSize(final Slime slime) {
-        if (slime.getSize() > 20) {
-            slime.setSize(20);
+        final AttributeInstance scaleInstance = slime.getAttribute(Attribute.SCALE);
+        final double scale = scaleInstance != null ? scaleInstance.getValue() : 1.0f;
 
-        } else if (slime.getSize() < -20) {
-            slime.setSize(-20);
+        if ((slime.getSize() * scale) > 20) {
+            slime.setSize(20);
+            Utility.resetAttribute(slime, Attribute.SCALE);
         }
     }
 
