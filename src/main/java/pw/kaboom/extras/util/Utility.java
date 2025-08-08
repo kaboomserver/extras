@@ -1,5 +1,9 @@
 package pw.kaboom.extras.util;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
+import io.papermc.paper.connection.PlayerConfigurationConnection;
+import io.papermc.paper.connection.PlayerConnection;
+import io.papermc.paper.connection.PlayerLoginConnection;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
@@ -10,10 +14,29 @@ import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
 
 public final class Utility {
+    @SuppressWarnings("UnstableApiUsage")
+    public static @Nullable UUID getConnectionUuid(final PlayerConnection connection) {
+        // https://discord.com/channels/289587909051416579/555462289851940864/1391545447495237637
+        // Thanks, Paper!
+        final PlayerProfile profile;
+        if ((connection instanceof final PlayerLoginConnection loginConnection)) {
+            profile = loginConnection.getAuthenticatedProfile() != null
+                    ? loginConnection.getAuthenticatedProfile()
+                    : loginConnection.getUnsafeProfile();
+        } else if ((connection instanceof final PlayerConfigurationConnection configConnection)) {
+            profile = configConnection.getProfile();
+        } else {
+            profile = null;
+        }
+
+        return profile != null ? profile.getId() : null;
+    }
+
     public static @Nullable Player getPlayerExactIgnoreCase(final String username) {
         return Bukkit.getOnlinePlayers()
                 .stream()
