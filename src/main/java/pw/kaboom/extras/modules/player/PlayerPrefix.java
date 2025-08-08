@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -110,7 +110,7 @@ public final class PlayerPrefix implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerLoginEvent(PlayerLoginEvent event) throws IOException {
+	public void onPlayerJoinEvent(PlayerJoinEvent event) throws IOException {
 		final Player player = event.getPlayer();
 		final boolean isOp = player.isOp();
 
