@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
 
@@ -23,7 +24,12 @@ public final class CommandBroadcastMM implements CommandExecutor {
             return true;
         }
 
-        Bukkit.broadcast(MINI_MESSAGE.deserialize(String.join(" ", args)));
+        final Component component = MINI_MESSAGE.deserialize(String.join(" ", args));
+
+        for (Player onlinePlayer: Bukkit.getOnlinePlayers()) {
+            onlinePlayer.sendMessage(component);
+        }
+
         return true;
     }
 }
