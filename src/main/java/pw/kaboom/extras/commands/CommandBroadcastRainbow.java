@@ -26,7 +26,11 @@ public final class CommandBroadcastRainbow implements CommandExecutor {
         }
         final String strippedTags = MINI_MESSAGE.stripTags(String.join(" ", args));
         final Component component = MINI_MESSAGE.deserialize("<rainbow>" + strippedTags);
-        Bukkit.getServer().broadcast(component);
+
+        for (Player onlinePlayer: Bukkit.getOnlinePlayers()) {
+            onlinePlayer.sendMessage(component);
+        }
+
         return true;
     }
 }
