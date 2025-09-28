@@ -13,6 +13,11 @@ import pw.kaboom.extras.modules.entity.EntitySpawn;
 import java.util.Map;
 
 public final class ServerGameRule implements Listener {
+    private static final Map<GameRule<?>, ?> FORCED_GAMERULES = Map.of(
+        GameRule.COMMAND_BLOCKS_ENABLED, true,
+        GameRule.SPAWNER_BLOCKS_ENABLED, false
+    );
+
     private static final Map<GameRule<Integer>, Integer> GAMERULE_LIMITS = Map.of(
             GameRule.RANDOM_TICK_SPEED, 6,
             GameRule.SPAWN_RADIUS, 100,
@@ -20,9 +25,23 @@ public final class ServerGameRule implements Listener {
             GameRule.MAX_COMMAND_FORK_COUNT, EntitySpawn.MAX_ENTITIES_PER_WORLD
     );
 
+    private static<T> void setGameRule(final World world, final GameRule<T> gameRule,
+                                       final Object value) {
+        assert value.getClass() == gameRule.getType();
+
+        //noinspection unchecked
+        world.setGameRule(gameRule, (T) value);
+    }
+
     @EventHandler
     void onGameRuleChange(final WorldGameRuleChangeEvent event) {
         final GameRule<?> gameRule = event.getGameRule();
+
+        final Object forcedValue = FORCED_GAMERULES.get(gameRule);
+        if (forcedValue != null) {
+            event.setValue(forcedValue.toString());
+            return;
+        }
 
         final Integer limit = GAMERULE_LIMITS.get(gameRule);
         if (limit == null) {
@@ -43,6 +62,13 @@ public final class ServerGameRule implements Listener {
 
     private static void fixGameRules() {
         for (final World world : Bukkit.getWorlds()) {
+            for (final var entry : FORCED_GAMERULES.entrySet()) {
+                final GameRule<?> gameRule = entry.getKey();
+                final Object value = entry.getValue();
+
+                setGameRule(world, gameRule, value);
+            }
+
             for (final var entry : GAMERULE_LIMITS.entrySet()) {
                 final GameRule<Integer> gameRule = entry.getKey();
                 final int limit = entry.getValue();
