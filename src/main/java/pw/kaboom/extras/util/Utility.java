@@ -1,12 +1,15 @@
 package pw.kaboom.extras.util;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -14,6 +17,18 @@ import java.util.concurrent.Callable;
 import java.util.function.Function;
 
 public final class Utility {
+    public static void teleportToSpawn(final Player player,
+                                       final PlayerTeleportEvent.TeleportCause cause) {
+        final World world = player.getServer().getRespawnWorld();
+        final Location spawnLocation = world.getSpawnLocation();
+
+        final int y = world.getHighestBlockYAt(spawnLocation);
+        final Location location = new Location(world,
+            spawnLocation.x(), y + 1, spawnLocation.z(),
+            spawnLocation.getYaw(), spawnLocation.getPitch());
+        player.teleportAsync(location, cause);
+    }
+
     public static @Nullable Player getPlayerExactIgnoreCase(final String username) {
         return Bukkit.getOnlinePlayers()
                 .stream()
