@@ -1,8 +1,8 @@
 package pw.kaboom.extras.modules.player;
 
 import com.destroystokyo.paper.event.profile.PreLookupProfileEvent;
-import com.destroystokyo.paper.profile.ProfileProperty;
 import com.google.common.base.Charsets;
+import io.papermc.paper.event.player.AsyncPlayerSpawnLocationEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
@@ -17,14 +17,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 import pw.kaboom.extras.Main;
 import pw.kaboom.extras.modules.server.ServerTabComplete;
 import pw.kaboom.extras.modules.player.skin.SkinManager;
 import pw.kaboom.extras.util.Utility;
 
 import java.time.Duration;
-import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -133,21 +131,21 @@ public final class PlayerConnection implements Listener {
     }
 
     @EventHandler
-    void onPlayerSpawn(final PlayerSpawnLocationEvent event) {
-        if (RANDOMIZE_SPAWN
-                && event.getPlayer().getRespawnLocation() != event.getSpawnLocation()) {
-            final World world = event.getPlayer().getWorld();
-            final ThreadLocalRandom random = ThreadLocalRandom.current();
+    void onPlayerSpawn(final AsyncPlayerSpawnLocationEvent event) {
+        if (!RANDOMIZE_SPAWN || !event.isNewPlayer()) return;
 
-            final double teleportAmount = 500000D;
-            final Location location = new Location(
-                world,
-                random.nextDouble(-teleportAmount, teleportAmount), 
-                100, 
-                random.nextDouble(-teleportAmount, teleportAmount)
-            );
-            event.setSpawnLocation(location);
-        }
+        final World world = event.getSpawnLocation().getWorld();
+        final ThreadLocalRandom random = ThreadLocalRandom.current();
+
+        final double teleportAmount = 500000D;
+        final Location location = new Location(
+            world,
+            random.nextDouble(-teleportAmount, teleportAmount),
+            100,
+            random.nextDouble(-teleportAmount, teleportAmount)
+        );
+
+        event.setSpawnLocation(location);
     }
 
     @EventHandler
@@ -163,7 +161,5 @@ public final class PlayerConnection implements Listener {
         UUID offlineUUID = UUID.nameUUIDFromBytes(
             ("OfflinePlayer:" + event.getName()).getBytes(Charsets.UTF_8));
         event.setUUID(offlineUUID);
-
-        event.setProfileProperties(new HashSet<ProfileProperty>());
     }
 }

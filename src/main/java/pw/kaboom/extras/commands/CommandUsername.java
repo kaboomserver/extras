@@ -62,7 +62,6 @@ public final class CommandUsername implements CommandExecutor {
 
         // Preserve UUIDs, as changing them breaks clients
         final PlayerProfile newProfile = Bukkit.createProfileExact(player.getUniqueId(), name);
-        newProfile.setProperties(player.getPlayerProfile().getProperties());
 
         player.setPlayerProfile(newProfile);
         lastUsedMillis.put(player, System.currentTimeMillis());
