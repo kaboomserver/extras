@@ -19,6 +19,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import pw.kaboom.extras.util.Utility;
@@ -103,8 +104,7 @@ public final class PlayerDamage implements Listener {
             if (player.getRespawnLocation() != null) {
                 player.teleportAsync(player.getRespawnLocation());
             } else {
-                final World world = Bukkit.getWorld("world");
-                player.teleportAsync(world.getSpawnLocation());
+                Utility.teleportToSpawn(player, PlayerTeleportEvent.TeleportCause.UNKNOWN);
             }
         } catch (Exception exception) {
             Utility.resetAttribute(player, Attribute.MAX_HEALTH);
