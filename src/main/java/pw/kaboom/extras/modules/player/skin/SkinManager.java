@@ -37,6 +37,24 @@ public final class SkinManager {
     private static final Gson GSON = new Gson();
     private static final ExecutorService executorService = Executors
         .newCachedThreadPool();
+    private static final URI SESSION_HOST =
+            URI.create(
+                    System.getProperty(
+                            "minecraft.api.session.host",
+                            "https://sessionserver.mojang.com"
+                    )
+            );
+    private static final URI PROFILE_ENDPOINT = URI.create(
+            // 1.21.9+
+            System.getProperty(
+                    "minecraft.api.profiles.host",
+                    System.getProperty(
+                            // 1.21.9-
+                            "minecraft.api.session.host",
+                            "https://api.mojang.com"
+                    )
+            )
+    );
 
     public static void resetSkin(final Player player, final boolean shouldSendMessage) {
         executorService.submit(() -> {
@@ -128,8 +146,10 @@ public final class SkinManager {
     public static CompletableFuture<SkinData> getSkinData(final UUID uuid) {
         return CompletableFuture.supplyAsync(() -> {
             final SkinResponse response = sendRequestForJSON(
-                "https://sessionserver.mojang.com/session/minecraft/profile/"
-                + uuid + "?unsigned=false", SkinResponse.class);
+                SESSION_HOST,
+               "/session/minecraft/profile/" + uuid + "?unsigned=false",
+                SkinResponse.class
+            );
 
             final List<ProfileProperty> properties = response.properties();
 
@@ -145,10 +165,10 @@ public final class SkinManager {
         }, executorService);
     }
 
-    private static <T> T sendRequestForJSON(String url, Class<T> clazz) {
+    private static <T> T sendRequestForJSON(URI uri, String endpoint, Class<T> clazz) {
         final HttpRequest request = HttpRequest.newBuilder()
             .GET()
-            .uri(URI.create(url))
+            .uri(uri.resolve(endpoint))
             .build();
 
         final HttpResponse<String> response;
@@ -164,9 +184,11 @@ public final class SkinManager {
 
     private static CompletableFuture<UUID> getUUID(final String playerName) {
         return CompletableFuture.supplyAsync(() -> {
-            final ProfileResponse parsedResponse = sendRequestForJSON
-                ("https://api.mojang.com/users/profiles/minecraft/" + playerName,
-                ProfileResponse.class);
+            final ProfileResponse parsedResponse = sendRequestForJSON(
+                    PROFILE_ENDPOINT,
+                    "/users/profiles/minecraft/" + playerName,
+                    ProfileResponse.class
+            );
 
             final String dashedUuid = parsedResponse
                 .id()
