@@ -3,19 +3,18 @@ package pw.kaboom.extras.modules.player;
 import com.destroystokyo.paper.event.profile.PreLookupProfileEvent;
 import com.google.common.base.Charsets;
 import io.papermc.paper.event.player.AsyncPlayerSpawnLocationEvent;
+import io.papermc.paper.event.connection.PlayerConnectionValidateLoginEvent;
+import io.papermc.paper.event.player.PlayerServerFullCheckEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
-import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.plugin.java.JavaPlugin;
 import pw.kaboom.extras.Main;
 import pw.kaboom.extras.modules.server.ServerTabComplete;
@@ -23,6 +22,8 @@ import pw.kaboom.extras.modules.player.skin.SkinManager;
 import pw.kaboom.extras.util.Utility;
 
 import java.time.Duration;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -55,6 +56,7 @@ public final class PlayerConnection implements Listener {
                                                              "allowJoinOnFullServer");
     private static final boolean OP_ON_JOIN = CONFIG.getBoolean("opOnJoin");
     private static final boolean RANDOMIZE_SPAWN = CONFIG.getBoolean("randomizeSpawn");
+    private final Set<UUID> disallowedLogins = new HashSet<>(5);
 
     @EventHandler
     void onAsyncPlayerPreLogin(final AsyncPlayerPreLoginEvent event) {
@@ -83,6 +85,10 @@ public final class PlayerConnection implements Listener {
     void onPlayerJoin(final PlayerJoinEvent event) {
         final Player player = event.getPlayer();
 
+        if (OP_ON_JOIN && !player.isOp()) {
+            player.setOp(true);
+        }
+
         player.showTitle(Title.title(
             TITLE,
             SUBTITLE,
@@ -90,6 +96,10 @@ public final class PlayerConnection implements Listener {
         ));
 
         ServerTabComplete.getLoginNameList().put(player.getUniqueId(), player.getName());
+
+        if (!player.getPlayerProfile().hasTextures()) {
+            SkinManager.applySkin(player, player.getName(), false);
+        }
     }
 
     @EventHandler
@@ -100,33 +110,31 @@ public final class PlayerConnection implements Listener {
     }
 
     @EventHandler
-    void onPlayerLogin(final PlayerLoginEvent event) {
-        // #312 - If allow join on full server is off,
-        // but join restrictions are disabled,
-        // player can still join on full server
+    void onPlayerServerFullCheck(final PlayerServerFullCheckEvent event) {
+        if (ALLOW_JOIN_ON_FULL_SERVER) {
+            event.allow(true);
+        } else if (!event.isAllowed()) {
+            this.disallowedLogins.add(event.getPlayerProfile().getId());
+        }
+    }
 
-        // Full server kicks should be handled differently from other join restrictions
-        // since we have a separate configuration value for it
+    // Note that this event gets fired even if FullCheckEvent returns disallowed, meaning we need
+    // to keep track of the player's allowed state across events. Yuck.
+    @SuppressWarnings("UnstableApiUsage")
+    @EventHandler
+    void onPlayerConnectionValidate(final PlayerConnectionValidateLoginEvent event) {
+        // #312 - If allow join on full server is off, but join restrictions are disabled, player
+        // can still join on full server
 
-        if (!ENABLE_JOIN_RESTRICTIONS && !Result.KICK_FULL.equals(event.getResult())) {
+        // Full server kicks should be handled differently from other join restrictions since we
+        // have a separate configuration value for it
+        final UUID uuid = Utility.getConnectionUuid(event.getConnection());
+        final boolean disallowed = this.disallowedLogins.remove(uuid);
+
+        // If uuid is null, disallowedLogins will never contain it. So we always let connections
+        // without a UUID through if join restrictions are disabled.
+        if (!ENABLE_JOIN_RESTRICTIONS && !disallowed) {
             event.allow();
-        }
-
-        if (Result.KICK_FULL.equals(event.getResult()) && ALLOW_JOIN_ON_FULL_SERVER) {
-            event.allow();
-        }
-
-        final Player player = event.getPlayer();
-
-        if (OP_ON_JOIN && !player.isOp()) {
-            player.setOp(true);
-        }
-
-        final Server server = Bukkit.getServer();
-
-
-        if (!server.getOnlineMode()) {
-            SkinManager.applySkin(player, player.getName(), false);
         }
     }
 
