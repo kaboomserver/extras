@@ -23,6 +23,7 @@ import pw.kaboom.extras.modules.player.skin.SkinManager;
 import pw.kaboom.extras.util.Utility;
 
 import java.time.Duration;
+import java.util.EnumSet;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -55,6 +56,24 @@ public final class PlayerConnection implements Listener {
                                                              "allowJoinOnFullServer");
     private static final boolean OP_ON_JOIN = CONFIG.getBoolean("opOnJoin");
     private static final boolean RANDOMIZE_SPAWN = CONFIG.getBoolean("randomizeSpawn");
+
+    private static final EnumSet<PlayerKickEvent.Cause> ALLOWED_KICK_CAUSES = EnumSet.of(
+        PlayerKickEvent.Cause.TIMEOUT,  PlayerKickEvent.Cause.INVALID_VEHICLE_MOVEMENT,
+        PlayerKickEvent.Cause.INVALID_PLAYER_MOVEMENT,
+        PlayerKickEvent.Cause.INVALID_ENTITY_ATTACKED, PlayerKickEvent.Cause.INVALID_PAYLOAD,
+        PlayerKickEvent.Cause.INVALID_COOKIE, PlayerKickEvent.Cause.ILLEGAL_ACTION,
+        PlayerKickEvent.Cause.SELF_INTERACTION, PlayerKickEvent.Cause.RESOURCE_PACK_REJECTION
+    );
+
+    // Kaboom does not use chat signatures, however some clones may wish to enable them.
+    private static final boolean USE_SIGNED_CHAT = Bukkit.getServer().isEnforcingSecureProfiles();
+    private static final EnumSet<PlayerKickEvent.Cause> SIGNED_CHAT_KICK_CAUSES = EnumSet.of(
+        PlayerKickEvent.Cause.OUT_OF_ORDER_CHAT, PlayerKickEvent.Cause.UNSIGNED_CHAT,
+        PlayerKickEvent.Cause.CHAT_VALIDATION_FAILED,
+        PlayerKickEvent.Cause.EXPIRED_PROFILE_PUBLIC_KEY,
+        PlayerKickEvent.Cause.INVALID_PUBLIC_KEY_SIGNATURE,
+        PlayerKickEvent.Cause.TOO_MANY_PENDING_CHATS
+    );
 
     @EventHandler
     void onAsyncPlayerPreLogin(final AsyncPlayerPreLoginEvent event) {
@@ -92,11 +111,15 @@ public final class PlayerConnection implements Listener {
         ServerTabComplete.getLoginNameList().put(player.getUniqueId(), player.getName());
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     void onPlayerKick(final PlayerKickEvent event) {
-        if (!ENABLE_KICK) {
-            event.setCancelled(true);
-        }
+        if (ENABLE_KICK) return;
+
+        final PlayerKickEvent.Cause cause = event.getCause();
+        if (ALLOWED_KICK_CAUSES.contains(cause)) return;
+        if (USE_SIGNED_CHAT && SIGNED_CHAT_KICK_CAUSES.contains(cause)) return;
+
+        event.setCancelled(true);
     }
 
     @EventHandler
