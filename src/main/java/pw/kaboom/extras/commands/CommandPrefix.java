@@ -11,7 +11,7 @@ import pw.kaboom.extras.modules.player.PlayerPrefix;
 import javax.annotation.Nonnull;
 
 public final class CommandPrefix implements CommandExecutor {
-
+    private static final int MAX_PREFIX_LENGTH = 1024;
 
     public boolean onCommand(final @Nonnull CommandSender sender,
                              final @Nonnull Command cmd,
@@ -36,8 +36,12 @@ public final class CommandPrefix implements CommandExecutor {
                 player.sendMessage(Component
                         .text("You no longer have a tag"));
             } else {
-                final Component prefix = PlayerPrefix.setPrefix(player, String.join(" ", args));
+                String legacyPrefix = String.join(" ", args);
+                if (legacyPrefix.length() > MAX_PREFIX_LENGTH) {
+                    legacyPrefix = legacyPrefix.substring(0, MAX_PREFIX_LENGTH);
+                }
 
+                final Component prefix = PlayerPrefix.setPrefix(player, legacyPrefix);
                 player.sendMessage(Component.text("You now have the tag: ")
                         .append(prefix));
              }
