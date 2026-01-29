@@ -1,21 +1,26 @@
 package pw.kaboom.extras.modules.player;
 
 import com.destroystokyo.paper.event.profile.PreLookupProfileEvent;
+import com.destroystokyo.paper.profile.PlayerProfile;
 import com.google.common.base.Charsets;
 import io.papermc.paper.event.player.AsyncPlayerSpawnLocationEvent;
+import io.papermc.paper.event.connection.PlayerConnectionValidateLoginEvent;
+import io.papermc.paper.event.player.PlayerServerFullCheckEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.*;
-import org.bukkit.event.player.PlayerLoginEvent.Result;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import pw.kaboom.extras.Main;
 import pw.kaboom.extras.modules.server.ServerTabComplete;
@@ -23,8 +28,7 @@ import pw.kaboom.extras.modules.player.skin.SkinManager;
 import pw.kaboom.extras.util.Utility;
 
 import java.time.Duration;
-import java.util.EnumSet;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class PlayerConnection implements Listener {
@@ -75,6 +79,8 @@ public final class PlayerConnection implements Listener {
         PlayerKickEvent.Cause.TOO_MANY_PENDING_CHATS
     );
 
+    private final Set<UUID> disallowedLogins = Collections.newSetFromMap(new WeakHashMap<>());
+
     @EventHandler
     void onAsyncPlayerPreLogin(final AsyncPlayerPreLoginEvent event) {
         final Player player = Utility.getPlayerExactIgnoreCase(event.getName());
@@ -83,24 +89,15 @@ public final class PlayerConnection implements Listener {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
                 Component.text("A player with that username is already logged in"));
         }
-
-        /*try {
-            final PlayerProfile profile = event.getPlayerProfile();
-
-            UUID offlineUUID = UUID.nameUUIDFromBytes(
-                ("OfflinePlayer:" + event.getName()).getBytes(Charsets.UTF_8));
-
-            profile.setId(offlineUUID);
-
-            SkinDownloader skinDownloader = new SkinDownloader();
-            skinDownloader.fillJoinProfile(profile, event.getName(), event.getUniqueId());
-        } catch (Exception ignored) {
-        }*/
     }
 
     @EventHandler
     void onPlayerJoin(final PlayerJoinEvent event) {
         final Player player = event.getPlayer();
+
+        if (OP_ON_JOIN && !player.isOp()) {
+            player.setOp(true);
+        }
 
         player.showTitle(Title.title(
             TITLE,
@@ -109,6 +106,10 @@ public final class PlayerConnection implements Listener {
         ));
 
         ServerTabComplete.getLoginNameList().put(player.getUniqueId(), player.getName());
+
+        if (!player.getPlayerProfile().hasTextures()) {
+            SkinManager.applySkin(player, player.getName(), false);
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -122,35 +123,40 @@ public final class PlayerConnection implements Listener {
         event.setCancelled(true);
     }
 
-    @EventHandler
-    void onPlayerLogin(final PlayerLoginEvent event) {
-        // #312 - If allow join on full server is off,
-        // but join restrictions are disabled,
-        // player can still join on full server
+    @EventHandler(priority = EventPriority.HIGHEST)
+    void onPlayerServerFullCheck(final PlayerServerFullCheckEvent event) {
+        if (event.isAllowed()) return;
 
-        // Full server kicks should be handled differently from other join restrictions
-        // since we have a separate configuration value for it
-
-        if (!ENABLE_JOIN_RESTRICTIONS && !Result.KICK_FULL.equals(event.getResult())) {
-            event.allow();
+        if (ALLOW_JOIN_ON_FULL_SERVER) {
+            event.allow(true);
+            return;
         }
 
-        if (Result.KICK_FULL.equals(event.getResult()) && ALLOW_JOIN_ON_FULL_SERVER) {
-            event.allow();
+        // #312 - If allow join on full server is off, but join restrictions are disabled, player
+        // can still join on full server
+
+        // Full server kicks should be handled differently from other join restrictions since we
+        // have a separate configuration value for it
+        if (!ENABLE_JOIN_RESTRICTIONS) {
+            this.disallowedLogins.add(event.getPlayerProfile().getId());
+        }
+    }
+
+    // Note that this event gets fired even if FullCheckEvent returns disallowed.
+    @SuppressWarnings("UnstableApiUsage")
+    @EventHandler(priority = EventPriority.HIGHEST)
+    void onPlayerConnectionValidate(final PlayerConnectionValidateLoginEvent event) {
+        final PlayerProfile profile = Utility.getConnectionUuid(event.getConnection());
+        final Player player = Utility.getPlayerExactIgnoreCase(profile.getName());
+        if (player != null) {
+            event.kickMessage(Component.text("A player with that username is already logged in"));
+            return;
         }
 
-        final Player player = event.getPlayer();
+        if (ENABLE_JOIN_RESTRICTIONS) return;
 
-        if (OP_ON_JOIN && !player.isOp()) {
-            player.setOp(true);
-        }
-
-        final Server server = Bukkit.getServer();
-
-
-        if (!server.getOnlineMode()) {
-            SkinManager.applySkin(player, player.getName(), false);
-        }
+        final boolean disallowed = this.disallowedLogins.remove(profile.getId());
+        if (!disallowed) event.allow();
     }
 
     @EventHandler
