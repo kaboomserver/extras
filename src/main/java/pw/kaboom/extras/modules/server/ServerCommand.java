@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 
 public final class ServerCommand implements Listener {
     private static final Pattern SELECTOR_PATTERN = Pattern.compile("(?>\\s)*@[aenprs](?>\\s)*");
+    private static final Pattern CONTROL_CHAR_PATTERN = Pattern.compile("\\p{C}");
     private static final Logger LOGGER = JavaPlugin.getPlugin(Main.class).getLogger();
 
     private static final Set<String> BLOCKED_EXECUTE_COMMANDS = ImmutableSet.of(
@@ -200,6 +201,9 @@ public final class ServerCommand implements Listener {
             }
         }
 
-        LOGGER.log(Level.INFO, "Console command: " + command);
+        LOGGER.log(
+                Level.INFO,
+                "Console command: " + CONTROL_CHAR_PATTERN.matcher(command).replaceAll("\ufffd")
+        );
     }
 }
