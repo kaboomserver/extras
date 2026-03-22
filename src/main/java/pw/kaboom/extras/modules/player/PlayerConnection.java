@@ -12,6 +12,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
@@ -96,6 +97,18 @@ public final class PlayerConnection implements Listener {
         }*/
     }
 
+    @EventHandler(priority = EventPriority.LOWEST)
+    void onEarlyPlayerJoin(final PlayerJoinEvent event) {
+        final var player = event.getPlayer();
+
+        // Must be done in the PlayerJoinEvent instead of PlayerLoginEvent otherwise skins may fetch
+        // after the player joins
+        final var serverConfig = Bukkit.getServer().getServerConfig();
+
+        if (!serverConfig.isProxyOnlineMode())
+            SkinManager.requestSkin(player, player.getName(), false);
+    }
+
     @EventHandler
     void onPlayerJoin(final PlayerJoinEvent event) {
         final Player player = event.getPlayer();
@@ -141,12 +154,6 @@ public final class PlayerConnection implements Listener {
 
         if (OP_ON_JOIN && !player.isOp()) {
             player.setOp(true);
-        }
-
-        final var serverConfig = Bukkit.getServer().getServerConfig();
-
-        if (!serverConfig.isProxyOnlineMode()) {
-            SkinManager.applySkin(player, player.getName(), false);
         }
     }
 
