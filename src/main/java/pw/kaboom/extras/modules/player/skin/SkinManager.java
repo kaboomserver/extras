@@ -104,11 +104,11 @@ public final class SkinManager extends Thread {
                     // always refetch
                     final var skin = getSkinData(client, id);
                     resultConsumer.accept(skin);
-                } catch (Exception ignored) {
+                } catch (final Exception ignored) {
                     resultConsumer.accept(null);
                 }
             }
-        } catch (InterruptedException ignored) {
+        } catch (final InterruptedException ignored) {
 
         }
     }
@@ -180,7 +180,7 @@ public final class SkinManager extends Thread {
 
         final List<ProfileProperty> properties = response.properties();
 
-        for (ProfileProperty property : properties) {
+        for (final ProfileProperty property : properties) {
             if (!property.getName().equals("textures"))
                 continue;
 
@@ -202,7 +202,7 @@ public final class SkinManager extends Thread {
 
         try {
             response = client.send(request, BodyHandlers.ofString());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new RuntimeException(e);
         }
 
