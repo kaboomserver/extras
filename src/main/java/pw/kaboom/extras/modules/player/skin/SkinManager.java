@@ -19,13 +19,16 @@ import com.destroystokyo.paper.profile.ProfileProperty;
 
 import net.kyori.adventure.text.Component;
 
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.jspecify.annotations.Nullable;
 import pw.kaboom.extras.modules.player.skin.response.ProfileResponse;
 import pw.kaboom.extras.modules.player.skin.response.SkinResponse;
 
 import static pw.kaboom.extras.Main.PLUGIN;
 
-public final class SkinManager extends Thread {
+public final class SkinManager extends Thread implements Listener {
     private static final Pattern PREMIUM_USERNAME = Pattern.compile("^[a-zA-Z0-9_]{1,16}$");
     private static final Pattern UNDASHED_UUID =
             Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
@@ -53,13 +56,19 @@ public final class SkinManager extends Thread {
             = new LinkedBlockingQueue<>();
     private static final long EXECUTION_INTERVAL = 1000;
 
-    static {
-        new SkinManager().start();
-    }
-
-    private SkinManager() {
+    public SkinManager() {
         // avoid blocking jvm shutdown
         this.setDaemon(true);
+    }
+
+    @EventHandler
+    void onPlayerQuit(PlayerQuitEvent event) {
+        purgePlayer(event.getPlayer().getUniqueId());
+    }
+
+    private static void purgePlayer(UUID uuid) {
+        SKIN_REQUEST_QUEUE.removeIf(skinFillRequest ->
+                skinFillRequest.fromPlayer().equals(uuid));
     }
 
     @Override
@@ -145,7 +154,7 @@ public final class SkinManager extends Thread {
         }
 
         final UUID uuid = player.getUniqueId();
-        SKIN_REQUEST_QUEUE.removeIf(skinFillRequest -> skinFillRequest.fromPlayer().equals(uuid));
+        purgePlayer(uuid);
         SKIN_REQUEST_QUEUE.add(
                 new SkinFillRequest(
                         uuid,
