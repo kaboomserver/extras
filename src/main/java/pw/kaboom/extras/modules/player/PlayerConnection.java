@@ -8,7 +8,6 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -145,10 +144,9 @@ public final class PlayerConnection implements Listener {
             player.setOp(true);
         }
 
-        final Server server = Bukkit.getServer();
+        final var serverConfig = Bukkit.getServer().getServerConfig();
 
-
-        if (!server.getOnlineMode()) {
+        if (!serverConfig.isProxyOnlineMode()) {
             SkinManager.applySkin(player, player.getName(), false);
         }
     }
