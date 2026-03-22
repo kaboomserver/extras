@@ -9,8 +9,6 @@ import org.bukkit.entity.Player;
 import pw.kaboom.extras.modules.player.skin.SkinManager;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
-import java.util.Map;
 
 public final class CommandSkin implements CommandExecutor {
     @Override
@@ -35,7 +33,7 @@ public final class CommandSkin implements CommandExecutor {
 
         if (name.equalsIgnoreCase("off") || name.equalsIgnoreCase("remove")
          || name.equalsIgnoreCase("disable")) {
-            SkinManager.resetSkin(player, true);
+            SkinManager.removeSkin(player, true);
             return true;
         }
 
@@ -45,9 +43,7 @@ public final class CommandSkin implements CommandExecutor {
             return true;
         }
 
-        final boolean shouldSendMessage = true;
-
-        SkinManager.requestSkin(player, name, shouldSendMessage);
+        SkinManager.requestSkin(player, name, true);
         return true;
     }
 }

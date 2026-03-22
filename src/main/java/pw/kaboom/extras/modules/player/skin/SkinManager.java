@@ -126,7 +126,8 @@ public final class SkinManager extends Thread implements Listener {
         }
     }
 
-    public static void resetSkin(final Player player, final boolean shouldSendMessage) {
+    public static void removeSkin(final Player player, final boolean shouldSendMessage) {
+        purgePlayer(player.getUniqueId());
         setSkin(player, null);
 
         if (shouldSendMessage)
