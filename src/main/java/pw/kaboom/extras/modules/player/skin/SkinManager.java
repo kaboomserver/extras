@@ -146,19 +146,23 @@ public final class SkinManager extends Thread {
             return requestingPlayer.getUniqueId().equals(player.getUniqueId());
         });
 
+        final var weakRef = new WeakReference<>(player);
         SKIN_REQUEST_QUEUE.add(
                 new SkinFillRequest(
-                        new WeakReference<>(player),
+                        weakRef,
                         name,
                         skinData -> {
+                            final var strongPlayer = weakRef.get();
+                            if (strongPlayer == null) return;
                             if (skinData == null) {
-                                if (shouldSendMessage) player.sendMessage(ERROR_MESSAGE);
+                                if (shouldSendMessage) strongPlayer.sendMessage(ERROR_MESSAGE);
                                 return;
                             }
 
-                            setSkin(player, skinData);
+                            setSkin(strongPlayer, skinData);
                             if (shouldSendMessage)
-                                player.sendMessage(Component.text("Successfully set your skin to ")
+                                strongPlayer
+                                    .sendMessage(Component.text("Successfully set your skin to ")
                                     .append(Component.text(name))
                                     .append(Component.text("'s")));
                         }
