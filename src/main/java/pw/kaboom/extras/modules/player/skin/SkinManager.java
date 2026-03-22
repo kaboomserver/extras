@@ -70,6 +70,7 @@ public final class SkinManager extends Thread {
 
         try(final var client = HttpClient.newHttpClient()) {
             for(;;) {
+                while (SKIN_REQUEST_QUEUE.size() > 32) SKIN_REQUEST_QUEUE.remove();
                 final SkinFillRequest request = SKIN_REQUEST_QUEUE.take();
 
                 final long diff = System.currentTimeMillis() - lastRequest;
