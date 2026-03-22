@@ -20,8 +20,14 @@ import pw.kaboom.extras.modules.server.ServerTabComplete;
 import java.io.File;
 
 public final class Main extends JavaPlugin {
+    public static Main PLUGIN;
+
     private File prefixConfigFile;
     private FileConfiguration prefixConfig;
+
+    public Main() {
+        PLUGIN = this;
+    }
 
     @Override
     public void onLoad() {

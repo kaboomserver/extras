@@ -15,7 +15,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
-import org.bukkit.plugin.java.JavaPlugin;
 import pw.kaboom.extras.Main;
 import pw.kaboom.extras.modules.server.ServerTabComplete;
 import pw.kaboom.extras.modules.player.skin.SkinManager;
@@ -27,7 +26,7 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class PlayerConnection implements Listener {
-    private static final FileConfiguration CONFIG = JavaPlugin.getPlugin(Main.class).getConfig();
+    private static final FileConfiguration CONFIG = Main.PLUGIN.getConfig();
     private static final Component TITLE =
             LegacyComponentSerializer.legacySection()
                 .deserialize(

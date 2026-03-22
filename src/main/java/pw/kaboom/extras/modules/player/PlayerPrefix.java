@@ -11,10 +11,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.Nullable;
-import pw.kaboom.extras.Main;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,8 +21,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static pw.kaboom.extras.Main.PLUGIN;
+
 public final class PlayerPrefix implements Listener {
-	private static final Main PLUGIN = JavaPlugin.getPlugin(Main.class);
 	private static final File PREFIX_CONFIG_FILE = PLUGIN.getPrefixConfigFile();
 	private static final FileConfiguration PREFIX_CONFIG = PLUGIN.getPrefixConfig();
 	private static final FileConfiguration PLUGIN_CONFIGURATION = PLUGIN.getConfig();

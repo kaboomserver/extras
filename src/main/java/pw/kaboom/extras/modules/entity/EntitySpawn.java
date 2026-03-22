@@ -32,12 +32,11 @@ import org.bukkit.event.weather.LightningStrikeEvent;
 
 import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import com.destroystokyo.paper.event.entity.PreSpawnerSpawnEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 import pw.kaboom.extras.Main;
 import pw.kaboom.extras.util.Utility;
 
 public final class EntitySpawn implements Listener {
-    private static final FileConfiguration CONFIG = JavaPlugin.getPlugin(Main.class).getConfig();
+    private static final FileConfiguration CONFIG = Main.PLUGIN.getConfig();
 
     private static final int MAX_ENTITIES_PER_CHUNK = CONFIG.getInt("maxEntitiesPerChunk");
     public static final int MAX_ENTITIES_PER_WORLD = CONFIG.getInt("maxEntitiesPerWorld");
