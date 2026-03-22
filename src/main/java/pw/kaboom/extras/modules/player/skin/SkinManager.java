@@ -131,7 +131,7 @@ public final class SkinManager extends Thread {
                     "textures",
                     skinData.texture(), skinData.signature()));
         } else {
-            profile.removeProperty("texture");
+            profile.removeProperty("textures");
         }
 
         Bukkit.getScheduler().runTask(PLUGIN, () -> player.setPlayerProfile(profile));
