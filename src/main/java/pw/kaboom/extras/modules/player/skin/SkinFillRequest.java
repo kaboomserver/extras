@@ -3,10 +3,10 @@ package pw.kaboom.extras.modules.player.skin;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.Nullable;
 
-import java.lang.ref.WeakReference;
-import java.util.function.Consumer;
+import java.util.UUID;
+import java.util.function.BiConsumer;
 
-public record SkinFillRequest(WeakReference<Player> fromPlayer,
-                              String toUser, Consumer<@Nullable SkinData> resultConsumer)  {
+public record SkinFillRequest(UUID fromPlayer, String toUser,
+                              BiConsumer<Player, @Nullable SkinData> resultConsumer)  {
 
 }

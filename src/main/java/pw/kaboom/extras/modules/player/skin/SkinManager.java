@@ -2,7 +2,6 @@ package pw.kaboom.extras.modules.player.skin;
 
 import com.google.gson.Gson;
 import java.lang.InterruptedException;
-import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -79,8 +78,8 @@ public final class SkinManager extends Thread {
                     Thread.sleep(EXECUTION_INTERVAL - diff);
                 }
 
-                final var ply = request.fromPlayer().get();
-                if (ply == null || !ply.isConnected()) continue;
+                var ply = Bukkit.getPlayer(request.fromPlayer());
+                if (ply == null) continue;
 
                 final var toUser = request.toUser();
                 UUID id = null;
@@ -103,9 +102,14 @@ public final class SkinManager extends Thread {
                     lastRequest = System.currentTimeMillis();
                     // always refetch
                     final var skin = getSkinData(client, id);
-                    resultConsumer.accept(skin);
+
+                    // re-get player to ensure it hasn't changed while we were fetching the skin
+                    ply = Bukkit.getPlayer(request.fromPlayer());
+                    if (ply == null) continue;
+
+                    resultConsumer.accept(ply, skin);
                 } catch (final Exception ignored) {
-                    resultConsumer.accept(null);
+                    resultConsumer.accept(ply, null);
                 }
             }
         } catch (final InterruptedException ignored) {
@@ -140,20 +144,13 @@ public final class SkinManager extends Thread {
             return;
         }
 
-        SKIN_REQUEST_QUEUE.removeIf(skinFillRequest -> {
-            final var requestingPlayer = skinFillRequest.fromPlayer().get();
-            if (requestingPlayer == null) return false;
-            return requestingPlayer.getUniqueId().equals(player.getUniqueId());
-        });
-
-        final var weakRef = new WeakReference<>(player);
+        final UUID uuid = player.getUniqueId();
+        SKIN_REQUEST_QUEUE.removeIf(skinFillRequest -> skinFillRequest.fromPlayer().equals(uuid));
         SKIN_REQUEST_QUEUE.add(
                 new SkinFillRequest(
-                        weakRef,
+                        uuid,
                         name,
-                        skinData -> {
-                            final var strongPlayer = weakRef.get();
-                            if (strongPlayer == null) return;
+                    (strongPlayer, skinData) -> {
                             if (skinData == null) {
                                 if (shouldSendMessage) strongPlayer.sendMessage(ERROR_MESSAGE);
                                 return;
