@@ -87,9 +87,10 @@ public final class Main extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new ServerTabComplete(), this);
 
         /* Custom worlds */
-        this.getServer().createWorld(
-            new WorldCreator("world_flatlands").generateStructures(false).type(WorldType.FLAT)
-        );
+        if (this.getConfig().getBoolean("generateFlatlands"))
+            this.getServer().createWorld(
+                new WorldCreator("world_flatlands").generateStructures(false).type(WorldType.FLAT)
+            );
 
         final Messenger messenger = this.getServer().getMessenger();
         final PlayerMessaging playerMessaging = new PlayerMessaging(this);

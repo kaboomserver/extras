@@ -11,6 +11,7 @@ randomizeSpawn: false
 maxEntitiesPerChunk: 50
 maxEntitiesPerWorld: 5120
 maxTntsPerWorld: 1024
+generateFlatlands: true
 playerJoinSendTitle: true
 playerJoinTitle: "§7Welcome to Kaboom!"
 playerJoinSubtitle: "Free OP • Anarchy • Creative"
