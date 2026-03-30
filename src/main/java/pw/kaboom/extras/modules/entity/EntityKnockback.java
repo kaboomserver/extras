@@ -4,10 +4,15 @@ import io.papermc.paper.event.entity.EntityKnockbackEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
+import pw.kaboom.extras.Main;
 
 public final class EntityKnockback implements Listener {
-    private static final double KNOCKBACK_LIMIT = 20; // translates to enchantment level 40
+    // default translates to enchantment level 40
+    private static final double KNOCKBACK_LIMIT = JavaPlugin.getPlugin(Main.class)
+            .getConfig()
+            .getDouble("maxKnockbackVelocity");
     private static final double KNOCKBACK_LIMIT_SQUARED = KNOCKBACK_LIMIT * KNOCKBACK_LIMIT;
 
     @EventHandler
