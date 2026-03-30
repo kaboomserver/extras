@@ -22,3 +22,25 @@ opTag: "§4§l[§c§lOP§4§l] §c"
 deOpTag: "§8§l[§7§lDeOP§8§l] §7"
 minCommandDelayMillis: 75
 minChatDelayMillis: 50
+blockedInExecute:
+  - clone
+  - fill
+  - give
+  - kick
+  - locate
+  - me
+  - msg
+  - save-all
+  - say
+  - spawnpoint
+  - spreadplayers
+  - summon
+  - teammsg
+  - teleport
+  - tell
+  - tellraw
+  - tm
+  - tp
+  - w
+  - fillbiome
+  - ride

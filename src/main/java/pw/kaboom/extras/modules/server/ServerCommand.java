@@ -1,6 +1,5 @@
 package pw.kaboom.extras.modules.server;
 
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.block.CommandBlock;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
@@ -11,9 +10,7 @@ import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import pw.kaboom.extras.Main;
 
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -21,13 +18,22 @@ import java.util.regex.Pattern;
 
 public final class ServerCommand implements Listener {
     private static final Pattern SELECTOR_PATTERN = Pattern.compile("(?>\\s)*@[aenprs](?>\\s)*");
-    private static final Logger LOGGER = JavaPlugin.getPlugin(Main.class).getLogger();
+    private static final Main PLUGIN = JavaPlugin.getPlugin(Main.class);
+    private static final Logger LOGGER = PLUGIN.getLogger();
 
-    private static final Set<String> BLOCKED_EXECUTE_COMMANDS = ImmutableSet.of(
-            "clone", "fill", "give", "kick", "locate",  "me", "msg", "save-all", "say",
-            "spawnpoint", "spreadplayers",  "summon", "teammsg",  "teleport", "tell", "tellraw",
-            "tm", "tp", "w", "fillbiome", "ride");
-
+    // Must be kept in sync with the blocked execute command list in config.yml
+    @SuppressWarnings("unchecked")
+    private static final Set<String> BLOCKED_EXECUTE_COMMANDS = new HashSet<>(
+            (List<String>)
+                    PLUGIN.getConfig().getList(
+                        "blockedInExecute",
+                        Arrays.asList(
+                            "clone", "fill", "give", "kick", "locate",  "me", "msg", "save-all",
+                            "say", "spawnpoint", "spreadplayers",  "summon", "teammsg", "teleport",
+                            "tell", "tellraw", "tm", "tp", "w", "fillbiome", "ride"
+                    )
+            )
+    );
     private static String checkSelectors(final String[] arr, final int offset) {
         final String[] args = Arrays.copyOfRange(arr, offset, arr.length);
         final String str = String.join(" ", args);
@@ -76,7 +82,8 @@ public final class ServerCommand implements Listener {
                         }
 
                         for (int i = 1; i < arr.length; i++) {
-                            if ("summon".equalsIgnoreCase(arr[i])) {
+                            if (BLOCKED_EXECUTE_COMMANDS.contains("summon")
+                                    && "summon".equalsIgnoreCase(arr[i])) {
                                 return "cancel";
                             }
                             if (!"run".equalsIgnoreCase(arr[i])) {
