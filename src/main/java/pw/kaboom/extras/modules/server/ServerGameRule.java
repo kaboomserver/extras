@@ -4,8 +4,10 @@ import io.papermc.paper.event.world.WorldGameRuleChangeEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import pw.kaboom.extras.Main;
 import pw.kaboom.extras.modules.entity.EntitySpawn;
@@ -13,15 +15,21 @@ import pw.kaboom.extras.modules.entity.EntitySpawn;
 import java.util.Map;
 
 public final class ServerGameRule implements Listener {
+    private static final FileConfiguration CONFIG = JavaPlugin.getPlugin(Main.class).getConfig();
+
     private static final Map<GameRule<?>, ?> FORCED_GAMERULES = Map.of(
-        GameRule.COMMAND_BLOCKS_ENABLED, true,
-        GameRule.SPAWNER_BLOCKS_ENABLED, false
+        GameRule.COMMAND_BLOCKS_ENABLED, CONFIG.getBoolean("forceCommandBlocksTo"),
+        GameRule.SPAWNER_BLOCKS_ENABLED, CONFIG.getBoolean("forceSpawnerBlocksTo")
     );
 
+    // TODO: Dynamic gamerule limits
     private static final Map<GameRule<Integer>, Integer> GAMERULE_LIMITS = Map.of(
-            GameRule.RANDOM_TICK_SPEED, 6,
-            GameRule.SPAWN_RADIUS, 100,
-            GameRule.COMMAND_MODIFICATION_BLOCK_LIMIT, 32768,
+            GameRule.RANDOM_TICK_SPEED, CONFIG.getInt("maxTickSpeed"),
+            GameRule.SPAWN_RADIUS, CONFIG.getInt("maxSpawnRadius"),
+
+            GameRule.COMMAND_MODIFICATION_BLOCK_LIMIT,
+            CONFIG.getInt("maxCommandModificationBlockLimit"),
+
             GameRule.MAX_COMMAND_FORK_COUNT, EntitySpawn.MAX_ENTITIES_PER_WORLD
     );
 

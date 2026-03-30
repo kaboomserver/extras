@@ -26,6 +26,11 @@ effectCloudMaxRadiusOnUse: 0.01
 effectCloudMaxRadiusPerTick: 0
 maxSlimeSize: 20
 maxKnockbackVelocity: 20
+forceCommandBlocksTo: true
+forceSpawnerBlocksTo: false
+maxTickSpeed: 6
+maxSpawnRadius: 100
+maxCommandModificationBlockLimit: 32768
 generateFlatlands: true
 playerJoinSendTitle: true
 playerJoinTitle: "§7Welcome to Kaboom!"
