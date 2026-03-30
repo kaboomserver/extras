@@ -22,6 +22,7 @@ spawnerMaxSpawnRange: 50
 effectCloudMaxRadius: 40
 effectCloudMaxRadiusOnUse: 0.01
 effectCloudMaxRadiusPerTick: 0
+maxSlimeSize: 20
 generateFlatlands: true
 playerJoinSendTitle: true
 playerJoinTitle: "§7Welcome to Kaboom!"

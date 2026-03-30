@@ -49,6 +49,9 @@ public final class EntitySpawn implements Listener {
     private static final int EFFECT_CLOUD_MAX_RADIUS_PER_TICK =
             CONFIG.getInt("effectCloudMaxRadiusPerTick");
 
+    private static final int MAX_SLIME_SIZE =
+            CONFIG.getInt("maxSlimeSize");
+
     private void applyEntityChanges(final Entity entity) {
         switch (entity.getType()) {
             case AREA_EFFECT_CLOUD:
@@ -135,8 +138,8 @@ public final class EntitySpawn implements Listener {
         final AttributeInstance scaleInstance = slime.getAttribute(Attribute.SCALE);
         final double scale = scaleInstance != null ? scaleInstance.getValue() : 1.0f;
 
-        if ((slime.getSize() * scale) > 20) {
-            slime.setSize(20);
+        if ((slime.getSize() * scale) > MAX_SLIME_SIZE) {
+            slime.setSize(MAX_SLIME_SIZE);
             Utility.resetAttribute(slime, Attribute.SCALE);
         }
     }
