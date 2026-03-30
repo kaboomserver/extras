@@ -11,7 +11,11 @@ randomizeSpawn: false
 maxEntitiesPerChunk: 50
 maxEntitiesPerWorld: 5120
 maxTntsPerWorld: 1024
+playerJoinSendTitle: true
 playerJoinTitle: "§7Welcome to Kaboom!"
 playerJoinSubtitle: "Free OP • Anarchy • Creative"
+playerJoinTitleFadeIn: 50
+playerJoinTitleStay: 8000
+playerJoinTitleFadeOut: 50
 opTag: "§4§l[§c§lOP§4§l] §c"
 deOpTag: "§8§l[§7§lDeOP§8§l] §7"

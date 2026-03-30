@@ -45,9 +45,16 @@ public final class PlayerConnection implements Listener {
                                 ""
                         )
                 );
-    private static final Duration FADE_IN = Duration.ofMillis(50);
-    private static final Duration STAY = Duration.ofMillis(8000);
-    private static final Duration FADE_OUT = Duration.ofMillis(250);
+    private static final boolean SEND_TITLE = CONFIG.getBoolean("playerJoinSendTitle");
+    private static final Duration FADE_IN = Duration.ofMillis(
+            CONFIG.getLong("playerJoinTitleFadeIn")
+    );
+    private static final Duration STAY = Duration.ofMillis(
+            CONFIG.getLong("playerJoinTitleStay")
+    );
+    private static final Duration FADE_OUT = Duration.ofMillis(
+            CONFIG.getLong("playerJoinTitleFadeOut")
+    );
 
     private static final boolean ENABLE_KICK = CONFIG.getBoolean("enableKick");
     private static final boolean ENABLE_JOIN_RESTRICTIONS = CONFIG.getBoolean(
@@ -102,7 +109,7 @@ public final class PlayerConnection implements Listener {
     void onPlayerJoin(final PlayerJoinEvent event) {
         final Player player = event.getPlayer();
 
-        player.showTitle(Title.title(
+        if (SEND_TITLE) player.showTitle(Title.title(
             TITLE,
             SUBTITLE,
             Title.Times.times(FADE_IN, STAY, FADE_OUT)
