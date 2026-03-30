@@ -20,3 +20,4 @@ playerJoinTitleFadeOut: 50
 opTag: "§4§l[§c§lOP§4§l] §c"
 deOpTag: "§8§l[§7§lDeOP§8§l] §7"
 minCommandDelayMillis: 75
+minChatDelayMillis: 50

@@ -12,6 +12,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.java.JavaPlugin;
+import pw.kaboom.extras.Main;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -20,6 +22,9 @@ import java.util.regex.Pattern;
 
 public final class PlayerChat implements Listener {
     private static final PlayerChatRenderer CHAT_RENDERER = new PlayerChatRenderer();
+    private static final long MIN_CHAT_DELAY_MILLIS = JavaPlugin.getPlugin(Main.class)
+            .getConfig()
+            .getLong("minChatDelayMillis");
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     void onAsyncChatEventProcess(final AsyncChatEvent event) {
@@ -29,7 +34,7 @@ public final class PlayerChat implements Listener {
             final long lastCommandTime = PlayerCommand.getLastCommandExec().get(playerUuid);
             final long millisDifference = System.currentTimeMillis() - lastCommandTime;
 
-            if (millisDifference < 50) {
+            if (millisDifference < MIN_CHAT_DELAY_MILLIS) {
                 event.setCancelled(true);
                 return;
             }
