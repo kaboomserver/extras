@@ -42,6 +42,7 @@ public final class EntitySpawn implements Listener {
     private static final int MAX_ENTITIES_PER_CHUNK = CONFIG.getInt("maxEntitiesPerChunk");
     public static final int MAX_ENTITIES_PER_WORLD = CONFIG.getInt("maxEntitiesPerWorld");
     private static final int MAX_TNTS_PER_WORLD = CONFIG.getInt("maxTntsPerWorld");
+    private static final int MAX_DRAGONS_PER_WORLD = CONFIG.getInt("maxDragonsPerWorld");
 
     private void applyEntityChanges(final Entity entity) {
         switch (entity.getType()) {
@@ -84,9 +85,8 @@ public final class EntitySpawn implements Listener {
         switch (entityType) {
         case ENDER_DRAGON:
             final int worldDragonCount = world.getEntitiesByClass(EnderDragon.class).size();
-            final int worldDragonCountLimit = 24;
 
-            if (worldDragonCount >= worldDragonCountLimit) {
+            if (worldDragonCount >= MAX_DRAGONS_PER_WORLD) {
                 return true;
             }
             break;
