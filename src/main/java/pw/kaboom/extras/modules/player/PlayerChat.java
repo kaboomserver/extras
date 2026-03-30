@@ -25,8 +25,8 @@ public final class PlayerChat implements Listener {
     void onAsyncChatEventProcess(final AsyncChatEvent event) {
         final UUID playerUuid = event.getPlayer().getUniqueId();
 
-        if (PlayerCommand.getCommandMillisList().get(playerUuid) != null) {
-            final long lastCommandTime = PlayerCommand.getCommandMillisList().get(playerUuid);
+        if (PlayerCommand.getLastCommandExec().get(playerUuid) != null) {
+            final long lastCommandTime = PlayerCommand.getLastCommandExec().get(playerUuid);
             final long millisDifference = System.currentTimeMillis() - lastCommandTime;
 
             if (millisDifference < 50) {
@@ -35,7 +35,7 @@ public final class PlayerChat implements Listener {
             }
         }
 
-        PlayerCommand.getCommandMillisList().put(playerUuid, System.currentTimeMillis());
+        PlayerCommand.getLastCommandExec().put(playerUuid, System.currentTimeMillis());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

@@ -1,6 +1,7 @@
 package pw.kaboom.extras.modules.player;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import io.papermc.paper.event.player.PlayerSignCommandPreprocessEvent;
@@ -15,7 +16,7 @@ import pw.kaboom.extras.Main;
 import pw.kaboom.extras.modules.server.ServerCommand;
 
 public final class PlayerCommand implements Listener {
-    private static HashMap<UUID, Long> commandMillisList = new HashMap<UUID, Long>();
+    private static final Map<UUID, Long> LAST_COMMAND_EXEC = new HashMap<>();
     private static final long MIN_COMMAND_DELAY_MILLIS = JavaPlugin.getPlugin(Main.class)
             .getConfig()
             .getLong("minCommandDelayMillis");
@@ -24,8 +25,8 @@ public final class PlayerCommand implements Listener {
     void onPlayerCommandPreprocess(final PlayerCommandPreprocessEvent event) {
         final UUID playerUuid = event.getPlayer().getUniqueId();
 
-        if (getCommandMillisList().get(playerUuid) != null) {
-            final long lastCommandTime = getCommandMillisList().get(playerUuid);
+        if (getLastCommandExec().get(playerUuid) != null) {
+            final long lastCommandTime = getLastCommandExec().get(playerUuid);
             final long millisDifference = System.currentTimeMillis() - lastCommandTime;
 
             if (millisDifference < MIN_COMMAND_DELAY_MILLIS) {
@@ -34,7 +35,7 @@ public final class PlayerCommand implements Listener {
             }
         }
 
-        getCommandMillisList().put(playerUuid, System.currentTimeMillis());
+        getLastCommandExec().put(playerUuid, System.currentTimeMillis());
 
         final CommandSender sender = event.getPlayer();
         final String command = event.getMessage();
@@ -55,7 +56,7 @@ public final class PlayerCommand implements Listener {
         this.onPlayerCommandPreprocess(event);
     }
 
-    public static HashMap<UUID, Long> getCommandMillisList() {
-        return commandMillisList;
+    public static Map<UUID, Long> getLastCommandExec() {
+        return LAST_COMMAND_EXEC;
     }
 }

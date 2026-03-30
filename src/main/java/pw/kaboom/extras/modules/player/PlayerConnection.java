@@ -180,7 +180,7 @@ public final class PlayerConnection implements Listener {
 
     @EventHandler
     void onPlayerQuit(final PlayerQuitEvent event) {
-        PlayerCommand.getCommandMillisList().remove(event.getPlayer().getUniqueId());
+        PlayerCommand.getLastCommandExec().remove(event.getPlayer().getUniqueId());
         //PlayerInteract.interactMillisList.remove(event.getPlayer().getUniqueId());
         ServerTabComplete.getLoginNameList().remove(event.getPlayer().getUniqueId());
     }
