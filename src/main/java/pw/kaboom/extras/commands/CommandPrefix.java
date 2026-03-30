@@ -6,12 +6,16 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+import pw.kaboom.extras.Main;
 import pw.kaboom.extras.modules.player.PlayerPrefix;
 
 import javax.annotation.Nonnull;
 
 public final class CommandPrefix implements CommandExecutor {
-    private static final int MAX_PREFIX_LENGTH = 1024;
+    private static final int MAX_PREFIX_LENGTH = JavaPlugin.getPlugin(Main.class)
+            .getConfig()
+            .getInt("maxPrefixLength");
 
     public boolean onCommand(final @Nonnull CommandSender sender,
                              final @Nonnull Command cmd,
