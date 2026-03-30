@@ -12,6 +12,7 @@ maxEntitiesPerChunk: 50
 maxEntitiesPerWorld: 5120
 maxTntsPerWorld: 1024
 maxDragonsPerWorld: 24
+maxWithersPerWorld: 128
 generateFlatlands: true
 playerJoinSendTitle: true
 playerJoinTitle: "§7Welcome to Kaboom!"

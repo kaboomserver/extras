@@ -9,15 +9,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.AreaEffectCloud;
-import org.bukkit.entity.EnderDragon;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.FallingBlock;
-import org.bukkit.entity.LightningStrike;
-import org.bukkit.entity.Slime;
-import org.bukkit.entity.TNTPrimed;
-import org.bukkit.entity.Vehicle;
+import org.bukkit.entity.*;
 import org.bukkit.entity.minecart.ExplosiveMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -43,6 +35,7 @@ public final class EntitySpawn implements Listener {
     public static final int MAX_ENTITIES_PER_WORLD = CONFIG.getInt("maxEntitiesPerWorld");
     private static final int MAX_TNTS_PER_WORLD = CONFIG.getInt("maxTntsPerWorld");
     private static final int MAX_DRAGONS_PER_WORLD = CONFIG.getInt("maxDragonsPerWorld");
+    private static final int MAX_WITHERS_PER_WORLD = CONFIG.getInt("maxWithersPerWorld");
 
     private void applyEntityChanges(final Entity entity) {
         switch (entity.getType()) {
@@ -87,6 +80,13 @@ public final class EntitySpawn implements Listener {
             final int worldDragonCount = world.getEntitiesByClass(EnderDragon.class).size();
 
             if (worldDragonCount >= MAX_DRAGONS_PER_WORLD) {
+                return true;
+            }
+            break;
+        case WITHER:
+            final int worldWitherCount = world.getEntitiesByClass(Wither.class).size();
+
+            if (worldWitherCount >= MAX_WITHERS_PER_WORLD) {
                 return true;
             }
             break;
