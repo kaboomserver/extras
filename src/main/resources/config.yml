@@ -8,6 +8,8 @@ opOnJoin: true
 # versions.
 # You can use the pre-world generation plugin "Chunky" to achieve this.
 randomizeSpawn: false
+randomizeSpawnRadius: 500000
+randomizeSpawnY: 100
 maxEntitiesPerChunk: 50
 maxEntitiesPerWorld: 5120
 maxTntsPerWorld: 1024

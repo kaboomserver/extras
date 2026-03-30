@@ -64,6 +64,9 @@ public final class PlayerConnection implements Listener {
     private static final boolean OP_ON_JOIN = CONFIG.getBoolean("opOnJoin");
     private static final boolean RANDOMIZE_SPAWN = CONFIG.getBoolean("randomizeSpawn");
 
+    private static final double RANDOMIZE_SPAWN_RADIUS = CONFIG.getDouble("randomizeSpawnRadius");
+    private static final double RANDOMIZE_SPAWN_Y = CONFIG.getDouble("randomizeSpawnY");
+
     private static final EnumSet<PlayerKickEvent.Cause> ALLOWED_KICK_CAUSES = EnumSet.of(
         PlayerKickEvent.Cause.TIMEOUT,  PlayerKickEvent.Cause.INVALID_VEHICLE_MOVEMENT,
         PlayerKickEvent.Cause.INVALID_PLAYER_MOVEMENT,
@@ -167,12 +170,11 @@ public final class PlayerConnection implements Listener {
         final World world = event.getSpawnLocation().getWorld();
         final ThreadLocalRandom random = ThreadLocalRandom.current();
 
-        final double teleportAmount = 500000D;
         final Location location = new Location(
             world,
-            random.nextDouble(-teleportAmount, teleportAmount),
-            100,
-            random.nextDouble(-teleportAmount, teleportAmount)
+            random.nextDouble(-RANDOMIZE_SPAWN_RADIUS, RANDOMIZE_SPAWN_RADIUS),
+            RANDOMIZE_SPAWN_Y,
+            random.nextDouble(-RANDOMIZE_SPAWN_RADIUS, RANDOMIZE_SPAWN_RADIUS)
         );
 
         event.setSpawnLocation(location);
