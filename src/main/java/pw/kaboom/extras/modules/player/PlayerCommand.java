@@ -10,10 +10,15 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
+import org.bukkit.plugin.java.JavaPlugin;
+import pw.kaboom.extras.Main;
 import pw.kaboom.extras.modules.server.ServerCommand;
 
 public final class PlayerCommand implements Listener {
     private static HashMap<UUID, Long> commandMillisList = new HashMap<UUID, Long>();
+    private static final long MIN_COMMAND_DELAY_MILLIS = JavaPlugin.getPlugin(Main.class)
+            .getConfig()
+            .getLong("minCommandDelayMillis");
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     void onPlayerCommandPreprocess(final PlayerCommandPreprocessEvent event) {
@@ -23,7 +28,7 @@ public final class PlayerCommand implements Listener {
             final long lastCommandTime = getCommandMillisList().get(playerUuid);
             final long millisDifference = System.currentTimeMillis() - lastCommandTime;
 
-            if (millisDifference < 75) {
+            if (millisDifference < MIN_COMMAND_DELAY_MILLIS) {
                 event.setCancelled(true);
                 return;
             }
