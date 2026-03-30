@@ -42,6 +42,12 @@ public final class EntitySpawn implements Listener {
     private static final int SPAWNER_MAX_SPAWN_COUNT = CONFIG.getInt("spawnerMaxSpawnCount");
     private static final int SPAWNER_MAX_SPAWN_RANGE = CONFIG.getInt("spawnerMaxSpawnRange");
 
+    private static final int EFFECT_CLOUD_MAX_RADIUS =
+            CONFIG.getInt("effectCloudMaxRadius");
+    private static final int EFFECT_CLOUD_MAX_RADIUS_ON_USE =
+            CONFIG.getInt("effectCloudMaxRadiusOnUse");
+    private static final int EFFECT_CLOUD_MAX_RADIUS_PER_TICK =
+            CONFIG.getInt("effectCloudMaxRadiusPerTick");
 
     private void applyEntityChanges(final Entity entity) {
         switch (entity.getType()) {
@@ -117,17 +123,12 @@ public final class EntitySpawn implements Listener {
     }
 
     private void limitAreaEffectCloudRadius(final AreaEffectCloud cloud) {
-        if (cloud.getRadius() > 40) {
-            cloud.setRadius(40);
-        }
-
-        if (cloud.getRadiusOnUse() > 0.01f) {
-            cloud.setRadiusOnUse(0.1f);
-        }
-
-        if (cloud.getRadiusPerTick() > 0) {
-            cloud.setRadiusPerTick(0);
-        }
+        cloud.setRadius(Math.min(EFFECT_CLOUD_MAX_RADIUS, cloud.getRadius()));
+        cloud.setRadiusOnUse(Math.min(EFFECT_CLOUD_MAX_RADIUS_ON_USE, cloud.getRadiusPerTick()));
+        cloud.setRadiusPerTick(Math.min(
+                EFFECT_CLOUD_MAX_RADIUS_PER_TICK,
+                cloud.getRadiusPerTick())
+        );
     }
 
     private void limitSlimeSize(final Slime slime) {

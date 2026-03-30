@@ -19,6 +19,9 @@ maxExplosionRadius: 20
 spawnerMinSpawnDelay: 1000
 spawnerMaxSpawnCount: 200
 spawnerMaxSpawnRange: 50
+effectCloudMaxRadius: 40
+effectCloudMaxRadiusOnUse: 0.01
+effectCloudMaxRadiusPerTick: 0
 generateFlatlands: true
 playerJoinSendTitle: true
 playerJoinTitle: "§7Welcome to Kaboom!"
