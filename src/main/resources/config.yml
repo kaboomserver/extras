@@ -13,6 +13,7 @@ maxEntitiesPerWorld: 5120
 maxTntsPerWorld: 1024
 maxDragonsPerWorld: 24
 maxWithersPerWorld: 128
+maxTntMinecartsPerWorld: 80
 maxFireballCount: 30
 maxExplosionRadius: 20
 generateFlatlands: true

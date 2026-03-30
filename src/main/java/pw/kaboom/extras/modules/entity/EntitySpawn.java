@@ -36,6 +36,7 @@ public final class EntitySpawn implements Listener {
     private static final int MAX_TNTS_PER_WORLD = CONFIG.getInt("maxTntsPerWorld");
     private static final int MAX_DRAGONS_PER_WORLD = CONFIG.getInt("maxDragonsPerWorld");
     private static final int MAX_WITHERS_PER_WORLD = CONFIG.getInt("maxWithersPerWorld");
+    private static final int MAX_TNT_MINECARTS_PER_WORLD = CONFIG.getInt("maxTntMinecartsPerWorld");
 
     private void applyEntityChanges(final Entity entity) {
         switch (entity.getType()) {
@@ -165,7 +166,7 @@ public final class EntitySpawn implements Listener {
     void onExplosionPrime(final ExplosionPrimeEvent event) {
         if (EntityType.TNT_MINECART.equals(event.getEntityType())
                 && event.getEntity().getWorld()
-                .getEntitiesByClass(ExplosiveMinecart.class).size() > 80) {
+                .getEntitiesByClass(ExplosiveMinecart.class).size() > MAX_TNT_MINECARTS_PER_WORLD) {
             event.setCancelled(true);
         }
     }
