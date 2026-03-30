@@ -38,6 +38,11 @@ public final class EntitySpawn implements Listener {
     private static final int MAX_WITHERS_PER_WORLD = CONFIG.getInt("maxWithersPerWorld");
     private static final int MAX_TNT_MINECARTS_PER_WORLD = CONFIG.getInt("maxTntMinecartsPerWorld");
 
+    private static final int SPAWNER_MIN_SPAWN_DELAY = CONFIG.getInt("spawnerMinSpawnDelay");
+    private static final int SPAWNER_MAX_SPAWN_COUNT = CONFIG.getInt("spawnerMaxSpawnCount");
+    private static final int SPAWNER_MAX_SPAWN_RANGE = CONFIG.getInt("spawnerMaxSpawnRange");
+
+
     private void applyEntityChanges(final Entity entity) {
         switch (entity.getType()) {
             case AREA_EFFECT_CLOUD:
@@ -140,21 +145,10 @@ public final class EntitySpawn implements Listener {
             spawner.setSpawnedType(EntityType.MINECART);
         }
 
-        if (spawner.getMinSpawnDelay() < 1000) {
-            spawner.setMinSpawnDelay(1000);
-        }
-
-        if (spawner.getMaxSpawnDelay() < 1000) {
-            spawner.setMaxSpawnDelay(1000);
-        }
-
-        if (spawner.getSpawnCount() > 200) {
-            spawner.setSpawnCount(200);
-        }
-
-        if (spawner.getSpawnRange() > 50) {
-            spawner.setSpawnRange(50);
-        }
+        spawner.setMinSpawnDelay(Math.max(SPAWNER_MIN_SPAWN_DELAY, spawner.getMinSpawnDelay()));
+        spawner.setMaxSpawnDelay(Math.max(SPAWNER_MIN_SPAWN_DELAY, spawner.getMaxSpawnDelay()));
+        spawner.setSpawnCount(Math.min(SPAWNER_MAX_SPAWN_COUNT, spawner.getSpawnCount()));
+        spawner.setSpawnRange(Math.min(SPAWNER_MAX_SPAWN_RANGE, spawner.getSpawnRange()));
     }
 
     @EventHandler

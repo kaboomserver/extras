@@ -16,6 +16,9 @@ maxWithersPerWorld: 128
 maxTntMinecartsPerWorld: 80
 maxFireballCount: 30
 maxExplosionRadius: 20
+spawnerMinSpawnDelay: 1000
+spawnerMaxSpawnCount: 200
+spawnerMaxSpawnRange: 50
 generateFlatlands: true
 playerJoinSendTitle: true
 playerJoinTitle: "§7Welcome to Kaboom!"
