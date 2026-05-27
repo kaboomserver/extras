@@ -8,7 +8,6 @@ import org.bukkit.entity.minecart.CommandMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerCommandEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 import pw.kaboom.extras.Main;
 
 import java.util.Arrays;
@@ -22,7 +21,7 @@ import java.util.regex.Pattern;
 public final class ServerCommand implements Listener {
     private static final Pattern SELECTOR_PATTERN = Pattern.compile("(?>\\s)*@[aenprs](?>\\s)*");
     private static final Pattern CONTROL_CHAR_PATTERN = Pattern.compile("\\p{C}");
-    private static final Logger LOGGER = JavaPlugin.getPlugin(Main.class).getLogger();
+    private static final Logger LOGGER = Main.PLUGIN.getLogger();
 
     private static final Set<String> BLOCKED_EXECUTE_COMMANDS = ImmutableSet.of(
             "clone", "fill", "give", "kick", "locate",  "me", "msg", "save-all", "say",

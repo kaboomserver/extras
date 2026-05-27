@@ -13,6 +13,7 @@ import pw.kaboom.extras.modules.entity.EntityExplosion;
 import pw.kaboom.extras.modules.entity.EntityKnockback;
 import pw.kaboom.extras.modules.entity.EntitySpawn;
 import pw.kaboom.extras.modules.player.*;
+import pw.kaboom.extras.modules.player.skin.SkinManager;
 import pw.kaboom.extras.modules.server.ServerCommand;
 import pw.kaboom.extras.modules.server.ServerGameRule;
 import pw.kaboom.extras.modules.server.ServerTabComplete;
@@ -20,8 +21,14 @@ import pw.kaboom.extras.modules.server.ServerTabComplete;
 import java.io.File;
 
 public final class Main extends JavaPlugin {
+    public static Main PLUGIN;
+
     private File prefixConfigFile;
     private FileConfiguration prefixConfig;
+
+    public Main() {
+        PLUGIN = this;
+    }
 
     @Override
     public void onLoad() {
@@ -78,6 +85,10 @@ public final class Main extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new PlayerRecipe(), this);
         this.getServer().getPluginManager().registerEvents(new PlayerTeleport(), this);
         this.getServer().getPluginManager().registerEvents(new PlayerPrefix(), this);
+
+        final var skinManager = new SkinManager();
+        this.getServer().getPluginManager().registerEvents(skinManager, this);
+        skinManager.start();
 
         /* Server-related modules */
         ServerGameRule.init(this);

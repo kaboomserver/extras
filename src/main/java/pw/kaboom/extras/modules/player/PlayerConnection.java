@@ -8,15 +8,14 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
-import org.bukkit.plugin.java.JavaPlugin;
 import pw.kaboom.extras.Main;
 import pw.kaboom.extras.modules.server.ServerTabComplete;
 import pw.kaboom.extras.modules.player.skin.SkinManager;
@@ -28,7 +27,7 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class PlayerConnection implements Listener {
-    private static final FileConfiguration CONFIG = JavaPlugin.getPlugin(Main.class).getConfig();
+    private static final FileConfiguration CONFIG = Main.PLUGIN.getConfig();
     private static final Component TITLE =
             LegacyComponentSerializer.legacySection()
                 .deserialize(
@@ -83,19 +82,18 @@ public final class PlayerConnection implements Listener {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
                 Component.text("A player with that username is already logged in"));
         }
+    }
 
-        /*try {
-            final PlayerProfile profile = event.getPlayerProfile();
+    @EventHandler(priority = EventPriority.LOWEST)
+    void onEarlyPlayerJoin(final PlayerJoinEvent event) {
+        final var player = event.getPlayer();
 
-            UUID offlineUUID = UUID.nameUUIDFromBytes(
-                ("OfflinePlayer:" + event.getName()).getBytes(Charsets.UTF_8));
+        // Must be done in the PlayerJoinEvent instead of PlayerLoginEvent otherwise skins may fetch
+        // after the player joins
+        final var serverConfig = Bukkit.getServer().getServerConfig();
 
-            profile.setId(offlineUUID);
-
-            SkinDownloader skinDownloader = new SkinDownloader();
-            skinDownloader.fillJoinProfile(profile, event.getName(), event.getUniqueId());
-        } catch (Exception ignored) {
-        }*/
+        if (!serverConfig.isProxyOnlineMode())
+            SkinManager.requestSkin(player, player.getName(), false);
     }
 
     @EventHandler
@@ -143,13 +141,6 @@ public final class PlayerConnection implements Listener {
 
         if (OP_ON_JOIN && !player.isOp()) {
             player.setOp(true);
-        }
-
-        final Server server = Bukkit.getServer();
-
-
-        if (!server.getOnlineMode()) {
-            SkinManager.applySkin(player, player.getName(), false);
         }
     }
 
