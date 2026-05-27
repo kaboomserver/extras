@@ -7,36 +7,32 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
+import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 
 import net.kyori.adventure.text.Component;
 
-import org.bukkit.scheduler.BukkitScheduler;
-import pw.kaboom.extras.Main;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.jspecify.annotations.Nullable;
 import pw.kaboom.extras.modules.player.skin.response.ProfileResponse;
 import pw.kaboom.extras.modules.player.skin.response.SkinResponse;
 
-public final class SkinManager {
-    private static final HttpClient httpClient = HttpClient.newHttpClient();
+import static pw.kaboom.extras.Main.PLUGIN;
+
+public final class SkinManager extends Thread implements Listener {
+    private static final Pattern PREMIUM_USERNAME = Pattern.compile("^[a-zA-Z0-9_]{1,16}$");
+    private static final Pattern UNDASHED_UUID =
+            Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
     private static final Gson GSON = new Gson();
-    private static final ExecutorService executorService = Executors
-        .newCachedThreadPool();
     private static final URI SESSION_HOST =
             URI.create(
                     System.getProperty(
@@ -55,117 +51,155 @@ public final class SkinManager {
                     )
             )
     );
+    private static final Component ERROR_MESSAGE = Component.text("Couldn't set your skin.");
+    private static final BlockingQueue<SkinFillRequest> SKIN_REQUEST_QUEUE
+            = new LinkedBlockingQueue<>();
+    private static final long EXECUTION_INTERVAL = 1000;
 
-    public static void resetSkin(final Player player, final boolean shouldSendMessage) {
-        executorService.submit(() -> {
-            final PlayerProfile playerProfile = player.getPlayerProfile();
-            playerProfile.removeProperty("textures");
+    public SkinManager() {
+        // avoid blocking jvm shutdown
+        this.setDaemon(true);
+    }
 
-            final BukkitScheduler bukkitScheduler = Bukkit.getScheduler();
-            final Main plugin = JavaPlugin.getPlugin(Main.class);
+    @EventHandler
+    void onPlayerQuit(PlayerQuitEvent event) {
+        purgePlayer(event.getPlayer().getUniqueId());
+    }
 
-            bukkitScheduler.runTask(plugin, () -> player.setPlayerProfile(playerProfile));
+    private static void purgePlayer(UUID uuid) {
+        SKIN_REQUEST_QUEUE.removeIf(skinFillRequest ->
+                skinFillRequest.fromPlayer().equals(uuid));
+    }
 
-            if(!shouldSendMessage) {
-                return;
+    @Override
+    public void run() {
+        final Map<String, UUID> nameToIdCache = new HashMap<>();
+        long lastRequest = 0;
+
+        try(final var client = HttpClient.newHttpClient()) {
+            for(;;) {
+                while (SKIN_REQUEST_QUEUE.size() > 32) SKIN_REQUEST_QUEUE.remove();
+                final SkinFillRequest request = SKIN_REQUEST_QUEUE.take();
+
+                final long diff = System.currentTimeMillis() - lastRequest;
+                if (diff < EXECUTION_INTERVAL) {
+                    //noinspection BusyWait
+                    Thread.sleep(EXECUTION_INTERVAL - diff);
+                }
+
+                var ply = Bukkit.getPlayer(request.fromPlayer());
+                if (ply == null) continue;
+
+                final var toUser = request.toUser();
+                UUID id = null;
+
+                if (toUser.equalsIgnoreCase(ply.getName())
+                        && Bukkit.getServerConfig().isProxyOnlineMode())
+                    id = ply.getUniqueId();
+
+                id = nameToIdCache.getOrDefault(toUser, id);
+
+                final var resultConsumer = request.resultConsumer();
+
+                try {
+                    if (id == null) {
+                        lastRequest = System.currentTimeMillis();
+                        id = getUUID(client, toUser);
+                        nameToIdCache.put(toUser, id);
+                    }
+
+                    lastRequest = System.currentTimeMillis();
+                    // always refetch
+                    final var skin = getSkinData(client, id);
+
+                    // re-get player to ensure it hasn't changed while we were fetching the skin
+                    ply = Bukkit.getPlayer(request.fromPlayer());
+                    if (ply == null) continue;
+
+                    resultConsumer.accept(ply, skin);
+                } catch (final Exception ignored) {
+                    resultConsumer.accept(ply, null);
+                }
             }
+        } catch (final InterruptedException ignored) {
 
+        }
+    }
+
+    public static void removeSkin(final Player player, final boolean shouldSendMessage) {
+        purgePlayer(player.getUniqueId());
+        setSkin(player, null);
+
+        if (shouldSendMessage)
             player.sendMessage(Component.text("Successfully removed your skin"));
-        });
     }
 
-    public static void applySkin(final Player player, final String name,
-        final boolean shouldSendMessage) {
-        executorService.submit(() -> {
-            final PlayerProfile profile = player.getPlayerProfile();
-            final SkinData skinData;
+    private static void setSkin(final Player player, final @Nullable SkinData skinData) {
+        final var profile = player.getPlayerProfile();
+        if (skinData != null) {
+            profile.setProperty(new ProfileProperty(
+                    "textures",
+                    skinData.texture(), skinData.signature()));
+        } else {
+            profile.removeProperty("textures");
+        }
 
-            try {
-                skinData = getSkinData(name).get(15, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                if (!shouldSendMessage) {
-                    return;
-                }
-
-                player.sendMessage(Component.text("Skin fetching was interrupted"));
-                return;
-            } catch (TimeoutException e) {
-                if (!shouldSendMessage) {
-                    return;
-                }
-
-                player.sendMessage(Component.text("Took too long to fetch skin"));
-                return;
-            } catch (ExecutionException | CompletionException e) {
-                if(!shouldSendMessage) {
-                    return;
-                }
-
-                player.sendMessage(Component.text("A player with that username doesn't exist"));
-                return;
-            }
-
-            final String texture = skinData.texture();
-            final String signature = skinData.signature();
-            profile.setProperty(new ProfileProperty("textures", texture, signature));
-
-            final BukkitScheduler bukkitScheduler = Bukkit.getScheduler();
-            final Main plugin = JavaPlugin.getPlugin(Main.class);
-
-            bukkitScheduler.runTask(plugin,
-                () -> player.setPlayerProfile(profile));
-
-
-            if(!shouldSendMessage) {
-                return;
-            }
-
-            player.sendMessage(Component.text("Successfully set your skin to ")
-                .append(Component.text(name))
-                .append(Component.text("'s")));
-        });
+        Bukkit.getScheduler().runTask(PLUGIN, () -> player.setPlayerProfile(profile));
     }
 
-    public static CompletableFuture<SkinData> getSkinData(final String playerName) {
-        return CompletableFuture.supplyAsync(() -> {
-            final UUID uuid;
-            try {
-                uuid = getUUID(playerName).get();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+    public static void requestSkin(final Player player, final String name,
+                                   final boolean shouldSendMessage) {
+        if (!PREMIUM_USERNAME.matcher(name).matches()) {
+            if (shouldSendMessage) player.sendMessage(ERROR_MESSAGE);
+            return;
+        }
 
-            try {
-                return getSkinData(uuid).get();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }, executorService);
+        final UUID uuid = player.getUniqueId();
+        purgePlayer(uuid);
+        SKIN_REQUEST_QUEUE.add(
+                new SkinFillRequest(
+                        uuid,
+                        name,
+                    (strongPlayer, skinData) -> {
+                            if (skinData == null) {
+                                if (shouldSendMessage) strongPlayer.sendMessage(ERROR_MESSAGE);
+                                return;
+                            }
+
+                            setSkin(strongPlayer, skinData);
+                            if (shouldSendMessage)
+                                strongPlayer
+                                    .sendMessage(Component.text("Successfully set your skin to ")
+                                    .append(Component.text(name))
+                                    .append(Component.text("'s")));
+                        }
+                )
+        );
     }
 
-    public static CompletableFuture<SkinData> getSkinData(final UUID uuid) {
-        return CompletableFuture.supplyAsync(() -> {
-            final SkinResponse response = sendRequestForJSON(
-                SESSION_HOST,
-               "/session/minecraft/profile/" + uuid + "?unsigned=false",
-                SkinResponse.class
-            );
+    private static SkinData getSkinData(final HttpClient client, final UUID uuid) {
+        final SkinResponse response = sendRequestForJSON(
+            client,
+            SESSION_HOST,
+            "/session/minecraft/profile/" + uuid + "?unsigned=false",
+            SkinResponse.class
+        );
 
-            final List<ProfileProperty> properties = response.properties();
+        final List<ProfileProperty> properties = response.properties();
 
-            for (ProfileProperty property : properties) {
-                if(!property.getName().equals("textures")) {
-                    continue;
-                }
+        for (final ProfileProperty property : properties) {
+            if (!property.getName().equals("textures"))
+                continue;
 
-                return new SkinData(property.getValue(), property.getSignature());
-            }
 
-            throw new RuntimeException("No textures property");
-        }, executorService);
+            return new SkinData(property.getValue(), property.getSignature());
+        }
+
+        throw new RuntimeException("No textures property");
     }
 
-    private static <T> T sendRequestForJSON(URI uri, String endpoint, Class<T> clazz) {
+    private static <T> T sendRequestForJSON(final HttpClient client, final URI uri,
+                                            final String endpoint, final Class<T> clazz) {
         final HttpRequest request = HttpRequest.newBuilder()
             .GET()
             .uri(uri.resolve(endpoint))
@@ -174,27 +208,26 @@ public final class SkinManager {
         final HttpResponse<String> response;
 
         try {
-            response = httpClient.send(request, BodyHandlers.ofString());
-        } catch (Exception e) {
+            response = client.send(request, BodyHandlers.ofString());
+        } catch (final Exception e) {
             throw new RuntimeException(e);
         }
 
         return GSON.fromJson(response.body(), clazz);
     }
 
-    private static CompletableFuture<UUID> getUUID(final String playerName) {
-        return CompletableFuture.supplyAsync(() -> {
-            final ProfileResponse parsedResponse = sendRequestForJSON(
-                    PROFILE_ENDPOINT,
-                    "/users/profiles/minecraft/" + playerName,
-                    ProfileResponse.class
-            );
+    private static UUID getUUID(final HttpClient client, final String playerName) {
+        final ProfileResponse parsedResponse = sendRequestForJSON(
+                client,
+                PROFILE_ENDPOINT,
+                "/users/profiles/minecraft/" + playerName,
+                ProfileResponse.class
+        );
 
-            final String dashedUuid = parsedResponse
-                .id()
-                .replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5");
+        final String dashedUuid = UNDASHED_UUID
+                .matcher(parsedResponse.id())
+                .replaceAll("$1-$2-$3-$4-$5");
 
-            return UUID.fromString(dashedUuid);
-        }, executorService);
+        return UUID.fromString(dashedUuid);
     }
 }

@@ -9,12 +9,8 @@ import org.bukkit.entity.Player;
 import pw.kaboom.extras.modules.player.skin.SkinManager;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
-import java.util.Map;
 
 public final class CommandSkin implements CommandExecutor {
-    private final Map<Player, Long> lastUsedMillis = new HashMap<>();
-
     @Override
     public boolean onCommand(final @Nonnull CommandSender sender,
                              final @Nonnull Command command,
@@ -26,9 +22,6 @@ public final class CommandSkin implements CommandExecutor {
             return true;
         }
 
-        final long millis = lastUsedMillis.getOrDefault(player, 0L);
-        final long millisDifference = System.currentTimeMillis() - millis;
-
         if (args.length == 0) {
             player.sendMessage(Component
                     .text("Usage: /" + label + " <username>\n/" + label + " off",
@@ -36,31 +29,21 @@ public final class CommandSkin implements CommandExecutor {
             return true;
         }
 
-        if (millisDifference <= 2000) {
-            player.sendMessage(Component
-                    .text("Please wait a few seconds before changing your skin"));
-            return true;
-        }
-
-        lastUsedMillis.put(player, System.currentTimeMillis());
-
         final String name = args[0];
 
         if (name.equalsIgnoreCase("off") || name.equalsIgnoreCase("remove")
          || name.equalsIgnoreCase("disable")) {
-            SkinManager.resetSkin(player, true);
+            SkinManager.removeSkin(player, true);
             return true;
         }
 
         if (name.equalsIgnoreCase("auto") || name.equalsIgnoreCase("default")
         || name.equalsIgnoreCase("reset")) {
-            SkinManager.applySkin(player, player.getName(), true);
+            SkinManager.requestSkin(player, player.getName(), true);
             return true;
         }
 
-        final boolean shouldSendMessage = true;
-
-        SkinManager.applySkin(player, name, shouldSendMessage);
+        SkinManager.requestSkin(player, name, true);
         return true;
     }
 }
