@@ -19,7 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class ServerCommand implements Listener {
-    private static final Pattern SELECTOR_PATTERN = Pattern.compile("(?>\\s)*@[aenprs](?>\\s)*");
+    private static final Pattern SELECTOR_PATTERN = Pattern.compile("(?>\\s)*@[aenpr](?>\\s)*");
     private static final Pattern CONTROL_CHAR_PATTERN = Pattern.compile("\\p{C}");
     private static final Logger LOGGER = Main.PLUGIN.getLogger();
 
