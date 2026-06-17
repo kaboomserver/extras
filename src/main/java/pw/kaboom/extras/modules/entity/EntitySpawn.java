@@ -9,13 +9,13 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.AbstractCubeMob;
 import org.bukkit.entity.AreaEffectCloud;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.LightningStrike;
-import org.bukkit.entity.Slime;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.entity.minecart.ExplosiveMinecart;
@@ -43,19 +43,10 @@ public final class EntitySpawn implements Listener {
     private static final int MAX_TNTS_PER_WORLD = CONFIG.getInt("maxTntsPerWorld");
 
     private void applyEntityChanges(final Entity entity) {
-        switch (entity.getType()) {
-            case AREA_EFFECT_CLOUD:
-                final AreaEffectCloud cloud = (AreaEffectCloud) entity;
-
-                limitAreaEffectCloudRadius(cloud);
-                return;
-            case MAGMA_CUBE:
-            case SLIME:
-                final Slime slime = (Slime) entity;
-
-                limitSlimeSize(slime);
-        default:
-            break;
+        switch (entity) {
+            case final AreaEffectCloud cloud -> limitAreaEffectCloudRadius(cloud);
+            case final AbstractCubeMob cube -> limitCubeSize(cube);
+            default -> {}
         }
     }
 
@@ -123,13 +114,13 @@ public final class EntitySpawn implements Listener {
         }
     }
 
-    private void limitSlimeSize(final Slime slime) {
-        final AttributeInstance scaleInstance = slime.getAttribute(Attribute.SCALE);
+    private void limitCubeSize(final AbstractCubeMob cube) {
+        final AttributeInstance scaleInstance = cube.getAttribute(Attribute.SCALE);
         final double scale = scaleInstance != null ? scaleInstance.getValue() : 1.0f;
 
-        if ((slime.getSize() * scale) > 20) {
-            slime.setSize(20);
-            Utility.resetAttribute(slime, Attribute.SCALE);
+        if ((cube.getSize() * scale) > 20) {
+            cube.setSize(20);
+            Utility.resetAttribute(cube, Attribute.SCALE);
         }
     }
 
