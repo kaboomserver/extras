@@ -6,14 +6,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.jspecify.annotations.NonNull;
 import pw.kaboom.extras.util.Utility;
 
-import javax.annotation.Nonnull;
-
 public final class CommandConsole implements CommandExecutor {
-    public boolean onCommand(final @Nonnull CommandSender sender,
-                             final @Nonnull Command command,
-                             final @Nonnull String label,
+    public boolean onCommand(final @NonNull CommandSender sender,
+                             final @NonNull Command command,
+                             final @NonNull String label,
                              final String[] args) {
         if (args.length == 0) {
             sender.sendMessage(Component

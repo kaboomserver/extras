@@ -6,16 +6,15 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jspecify.annotations.NonNull;
 import pw.kaboom.extras.modules.player.PlayerPrefix;
-
-import javax.annotation.Nonnull;
 
 public final class CommandPrefix implements CommandExecutor {
     private static final int MAX_PREFIX_LENGTH = 1024;
 
-    public boolean onCommand(final @Nonnull CommandSender sender,
-                             final @Nonnull Command cmd,
-                             final @Nonnull String label,
+    public boolean onCommand(final @NonNull CommandSender sender,
+                             final @NonNull Command cmd,
+                             final @NonNull String label,
                              final String[] args) {
         if (!(sender instanceof final Player player)) {
             sender.sendMessage(Component

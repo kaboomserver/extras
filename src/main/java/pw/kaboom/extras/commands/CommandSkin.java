@@ -6,15 +6,14 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jspecify.annotations.NonNull;
 import pw.kaboom.extras.modules.player.skin.SkinManager;
-
-import javax.annotation.Nonnull;
 
 public final class CommandSkin implements CommandExecutor {
     @Override
-    public boolean onCommand(final @Nonnull CommandSender sender,
-                             final @Nonnull Command command,
-                             final @Nonnull String label,
+    public boolean onCommand(final @NonNull CommandSender sender,
+                             final @NonNull Command command,
+                             final @NonNull String label,
                              final String[] args) {
         if (!(sender instanceof final Player player)) {
             sender.sendMessage(Component

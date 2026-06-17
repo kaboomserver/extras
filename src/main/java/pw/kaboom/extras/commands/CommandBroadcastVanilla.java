@@ -10,8 +10,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.jspecify.annotations.NonNull;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 
 public final class CommandBroadcastVanilla implements CommandExecutor {
@@ -19,9 +19,9 @@ public final class CommandBroadcastVanilla implements CommandExecutor {
             LegacyComponentSerializer
             .legacyAmpersand();
 
-    public boolean onCommand(final @Nonnull CommandSender sender,
-                             final @Nonnull Command command,
-                             final @Nonnull String label,
+    public boolean onCommand(final @NonNull CommandSender sender,
+                             final @NonNull Command command,
+                             final @NonNull String label,
                              final String[] args) {
         if (args.length == 0) {
             sender.sendMessage(Component

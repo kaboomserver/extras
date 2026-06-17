@@ -10,13 +10,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
-
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 
 public final class CommandSpidey implements CommandExecutor {
-    public boolean onCommand(final @Nonnull CommandSender sender,
-                             final @Nonnull Command command,
-                             final @Nonnull String label,
+    public boolean onCommand(final @NonNull CommandSender sender,
+                             final @NonNull Command command,
+                             final @NonNull String label,
                              final String[] args) {
         if (!(sender instanceof final Player player)) {
             sender.sendMessage(Component

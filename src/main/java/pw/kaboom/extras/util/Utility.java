@@ -10,9 +10,9 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
 
@@ -56,7 +56,7 @@ public final class Utility {
     }
 
     // TODO: Support hex color codes, too (they aren't supported in Spigot either)
-    public static String translateLegacyColors(@Nonnull String text) {
+    public static String translateLegacyColors(@NonNull String text) {
         char[] b = text.toCharArray();
         for (int i = 0; i < b.length - 1; i++) {
             if (b[i] == '&' && "0123456789AaBbCcDdEeFfKkLlMmNnOoRrXx".indexOf(b[i + 1]) > -1) {
