@@ -161,8 +161,9 @@ public final class ServerCommand implements Listener {
                 }
                 case "/geyser-spigot:geyser", "/geyser" -> {
                     if (arr.length >= 2
-                            && ("dump".equalsIgnoreCase(arr[1])
-			     || "reload".equalsIgnoreCase(arr[1]))) {
+                            && ("debug".equalsIgnoreCase(arr[1])
+                            || "dump".equalsIgnoreCase(arr[1])
+                            || "reload".equalsIgnoreCase(arr[1]))) {
                         return "cancel";
                     }
                 }
