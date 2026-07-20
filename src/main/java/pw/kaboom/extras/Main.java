@@ -1,5 +1,6 @@
 package pw.kaboom.extras;
 
+import io.papermc.paper.registry.keys.BlockTypeKeys;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -17,6 +18,7 @@ import pw.kaboom.extras.modules.player.skin.SkinManager;
 import pw.kaboom.extras.modules.server.ServerCommand;
 import pw.kaboom.extras.modules.server.ServerGameRule;
 import pw.kaboom.extras.modules.server.ServerTabComplete;
+import pw.kaboom.extras.util.FlatLayers;
 
 import java.io.File;
 
@@ -99,7 +101,17 @@ public final class Main extends JavaPlugin {
 
         /* Custom worlds */
         this.getServer().createWorld(
-            new WorldCreator("world_flatlands").generateStructures(false).type(WorldType.FLAT)
+            new WorldCreator("world_flatlands")
+                    .generateStructures(false)
+                    .type(WorldType.FLAT)
+                    .generatorSettings(
+                            new FlatLayers()
+                                    .addLayer(BlockTypeKeys.BEDROCK, 1)
+                                    .addLayer(BlockTypeKeys.DIRT, 124)
+                                    .addLayer(BlockTypeKeys.STONE, 2)
+                                    .addLayer(BlockTypeKeys.GRASS_BLOCK, 1)
+                                    .build()
+                    )
         );
 
         final Messenger messenger = this.getServer().getMessenger();
