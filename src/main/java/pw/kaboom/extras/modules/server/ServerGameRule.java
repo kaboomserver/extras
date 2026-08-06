@@ -3,6 +3,7 @@ package pw.kaboom.extras.modules.server;
 import io.papermc.paper.event.world.WorldGameRuleChangeEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
+import org.bukkit.GameRules;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,15 +15,15 @@ import java.util.Map;
 
 public final class ServerGameRule implements Listener {
     private static final Map<GameRule<?>, ?> FORCED_GAMERULES = Map.of(
-        GameRule.COMMAND_BLOCKS_ENABLED, true,
-        GameRule.SPAWNER_BLOCKS_ENABLED, false
+        GameRules.COMMAND_BLOCKS_WORK, true,
+        GameRules.SPAWNER_BLOCKS_WORK, false
     );
 
     private static final Map<GameRule<Integer>, Integer> GAMERULE_LIMITS = Map.of(
-            GameRule.RANDOM_TICK_SPEED, 6,
-            GameRule.SPAWN_RADIUS, 100,
-            GameRule.COMMAND_MODIFICATION_BLOCK_LIMIT, 32768,
-            GameRule.MAX_COMMAND_FORK_COUNT, EntitySpawn.MAX_ENTITIES_PER_WORLD
+            GameRules.RANDOM_TICK_SPEED, 6,
+            GameRules.RESPAWN_RADIUS, 100,
+            GameRules.MAX_BLOCK_MODIFICATIONS, 32768,
+            GameRules.MAX_COMMAND_FORKS, EntitySpawn.MAX_ENTITIES_PER_WORLD
     );
 
     private static<T> void setGameRule(final World world, final GameRule<T> gameRule,
@@ -73,10 +74,8 @@ public final class ServerGameRule implements Listener {
                 final GameRule<Integer> gameRule = entry.getKey();
                 final int limit = entry.getValue();
 
-                final Integer value = world.getGameRuleValue(gameRule) != null
-                        ? world.getGameRuleValue(gameRule) : world.getGameRuleDefault(gameRule);
-
-                if (value == null || value > limit) {
+                final Integer value = world.getGameRuleValue(gameRule);
+                if (value > limit) {
                     world.setGameRule(gameRule, limit);
                 }
             }

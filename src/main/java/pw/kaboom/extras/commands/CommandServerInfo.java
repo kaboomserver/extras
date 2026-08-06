@@ -8,11 +8,11 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 import oshi.SystemInfo;
 import oshi.hardware.GraphicsCard;
 import pw.kaboom.extras.util.Utility;
 
-import javax.annotation.Nonnull;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 
@@ -63,9 +63,9 @@ public final class CommandServerInfo implements CommandExecutor {
                         .append(Component.text(": " + value, NamedTextColor.WHITE)));
     }
 
-    public boolean onCommand(final @Nonnull CommandSender sender,
-                             final @Nonnull Command command,
-                             final @Nonnull String label,
+    public boolean onCommand(final @NonNull CommandSender sender,
+                             final @NonNull Command command,
+                             final @NonNull String label,
                              final String[] args) {
         try {
             sendInfoMessage(sender, "Hostname",

@@ -3,7 +3,7 @@ package pw.kaboom.extras.modules.player;
 import io.papermc.paper.event.world.WorldGameRuleChangeEvent;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.GameRule;
+import org.bukkit.GameRules;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -61,7 +61,7 @@ public final class PlayerDamage implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     void onGameRuleChange(final WorldGameRuleChangeEvent event) {
-        if (event.getGameRule() != GameRule.SHOW_DEATH_MESSAGES) {
+        if (event.getGameRule() != GameRules.SHOW_DEATH_MESSAGES) {
             return;
         }
 
@@ -76,8 +76,8 @@ public final class PlayerDamage implements Listener {
         if (deathMessage != null && this.deathMessageToggles.computeIfAbsent(
                 player.getWorld(),
                 (key) -> Objects.requireNonNullElse(
-                        key.getGameRuleValue(GameRule.SHOW_DEATH_MESSAGES),
-                        key.getGameRuleDefault(GameRule.SHOW_DEATH_MESSAGES)
+                        key.getGameRuleValue(GameRules.SHOW_DEATH_MESSAGES),
+                        key.getGameRuleDefault(GameRules.SHOW_DEATH_MESSAGES)
                 )
         )) {
             Bukkit.broadcast(deathMessage);

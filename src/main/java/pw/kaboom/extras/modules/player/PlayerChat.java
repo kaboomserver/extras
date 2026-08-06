@@ -12,8 +12,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.jspecify.annotations.NonNull;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -65,15 +65,15 @@ public final class PlayerChat implements Listener {
                         .hexColors()
                         .build();
 
-        private Component renderVanilla(final @Nonnull Component displayName,
-                                        final @Nonnull Component component) {
+        private Component renderVanilla(final @NonNull Component displayName,
+                                        final @NonNull Component component) {
             return Component.translatable("chat.type.text", displayName, component);
         }
 
         @Override
-        public @Nonnull Component render(@Nonnull Player player,
-                                         @Nonnull Component displayName,
-                                         @Nonnull Component component) {
+        public @NonNull Component render(@NonNull Player player,
+                                         @NonNull Component displayName,
+                                         @NonNull Component component) {
             final String message = ((TextComponent) component).content();
             final Component prefix;
             Component prefix1;
