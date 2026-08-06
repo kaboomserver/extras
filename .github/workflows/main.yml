@@ -25,11 +25,11 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          path: target/Extras.jar
+          path: target/*.jar
           archive: false
 
   attestation:
-    if: github.repository == 'kaboomserver/extras' && github.ref == 'refs/heads/master'
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     needs: build
     runs-on: ubuntu-slim
     timeout-minutes: 15
@@ -49,7 +49,7 @@ jobs:
           subject-path: dist/
 
   release:
-    if: github.repository == 'kaboomserver/extras' && github.ref == 'refs/heads/master'
+    if: github.event.repository.fork == false && github.ref == 'refs/heads/master'
     needs: attestation
     runs-on: ubuntu-slim
     timeout-minutes: 15
