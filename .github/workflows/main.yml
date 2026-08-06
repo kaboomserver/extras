@@ -49,7 +49,7 @@ jobs:
           subject-path: dist/
 
   release:
-    if: github.event.repository.fork == false && github.ref == 'refs/heads/master'
+    if: github.event.repository.fork == false && github.ref_name == github.event.repository.default_branch
     needs: attestation
     runs-on: ubuntu-slim
     timeout-minutes: 15
