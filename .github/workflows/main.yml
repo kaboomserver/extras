@@ -28,9 +28,29 @@ jobs:
           path: target/Extras.jar
           archive: false
 
-  release:
+  attestation:
     if: github.repository == 'kaboomserver/extras' && github.ref == 'refs/heads/master'
     needs: build
+    runs-on: ubuntu-slim
+    timeout-minutes: 15
+    permissions:
+      id-token: write
+      attestations: write
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          path: dist/
+          merge-multiple: true
+
+      - name: Attest
+        uses: actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d # v4.2.1
+        with:
+          subject-path: dist/
+
+  release:
+    if: github.repository == 'kaboomserver/extras' && github.ref == 'refs/heads/master'
+    needs: attestation
     runs-on: ubuntu-slim
     timeout-minutes: 15
     permissions:
