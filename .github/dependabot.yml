@@ -13,3 +13,6 @@ updates:
       interval: "daily"
     cooldown:
       default-days: 7
+    ignore:
+      - dependency-name: "io.papermc.paper:paper-api"
+      - dependency-name: "com.github.oshi:oshi-core"
