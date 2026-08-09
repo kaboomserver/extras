@@ -133,7 +133,8 @@ public final class ServerCommand implements Listener {
                 }
                 case "/minecraft:ban", "/ban", "/minecraft:kick", "/kick",
                         "/minecraft:tell", "/tell", "/minecraft:msg", "/msg",
-                        "/minecraft:w", "/w", "/minecraft:say", "/say" -> {
+                        "/minecraft:w", "/w", "/minecraft:say", "/say", "/minecraft:me",
+                        "/me" -> {
                     return checkSelectors(arr, 1);
                 }
                 case "/minecraft:spreadplayers", "/spreadplayers" -> {
