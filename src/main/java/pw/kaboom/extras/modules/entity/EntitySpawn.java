@@ -51,7 +51,7 @@ public final class EntitySpawn implements Listener {
     }
 
     private boolean checkShouldRemoveEntities(final World world) {
-        final int worldEntityCount = world.getEntities().size();
+        final int worldEntityCount = world.getEntityCount();
 
         if (worldEntityCount > MAX_ENTITIES_PER_WORLD) {
             for (Entity entity : world.getEntities()) {
