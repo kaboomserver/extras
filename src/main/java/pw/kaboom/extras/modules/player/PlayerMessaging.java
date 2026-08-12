@@ -11,7 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.plugin.messaging.PluginMessageListener;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import pw.kaboom.extras.Main;
 
 import java.io.*;
@@ -52,7 +52,7 @@ public final class PlayerMessaging implements PluginMessageListener, Listener {
     }
 
     private void handleRegister(final Player player, final DataInput input) throws IOException {
-        this.listening.compute(readString(input), (k, v) -> {
+        this.listening.compute(readString(input), (_, v) -> {
             v = v == null ?
                             Collections.synchronizedSet(
                                     Collections.newSetFromMap(
@@ -68,7 +68,7 @@ public final class PlayerMessaging implements PluginMessageListener, Listener {
 
     private void handleUnregister(final Player player,
                                   final DataInput input) throws IOException {
-        this.listening.computeIfPresent(readString(input), (k, v) -> {
+        this.listening.computeIfPresent(readString(input), (_, v) -> {
             v.remove(player);
             return v;
         });
@@ -142,9 +142,9 @@ public final class PlayerMessaging implements PluginMessageListener, Listener {
     }
 
     @Override
-    public void onPluginMessageReceived(final @NotNull String channelName,
-                                        final @NotNull Player player,
-                                        final byte[] bytes) {
+    public void onPluginMessageReceived(final @NonNull String channelName,
+                                        final @NonNull Player player,
+                                        final byte @NonNull [] bytes) {
         try {
             switch (channelName) {
                 case REGISTER -> handleRegister(
