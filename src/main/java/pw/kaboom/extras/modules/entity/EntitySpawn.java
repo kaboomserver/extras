@@ -127,6 +127,9 @@ public final class EntitySpawn implements Listener {
     private void limitSpawner(final CreatureSpawner spawner) {
         if (EntityType.SPAWNER_MINECART.equals(spawner.getSpawnedType())) {
             spawner.setSpawnedType(EntityType.MINECART);
+        } else if (spawner.getSpawnedEntity() instanceof final FallingBlock block
+            && block.getBlockData().getMaterial().equals(Material.SPAWNER)) {
+            spawner.setSpawnedType(EntityType.FALLING_BLOCK);
         }
 
         if (spawner.getMinSpawnDelay() < 1000) {
@@ -217,20 +220,6 @@ public final class EntitySpawn implements Listener {
             limitSpawner((CreatureSpawner) event.getSpawnerLocation().getBlock().getState(false));
         } catch (Exception exception) {
             event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    void onSpawnerSpawn(final SpawnerSpawnEvent event) {
-        if (EntityType.FALLING_BLOCK.equals(event.getEntityType())) {
-            final FallingBlock block = (FallingBlock) event.getEntity();
-
-            if (!block.getBlockData().getMaterial().equals(Material.SPAWNER)) return;
-            event.setCancelled(true);
-
-            if (event.getSpawner() != null) {
-                event.getSpawner().setSpawnedType(EntityType.FALLING_BLOCK);
-            }
         }
     }
 
