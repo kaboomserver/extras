@@ -51,27 +51,26 @@ public final class EntitySpawn implements Listener {
     }
 
     private boolean checkShouldRemoveEntities(final World world) {
-        final int worldEntityCount = world.getEntities().size();
+        if (world.getEntityCount() <= MAX_ENTITIES_PER_CHUNK) return false;
 
-        if (worldEntityCount > MAX_ENTITIES_PER_WORLD) {
-            for (Entity entity : world.getEntities()) {
-                if (!EntityType.PLAYER.equals(entity.getType())) {
-                    try {
-                        entity.remove();
-                    } catch (Exception ignored) {
-                        // Broken entity
-                        continue;
-                    }
-                }
+        for (final Entity entity : world.getEntities()) {
+            if (EntityType.PLAYER.equals(entity.getType())) continue;
+
+            try {
+                entity.remove();
+            } catch (final Exception ignored) {
+                // Broken entity
             }
-            return true;
         }
-        return false;
+
+        return true;
     }
 
     private boolean isEntityLimitReached(final EntityType entityType, final Chunk chunk,
                                          final World world) {
         switch (entityType) {
+        case PLAYER:
+            break;
         case ENDER_DRAGON:
             final int worldDragonCount = world.getEntitiesByClass(EnderDragon.class).size();
             final int worldDragonCountLimit = 24;
@@ -88,12 +87,10 @@ public final class EntitySpawn implements Listener {
             }
             break;
         default:
-            if (!EntityType.PLAYER.equals(entityType)) {
-                final int chunkEntityCount = chunk.getEntities().length;
+            final int chunkEntityCount = chunk.getEntities().length;
 
-                if (chunkEntityCount >= MAX_ENTITIES_PER_CHUNK) {
-                    return true;
-                }
+            if (chunkEntityCount >= MAX_ENTITIES_PER_CHUNK) {
+                return true;
             }
             break;
         }
