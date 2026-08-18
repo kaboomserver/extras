@@ -1,17 +1,66 @@
 package pw.kaboom.extras.commands;
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.jspecify.annotations.NonNull;
 
-public final class CommandJumpscare implements CommandExecutor {
+import java.util.List;
+
+import static io.papermc.paper.command.brigadier.Commands.argument;
+import static io.papermc.paper.command.brigadier.argument.ArgumentTypes.players;
+
+public final class CommandJumpscare implements BrigadierCommand {
+    @Override
+    public String getLabel() {
+        return "jumpscare";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Scares a player";
+    }
+
+    @Override
+    public void build(final LiteralArgumentBuilder<CommandSourceStack> builder) {
+        builder
+                .requires(src ->
+                        src.getSender().hasPermission("extras.jumpscare")
+                )
+                .then(argument("players", players())
+                        .executes(ctx -> {
+                            final PlayerSelectorArgumentResolver selector = ctx.getArgument(
+                                    "players",
+                                    PlayerSelectorArgumentResolver.class
+                            );
+                            final List<Player> targets = selector.resolve(ctx.getSource());
+                            for (final Player target : targets) {
+                                createJumpscare(target);
+                            }
+                            if (targets.size() == 1) {
+                                ctx.getSource().getSender().sendMessage(
+                                        Component.text("Successfully created jumpscare for " +
+                                                        "player \"")
+                                                .append(Component.text(
+                                                        targets.getFirst().getName())
+                                                )
+                                                .append(Component.text("\""))
+                                );
+                            } else {
+                                ctx.getSource().getSender().sendMessage(
+                                        Component.text("Successfully created jumpscare for "
+                                                + targets.size()
+                                                + " players")
+                                );
+                            }
+                            return targets.size();
+                        })
+                );
+    }
+
     private void createJumpscare(final Player player) {
         final int count = 4;
         player.spawnParticle(Particle.ELDER_GUARDIAN, player.getLocation(), count);
@@ -20,45 +69,5 @@ public final class CommandJumpscare implements CommandExecutor {
         for (int i = 0; i <= maxIterator; i++) {
             player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_SCREAM, 1, 0);
         }
-    }
-
-    public boolean onCommand(final @NonNull CommandSender sender,
-                             final @NonNull Command command,
-                             final @NonNull String label,
-                             final String[] args) {
-        if (args.length == 0) {
-            sender.sendMessage(Component
-                    .text("Usage: /" + label + " <player>",
-                            NamedTextColor.RED));
-            return true;
-        }
-
-        if (args[0].equals("*") || args[0].equals("**")) {
-            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                createJumpscare(onlinePlayer);
-            }
-            sender.sendMessage(Component
-                    .text("Successfully created jumpscare for every player"));
-            return true;
-        }
-
-        final Player target = Bukkit.getPlayer(args[0]);
-
-        if (target == null) {
-            sender.sendMessage(
-                Component.text("Player \"")
-                    .append(Component.text(args[0]))
-                    .append(Component.text("\" not found"))
-            );
-            return true;
-        }
-
-        createJumpscare(target);
-        sender.sendMessage(
-            Component.text("Successfully created jumpscare for player \"")
-                .append(Component.text(target.getName()))
-                .append(Component.text("\""))
-        );
-        return true;
     }
 }

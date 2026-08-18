@@ -1,48 +1,66 @@
 package pw.kaboom.extras.commands;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.MessageComponentSerializer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
-import org.jspecify.annotations.NonNull;
 
-public final class CommandSpidey implements CommandExecutor {
-    public boolean onCommand(final @NonNull CommandSender sender,
-                             final @NonNull Command command,
-                             final @NonNull String label,
-                             final String[] args) {
-        if (!(sender instanceof final Player player)) {
-            sender.sendMessage(Component
-                    .text("Command has to be run by a player"));
-            return true;
-        }
+public final class CommandSpidey implements BrigadierCommand {
+    private static final SimpleCommandExceptionType ERR_NOT_PLAYER =
+            new SimpleCommandExceptionType(MessageComponentSerializer.message().serialize(
+                    Component.text("This command must be called by a player")));
 
-        final World world = player.getWorld();
-        final Vector start = player.getEyeLocation().toVector();
-        final Vector direction = player.getEyeLocation().getDirection();
-        final int yOffset = 0;
-        final int distance = 50;
+    @Override
+    public String getLabel() {
+        return "spidey";
+    }
 
-        final BlockIterator blockIterator = new BlockIterator(
-            world,
-            start,
-            direction,
-            yOffset,
-            distance
-        );
+    @Override
+    public String getDescription() {
+        return "Annoying little spider...";
+    }
 
-        while (blockIterator.hasNext()) {
-            final Block block = blockIterator.next();
+    @Override
+    public void build(final LiteralArgumentBuilder<CommandSourceStack> builder) {
+        builder
+                .requires(src ->
+                        src.getSender().hasPermission("extras.spidey")
+                                && src.getSender() instanceof Player
+                )
+                .executes(ctx -> {
+                    if (!(ctx.getSource().getSender() instanceof final Player player)) {
+                        throw ERR_NOT_PLAYER.create();
+                    }
 
-            if (block.getType() != Material.COBWEB && !block.getType().isAir()) break;
-            block.setType(Material.COBWEB);
-        }
-        return true;
+                    final World world = player.getWorld();
+                    final Vector start = player.getEyeLocation().toVector();
+                    final Vector direction = player.getEyeLocation().getDirection();
+                    final int yOffset = 0;
+                    final int distance = 50;
+
+                    final BlockIterator blockIterator = new BlockIterator(
+                            world,
+                            start,
+                            direction,
+                            yOffset,
+                            distance
+                    );
+
+                    while (blockIterator.hasNext()) {
+                        final Block block = blockIterator.next();
+
+                        if (block.getType() != Material.COBWEB && !block.getType().isAir()) break;
+                        block.setType(Material.COBWEB);
+                    }
+                    return Command.SINGLE_SUCCESS;
+                });
     }
 }
