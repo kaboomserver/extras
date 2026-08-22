@@ -1,58 +1,81 @@
 package pw.kaboom.extras.commands;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.LiteralMessage;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NonNull;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public final class CommandKaboom implements CommandExecutor {
+public final class CommandKaboom implements BrigadierCommand {
+    private static final SimpleCommandExceptionType EX_NOT_PLAYER =
+            new SimpleCommandExceptionType(
+                    new LiteralMessage("This command must be called by a player")
+            );
 
-    public boolean onCommand(final @NonNull CommandSender sender,
-                             final @NonNull Command command,
-                             final @NonNull String label,
-                             final String[] args) {
-        if (!(sender instanceof final Player player)) {
-            sender.sendMessage(Component
-                    .text("Command has to be run by a player"));
-            return true;
-        }
+    @Override
+    public String getLabel() {
+        return "kaboom";
+    }
 
-        boolean explode = ThreadLocalRandom.current().nextBoolean();
+    @Override
+    public String getDescription() {
+        return "I wonder...";
+    }
 
-        if (explode) {
-            final Location location = player.getLocation();
-            final World world = player.getWorld();
-            final int explosionCount = 20;
-            final int power = 8;
+    @Override
+    public void build(final LiteralArgumentBuilder<CommandSourceStack> builder) {
+        builder
+                .requires(src ->
+                        src.getSender().hasPermission("extras.kaboom")
+                                && src.getSender() instanceof Player
+                )
+                .executes(ctx -> {
+                    if (!(ctx.getSource().getSender() instanceof final Player player)) {
+                        throw EX_NOT_PLAYER.create();
+                    }
+                    final boolean explode = ThreadLocalRandom.current().nextBoolean();
 
-            world.createExplosion(location, power, true, true);
+                    if (explode) {
+                        final Location location = player.getLocation();
+                        final World world = player.getWorld();
+                        final int explosionCount = 20;
+                        final int power = 8;
 
-            for (int i = 0; i < explosionCount; i++) {
-                final double posX = location.getX() + ThreadLocalRandom.current().nextInt(-15, 15);
-                final double posY = location.getY() + ThreadLocalRandom.current().nextInt(-6, 6);
-                final double posZ = location.getZ() + ThreadLocalRandom.current().nextInt(-15, 15);
+                        world.createExplosion(location, power, true, true);
 
-                final Location explodeLocation = new Location(world, posX, posY, posZ);
-                final int power2 = 4;
+                        for (int i = 0; i < explosionCount; i++) {
+                            final double posX =
+                                    location.getX() + ThreadLocalRandom.current().nextInt(-15
+                                            , 15);
+                            final double posY =
+                                    location.getY() + ThreadLocalRandom.current().nextInt(-6,
+                                            6);
+                            final double posZ =
+                                    location.getZ() + ThreadLocalRandom.current().nextInt(-15
+                                            , 15);
 
-                world.createExplosion(explodeLocation, power2, true, true);
-                explodeLocation.getBlock().setType(Material.LAVA);
-            }
+                            final Location explodeLocation = new Location(world, posX, posY, posZ);
+                            final int power2 = 4;
 
-            player.sendMessage(Component.text("Forgive me :c"));
-            return true;
-        }
+                            world.createExplosion(explodeLocation, power2, true, true);
+                            explodeLocation.getBlock().setType(Material.LAVA);
+                        }
 
-        player.getInventory().setItemInMainHand(new ItemStack(Material.CAKE));
-        player.sendMessage(Component.text("Have a nice day :)"));
-        return true;
+                        player.sendMessage(Component.text("Forgive me :c"));
+                        return Command.SINGLE_SUCCESS;
+                    }
+
+                    player.getInventory().setItemInMainHand(new ItemStack(Material.CAKE));
+                    player.sendMessage(Component.text("Have a nice day :)"));
+                    return Command.SINGLE_SUCCESS;
+                });
     }
 }

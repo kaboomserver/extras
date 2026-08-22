@@ -1,58 +1,61 @@
 package pw.kaboom.extras.commands;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
-import org.jspecify.annotations.NonNull;
 
-import java.util.Collection;
+import java.util.List;
 
-public final class CommandBroadcastVanilla implements CommandExecutor {
-    private static final LegacyComponentSerializer LEGACY_COMPONENT_SERIALIZER =
-            LegacyComponentSerializer
-            .legacyAmpersand();
+import static com.mojang.brigadier.arguments.StringArgumentType.greedyString;
+import static io.papermc.paper.command.brigadier.Commands.argument;
 
-    public boolean onCommand(final @NonNull CommandSender sender,
-                             final @NonNull Command command,
-                             final @NonNull String label,
-                             final String[] args) {
-        if (args.length == 0) {
-            sender.sendMessage(Component
-                    .text("Usage: /" + label + " <message ..>",
-                            NamedTextColor.RED));
-            return true;
-        }
+public final class CommandBroadcastVanilla implements BrigadierCommand {
+    private static final LegacyComponentSerializer LEGACY_COMPONENT_SERIALIZER
+            = LegacyComponentSerializer.legacyAmpersand();
 
-        final Component senderName = sender.name();
-        final String input = String.join(" ", args);
-        final Component component = LEGACY_COMPONENT_SERIALIZER.deserialize(input);
-        final Component broadcastComponent =
-                Component.translatable("chat.type.admin", senderName, component)
-                .decorate(TextDecoration.ITALIC)
-                .color(NamedTextColor.GRAY);
+    @Override
+    public String getLabel() {
+        return "broadcastvanilla";
+    }
 
-        sender.sendMessage(component);
+    @Override
+    public String getDescription() {
+        return "Broadcasts text in vanilla style";
+    }
 
-        final Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
+    @Override
+    public List<String> getAliases() {
+        return List.of("bcv");
+    }
 
-        for (final Player onlinePlayer : onlinePlayers) {
-            if (onlinePlayer.equals(sender)) {
-                continue;
-            }
-
-            onlinePlayer.sendMessage(broadcastComponent);
-        }
-
-        final ConsoleCommandSender consoleCommandSender = Bukkit.getConsoleSender();
-        consoleCommandSender.sendMessage(broadcastComponent);
-
-        return true;
+    @Override
+    public void build(final LiteralArgumentBuilder<CommandSourceStack> builder) {
+        builder
+                .requires(src ->
+                        src.getSender().hasPermission("extras.broadcastraw")
+                )
+                .then(argument("message", greedyString())
+                        .executes(ctx -> {
+                            final Component senderName = ctx.getSource().getSender().name();
+                            final String input = StringArgumentType.getString(ctx, "message");
+                            final Component component =
+                                    LEGACY_COMPONENT_SERIALIZER.deserialize(input);
+                            final Component broadcastComponent =
+                                    Component.translatable("chat.type.admin",
+                                                    senderName,
+                                                    component
+                                            )
+                                            .decorate(TextDecoration.ITALIC)
+                                            .color(NamedTextColor.GRAY);
+                            Bukkit.broadcast(broadcastComponent);
+                            return Command.SINGLE_SUCCESS;
+                        })
+                );
     }
 }

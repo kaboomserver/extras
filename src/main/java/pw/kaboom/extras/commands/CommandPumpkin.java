@@ -1,57 +1,59 @@
 package pw.kaboom.extras.commands;
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NonNull;
 
-public final class CommandPumpkin implements CommandExecutor {
-    private void placePumpkin(final Player player) {
-        player.getInventory().setHelmet(new ItemStack(Material.CARVED_PUMPKIN));
+import java.util.List;
+
+import static io.papermc.paper.command.brigadier.Commands.argument;
+import static pw.kaboom.extras.arguments.PlayersOrUUIDArgumentType.getPlayers;
+import static pw.kaboom.extras.arguments.PlayersOrUUIDArgumentType.playersOrUUID;
+
+public final class CommandPumpkin implements BrigadierCommand {
+    @Override
+    public String getLabel() {
+        return "pumpkin";
     }
 
-    public boolean onCommand(final @NonNull CommandSender sender,
-                             final @NonNull Command command,
-                             final @NonNull String label,
-                             final String[] args) {
-        if (args.length == 0) {
-            sender.sendMessage(Component
-                    .text("Usage: /" + label + " <player>",
-                            NamedTextColor.RED));
-            return true;
-        }
+    @Override
+    public String getDescription() {
+        return "Places a pumpkin on a player's head";
+    }
 
-        if (args[0].equals("*") || args[0].equals("**")) {
-            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                placePumpkin(onlinePlayer);
-            }
-            sender.sendMessage(Component.text("Everyone is now a pumpkin"));
-            return true;
-        }
+    @Override
+    public void build(final LiteralArgumentBuilder<CommandSourceStack> builder) {
+        builder
+                .requires(src -> src.getSender().hasPermission("extras.pumpkin"))
+                .then(argument("players", playersOrUUID())
+                        .executes(ctx -> {
+                            final List<Player> targets = getPlayers(ctx, "players");
+                            for (final Player target : targets) {
+                                placePumpkin(target);
+                            }
+                            if (targets.size() == 1) {
+                                ctx.getSource().getSender().sendMessage(
+                                        Component.text("\"")
+                                                .append(Component.text(
+                                                        targets.getFirst().getName())
+                                                )
+                                                .append(Component.text("\" is now a pumpkin"))
+                                );
+                            } else {
+                                ctx.getSource().getSender().sendMessage(
+                                        Component.text(targets.size()
+                                                + " players are now pumpkins")
+                                );
+                            }
+                            return targets.size();
+                        })
+                );
+    }
 
-        final Player target = Bukkit.getPlayer(args[0]);
-
-        if (target == null) {
-            sender.sendMessage(
-                Component.text("Player \"")
-                    .append(Component.text(args[0]))
-                    .append(Component.text("\" not found"))
-            );
-            return true;
-        }
-
-        placePumpkin(target);
-        sender.sendMessage(
-            Component.text("Player \"")
-                .append(Component.text(target.getName()))
-                .append(Component.text("\" is now a pumpkin"))
-        );
-        return true;
+    private void placePumpkin(final Player player) {
+        player.getInventory().setHelmet(new ItemStack(Material.CARVED_PUMPKIN));
     }
 }

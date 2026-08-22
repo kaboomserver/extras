@@ -1,28 +1,38 @@
 package pw.kaboom.extras.commands;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.jspecify.annotations.NonNull;
 import pw.kaboom.extras.util.Utility;
 
-public final class CommandSpawn implements CommandExecutor {
-    public boolean onCommand(final @NonNull CommandSender sender,
-                             final @NonNull Command command,
-                             final @NonNull String label,
-                             final String[] args) {
-        if (!(sender instanceof final Player player)) {
-            sender.sendMessage(Component
-                    .text("Command has to be run by a player"));
-            return true;
-        }
+public final class CommandSpawn implements BrigadierCommand {
+    @Override
+    public String getLabel() {
+        return "spawn";
+    }
 
-        Utility.teleportToSpawn(player, PlayerTeleportEvent.TeleportCause.COMMAND);
-        player.sendMessage(Component
-                .text("Successfully moved to spawn"));
-        return true;
+    @Override
+    public String getDescription() {
+        return "Teleports you to spawn";
+    }
+
+    @Override
+    public void build(final LiteralArgumentBuilder<CommandSourceStack> builder) {
+        builder
+                .requires(src ->
+                        src.getSender().hasPermission("extras.spawn")
+                                && src.getSender() instanceof Player
+                )
+                .executes(ctx -> {
+                    if (!(ctx.getSource().getSender() instanceof final Player player)) {
+                        throw new IllegalStateException("This command must be called by a player");
+                    }
+                    Utility.teleportToSpawn(player, PlayerTeleportEvent.TeleportCause.COMMAND);
+                    player.sendMessage(Component.text("Successfully moved to spawn"));
+                    return Command.SINGLE_SUCCESS;
+                });
     }
 }
