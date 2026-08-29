@@ -27,7 +27,7 @@ public final class CommandPrefix implements BrigadierCommand {
             new SimpleCommandExceptionType(new LiteralMessage(
                     "Something went wrong while saving the prefix. Please check console."));
 
-    private static final Logger log = JavaPlugin.getPlugin(Main.class).getSLF4JLogger();
+    private static final Logger LOGGER = JavaPlugin.getPlugin(Main.class).getSLF4JLogger();
 
     @Override
     public String getLabel() {
