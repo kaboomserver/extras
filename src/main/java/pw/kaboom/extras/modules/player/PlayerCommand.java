@@ -1,6 +1,7 @@
 package pw.kaboom.extras.modules.player;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import io.papermc.paper.event.player.PlayerSignCommandPreprocessEvent;
@@ -13,7 +14,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import pw.kaboom.extras.modules.server.ServerCommand;
 
 public final class PlayerCommand implements Listener {
-    private static HashMap<UUID, Long> commandMillisList = new HashMap<UUID, Long>();
+    private static final Map<UUID, Long> commandMillisList = new HashMap<>();
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     void onPlayerCommandPreprocess(final PlayerCommandPreprocessEvent event) {
@@ -50,7 +51,7 @@ public final class PlayerCommand implements Listener {
         this.onPlayerCommandPreprocess(event);
     }
 
-    public static HashMap<UUID, Long> getCommandMillisList() {
+    public static Map<UUID, Long> getCommandMillisList() {
         return commandMillisList;
     }
 }
