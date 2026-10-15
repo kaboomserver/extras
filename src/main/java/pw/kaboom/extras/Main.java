@@ -113,6 +113,16 @@ public final class Main extends JavaPlugin {
                                     .build()
                     )
         );
+        this.getServer().createWorld(
+                new WorldCreator("world_void")
+                        .generateStructures(false)
+                        .type(WorldType.FLAT)
+                        .generatorSettings(
+                                new FlatLayers()
+                                        .addLayer(BlockTypeKeys.AIR, 1)
+                                        .build()
+                        )
+        );
 
         final Messenger messenger = this.getServer().getMessenger();
         final PlayerMessaging playerMessaging = new PlayerMessaging(this);
