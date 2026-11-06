@@ -1,6 +1,7 @@
 package pw.kaboom.extras.modules.server;
 
 import com.google.common.collect.ImmutableSet;
+
 import org.bukkit.block.CommandBlock;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
@@ -136,6 +137,13 @@ public final class ServerCommand implements Listener {
                         "/minecraft:w", "/w", "/minecraft:say", "/say", "/minecraft:me",
                         "/me" -> {
                     return checkSelectors(arr, 1);
+                }
+                case "/minecraft:dialog", "/dialog" -> {
+                    if (command.contains("can_close_with_escape")) {
+                        // you can put whatever in the snbt string it if's a correct dialog
+                        // TODO: in the future possibly parse the NBT and limit other things
+                        return command.replaceAll("can_close_with_escape", "can_close_with_escaqe");
+                    }
                 }
                 case "/minecraft:spreadplayers", "/spreadplayers" -> {
                     if (arr.length == 7 && (arr[6].contains("@e") || arr[6].contains("@a"))) {
