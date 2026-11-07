@@ -2,6 +2,8 @@ name: Extras
 main: pw.kaboom.extras.Main
 description: Plugin that adds extra functionality to the server.
 api-version: '1.21'
+libraries:
+  - net.kyori:adventure-nbt:5.2.0
 version: master
 
 commands:

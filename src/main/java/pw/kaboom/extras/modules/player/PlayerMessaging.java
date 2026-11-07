@@ -1,7 +1,16 @@
 package pw.kaboom.extras.modules.player;
 
 import com.google.common.primitives.Longs;
+import com.google.errorprone.annotations.CheckReturnValue;
+import io.papermc.paper.connection.PlayerGameConnection;
+import io.papermc.paper.event.player.PlayerCustomClickEvent;
 import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.nbt.ByteArrayBinaryTag;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
+import net.kyori.adventure.nbt.StringBinaryTag;
+import net.kyori.adventure.nbt.TagStringIO;
+import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
@@ -14,7 +23,9 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jspecify.annotations.NonNull;
 import pw.kaboom.extras.Main;
 
-import java.io.*;
+import java.io.DataInput;
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -22,6 +33,10 @@ public final class PlayerMessaging implements PluginMessageListener, Listener {
     public static final String REGISTER = "extras:register";
     public static final String UNREGISTER = "extras:unregister";
     public static final String MESSAGE = "extras:message";
+
+    private static final Key MESSAGE_CLICK = Key.key("extras", "message");
+    private static final String CHANNEL = "channel";
+    private static final String DATA = "data";
 
     private static final Component ERROR =
             Component.text("Could not send plugin channel message.", NamedTextColor.RED);
@@ -39,7 +54,7 @@ public final class PlayerMessaging implements PluginMessageListener, Listener {
         final byte[] buf = new byte[255];
         int idx = 0;
 
-        for(;;) {
+        for (; ; ) {
             final byte input = dataInput.readByte();
             if (idx == buf.length) throw new IOException("Index overflow");
             final boolean isLast = (input & END_CHAR_MASK) == END_CHAR_MASK;
@@ -59,8 +74,8 @@ public final class PlayerMessaging implements PluginMessageListener, Listener {
         if (Objects.equals(limit, Short.MAX_VALUE)) limit = null;
 
         this.listening.computeIfAbsent(
-            name,
-        _ -> new IdentityHashMap<>()
+                name,
+                _ -> new IdentityHashMap<>()
         ).put(player, limit);
     }
 
@@ -75,18 +90,23 @@ public final class PlayerMessaging implements PluginMessageListener, Listener {
     private void handleMessage(final Player player,
                                final DataInputStream input)
             throws IOException {
-        final String channelName = readString(input);
+        sendMessage(player, readString(input), input);
+    }
+
+    private void sendMessage(final Player player,
+                             final String channelName,
+                             final DataInputStream input) throws IOException {
         final Map<Player, Short> playerToLimit = this.listening.get(channelName);
         if (playerToLimit == null) return;
         final Set<Map.Entry<Player, Short>> players = playerToLimit.entrySet();
 
         // we initialize as null so that we do not read the incoming
         // data and serialize the payload if the only recipient
-            // would be the sender, who we do not send to
+        // would be the sender, who we do not send to
         byte[] msg = null;
         int len = -1;
 
-        for (final Map.Entry<Player, Short> entry: players) {
+        for (final Map.Entry<Player, Short> entry : players) {
             final Player playerInSet = entry.getKey();
             if (playerInSet == player) continue;
             if (msg == null) {
@@ -164,13 +184,13 @@ public final class PlayerMessaging implements PluginMessageListener, Listener {
                         new DataInputStream(new FastByteArrayInputStream(bytes))
                 );
             }
-        } catch (final Exception ignored) {
+        } catch (final Exception _) {
             player.sendMessage(ERROR);
         }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerQuit(PlayerQuitEvent event) {
+    void onPlayerQuit(final PlayerQuitEvent event) {
         final Player removedPlayer = event.getPlayer();
 
         final var iterator = this.listening.entrySet().iterator();
@@ -181,5 +201,56 @@ public final class PlayerMessaging implements PluginMessageListener, Listener {
             if (listeners.remove(removedPlayer) == null || !listeners.isEmpty()) continue;
             iterator.remove();
         }
+    }
+
+    @EventHandler
+    @SuppressWarnings("UnstableApiUsage")
+    void onPlayerCustomClick(final PlayerCustomClickEvent event) {
+        if (!MESSAGE_CLICK.equals(event.getIdentifier()) ||
+                !(event.getCommonConnection() instanceof final PlayerGameConnection connection)) {
+            return;
+        }
+
+        final BinaryTagHolder tagHolder = event.getTag();
+        if (tagHolder == null) {
+            return;
+        }
+
+        final Player player = connection.getPlayer();
+
+        final CompoundBinaryTag compound;
+        try {
+            compound = TagStringIO.tagStringIO().asCompound(tagHolder.string());
+        } catch (final IOException _) {
+            player.sendMessage(ERROR);
+            return;
+        }
+
+        final String channelName = compound.getString(CHANNEL);
+        if (channelName.isEmpty()) {
+            player.sendMessage(ERROR);
+            return;
+        }
+
+        try {
+            sendMessage(
+                    player,
+                    channelName,
+                    new DataInputStream(
+                            new FastByteArrayInputStream(readPayload(compound))
+                    )
+            );
+        } catch (final IOException _) {
+            player.sendMessage(ERROR);
+        }
+    }
+
+    @CheckReturnValue
+    private static byte[] readPayload(final CompoundBinaryTag compound) {
+        return switch (compound.get(DATA)) {
+            case final ByteArrayBinaryTag byteArray -> byteArray.value();
+            case final StringBinaryTag string -> string.value().getBytes(StandardCharsets.UTF_8);
+            case null, default -> new byte[0];
+        };
     }
 }
