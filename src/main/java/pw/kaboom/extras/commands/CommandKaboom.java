@@ -1,9 +1,7 @@
 package pw.kaboom.extras.commands;
 
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
@@ -32,10 +30,9 @@ public final class CommandKaboom implements BrigadierCommand {
         builder
                 .requires(restricted(src ->
                         src.getSender().hasPermission("extras.kaboom")
-                                && src.getSender() instanceof Player
                 ))
                 .executes(ctx -> {
-                    final Player player = (Player) ctx.getSource().getSender();
+                    final Player player = ctx.getSource().getPlayerOrThrow();
                     final boolean explode = ThreadLocalRandom.current().nextBoolean();
 
                     if (explode) {

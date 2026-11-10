@@ -1,11 +1,9 @@
 package pw.kaboom.extras.commands;
 
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -31,7 +29,6 @@ public final class CommandSkin implements BrigadierCommand {
     public void build(final LiteralArgumentBuilder<CommandSourceStack> builder) {
         builder.requires(restricted(src ->
                 src.getSender().hasPermission("extras.skin")
-                        && src.getSender() instanceof Player
         ));
 
         for (final String alias : List.of("off", "remove", "disable")) {
@@ -66,7 +63,8 @@ public final class CommandSkin implements BrigadierCommand {
                 }));
     }
 
-    private static Player player(final CommandContext<CommandSourceStack> ctx) {
-        return (Player) ctx.getSource().getSender();
+    private static Player player(final CommandContext<CommandSourceStack> ctx)
+            throws CommandSyntaxException {
+        return ctx.getSource().getPlayerOrThrow();
     }
 }

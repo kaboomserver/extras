@@ -2,10 +2,7 @@ package pw.kaboom.extras.commands;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
-import io.papermc.paper.command.brigadier.MessageComponentSerializer;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -31,10 +28,9 @@ public final class CommandSpidey implements BrigadierCommand {
         builder
                 .requires(restricted(src ->
                         src.getSender().hasPermission("extras.spidey")
-                                && src.getSender() instanceof Player
                 ))
                 .executes(ctx -> {
-                    final Player player = (Player) ctx.getSource().getSender();
+                    final Player player = ctx.getSource().getPlayerOrThrow();
 
                     final World world = player.getWorld();
                     final Vector start = player.getEyeLocation().toVector();

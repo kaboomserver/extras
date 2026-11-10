@@ -26,10 +26,9 @@ public final class CommandSpawn implements BrigadierCommand {
         builder
                 .requires(restricted(src ->
                         src.getSender().hasPermission("extras.spawn")
-                                && src.getSender() instanceof Player
                 ))
                 .executes(ctx -> {
-                    final Player player = (Player) ctx.getSource().getSender();
+                    final Player player = ctx.getSource().getPlayerOrThrow();
                     Utility.teleportToSpawn(player, PlayerTeleportEvent.TeleportCause.COMMAND);
                     player.sendMessage(Component.text("Successfully moved to spawn"));
                     return Command.SINGLE_SUCCESS;

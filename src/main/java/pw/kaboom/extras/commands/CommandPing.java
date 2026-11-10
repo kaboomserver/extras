@@ -1,9 +1,7 @@
 package pw.kaboom.extras.commands;
 
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -17,10 +15,6 @@ import static pw.kaboom.extras.arguments.PlayerOrUUIDArgumentType.getPlayer;
 import static pw.kaboom.extras.arguments.PlayerOrUUIDArgumentType.playerOrUUID;
 
 public final class CommandPing implements BrigadierCommand {
-    private static final SimpleCommandExceptionType EX_NOT_PLAYER =
-            new SimpleCommandExceptionType(new LiteralMessage(
-                    "This command must be called by a player"));
-
     @Override
     public String getLabel() {
         return "ping";
@@ -41,9 +35,7 @@ public final class CommandPing implements BrigadierCommand {
         builder
                 .requires(src -> src.getSender().hasPermission("extras.ping"))
                 .executes(ctx -> {
-                    if (!(ctx.getSource().getSender() instanceof final Player player)) {
-                        throw EX_NOT_PLAYER.create();
-                    }
+                    final Player player = ctx.getSource().getPlayerOrThrow();
                     final int ping = player.getPing();
                     ctx.getSource().getSender().sendMessage(
                             Component.empty()

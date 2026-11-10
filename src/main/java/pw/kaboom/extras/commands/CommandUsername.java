@@ -51,13 +51,11 @@ public final class CommandUsername implements BrigadierCommand {
     public void build(final LiteralArgumentBuilder<CommandSourceStack> builder) {
         builder.requires(restricted(src ->
                 src.getSender().hasPermission("extras.username")
-                        && src.getSender() instanceof Player
         ));
 
         for (final String alias : List.of("auto", "default", "reset")) {
             builder.requires(src ->
                     src.getSender().hasPermission("extras.username")
-                            && src.getSender() instanceof Player
             ).then(literal(alias).executes(ctx -> {
                 final Player player = player(ctx);
                 final String original = UsernameManager.getOriginalName(player);
@@ -117,7 +115,8 @@ public final class CommandUsername implements BrigadierCommand {
         );
     }
 
-    private static Player player(final CommandContext<CommandSourceStack> ctx) {
-        return (Player) ctx.getSource().getSender();    
+    private static Player player(final CommandContext<CommandSourceStack> ctx)
+            throws CommandSyntaxException {
+        return ctx.getSource().getPlayerOrThrow();
     }
 }

@@ -49,18 +49,17 @@ public final class CommandPrefix implements BrigadierCommand {
         builder
                 .requires(restricted(src ->
                         src.getSender().hasPermission("extras.prefix")
-                                && src.getSender() instanceof Player
                 ))
                 .then(literal("off")
                         .executes(ctx -> {
-                            final Player player = (Player) ctx.getSource().getSender();
+                            final Player player = ctx.getSource().getPlayerOrThrow();
                             setPrefix(player, null);
                             return Command.SINGLE_SUCCESS;
                         })
                 )
                 .then(argument("prefix", greedyString())
                         .executes(ctx -> {
-                            final Player player = (Player) ctx.getSource().getSender();
+                            final Player player = ctx.getSource().getPlayerOrThrow();
                             String legacyPrefix = StringArgumentType.getString(ctx, "prefix");
                             if (legacyPrefix.length() > MAX_PREFIX_LENGTH) {
                                 legacyPrefix = legacyPrefix.substring(0, MAX_PREFIX_LENGTH);
@@ -86,7 +85,7 @@ public final class CommandPrefix implements BrigadierCommand {
                     .append(finalPrefix));
         } catch (final IOException e) {
             LOGGER
-                .error("Exception while saving prefix", e);
+                    .error("Exception while saving prefix", e);
             throw EX_SOMETHING.create();
         }
     }

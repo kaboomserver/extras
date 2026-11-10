@@ -17,9 +17,6 @@ import org.bukkit.inventory.ItemStack;
 import static io.papermc.paper.command.brigadier.Commands.restricted;
 
 public final class CommandEnchantAll implements BrigadierCommand {
-    private static final SimpleCommandExceptionType EX_NOT_PLAYER =
-            new SimpleCommandExceptionType(
-                    new LiteralMessage("This command must be called by a player"));
     private static final SimpleCommandExceptionType EX_NO_ITEM =
             new SimpleCommandExceptionType(
                     new LiteralMessage("Please hold an item in your hand to enchant it"));
@@ -38,15 +35,10 @@ public final class CommandEnchantAll implements BrigadierCommand {
     public void build(final LiteralArgumentBuilder<CommandSourceStack> builder) {
         builder
                 .requires(restricted(src ->
-                        src.getSender() instanceof Player
-                                && src.getSender().hasPermission("extras.enchantall")
+                        src.getSender().hasPermission("extras.enchantall")
                 ))
                 .executes(ctx -> {
-                    if (!(ctx.getSource().getSender() instanceof final Player player)) {
-                        // should be impossible, see above
-                        throw EX_NOT_PLAYER.create();
-                    }
-
+                    final Player player = ctx.getSource().getPlayerOrThrow();
                     final ItemStack item = player.getInventory().getItemInMainHand();
 
                     if (Material.AIR.equals(item.getType())) {
