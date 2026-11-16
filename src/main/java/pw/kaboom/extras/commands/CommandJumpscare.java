@@ -62,7 +62,7 @@ public final class CommandJumpscare implements BrigadierCommand {
                 );
     }
 
-    private void createJumpscare(final Player player) {
+    private static void createJumpscare(final Player player) {
         final int count = 4;
         player.spawnParticle(Particle.ELDER_GUARDIAN, player.getLocation(), count);
 

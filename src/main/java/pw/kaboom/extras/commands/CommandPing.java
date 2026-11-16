@@ -59,7 +59,7 @@ public final class CommandPing implements BrigadierCommand {
                 );
     }
 
-    private TextColor getColor(final int ping) {
+    private static TextColor getColor(final int ping) {
         final int d = ping / 100;
         return switch (d) {
             case 0 -> NamedTextColor.GREEN;

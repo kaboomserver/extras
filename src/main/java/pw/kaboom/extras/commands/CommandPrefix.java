@@ -84,8 +84,7 @@ public final class CommandPrefix implements BrigadierCommand {
             player.sendMessage(Component.text("You now have the tag: ")
                     .append(finalPrefix));
         } catch (final IOException e) {
-            LOGGER
-                    .error("Exception while saving prefix", e);
+            LOGGER.error("Exception while saving prefix", e);
             throw EX_SOMETHING.create();
         }
     }

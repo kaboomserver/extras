@@ -56,7 +56,7 @@ public final class CommandPumpkin implements BrigadierCommand {
                 );
     }
 
-    private void placePumpkin(final Player player) {
+    private static void placePumpkin(final Player player) {
         player.getInventory().setHelmet(new ItemStack(Material.CARVED_PUMPKIN));
     }
 }
