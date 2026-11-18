@@ -13,12 +13,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.jspecify.annotations.NonNull;
+import pw.kaboom.extras.Main;
 
 import java.io.IOException;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
 public final class PlayerChat implements Listener {
+    private static final long RATELIMIT = Main.PLUGIN.getConfig().getLong("ratelimits.chat", 50);
     private static final PlayerChatRenderer CHAT_RENDERER = new PlayerChatRenderer();
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
@@ -29,7 +31,7 @@ public final class PlayerChat implements Listener {
             final long lastCommandTime = PlayerCommand.getCommandMillisList().get(playerUuid);
             final long millisDifference = System.currentTimeMillis() - lastCommandTime;
 
-            if (millisDifference < 50) {
+            if (millisDifference < RATELIMIT) {
                 event.setCancelled(true);
                 return;
             }
