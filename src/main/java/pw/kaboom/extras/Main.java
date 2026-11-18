@@ -100,19 +100,22 @@ public final class Main extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new ServerTabComplete(), this);
 
         /* Custom worlds */
-        this.getServer().createWorld(
-            new WorldCreator("world_flatlands")
-                    .generateStructures(false)
-                    .type(WorldType.FLAT)
-                    .generatorSettings(
-                            new FlatLayers()
-                                    .addLayer(BlockTypeKeys.BEDROCK, 1)
-                                    .addLayer(BlockTypeKeys.DIRT, 124)
-                                    .addLayer(BlockTypeKeys.STONE, 2)
-                                    .addLayer(BlockTypeKeys.GRASS_BLOCK, 1)
-                                    .build()
-                    )
-        );
+
+        if (this.getConfig().getBoolean("additional_worlds.flatlands", true)) {
+            this.getServer().createWorld(
+                    new WorldCreator("world_flatlands")
+                            .generateStructures(false)
+                            .type(WorldType.FLAT)
+                            .generatorSettings(
+                                    new FlatLayers()
+                                            .addLayer(BlockTypeKeys.BEDROCK, 1)
+                                            .addLayer(BlockTypeKeys.DIRT, 124)
+                                            .addLayer(BlockTypeKeys.STONE, 2)
+                                            .addLayer(BlockTypeKeys.GRASS_BLOCK, 1)
+                                            .build()
+                            )
+            );
+        }
 
         final Messenger messenger = this.getServer().getMessenger();
         final PlayerMessaging playerMessaging = new PlayerMessaging(this);

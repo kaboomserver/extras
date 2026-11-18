@@ -18,3 +18,5 @@ deOpTag: "§8§l[§7§lDeOP§8§l] §7"
 ratelimits:
   chat: 50
   command: 75
+additional_worlds:
+  flatlands: true
