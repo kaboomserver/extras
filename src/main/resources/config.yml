@@ -15,3 +15,8 @@ playerJoinTitle: "§7Welcome to Kaboom!"
 playerJoinSubtitle: "Free OP • Anarchy • Creative"
 opTag: "§4§l[§c§lOP§4§l] §c"
 deOpTag: "§8§l[§7§lDeOP§8§l] §7"
+ratelimits:
+  chat: 50
+  command: 75
+additional_worlds:
+  flatlands: true

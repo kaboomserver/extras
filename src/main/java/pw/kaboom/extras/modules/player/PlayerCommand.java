@@ -9,10 +9,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-
+import pw.kaboom.extras.Main;
 import pw.kaboom.extras.modules.server.ServerCommand;
 
 public final class PlayerCommand implements Listener {
+    private static final long RATELIMIT = Main.PLUGIN.getConfig().getLong("ratelimits.command", 75);
     private static HashMap<UUID, Long> commandMillisList = new HashMap<UUID, Long>();
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
@@ -23,7 +24,7 @@ public final class PlayerCommand implements Listener {
             final long lastCommandTime = getCommandMillisList().get(playerUuid);
             final long millisDifference = System.currentTimeMillis() - lastCommandTime;
 
-            if (millisDifference < 75) {
+            if (millisDifference < RATELIMIT) {
                 event.setCancelled(true);
                 return;
             }
