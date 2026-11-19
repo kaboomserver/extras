@@ -1,6 +1,5 @@
 package pw.kaboom.extras.commands;
 
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -37,8 +36,7 @@ public final class CommandBroadcastRainbow implements BrigadierCommand {
                             final String strippedTags = MINI_MESSAGE.stripTags(mm);
                             final Component component = MINI_MESSAGE.deserialize("<rainbow>"
                                     + strippedTags);
-                            Bukkit.broadcast(component);
-                            return Command.SINGLE_SUCCESS;
+                            return Bukkit.broadcast(component);
                         })
                 );
     }

@@ -1,6 +1,5 @@
 package pw.kaboom.extras.commands;
 
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.Material;
@@ -45,14 +44,16 @@ public final class CommandSpidey implements BrigadierCommand {
                             yOffset,
                             distance
                     );
+                    int count = 0;
 
                     while (blockIterator.hasNext()) {
                         final Block block = blockIterator.next();
 
                         if (block.getType() != Material.COBWEB && !block.getType().isAir()) break;
                         block.setType(Material.COBWEB);
+                        count++;
                     }
-                    return Command.SINGLE_SUCCESS;
+                    return count;
                 });
     }
 }

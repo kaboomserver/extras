@@ -37,12 +37,12 @@ public final class CommandPing implements BrigadierCommand {
                 .executes(ctx -> {
                     final Player player = ctx.getSource().getPlayerOrThrow();
                     final int ping = player.getPing();
-                    ctx.getSource().getSender().sendMessage(
+                    player.sendMessage(
                             Component.empty()
                                     .append(Component.text("Your ping is "))
                                     .append(Component.text(ping + "ms.", getColor(ping)))
                     );
-                    return Command.SINGLE_SUCCESS;
+                    return ping;
                 })
                 .then(argument("player", playerOrUUID())
                         .executes(ctx -> {
@@ -54,7 +54,7 @@ public final class CommandPing implements BrigadierCommand {
                                             .append(Component.text(ping + "ms.",
                                                     getColor(ping)))
                             );
-                            return Command.SINGLE_SUCCESS;
+                            return ping;
                         })
                 );
     }

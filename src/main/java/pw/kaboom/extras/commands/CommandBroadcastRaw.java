@@ -1,6 +1,5 @@
 package pw.kaboom.extras.commands;
 
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -39,14 +38,11 @@ public final class CommandBroadcastRaw implements BrigadierCommand {
                         src.getSender().hasPermission("extras.broadcastraw")
                 ))
                 .then(argument("message", greedyString())
-                        .executes(ctx -> {
-                            Bukkit.broadcast(
-                                    SERIALIZER.deserialize(
-                                            StringArgumentType.getString(ctx, "message")
-                                    )
-                            );
-                            return Command.SINGLE_SUCCESS;
-                        })
+                        .executes(ctx -> Bukkit.broadcast(
+                                SERIALIZER.deserialize(
+                                        StringArgumentType.getString(ctx, "message")
+                                )
+                        ))
                 );
     }
 }

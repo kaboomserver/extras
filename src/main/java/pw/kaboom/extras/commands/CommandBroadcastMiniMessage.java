@@ -1,6 +1,5 @@
 package pw.kaboom.extras.commands;
 
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -42,8 +41,7 @@ public final class CommandBroadcastMiniMessage implements BrigadierCommand {
                         .executes(ctx -> {
                             final String mm = StringArgumentType.getString(ctx, "message");
                             final Component component = MINI_MESSAGE.deserialize(mm);
-                            Bukkit.broadcast(component);
-                            return Command.SINGLE_SUCCESS;
+                            return Bukkit.broadcast(component);
                         })
                 );
     }

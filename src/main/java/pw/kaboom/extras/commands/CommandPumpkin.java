@@ -4,6 +4,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -37,8 +38,9 @@ public final class CommandPumpkin implements BrigadierCommand {
                                 placePumpkin(target);
                             }
 
+                            final CommandSender sender = ctx.getSource().getSender();
                             if (targets.size() == 1) {
-                                ctx.getSource().getSender().sendMessage(
+                                sender.sendMessage(
                                         Component.text("\"")
                                                 .append(Component.text(
                                                         targets.getFirst().getName())
@@ -46,7 +48,7 @@ public final class CommandPumpkin implements BrigadierCommand {
                                                 .append(Component.text("\" is now a pumpkin"))
                                 );
                             } else {
-                                ctx.getSource().getSender().sendMessage(
+                                sender.sendMessage(
                                         Component.text(targets.size()
                                                 + " players are now pumpkins")
                                 );

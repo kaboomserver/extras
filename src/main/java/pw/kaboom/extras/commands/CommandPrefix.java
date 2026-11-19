@@ -52,8 +52,7 @@ public final class CommandPrefix implements BrigadierCommand {
                 ))
                 .then(literal("off")
                         .executes(ctx -> {
-                            final Player player = ctx.getSource().getPlayerOrThrow();
-                            setPrefix(player, null);
+                            setPrefix(ctx.getSource().getPlayerOrThrow(), null);
                             return Command.SINGLE_SUCCESS;
                         })
                 )

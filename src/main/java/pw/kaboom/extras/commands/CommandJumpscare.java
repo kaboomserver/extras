@@ -6,6 +6,7 @@ import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSele
 import net.kyori.adventure.text.Component;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -37,12 +38,14 @@ public final class CommandJumpscare implements BrigadierCommand {
                                     "players",
                                     PlayerSelectorArgumentResolver.class
                             );
-                            final List<Player> targets = selector.resolve(ctx.getSource());
+                            final CommandSourceStack source = ctx.getSource();
+                            final List<Player> targets = selector.resolve(source);
                             for (final Player target : targets) {
                                 createJumpscare(target);
                             }
+                            final CommandSender sender = source.getSender();
                             if (targets.size() == 1) {
-                                ctx.getSource().getSender().sendMessage(
+                                sender.sendMessage(
                                         Component.text("Successfully created jumpscare for " +
                                                         "player \"")
                                                 .append(Component.text(
@@ -51,7 +54,7 @@ public final class CommandJumpscare implements BrigadierCommand {
                                                 .append(Component.text("\""))
                                 );
                             } else {
-                                ctx.getSource().getSender().sendMessage(
+                                sender.sendMessage(
                                         Component.text("Successfully created jumpscare for "
                                                 + targets.size()
                                                 + " players")

@@ -1,6 +1,5 @@
 package pw.kaboom.extras.commands;
 
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
@@ -46,9 +45,6 @@ public final class CommandClearChat implements BrigadierCommand {
     public void build(final LiteralArgumentBuilder<CommandSourceStack> builder) {
         builder
                 .requires(restricted(src -> src.getSender().hasPermission("extras.clearchat")))
-                .executes(_ -> {
-                    Bukkit.broadcast(CLEAR_CHAT_COMPONENT);
-                    return Command.SINGLE_SUCCESS;
-                });
+                .executes(_ -> Bukkit.broadcast(CLEAR_CHAT_COMPONENT));
     }
 }
