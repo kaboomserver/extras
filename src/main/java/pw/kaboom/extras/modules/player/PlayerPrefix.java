@@ -147,7 +147,7 @@ public final class PlayerPrefix implements Listener {
 
 			try {
 				onUpdate(player);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				throw new RuntimeException(e);
 			}
 		}
@@ -174,7 +174,7 @@ public final class PlayerPrefix implements Listener {
 
 			try {
 				onUpdate(player);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				throw new RuntimeException(e);
 			}
 		}
