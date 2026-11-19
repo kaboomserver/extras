@@ -73,7 +73,7 @@ public final class Utility {
     ) {
         try {
             return composer.apply(callable.call());
-        } catch (Throwable ex) {
+        } catch (final Throwable _) {
             return null;
         }
     }

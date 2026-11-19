@@ -117,7 +117,7 @@ public final class SkinManager extends Thread implements Listener {
                     if (ply == null) continue;
 
                     resultConsumer.accept(ply, skin);
-                } catch (final Exception ignored) {
+                } catch (final Exception _) {
                     resultConsumer.accept(ply, null);
                 }
             }

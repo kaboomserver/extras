@@ -106,7 +106,7 @@ public final class PlayerDamage implements Listener {
             } else {
                 Utility.teleportToSpawn(player, PlayerTeleportEvent.TeleportCause.UNKNOWN);
             }
-        } catch (Exception exception) {
+        } catch (final Exception _) {
             Utility.resetAttribute(player, Attribute.MAX_HEALTH);
             player.setHealth(20);
         }

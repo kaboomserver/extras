@@ -171,7 +171,7 @@ public final class ServerCommand implements Listener {
                 default -> {
                 }
             }
-        } catch (NumberFormatException exception) {
+        } catch (final NumberFormatException _) {
             // Do nothing
         }
 

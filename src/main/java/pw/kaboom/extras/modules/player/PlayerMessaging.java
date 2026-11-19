@@ -164,7 +164,7 @@ public final class PlayerMessaging implements PluginMessageListener, Listener {
                         new DataInputStream(new FastByteArrayInputStream(bytes))
                 );
             }
-        } catch (final Exception ignored) {
+        } catch (final Exception _) {
             player.sendMessage(ERROR);
         }
     }

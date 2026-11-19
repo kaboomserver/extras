@@ -80,7 +80,7 @@ public final class PlayerChat implements Listener {
 
             try {
                 prefix1 = PlayerPrefix.getPrefix(player);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 e.printStackTrace();
                 prefix1 = PlayerPrefix.getDefaultPrefix(player);
             }

@@ -183,7 +183,7 @@ public final class EntitySpawn implements Listener {
     void onItemSpawn(final ItemSpawnEvent event) {
         try {
             event.getEntity().getItemStack().getItemMeta();
-        } catch (Exception exception) {
+        } catch (final Exception _) {
             event.setCancelled(true);
         }
     }
@@ -215,7 +215,7 @@ public final class EntitySpawn implements Listener {
     void onPreSpawnerSpawn(final PreSpawnerSpawnEvent event) {
         try {
             limitSpawner((CreatureSpawner) event.getSpawnerLocation().getBlock().getState(false));
-        } catch (Exception exception) {
+        } catch (final Exception _) {
             event.setCancelled(true);
         }
     }
