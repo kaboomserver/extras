@@ -160,7 +160,7 @@ public final class CommandServerInfo implements BrigadierCommand {
 
             try {
                 values = entry.values().call().toList();
-            } catch (Exception _) {
+            } catch (final Exception _) {
                 continue;
             }
 
