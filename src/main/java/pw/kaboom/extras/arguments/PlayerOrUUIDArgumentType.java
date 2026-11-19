@@ -17,6 +17,15 @@ import java.util.UUID;
 public final class PlayerOrUUIDArgumentType implements
         CustomArgumentType<Player, EntitySelectorArgumentResolver> {
 
+    public static Player getPlayer(final CommandContext<CommandSourceStack> context,
+                                   final String name) {
+        return context.getArgument(name, Player.class);
+    }
+
+    public static PlayerOrUUIDArgumentType playerOrUUID() {
+        return new PlayerOrUUIDArgumentType();
+    }
+
     // We lie to clients and tell them we're an entity selector so that UUIDs don't show up as red.
     @Override
     public ArgumentType<EntitySelectorArgumentResolver> getNativeType() {
@@ -47,16 +56,5 @@ public final class PlayerOrUUIDArgumentType implements
 
         reader.setCursor(cursor);
         return ArgumentTypes.player().parse(reader).resolve(stack).getFirst();
-    }
-
-    @CheckReturnValue
-    public static Player getPlayer(final CommandContext<CommandSourceStack> context,
-                                   final String name) {
-        return context.getArgument(name, Player.class);
-    }
-
-    @CheckReturnValue
-    public static PlayerOrUUIDArgumentType playerOrUUID() {
-        return new PlayerOrUUIDArgumentType();
     }
 }

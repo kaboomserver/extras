@@ -17,14 +17,12 @@ import java.util.UUID;
 
 public final class PlayersOrUUIDArgumentType
         implements CustomArgumentType<List<Player>, EntitySelectorArgumentResolver> {
-    @CheckReturnValue
     @SuppressWarnings("unchecked")
     public static List<Player> getPlayers(final CommandContext<CommandSourceStack> context,
                                           final String name) {
         return (List<Player>) context.getArgument(name, List.class);
     }
 
-    @CheckReturnValue
     public static PlayersOrUUIDArgumentType playersOrUUID() {
         return new PlayersOrUUIDArgumentType();
     }
