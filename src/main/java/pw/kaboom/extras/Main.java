@@ -114,14 +114,14 @@ public final class Main extends JavaPlugin {
                     )
         );
         this.getServer().createWorld(
-			new WorldCreator("world_void")
-					.generateStructures(false)
-					.type(WorldType.FLAT)
-					.generatorSettings(
-							new FlatLayers()
-									.addLayer(BlockTypeKeys.AIR, 1)
-									.build()
-					)
+            new WorldCreator("world_void")
+                    .generateStructures(false)
+                    .type(WorldType.FLAT)
+                    .generatorSettings(
+                            new FlatLayers()
+                                    .addLayer(BlockTypeKeys.AIR, 1)
+                                    .build()
+                    )
         );
 
         final Messenger messenger = this.getServer().getMessenger();
